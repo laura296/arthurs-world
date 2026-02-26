@@ -1,0 +1,45 @@
+import { useCallback, useState } from 'react';
+import BackButton from '../components/BackButton';
+import { playNote } from '../hooks/useSound';
+
+// C major scale + high C
+const PADS = [
+  { note: 'C',  freq: 261.63, color: 'from-red-400 to-red-600' },
+  { note: 'D',  freq: 293.66, color: 'from-orange-400 to-orange-600' },
+  { note: 'E',  freq: 329.63, color: 'from-yellow-400 to-yellow-600' },
+  { note: 'F',  freq: 349.23, color: 'from-green-400 to-green-600' },
+  { note: 'G',  freq: 392.00, color: 'from-sky to-blue-600' },
+  { note: 'A',  freq: 440.00, color: 'from-indigo-400 to-indigo-600' },
+  { note: 'B',  freq: 493.88, color: 'from-purple-400 to-purple-600' },
+  { note: 'C2', freq: 523.25, color: 'from-pink-400 to-pink-600' },
+];
+
+export default function MusicPad() {
+  const [active, setActive] = useState(null);
+
+  const tap = useCallback((pad) => {
+    playNote(pad.freq, 0.6);
+    setActive(pad.note);
+    setTimeout(() => setActive(null), 300);
+  }, []);
+
+  return (
+    <div className="relative w-full h-full bg-gradient-to-b from-purple-900 to-night flex flex-col overflow-hidden">
+      <BackButton />
+
+      <div className="flex-1 grid grid-cols-2 gap-3 p-4 pt-20">
+        {PADS.map(pad => (
+          <button
+            key={pad.note}
+            onPointerDown={() => tap(pad)}
+            className={`game-card bg-gradient-to-br ${pad.color} flex items-center justify-center
+                       text-5xl transition-all duration-150
+                       ${active === pad.note ? 'scale-95 brightness-125 shadow-2xl' : ''}`}
+          >
+            🎵
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
