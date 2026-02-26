@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { playBoing } from '../hooks/useSound';
-import Starfield from '../components/Starfield';
+import NightSkyScene from '../components/scenes/NightSkyScene';
 
 const modes = [
   { id: 'quiet', emoji: '🌙', label: 'Quiet', bg: 'from-navy to-blue-900', to: '/games/quiet' },
@@ -11,8 +11,8 @@ export default function ModePicker() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6 bg-night">
-      <Starfield />
+    <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6">
+      <NightSkyScene />
 
       <h1 className="relative z-10 text-5xl font-heading text-sun drop-shadow-lg animate-float">
         🌟 Arthur's World 🌟

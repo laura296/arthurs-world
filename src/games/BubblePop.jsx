@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import BackButton from '../components/BackButton';
+import UnderwaterScene from '../components/scenes/UnderwaterScene';
 import { playPop, playSuccess } from '../hooks/useSound';
 
 const COLORS = ['#38bdf8', '#facc15', '#ec4899', '#22c55e', '#a78bfa', '#fb923c'];
@@ -76,7 +77,8 @@ export default function BubblePop() {
   }, []);
 
   return (
-    <div className="relative w-full h-full bg-gradient-to-b from-blue-900 to-night overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
+      <UnderwaterScene />
       <BackButton />
 
       {/* Score */}
