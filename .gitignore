@@ -3,3 +3,6 @@ dist
 *.local
 .DS_Store
 firebase-debug.log
+*.png
+!public/*.png
+.playwright-mcp/
