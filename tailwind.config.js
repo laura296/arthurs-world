@@ -54,6 +54,16 @@ export default {
         'page-curl-out': 'pageCurlOut 0.6s ease-in-out forwards',
         'page-curl-in': 'pageCurlIn 0.6s ease-in-out forwards',
         'screen-shake': 'screenShake 0.4s ease-in-out',
+        // Memory Match animations
+        'card-flip': 'cardFlip 0.3s ease-in-out forwards',
+        'card-unflip': 'cardUnflip 0.3s ease-in-out forwards',
+        'starburst': 'starburst 0.5s ease-out forwards',
+        'parade-enter': 'paradeEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'parade-exit': 'paradeExit 0.4s ease-in forwards',
+        'deal-card': 'dealCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards',
+        'gold-shimmer': 'goldShimmer 0.8s ease-in-out',
+        'sidekick-jump': 'sidekickJump 0.5s ease-out',
+        'confetti-fall': 'confettiFall 2s linear forwards',
       },
       keyframes: {
         bounceIn: {
@@ -218,6 +228,45 @@ export default {
           '70%': { transform: 'translate(-2px, 4px)' },
           '80%': { transform: 'translate(2px, -3px)' },
           '90%': { transform: 'translate(-1px, 2px)' },
+        },
+        // Memory Match keyframes
+        cardFlip: {
+          '0%': { transform: 'rotateY(0deg)' },
+          '100%': { transform: 'rotateY(180deg)' },
+        },
+        cardUnflip: {
+          '0%': { transform: 'rotateY(180deg)' },
+          '100%': { transform: 'rotateY(0deg)' },
+        },
+        starburst: {
+          '0%': { transform: 'scale(0)', opacity: '1' },
+          '50%': { transform: 'scale(1.5)', opacity: '0.8' },
+          '100%': { transform: 'scale(2)', opacity: '0' },
+        },
+        paradeEnter: {
+          '0%': { transform: 'translateX(100vw) scale(0.5)', opacity: '0' },
+          '100%': { transform: 'translateX(0) scale(1)', opacity: '1' },
+        },
+        paradeExit: {
+          '0%': { transform: 'translateX(0) scale(1)', opacity: '1' },
+          '100%': { transform: 'translateX(-100vw) scale(0.5)', opacity: '0' },
+        },
+        dealCard: {
+          '0%': { transform: 'scale(0) rotate(-10deg)', opacity: '0' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        goldShimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        sidekickJump: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '30%': { transform: 'translateY(-20px) scale(1.1)' },
+          '60%': { transform: 'translateY(-5px) scale(1.05)' },
+        },
+        confettiFall: {
+          '0%': { transform: 'translateY(-20px) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: '0' },
         },
       },
     },
