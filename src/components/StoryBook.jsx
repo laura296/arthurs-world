@@ -128,6 +128,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
   const state = pageState[el.id] || {};
   const dragRef = useRef(null);
   const [dragOffset, setDragOffset] = useState(null);
+  const [pressed, setPressed] = useState(false);
 
   // Check if this element has a drag interaction
   const dragInteraction = myInteractions.find(i => i.type === 'drag-to-target');
@@ -408,9 +409,19 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
   return (
     <button
       onClick={handleTap}
-      onPointerDown={onPointerDown}
+      onPointerDown={(e) => {
+        if (isDraggable) {
+          onPointerDown(e);
+        } else {
+          setPressed(true);
+          if (navigator.vibrate) navigator.vibrate(8);
+        }
+      }}
+      onPointerUp={() => { if (!isDraggable) setPressed(false); }}
+      onPointerLeave={() => { if (!isDraggable) setPressed(false); }}
       className={`absolute transition-all duration-300 ${animClass}
-                 ${isInteractive ? 'active:scale-95 cursor-pointer' : ''}
+                 ${pressed && !isDraggable ? 'scale-95' : ''}
+                 ${isInteractive ? 'cursor-pointer' : ''}
                  ${isDraggable ? 'cursor-grab active:cursor-grabbing touch-none' : ''}
                  ${el.rounded ? 'rounded-full' : 'rounded-2xl'}`}
       style={{
@@ -423,6 +434,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
         height: el.h || 'auto',
         padding: el.pad || undefined,
         zIndex: dragOffset ? 100 : (el.z || 10),
+        boxShadow: isInteractive ? '0 3px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1)' : undefined,
       }}
     >
       {displayContent}
@@ -447,6 +459,7 @@ export default function StoryBook({ story }) {
   const [page, setPage] = useState(0);
   const [pageState, setPageState] = useState({});
   const [turning, setTurning] = useState(false);
+  const [turnDir, setTurnDir] = useState(1); // 1 = forward, -1 = back
   const [autoRead, setAutoRead] = useState(true);
   const touchStart = useRef(null);
   const containerRef = useRef(null);
@@ -478,12 +491,14 @@ export default function StoryBook({ story }) {
     if (turning) return;
     const next = page + dir;
     if (next < 0 || next >= story.pages.length) return;
-    playTap();
+    playPageTurn();
+    setTurnDir(dir);
     setTurning(true);
+    if (navigator.vibrate) navigator.vibrate(10);
     setTimeout(() => {
       setPage(next);
       setTurning(false);
-    }, 350);
+    }, 600);
   }, [page, turning, story.pages.length]);
 
   // Swipe support
@@ -526,13 +541,30 @@ export default function StoryBook({ story }) {
         <div className={`absolute inset-0 bg-gradient-to-b ${current.bg}`} />
       )}
 
+      {/* Paper texture overlay — subtle grain for tactile feel */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none z-[60]" style={{ mixBlendMode: 'multiply', opacity: 0.04 }}>
+        <defs>
+          <filter id="paper-grain">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="2" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+        </defs>
+        <rect width="100%" height="100%" filter="url(#paper-grain)" fill="#f5e6d0" />
+      </svg>
+
       <BackButton />
 
-      {/* Page content with transition */}
+      {/* Page content with page-curl transition */}
       <div
-        className={`absolute inset-0 transition-all duration-350 ${
-          turning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+        className={`absolute inset-0 ${
+          turning
+            ? turnDir > 0 ? 'animate-page-curl-out' : 'animate-page-curl-out'
+            : ''
         }`}
+        style={{
+          transformStyle: 'preserve-3d',
+          backfaceVisibility: 'hidden',
+        }}
       >
         {/* Drop zone indicators */}
         {dropZones.map(dz => (
