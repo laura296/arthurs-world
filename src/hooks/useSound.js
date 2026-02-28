@@ -4,7 +4,7 @@ const audioCtxRef = { current: null };
 
 /** Global mute flag — set by MuteByMode wrapper in App.jsx */
 let globalMuted = false;
-export function setGlobalMute(muted) { globalMuted = muted; }
+export function setGlobalMute(muted) { globalMuted = muted; window.__arthurMuted = muted; }
 
 function getCtx() {
   if (!audioCtxRef.current) {
@@ -305,6 +305,38 @@ export function playThud() {
   osc.stop(ctx.currentTime + 0.15);
 }
 
+/** Chomp — funny shark gulp sound */
+export function playChomp() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(200, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.15);
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.25);
+}
+
+/** Buzz — descending wrong answer sound */
+export function playBuzz() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.3);
+  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.4);
+}
+
 /** Drumroll — anticipation build for animate mode (1.5s) */
 export function playDrumroll() {
   if (globalMuted) return;
@@ -347,6 +379,251 @@ export function playStickerSound(soundId) {
   };
   const fn = sounds[soundId] || sounds.pop;
   fn();
+}
+
+// ── Memory Match sounds ──
+
+/** Fanfare — celebratory ascending arpeggio for board completion */
+export function playFanfare() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const notes = [262, 330, 392, 523, 659, 784, 1047];
+  notes.forEach((freq, i) => {
+    const t = ctx.currentTime + i * 0.15;
+    const osc = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc2.type = 'triangle';
+    osc.frequency.value = freq;
+    osc2.frequency.value = freq * 1.002;
+    gain.gain.setValueAtTime(0.25, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc2.start(t);
+    osc.stop(t + 0.55);
+    osc2.stop(t + 0.55);
+  });
+}
+
+// ── Premium Polish Sounds ──
+
+/** Enriched tap — layered sine + triangle with pitch randomisation */
+export function playRichTap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const baseFreq = 580 + (Math.random() - 0.5) * 40;
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.value = baseFreq;
+  gain1.gain.setValueAtTime(0.2, ctx.currentTime);
+  gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  osc1.connect(gain1).connect(ctx.destination);
+  osc1.start();
+  osc1.stop(ctx.currentTime + 0.1);
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = 'triangle';
+  osc2.frequency.value = baseFreq * 1.5;
+  gain2.gain.setValueAtTime(0.1, ctx.currentTime);
+  gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  osc2.connect(gain2).connect(ctx.destination);
+  osc2.start();
+  osc2.stop(ctx.currentTime + 0.08);
+}
+
+/** Navigate whoosh — soft filtered noise sweep */
+export function playNavigate() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.25;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(200, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.15);
+  filter.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.25);
+  filter.Q.value = 0.8;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.08, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.3);
+}
+
+/** Celebration jingle — ascending arpeggio with shimmer */
+export function playCelebrate() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const notes = [523, 659, 784, 1047, 1319];
+  notes.forEach((freq, i) => {
+    const t = ctx.currentTime + i * 0.15;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.25, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.55);
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'triangle';
+    osc2.frequency.value = freq * 2.01;
+    gain2.gain.setValueAtTime(0, t);
+    gain2.gain.linearRampToValueAtTime(0.06, t + 0.02);
+    gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    osc2.connect(gain2).connect(ctx.destination);
+    osc2.start(t);
+    osc2.stop(t + 0.45);
+  });
+  setTimeout(() => {
+    const ctx2 = getCtx();
+    [1047, 1319, 1568].forEach(freq => {
+      const osc = ctx2.createOscillator();
+      const gain = ctx2.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.15, ctx2.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx2.currentTime + 0.8);
+      osc.connect(gain).connect(ctx2.destination);
+      osc.start();
+      osc.stop(ctx2.currentTime + 0.85);
+    });
+  }, 750);
+}
+
+/** Gentle error — descending two-note (non-punishing) */
+export function playError() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.25);
+  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.35);
+}
+
+// ── Section-Specific Tap Sounds ──
+
+export function playGamesTap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(280 + Math.random() * 40, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(560, ctx.currentTime + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.2);
+  gain.gain.setValueAtTime(0.25, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.25);
+}
+
+export function playBooksTap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.1;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 2000;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.06, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.12);
+  const osc = ctx.createOscillator();
+  const g2 = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 800;
+  g2.gain.setValueAtTime(0.08, ctx.currentTime);
+  g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  osc.connect(g2).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.18);
+}
+
+export function playArtTap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.08;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1500;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.1);
+}
+
+export function playMusicTap() {
+  playTone(1200, 0.04, 'square');
+}
+
+export function playPuzzlesTap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = 1800;
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.04);
+  const osc2 = ctx.createOscillator();
+  const g2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.value = 900;
+  g2.gain.setValueAtTime(0.1, ctx.currentTime + 0.02);
+  g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+  osc2.connect(g2).connect(ctx.destination);
+  osc2.start(ctx.currentTime + 0.02);
+  osc2.stop(ctx.currentTime + 0.12);
+}
+
+/** Play the tap sound for a given section */
+export function playSectionTap(section) {
+  const tapMap = {
+    games: playGamesTap,
+    books: playBooksTap,
+    art: playArtTap,
+    music: playMusicTap,
+    puzzles: playPuzzlesTap,
+  };
+  (tapMap[section] || playRichTap)();
 }
 
 /** Hook: returns muted state + toggle, and sound functions that respect mute */
