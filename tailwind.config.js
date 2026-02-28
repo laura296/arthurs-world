@@ -22,6 +22,11 @@ export default {
         'pop': 'pop 0.3s ease-out',
         'float': 'float 3s ease-in-out infinite',
         'sparkle': 'sparkle 1.5s ease-in-out infinite',
+        // Pop Critters animations
+        'critter-rise': 'critterRise 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'critter-sink': 'critterSink 0.4s ease-in',
+        'critter-squish': 'critterSquish 0.3s ease-out',
+        'hole-highlight': 'holeHighlight 0.5s ease-out',
       },
       keyframes: {
         bounceIn: {
@@ -44,6 +49,24 @@ export default {
         sparkle: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.5' },
+        },
+        // Pop Critters keyframes
+        critterRise: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0%)' },
+        },
+        critterSink: {
+          '0%': { transform: 'translateY(0%)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+        critterSquish: {
+          '0%': { transform: 'scale(1, 1)' },
+          '50%': { transform: 'scale(1.15, 0.85)' },
+          '100%': { transform: 'scale(1, 1)' },
+        },
+        holeHighlight: {
+          '0%': { boxShadow: '0 0 0 0 rgba(250, 204, 21, 0.6)' },
+          '100%': { boxShadow: '0 0 20px 10px rgba(250, 204, 21, 0)' },
         },
       },
     },
