@@ -57,6 +57,33 @@ export default function PopCritters() {
         }, visTime + difficulty.riseSpeed); // add rise time
         timersRef.current.push(timer);
 
+        // Fox movement — in Wild mode, fox slides to an adjacent hole after ~1s
+        if (type === 'fox' && difficulty.foxMoves) {
+          const moveTimer = setTimeout(() => {
+            setCritters(p => {
+              const fox = p.find(c => c.id === id && c.visible && !c.tapped);
+              if (!fox) return p;
+
+              const { cols } = GRID;
+              const row = Math.floor(fox.holeIndex / cols);
+              const col = fox.holeIndex % cols;
+              const adjacent = [];
+              if (col > 0) adjacent.push(fox.holeIndex - 1);
+              if (col < cols - 1) adjacent.push(fox.holeIndex + 1);
+              if (row > 0) adjacent.push(fox.holeIndex - cols);
+              if (row < GRID.rows - 1) adjacent.push(fox.holeIndex + cols);
+
+              const usedHolesNow = new Set(p.filter(c => c.visible && c.id !== id).map(c => c.holeIndex));
+              const freeAdjacent = adjacent.filter(h => !usedHolesNow.has(h));
+              if (freeAdjacent.length === 0) return p;
+
+              const newHole = freeAdjacent[Math.floor(Math.random() * freeAdjacent.length)];
+              return p.map(c => c.id === id ? { ...c, holeIndex: newHole } : c);
+            });
+          }, 800 + Math.random() * 400);
+          timersRef.current.push(moveTimer);
+        }
+
         return [...prev.filter(c => c.visible || Date.now() - c.spawnTime < 2000), {
           id, type, holeIndex, visible: true, tapped: false, spawnTime: Date.now(),
         }];
