@@ -22,7 +22,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+        globPatterns: ['**/*.{js,css,html,png,webp,svg,ico,woff2,mp3}'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024, // 8MB — DALL-E 3 HD images can be large
       },
     }),
   ],
