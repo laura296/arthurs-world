@@ -1,0 +1,912 @@
+import React from 'react';
+import StoryBook from '../components/StoryBook';
+import ForestScene from '../components/scenes/ForestScene';
+import CottageScene from '../components/scenes/CottageScene';
+import MeadowScene from '../components/scenes/MeadowScene';
+
+const storyData = {
+  title: 'Little Red Riding Hood',
+  audioDir: '/arthurs-world/audio/red-riding',
+  pages: [
+    // ─── Page 1: Introduction ───
+    {
+      bg: 'from-green-200 via-yellow-100 to-sky-200',
+      scene: <MeadowScene />,
+      image: '/arthurs-world/images/red-riding/page-1.png',
+      text: 'Once upon a time, there was a little girl who wore a red hood.',
+      elements: [
+        {
+          id: 'girl',
+          x: 50,
+          y: 40,
+          content: <span>🧒</span>,
+          size: 64,
+        },
+        {
+          id: 'hood',
+          x: 50,
+          y: 28,
+          content: <span>❤️</span>,
+          size: 40,
+        },
+        {
+          id: 'flower1',
+          x: 25,
+          y: 60,
+          content: <span>🌺</span>,
+          size: 42,
+        },
+        {
+          id: 'flower2',
+          x: 75,
+          y: 58,
+          content: <span>🌸</span>,
+          size: 38,
+        },
+        {
+          id: 'butterfly',
+          x: 15,
+          y: 25,
+          content: <span>🦋</span>,
+          size: 28,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-hood-color',
+          type: 'tap-color',
+          targetId: 'hood',
+          data: { colors: ['#ef4444', '#ec4899', '#f43f5e', '#dc2626', '#fb7185'] },
+        },
+        {
+          id: 'i-girl-sound',
+          type: 'tap-sound',
+          targetId: 'girl',
+          data: { say: "I'm Little Red Riding Hood!" },
+        },
+        {
+          id: 'i-girl-spin',
+          type: 'tap-spin',
+          targetId: 'girl',
+          data: {},
+        },
+        {
+          id: 'i-flower1-grow',
+          type: 'tap-grow',
+          targetId: 'flower1',
+          data: {},
+        },
+        {
+          id: 'i-flower2-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'flower2',
+          data: {},
+        },
+        {
+          id: 'i-butterfly-reveal',
+          type: 'tap-reveal',
+          targetId: 'butterfly',
+          data: { content: <span>🦋✨</span> },
+        },
+        {
+          id: 'i-butterfly-animate',
+          type: 'tap-animate',
+          targetId: 'butterfly',
+          data: { animation: 'animate-fly', duration: 1200 },
+        },
+      ],
+    },
+
+    // ─── Page 2: Mummy gives basket ───
+    {
+      bg: 'from-amber-100 via-orange-100 to-yellow-100',
+      scene: <CottageScene />,
+      image: '/arthurs-world/images/red-riding/page-2.png',
+      text: "Her mummy gave her a basket of yummy food to take to Grandma's house.",
+      elements: [
+        {
+          id: 'basket',
+          x: 50,
+          y: 45,
+          content: <span>🧺</span>,
+          size: 60,
+        },
+        {
+          id: 'cakes',
+          x: 30,
+          y: 58,
+          content: <span>🧁</span>,
+          size: 42,
+        },
+        {
+          id: 'apples',
+          x: 70,
+          y: 58,
+          content: <span>🍎</span>,
+          size: 42,
+        },
+        {
+          id: 'mummy',
+          x: 22,
+          y: 38,
+          content: <span>👩</span>,
+          size: 58,
+        },
+        {
+          id: 'cookie',
+          x: 82,
+          y: 68,
+          content: <span>🍪</span>,
+          size: 30,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-cakes-drag',
+          type: 'drag-to-target',
+          targetId: 'cakes',
+          data: { dropZone: { x: 50, y: 45, radius: 40 }, onDrop: 'snap' },
+        },
+        {
+          id: 'i-apples-drag',
+          type: 'drag-to-target',
+          targetId: 'apples',
+          data: { dropZone: { x: 50, y: 45, radius: 40 }, onDrop: 'snap' },
+        },
+        {
+          id: 'i-mummy-sound',
+          type: 'tap-sound',
+          targetId: 'mummy',
+          data: { say: "Be careful sweetheart! Don't talk to strangers!" },
+        },
+        {
+          id: 'i-basket-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'basket',
+          data: {},
+        },
+        {
+          id: 'i-basket-count',
+          type: 'tap-count',
+          targetId: 'basket',
+          data: { max: 5 },
+        },
+        {
+          id: 'i-cookie-reveal',
+          type: 'tap-reveal',
+          targetId: 'cookie',
+          data: { content: <span>🍪 Yum!</span> },
+        },
+      ],
+    },
+
+    // ─── Page 3: Skipping through forest ───
+    {
+      bg: 'from-green-300 via-emerald-200 to-green-100',
+      scene: <ForestScene />,
+      image: '/arthurs-world/images/red-riding/page-3.png',
+      text: 'Little Red Riding Hood skipped through the big forest.',
+      elements: [
+        {
+          id: 'girl',
+          x: 45,
+          y: 45,
+          content: <span>🧒</span>,
+          size: 56,
+        },
+        {
+          id: 'bird',
+          x: 25,
+          y: 22,
+          content: <span>🐦</span>,
+          size: 38,
+        },
+        {
+          id: 'squirrel',
+          x: 78,
+          y: 35,
+          content: <span>🐿️</span>,
+          size: 40,
+        },
+        {
+          id: 'flowers',
+          x: 65,
+          y: 62,
+          content: <span>🌼</span>,
+          size: 44,
+        },
+        {
+          id: 'basket',
+          x: 18,
+          y: 62,
+          content: <span>🧺</span>,
+          size: 36,
+        },
+        {
+          id: 'mushroom',
+          x: 88,
+          y: 68,
+          content: <span>🍄</span>,
+          size: 26,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-girl-animate',
+          type: 'tap-animate',
+          targetId: 'girl',
+          data: { animation: 'animate-dance', duration: 1200 },
+        },
+        {
+          id: 'i-girl-sound',
+          type: 'tap-sound',
+          targetId: 'girl',
+          data: { say: 'La la la! What a lovely day!' },
+        },
+        {
+          id: 'i-bird-sound',
+          type: 'tap-sound',
+          targetId: 'bird',
+          data: { say: 'Tweet tweet tweet!' },
+        },
+        {
+          id: 'i-bird-animate',
+          type: 'tap-animate',
+          targetId: 'bird',
+          data: { animation: 'animate-fly', duration: 1000 },
+        },
+        {
+          id: 'i-squirrel-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'squirrel',
+          data: {},
+        },
+        {
+          id: 'i-flowers-color',
+          type: 'tap-color',
+          targetId: 'flowers',
+          data: { colors: ['#facc15', '#f97316', '#ef4444', '#a855f7', '#3b82f6', '#22c55e'] },
+        },
+        {
+          id: 'i-basket-drag',
+          type: 'drag-to-target',
+          targetId: 'basket',
+          data: { dropZone: { x: 45, y: 45, radius: 35 }, onDrop: 'snap' },
+        },
+        {
+          id: 'i-mushroom-reveal',
+          type: 'tap-reveal',
+          targetId: 'mushroom',
+          data: { content: <span>🍄🐛</span> },
+        },
+      ],
+    },
+
+    // ─── Page 4: Meeting the silly wolf ───
+    {
+      bg: 'from-green-400 via-green-200 to-emerald-100',
+      scene: <ForestScene />,
+      image: '/arthurs-world/images/red-riding/page-4.png',
+      text: 'She met a silly wolf in the forest. Hello Mr Wolf!',
+      elements: [
+        {
+          id: 'wolf',
+          x: 30,
+          y: 42,
+          content: <span>🐺</span>,
+          size: 62,
+        },
+        {
+          id: 'girl',
+          x: 65,
+          y: 44,
+          content: <span>🧒</span>,
+          size: 56,
+        },
+        {
+          id: 'tree',
+          x: 82,
+          y: 30,
+          content: <span>🌲</span>,
+          size: 52,
+        },
+        {
+          id: 'bush',
+          x: 14,
+          y: 62,
+          content: <span>🌿</span>,
+          size: 34,
+        },
+        {
+          id: 'eyes',
+          x: 14,
+          y: 55,
+          content: <span>👀</span>,
+          size: 20,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-wolf-sound',
+          type: 'tap-sound',
+          targetId: 'wolf',
+          data: { say: 'Hello little girl! Where are you going?' },
+        },
+        {
+          id: 'i-wolf-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'wolf',
+          data: {},
+        },
+        {
+          id: 'i-girl-sound',
+          type: 'tap-sound',
+          targetId: 'girl',
+          data: { say: "To Grandma's house!" },
+        },
+        {
+          id: 'i-tree-grow',
+          type: 'tap-grow',
+          targetId: 'tree',
+          data: {},
+        },
+        {
+          id: 'i-wolf-spin',
+          type: 'tap-spin',
+          targetId: 'wolf',
+          data: {},
+        },
+        {
+          id: 'i-eyes-reveal',
+          type: 'tap-reveal',
+          targetId: 'eyes',
+          data: { content: <span>👀 Sneaky!</span> },
+        },
+      ],
+    },
+
+    // ─── Page 5: Wolf runs ahead ───
+    {
+      bg: 'from-green-300 via-lime-200 to-green-100',
+      scene: <ForestScene />,
+      image: '/arthurs-world/images/red-riding/page-5.png',
+      text: "The silly wolf ran ahead to Grandma's house.",
+      elements: [
+        {
+          id: 'wolf',
+          x: 30,
+          y: 38,
+          content: <span>🐺</span>,
+          size: 58,
+        },
+        {
+          id: 'paw1',
+          x: 45,
+          y: 58,
+          content: <span>🐾</span>,
+          size: 32,
+        },
+        {
+          id: 'paw2',
+          x: 55,
+          y: 52,
+          content: <span>🐾</span>,
+          size: 30,
+        },
+        {
+          id: 'paw3',
+          x: 65,
+          y: 60,
+          content: <span>🐾</span>,
+          size: 28,
+        },
+        {
+          id: 'dust',
+          x: 42,
+          y: 42,
+          content: <span>💨</span>,
+          size: 34,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-wolf-animate',
+          type: 'tap-animate',
+          targetId: 'wolf',
+          data: { animation: 'animate-dance', duration: 800 },
+        },
+        {
+          id: 'i-wolf-sound',
+          type: 'tap-sound',
+          targetId: 'wolf',
+          data: { say: "I'll get there first! Hee hee hee!" },
+        },
+        {
+          id: 'i-paw-count',
+          type: 'tap-count',
+          targetId: 'paw1',
+          data: { max: 5 },
+        },
+        {
+          id: 'i-paw2-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'paw2',
+          data: {},
+        },
+        {
+          id: 'i-paw3-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'paw3',
+          data: {},
+        },
+        {
+          id: 'i-dust-reveal',
+          type: 'tap-reveal',
+          targetId: 'dust',
+          data: { content: <span>💨💨💨</span> },
+        },
+      ],
+    },
+
+    // ─── Page 6: Wolf knocks on door ───
+    {
+      bg: 'from-amber-200 via-orange-100 to-yellow-100',
+      scene: <CottageScene />,
+      image: '/arthurs-world/images/red-riding/page-6.png',
+      text: "The wolf knocked on Grandma's door. Knock knock knock!",
+      elements: [
+        {
+          id: 'door',
+          x: 50,
+          y: 40,
+          content: <span>🚪</span>,
+          size: 64,
+        },
+        {
+          id: 'wolf',
+          x: 28,
+          y: 42,
+          content: <span>🐺</span>,
+          size: 54,
+        },
+        {
+          id: 'grandma',
+          x: 72,
+          y: 44,
+          content: <span>👵</span>,
+          size: 50,
+        },
+        {
+          id: 'flowerpot',
+          x: 85,
+          y: 65,
+          content: <span>🪴</span>,
+          size: 30,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-door-count',
+          type: 'tap-count',
+          targetId: 'door',
+          data: { max: 3 },
+        },
+        {
+          id: 'i-door-shake',
+          type: 'tap-shake',
+          targetId: 'door',
+          data: {},
+        },
+        {
+          id: 'i-grandma-sound',
+          type: 'tap-sound',
+          targetId: 'grandma',
+          data: { say: "Who's there?" },
+        },
+        {
+          id: 'i-wolf-sound',
+          type: 'tap-sound',
+          targetId: 'wolf',
+          data: { say: "It's me, your granddaughter!" },
+        },
+        {
+          id: 'i-wolf-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'wolf',
+          data: {},
+        },
+        {
+          id: 'i-flowerpot-reveal',
+          type: 'tap-reveal',
+          targetId: 'flowerpot',
+          data: { content: <span>🪴🐞</span> },
+        },
+      ],
+    },
+
+    // ─── Page 7: Wolf dresses up ───
+    {
+      bg: 'from-pink-100 via-amber-100 to-yellow-100',
+      scene: <CottageScene />,
+      image: '/arthurs-world/images/red-riding/page-7.png',
+      text: 'The silly wolf dressed up as Grandma. What a funny wolf!',
+      elements: [
+        {
+          id: 'wolf',
+          x: 45,
+          y: 40,
+          content: <span>🐺</span>,
+          size: 64,
+        },
+        {
+          id: 'nightcap',
+          x: 45,
+          y: 24,
+          content: <span>🎀</span>,
+          size: 38,
+        },
+        {
+          id: 'glasses',
+          x: 65,
+          y: 38,
+          content: <span>👓</span>,
+          size: 42,
+        },
+        {
+          id: 'shawl',
+          x: 30,
+          y: 55,
+          content: <span>🧣</span>,
+          size: 36,
+        },
+        {
+          id: 'mirror',
+          x: 80,
+          y: 58,
+          content: <span>🪞</span>,
+          size: 30,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-wolf-swap',
+          type: 'tap-swap',
+          targetId: 'wolf',
+          data: { altContent: <span>👵</span> },
+        },
+        {
+          id: 'i-wolf-sound',
+          type: 'tap-sound',
+          targetId: 'wolf',
+          data: { say: 'Do I look like Grandma? Hee hee!' },
+        },
+        {
+          id: 'i-glasses-spin',
+          type: 'tap-spin',
+          targetId: 'glasses',
+          data: {},
+        },
+        {
+          id: 'i-nightcap-grow',
+          type: 'tap-grow',
+          targetId: 'nightcap',
+          data: {},
+        },
+        {
+          id: 'i-shawl-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'shawl',
+          data: {},
+        },
+        {
+          id: 'i-mirror-reveal',
+          type: 'tap-reveal',
+          targetId: 'mirror',
+          data: { content: <span>🪞😂</span> },
+        },
+      ],
+    },
+
+    // ─── Page 8: What big eyes you have ───
+    {
+      bg: 'from-amber-100 via-orange-100 to-pink-100',
+      scene: <CottageScene />,
+      image: '/arthurs-world/images/red-riding/page-8.png',
+      text: 'What big eyes you have! What big ears you have!',
+      elements: [
+        {
+          id: 'eyes',
+          x: 35,
+          y: 32,
+          content: <span>👀</span>,
+          size: 52,
+        },
+        {
+          id: 'ears',
+          x: 60,
+          y: 28,
+          content: <span>👂</span>,
+          size: 48,
+        },
+        {
+          id: 'smile',
+          x: 48,
+          y: 48,
+          content: <span>😬</span>,
+          size: 50,
+        },
+        {
+          id: 'girl',
+          x: 75,
+          y: 50,
+          content: <span>🧒</span>,
+          size: 52,
+        },
+        {
+          id: 'bed',
+          x: 20,
+          y: 65,
+          content: <span>🛏️</span>,
+          size: 34,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-eyes-grow',
+          type: 'tap-grow',
+          targetId: 'eyes',
+          data: {},
+        },
+        {
+          id: 'i-eyes-shake',
+          type: 'tap-shake',
+          targetId: 'eyes',
+          data: {},
+        },
+        {
+          id: 'i-ears-grow',
+          type: 'tap-grow',
+          targetId: 'ears',
+          data: {},
+        },
+        {
+          id: 'i-ears-shake',
+          type: 'tap-shake',
+          targetId: 'ears',
+          data: {},
+        },
+        {
+          id: 'i-girl-sound',
+          type: 'tap-sound',
+          targetId: 'girl',
+          data: { say: 'What big eyes you have, Grandma!' },
+        },
+        {
+          id: 'i-smile-sound',
+          type: 'tap-sound',
+          targetId: 'smile',
+          data: { say: 'All the better to see you with, my dear!' },
+        },
+        {
+          id: 'i-smile-shake',
+          type: 'tap-shake',
+          targetId: 'smile',
+          data: {},
+        },
+        {
+          id: 'i-bed-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'bed',
+          data: {},
+        },
+      ],
+    },
+
+    // ─── Page 9: Woodcutter helps ───
+    {
+      bg: 'from-green-200 via-emerald-200 to-lime-100',
+      scene: <ForestScene />,
+      image: '/arthurs-world/images/red-riding/page-9.png',
+      text: 'A friendly woodcutter heard the noise and came to help!',
+      elements: [
+        {
+          id: 'woodcutter',
+          x: 25,
+          y: 38,
+          content: <span>🪓👨</span>,
+          size: 52,
+        },
+        {
+          id: 'wolf',
+          x: 70,
+          y: 42,
+          content: <span>🐺</span>,
+          size: 50,
+        },
+        {
+          id: 'grandma',
+          x: 48,
+          y: 50,
+          content: <span>👵</span>,
+          size: 48,
+        },
+        {
+          id: 'girl',
+          x: 48,
+          y: 35,
+          content: <span>🧒</span>,
+          size: 46,
+        },
+        {
+          id: 'cape',
+          x: 85,
+          y: 30,
+          content: <span>🧥</span>,
+          size: 26,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-woodcutter-sound',
+          type: 'tap-sound',
+          targetId: 'woodcutter',
+          data: { say: "Don't worry, I'll help!" },
+        },
+        {
+          id: 'i-woodcutter-shake',
+          type: 'tap-shake',
+          targetId: 'woodcutter',
+          data: {},
+        },
+        {
+          id: 'i-wolf-hide',
+          type: 'tap-hide',
+          targetId: 'wolf',
+          data: {},
+        },
+        {
+          id: 'i-wolf-sound',
+          type: 'tap-sound',
+          targetId: 'wolf',
+          data: { say: 'Oh no! I better run away!' },
+        },
+        {
+          id: 'i-girl-sound',
+          type: 'tap-sound',
+          targetId: 'girl',
+          data: { say: 'Hooray! The wolf ran away!' },
+        },
+        {
+          id: 'i-grandma-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'grandma',
+          data: {},
+        },
+        {
+          id: 'i-cape-reveal',
+          type: 'tap-reveal',
+          targetId: 'cape',
+          data: { content: <span>🧥 Wolf's disguise!</span> },
+        },
+      ],
+    },
+
+    // ─── Page 10: Happy ending ───
+    {
+      bg: 'from-pink-200 via-amber-100 to-yellow-100',
+      scene: <CottageScene />,
+      image: '/arthurs-world/images/red-riding/page-10.png',
+      text: 'They all had tea and cakes together. Grandma was safe and happy!',
+      elements: [
+        {
+          id: 'girl',
+          x: 30,
+          y: 38,
+          content: <span>🧒</span>,
+          size: 52,
+        },
+        {
+          id: 'grandma',
+          x: 60,
+          y: 36,
+          content: <span>👵</span>,
+          size: 52,
+        },
+        {
+          id: 'cakes',
+          x: 45,
+          y: 55,
+          content: <span>🧁</span>,
+          size: 44,
+        },
+        {
+          id: 'tea',
+          x: 65,
+          y: 56,
+          content: <span>☕</span>,
+          size: 40,
+        },
+        {
+          id: 'hearts',
+          x: 45,
+          y: 22,
+          content: <span>❤️</span>,
+          size: 42,
+        },
+        {
+          id: 'star',
+          x: 85,
+          y: 20,
+          content: <span>⭐</span>,
+          size: 28,
+        },
+      ],
+      interactions: [
+        {
+          id: 'i-girl-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'girl',
+          data: {},
+        },
+        {
+          id: 'i-girl-animate',
+          type: 'tap-animate',
+          targetId: 'girl',
+          data: { animation: 'animate-dance', duration: 1200 },
+        },
+        {
+          id: 'i-grandma-sound',
+          type: 'tap-sound',
+          targetId: 'grandma',
+          data: { say: 'I love you so much!' },
+        },
+        {
+          id: 'i-grandma-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'grandma',
+          data: {},
+        },
+        {
+          id: 'i-hearts-color',
+          type: 'tap-color',
+          targetId: 'hearts',
+          data: { colors: ['#ec4899', '#ef4444', '#a855f7', '#f43f5e', '#e879f9'] },
+        },
+        {
+          id: 'i-hearts-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'hearts',
+          data: {},
+        },
+        {
+          id: 'i-cakes-wiggle',
+          type: 'tap-wiggle',
+          targetId: 'cakes',
+          data: {},
+        },
+        {
+          id: 'i-tea-count',
+          type: 'tap-count',
+          targetId: 'tea',
+          data: { max: 3 },
+        },
+        {
+          id: 'i-star-reveal',
+          type: 'tap-reveal',
+          targetId: 'star',
+          data: { content: <span>🌟 The End!</span> },
+        },
+        {
+          id: 'i-star-spin',
+          type: 'tap-spin',
+          targetId: 'star',
+          data: {},
+        },
+      ],
+    },
+  ],
+};
+
+export default function RedRidingHood() {
+  return <StoryBook story={storyData} />;
+}

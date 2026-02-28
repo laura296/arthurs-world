@@ -5,6 +5,7 @@ import NightSkyScene from '../components/scenes/NightSkyScene';
 const modes = [
   { id: 'quiet', emoji: '🌙', label: 'Quiet', bg: 'from-navy to-blue-900', to: '/games/quiet' },
   { id: 'noisy', emoji: '🔥', label: 'Noisy', bg: 'from-red-600 to-ember', to: '/games/noisy' },
+  { id: 'all',   emoji: '🌟', label: 'All',   bg: 'from-purple-600 to-indigo-800', to: '/games/all' },
 ];
 
 export default function ModePicker() {
