@@ -12,7 +12,7 @@ import AnimalSprite from './AnimalSprite';
  */
 export default function GameHole({ critter, riseSpeed, onTap }) {
   return (
-    <div className="relative w-24 h-28 sm:w-28 sm:h-32">
+    <div className="relative w-[5.5rem] h-[6.5rem] sm:w-28 sm:h-32 md:w-32 md:h-36">
       {/* Animal container — clipped to hole area */}
       <div className="absolute inset-x-0 bottom-2 h-3/4 overflow-hidden rounded-b-full">
         {critter && (
