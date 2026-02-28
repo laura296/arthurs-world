@@ -3,6 +3,7 @@ import BackButton from './BackButton';
 import {
   playTap, playSuccess, playBoing, playPop,
   playSparkle, playWhoosh, playPoof, playSnap,
+  playFlap, playPageTurn, playCollectPing, playSplash,
 } from '../hooks/useSound';
 
 /**

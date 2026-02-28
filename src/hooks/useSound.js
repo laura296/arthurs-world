@@ -110,6 +110,84 @@ export function playSnap() {
   setTimeout(() => playTone(800, 0.08, 'sine'), 50);
 }
 
+/** Paper flap opening — soft thwp */
+export function playFlap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.08;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 800;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.25, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.1);
+}
+
+/** Page turn — paper rustling */
+export function playPageTurn() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.3;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    const t = i / bufferSize;
+    data[i] = (Math.random() * 2 - 1) * Math.sin(t * Math.PI) * 0.3;
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 2000;
+  filter.Q.value = 0.5;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.35);
+}
+
+/** Collect ping — satisfying ascending note */
+export function playCollectPing() {
+  playTone(1200, 0.1, 'sine');
+  setTimeout(() => playTone(1600, 0.08, 'sine'), 50);
+}
+
+/** Splash — water interaction */
+export function playSplash() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.2;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(3000, ctx.currentTime);
+  filter.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.2);
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.25);
+}
+
 /** Musical note (for music pad) — basic tone, used as fallback */
 export function playNote(freq, duration = 0.5) {
   if (globalMuted) return;
