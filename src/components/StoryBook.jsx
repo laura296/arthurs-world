@@ -103,6 +103,47 @@ function SparkleParticles({ active }) {
   );
 }
 
+// ─── Flap reveal — paper lift animation ─────────────────────────
+function FlapReveal({ flapContent, revealContent, isOpen, onToggle }) {
+  return (
+    <div className="relative cursor-pointer" onClick={onToggle} style={{ perspective: '600px' }}>
+      {/* Hidden content underneath */}
+      <div className={`transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+        {revealContent}
+      </div>
+      {/* Flap on top */}
+      <div
+        className={`absolute inset-0 ${isOpen ? 'animate-flap-open' : 'animate-flap-close'}`}
+        style={{
+          transformOrigin: 'top center',
+          transformStyle: 'preserve-3d',
+          backfaceVisibility: 'hidden',
+          filter: isOpen ? undefined : 'drop-shadow(0 4px 6px rgba(0,0,0,0.2))',
+        }}
+      >
+        {flapContent}
+      </div>
+    </div>
+  );
+}
+
+// ─── Speech bubble — bouncy pop-in ──────────────────────────────
+function SpeechBubble({ text, visible }) {
+  if (!visible) return null;
+  return (
+    <div className="absolute -top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-speech-pop">
+      <div className="bg-white rounded-2xl px-4 py-2 shadow-lg border-2 border-amber-200/60
+                      relative max-w-[180px] text-center">
+        <p className="text-base font-body text-gray-800 leading-snug">{text}</p>
+        {/* Triangle pointer */}
+        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4
+                        bg-white border-r-2 border-b-2 border-amber-200/60
+                        rotate-45 -mb-1" />
+      </div>
+    </div>
+  );
+}
+
 // ─── Drop zone indicator ─────────────────────────────────────────
 
 function DropZone({ zone, active }) {
@@ -285,6 +326,41 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           }, inter.data.duration || 1000);
           break;
         }
+        case 'flap-reveal': {
+          playFlap();
+          if (navigator.vibrate) navigator.vibrate(10);
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: { ...prev[el.id], flapOpen: !(prev[el.id]?.flapOpen) },
+          }));
+          break;
+        }
+        case 'character-speak': {
+          playBoing();
+          speak(inter.data.say);
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: {
+              ...prev[el.id],
+              speaking: true,
+              speechText: inter.data.say,
+              animating: true,
+            },
+          }));
+          setTimeout(() => {
+            setPageState(prev => ({
+              ...prev,
+              [el.id]: { ...prev[el.id], animating: false },
+            }));
+          }, 600);
+          setTimeout(() => {
+            setPageState(prev => ({
+              ...prev,
+              [el.id]: { ...prev[el.id], speaking: false },
+            }));
+          }, 3000);
+          break;
+        }
         default:
           break;
       }
@@ -449,6 +525,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
                          shadow shadow-yellow-400" />
       )}
       <SparkleParticles active={state.sparkleKey > 0} />
+      <SpeechBubble text={state.speechText} visible={state.speaking} />
     </button>
   );
 }
