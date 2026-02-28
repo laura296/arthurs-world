@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, cloneElement } from 'react';
 import BackButton from './BackButton';
 import {
   playTap, playSuccess, playBoing, playPop,
@@ -361,6 +361,54 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           }, 3000);
           break;
         }
+        case 'scene-transform': {
+          playSplash();
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: { ...prev[el.id], transformed: true },
+            _sceneTransform: {
+              ...(prev._sceneTransform || {}),
+              [inter.data.transformId || el.id]: inter.data.value || true,
+            },
+          }));
+          break;
+        }
+        case 'peek-a-boo': {
+          playPop();
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: { ...prev[el.id], peeked: true },
+          }));
+          setTimeout(() => {
+            setPageState(prev => ({
+              ...prev,
+              [el.id]: { ...prev[el.id], peekDone: true },
+            }));
+          }, 400);
+          break;
+        }
+        case 'collect': {
+          playCollectPing();
+          const target = inter.data.target;
+          const collectKey = `_collect_${target}`;
+          const count = (pageState[collectKey]?.count || 0) + 1;
+          const max = inter.data.max || 3;
+          if (count >= max) {
+            setTimeout(() => playSuccess(), 200);
+          }
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: { ...prev[el.id], collected: true, collecting: true },
+            [collectKey]: { count: Math.min(count, max) },
+          }));
+          setTimeout(() => {
+            setPageState(prev => ({
+              ...prev,
+              [el.id]: { ...prev[el.id], collecting: false, hidden: true },
+            }));
+          }, 600);
+          break;
+        }
         default:
           break;
       }
@@ -369,7 +417,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
     if (myInteractions.length === 0) {
       playTap();
     }
-  }, [myInteractions, state, el.id, setPageState, isDraggable]);
+  }, [myInteractions, state, el.id, setPageState, isDraggable, pageState]);
 
   // ── Drag handlers ──
   const onPointerDown = useCallback((e) => {
@@ -461,6 +509,8 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
   else if (state.spinning) animClass = 'animate-spin360';
   else if (state.hiding) animClass = 'animate-poof';
   else if (state.animating) animClass = 'animate-bounce';
+  else if (state.peeked && !state.peekDone) animClass = 'animate-peek-reveal';
+  else if (state.collecting) animClass = 'animate-collect-fly';
   else if (state.customAnimating && state.customAnim) animClass = state.customAnim;
 
   const bg = state.color || el.bg || '';
@@ -613,7 +663,11 @@ export default function StoryBook({ story }) {
           draggable={false}
         />
       )}
-      {current.scene && !current.image && current.scene}
+      {current.scene && !current.image && (
+        typeof current.scene.type === 'function'
+          ? cloneElement(current.scene, { transforms: pageState._sceneTransform || {} })
+          : current.scene
+      )}
       {current.bg && !current.scene && !current.image && (
         <div className={`absolute inset-0 bg-gradient-to-b ${current.bg}`} />
       )}
