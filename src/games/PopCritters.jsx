@@ -1,94 +1,138 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import BackButton from '../components/BackButton';
+import GardenScene from '../components/scenes/GardenScene';
+import DifficultyPicker from './pop-critters/DifficultyPicker';
+import GameHole from './pop-critters/GameHole';
+import { DIFFICULTIES, ANIMAL_POINTS, GRID } from './pop-critters/difficultyConfig';
 import { playPop, playSuccess, playBoing } from '../hooks/useSound';
 
-const CRITTERS = ['🐹', '🐰', '🐸', '🦊', '🐻', '🐼', '🐨', '🐯'];
+let nextId = 0;
 
-function randomCritter(id, cols, rows) {
-  return {
-    id,
-    emoji: CRITTERS[Math.floor(Math.random() * CRITTERS.length)],
-    col: Math.floor(Math.random() * cols),
-    row: Math.floor(Math.random() * rows),
-    visible: true,
-    popping: false,
-  };
+function randomAnimal(difficulty) {
+  const pool = difficulty.animals;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function randomVisibleTime(difficulty) {
+  const { min, max } = difficulty.visibleTime;
+  return min + Math.random() * (max - min);
 }
 
 export default function PopCritters() {
-  const [critters, setCritters] = useState([]);
+  const [phase, setPhase] = useState('pick'); // 'pick' | 'playing'
+  const [diffKey, setDiffKey] = useState(null);
+  const [critters, setCritters] = useState([]); // [{ id, type, holeIndex, visible, tapped, spawnTime }]
   const [score, setScore] = useState(0);
-  const nextId = useRef(0);
-  const cols = 3;
-  const rows = 4;
+  const timersRef = useRef([]);
 
-  // Spawn critters periodically
+  const difficulty = diffKey ? DIFFICULTIES[diffKey] : null;
+
+  // Clean up all timers on unmount
   useEffect(() => {
+    return () => timersRef.current.forEach(clearTimeout);
+  }, []);
+
+  // Spawn loop
+  useEffect(() => {
+    if (phase !== 'playing' || !difficulty) return;
+
     const spawn = () => {
-      const c = randomCritter(nextId.current++, cols, rows);
-      setCritters(prev => [...prev.filter(cr => cr.visible), c].slice(-6));
-    };
-    spawn();
-    const iv = setInterval(spawn, 1200);
-    return () => clearInterval(iv);
-  }, []);
+      setCritters(prev => {
+        const visibleCount = prev.filter(c => c.visible && !c.tapped).length;
+        if (visibleCount >= difficulty.maxVisible) return prev;
 
-  // Auto-hide after 2.5s
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setCritters(prev => prev.map(c =>
-        Date.now() - (c.spawnTime || 0) > 2500 ? { ...c, visible: false } : c
-      ));
-    }, 500);
+        // Pick a free hole
+        const usedHoles = new Set(prev.filter(c => c.visible).map(c => c.holeIndex));
+        const freeHoles = Array.from({ length: GRID.total }, (_, i) => i).filter(i => !usedHoles.has(i));
+        if (freeHoles.length === 0) return prev;
+
+        const holeIndex = freeHoles[Math.floor(Math.random() * freeHoles.length)];
+        const id = ++nextId;
+        const type = randomAnimal(difficulty);
+        const visTime = randomVisibleTime(difficulty);
+
+        // Schedule auto-hide
+        const timer = setTimeout(() => {
+          setCritters(p => p.map(c => c.id === id ? { ...c, visible: false } : c));
+        }, visTime + difficulty.riseSpeed); // add rise time
+        timersRef.current.push(timer);
+
+        return [...prev.filter(c => c.visible || Date.now() - c.spawnTime < 2000), {
+          id, type, holeIndex, visible: true, tapped: false, spawnTime: Date.now(),
+        }];
+      });
+    };
+
+    spawn(); // spawn first immediately
+    const iv = setInterval(spawn, difficulty.spawnInterval);
     return () => clearInterval(iv);
-  }, []);
+  }, [phase, difficulty]);
 
   const tap = useCallback((critterId) => {
-    playPop();
-    setCritters(prev => prev.map(c =>
-      c.id === critterId ? { ...c, visible: false, popping: true } : c
-    ));
-    setScore(s => {
-      const next = s + 1;
-      if (next % 5 === 0) playSuccess();
-      return next;
+    setCritters(prev => {
+      const critter = prev.find(c => c.id === critterId);
+      if (!critter || critter.tapped || !critter.visible) return prev;
+
+      playPop();
+      const points = ANIMAL_POINTS[critter.type] || 1;
+      // Use functional setScore to avoid stale closure
+      setScore(s => {
+        const next = s + points;
+        if (next % 5 === 0) playSuccess();
+        return next;
+      });
+
+      return prev.map(c =>
+        c.id === critterId ? { ...c, tapped: true, visible: false } : c
+      );
     });
   }, []);
 
+  const startGame = useCallback((key) => {
+    setDiffKey(key);
+    setScore(0);
+    setCritters([]);
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+    setPhase('playing');
+    playBoing();
+  }, []);
+
+  if (phase === 'pick') {
+    return (
+      <>
+        <BackButton />
+        <DifficultyPicker onSelect={startGame} />
+      </>
+    );
+  }
+
   return (
-    <div className="relative w-full h-full bg-gradient-to-b from-amber-600 to-orange-900 overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
+      <GardenScene />
       <BackButton />
 
+      {/* Score badge */}
       <div className="fixed top-4 right-4 z-50 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2
                       text-2xl font-heading text-sun">
-        ⭐ {score}
+        {score}
       </div>
 
-      {/* Grid of holes */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* Game grid — 3x3 holes overlaid on the scene */}
+      <div className="absolute inset-0 flex items-center justify-center pt-16">
         <div
-          className="grid gap-4 p-6"
-          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}
+          className="grid gap-3 sm:gap-5"
+          style={{ gridTemplateColumns: `repeat(${GRID.cols}, 1fr)` }}
         >
-          {Array.from({ length: cols * rows }, (_, i) => {
-            const col = i % cols;
-            const row = Math.floor(i / cols);
-            const critter = critters.find(c => c.col === col && c.row === row && c.visible);
-
+          {Array.from({ length: GRID.total }, (_, i) => {
+            const critter = critters.find(c => c.holeIndex === i && c.visible);
             return (
-              <div
+              <GameHole
                 key={i}
-                className="w-24 h-24 rounded-full bg-amber-900/50 flex items-center justify-center relative"
-              >
-                {critter && (
-                  <button
-                    onClick={() => tap(critter.id)}
-                    className="text-5xl animate-bounce-in active:scale-75 transition-transform"
-                  >
-                    {critter.emoji}
-                  </button>
-                )}
-              </div>
+                critter={critter || null}
+                riseSpeed={difficulty.riseSpeed}
+                onTap={tap}
+              />
             );
           })}
         </div>
