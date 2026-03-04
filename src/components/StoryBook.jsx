@@ -5,6 +5,8 @@ import {
   playSparkle, playWhoosh, playPoof, playSnap,
   playFlap, playPageTurn, playCollectPing, playSplash,
 } from '../hooks/useSound';
+import { useCelebration } from './CelebrationOverlay';
+import { useParticleBurst } from './ParticleBurst';
 
 /**
  * Interactive StoryBook engine.
@@ -312,6 +314,20 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           }, 400);
           break;
         }
+        case 'tap-jump': {
+          playBoing();
+          setPageState(prev => ({
+            ...prev,
+            [el.id]: { ...prev[el.id], jumping: true },
+          }));
+          setTimeout(() => {
+            setPageState(prev => ({
+              ...prev,
+              [el.id]: { ...prev[el.id], jumping: false },
+            }));
+          }, 850);
+          break;
+        }
         case 'tap-animate': {
           playBoing();
           setPageState(prev => ({
@@ -500,11 +516,13 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
   if (state.hidden) return null;
 
   const isInteractive = myInteractions.length > 0;
+  const isHotspot = el.hotspot;
   const scale = state.grown ? 1.4 : 1;
 
   // Build animation class string
   let animClass = '';
-  if (state.wiggling) animClass = 'animate-wiggle';
+  if (state.jumping) animClass = 'animate-hop-bounce';
+  else if (state.wiggling) animClass = 'animate-wiggle';
   else if (state.shaking) animClass = 'animate-shake';
   else if (state.spinning) animClass = 'animate-spin360';
   else if (state.hiding) animClass = 'animate-poof';
@@ -545,32 +563,51 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
       }}
       onPointerUp={() => { if (!isDraggable) setPressed(false); }}
       onPointerLeave={() => { if (!isDraggable) setPressed(false); }}
+      aria-label={el.label || undefined}
       className={`absolute transition-all duration-300 ${animClass}
                  ${pressed && !isDraggable ? 'scale-95' : ''}
                  ${isInteractive ? 'cursor-pointer' : ''}
                  ${isDraggable ? 'cursor-grab active:cursor-grabbing touch-none' : ''}
-                 ${el.rounded ? 'rounded-full' : 'rounded-2xl'}`}
+                 ${isHotspot ? 'rounded-full' : el.rounded ? 'rounded-full' : 'rounded-2xl'}`}
       style={{
         left: `${posX}%`,
         top: `${posY}%`,
         transform: `translate(-50%, -50%) scale(${scale}) ${dragTranslate}`,
-        fontSize: el.size || 48,
-        backgroundColor: bg,
-        width: el.w || 'auto',
-        height: el.h || 'auto',
-        padding: el.pad || undefined,
+        fontSize: isHotspot ? undefined : (el.size || 48),
+        backgroundColor: isHotspot ? 'transparent' : bg,
+        width: el.w || (isHotspot ? 60 : 'auto'),
+        height: el.h || (isHotspot ? 60 : 'auto'),
+        padding: isHotspot ? 0 : (el.pad || undefined),
         zIndex: dragOffset ? 100 : (el.z || 10),
-        boxShadow: isInteractive ? '0 3px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1)' : undefined,
+        boxShadow: isHotspot ? undefined :
+          (isInteractive ? '0 3px 8px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1)' : undefined),
       }}
     >
-      {displayContent}
+      {isHotspot ? (
+        /* Hotspot: show pulsing indicator or revealed content */
+        state.revealed && state.revealContent ? (
+          <span className="bg-white/90 backdrop-blur-sm rounded-2xl px-3 py-1.5
+                          text-base font-body text-gray-800 shadow-lg border border-amber-200/50
+                          whitespace-nowrap animate-speech-pop">
+            {state.revealContent}
+          </span>
+        ) : (
+          <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="w-5 h-5 rounded-full animate-hotspot-pulse
+                            bg-gradient-to-br from-yellow-300/60 to-amber-400/50
+                            shadow-lg shadow-yellow-400/30 border border-yellow-300/40" />
+          </span>
+        )
+      ) : (
+        displayContent
+      )}
       {state.count > 0 && (
         <span className="absolute -top-2 -right-2 bg-sun text-night text-lg font-heading
                          w-8 h-8 rounded-full flex items-center justify-center shadow-lg">
           {state.count}
         </span>
       )}
-      {isInteractive && !state.revealed && !state.dropped && (
+      {!isHotspot && isInteractive && !state.revealed && !state.dropped && (
         <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-sun animate-sparkle
                          shadow shadow-yellow-400" />
       )}
@@ -582,7 +619,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
 
 // ─── Main StoryBook component ────────────────────────────────────
 
-export default function StoryBook({ story }) {
+export default function StoryBook({ story, onComplete }) {
   const [page, setPage] = useState(0);
   const [pageState, setPageState] = useState({});
   const [turning, setTurning] = useState(false);
@@ -590,10 +627,27 @@ export default function StoryBook({ story }) {
   const [autoRead, setAutoRead] = useState(true);
   const touchStart = useRef(null);
   const containerRef = useRef(null);
+  const celebratedRef = useRef(false);
+  const { celebrate, CelebrationLayer } = useCelebration();
+  const { burst, ParticleLayer } = useParticleBurst();
 
   const current = story.pages[page];
   const isFirst = page === 0;
   const isLast = page === story.pages.length - 1;
+
+  // Celebrate on reaching the last page
+  useEffect(() => {
+    if (isLast && !celebratedRef.current) {
+      celebratedRef.current = true;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2 - 60;
+      burst(cx, cy, { count: 16, spread: 90, colors: ['#facc15', '#ec4899', '#38bdf8', '#22c55e'], shapes: ['star', 'heart', 'circle'] });
+      setTimeout(() => {
+        celebrate({ message: 'The End! 🎉' });
+        onComplete?.();
+      }, 400);
+    }
+  }, [isLast, celebrate, burst, onComplete]);
 
   // Build audio source path for current page
   const audioSrc = story.audioDir ? `${story.audioDir}/page-${page + 1}.mp3` : null;
@@ -763,7 +817,7 @@ export default function StoryBook({ story }) {
           </button>
         ) : (
           <button
-            onClick={() => { setPage(0); playSuccess(); }}
+            onClick={() => { setPage(0); celebratedRef.current = false; playSuccess(); }}
             className="pointer-events-auto w-14 h-14 rounded-full bg-sun/80 backdrop-blur-sm shadow-lg
                        flex items-center justify-center text-2xl active:scale-90 transition-transform
                        animate-bounce"
@@ -772,6 +826,9 @@ export default function StoryBook({ story }) {
           </button>
         )}
       </div>
+
+      <CelebrationLayer />
+      <ParticleLayer />
     </div>
   );
 }

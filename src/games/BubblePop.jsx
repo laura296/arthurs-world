@@ -2,13 +2,12 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import BackButton from '../components/BackButton';
 import UnderwaterScene from '../components/scenes/UnderwaterScene';
 import Shark from '../components/animals/Shark';
+import SeaCreature, { FISH_VARIANT_NAMES, VARIANT_COLORS } from '../components/animals/SeaCreatures';
 import { playPop, playSuccess, playBoing, playTone, playBuzz, playChomp } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 
 const COLORS = ['#38bdf8', '#facc15', '#ec4899', '#22c55e', '#a78bfa', '#fb923c'];
-const FISH_EMOJIS = ['🐟', '🐠', '🐡', '🦀', '🐙', '🦑', '🐬', '🐢', '🦈', '🐳'];
-const FISH_COLORS = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6bd6', '#ff9f43'];
 
 // Bubble types: normal, golden (2x points), rainbow (3x + sparkle)
 function makeBubble(id, w, h) {
@@ -34,8 +33,9 @@ function makeBubble(id, w, h) {
 }
 
 function makeFish(id, w, h) {
-  const size = 40 + Math.random() * 30;
+  const size = 50 + Math.random() * 30;
   const fromLeft = Math.random() > 0.5;
+  const variant = FISH_VARIANT_NAMES[Math.floor(Math.random() * FISH_VARIANT_NAMES.length)];
   return {
     id,
     kind: 'fish',
@@ -43,8 +43,8 @@ function makeFish(id, w, h) {
     y: 100 + Math.random() * (h - 250),
     size,
     speed: (0.8 + Math.random() * 1.2) * (fromLeft ? 1 : -1),
-    emoji: FISH_EMOJIS[Math.floor(Math.random() * FISH_EMOJIS.length)],
-    color: FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)],
+    variant,
+    color: VARIANT_COLORS[variant],
     wobblePhase: Math.random() * Math.PI * 2,
     tapped: false,
   };
@@ -167,13 +167,14 @@ function FishElement({ fish, onTap }) {
       style={{
         left: fish.x - fish.size / 2,
         top: fish.y - fish.size / 2,
-        fontSize: fish.size,
+        width: fish.size,
+        height: fish.size,
         transform: flipped ? 'scaleX(-1)' : undefined,
         filter: `drop-shadow(0 0 8px ${fish.color}80)`,
         zIndex: 15,
       }}
     >
-      {fish.emoji}
+      <SeaCreature variant={fish.variant} size={fish.size} />
     </button>
   );
 }

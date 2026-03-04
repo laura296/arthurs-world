@@ -15,7 +15,7 @@ function makeConfetti(count = 30) {
   }));
 }
 
-export default function WinCelebration({ theme, onPlayAgain, onNewTheme }) {
+export default function WinCelebration({ theme, nextLevel, onPlayAgain, onLevelUp, onNewTheme }) {
   const [confetti] = useState(() => makeConfetti());
   const [showButtons, setShowButtons] = useState(false);
 
@@ -57,21 +57,33 @@ export default function WinCelebration({ theme, onPlayAgain, onNewTheme }) {
 
       {/* Buttons */}
       {showButtons && (
-        <div className="flex gap-4 mt-6 animate-bounce-in">
-          <button
-            onClick={onPlayAgain}
-            className="px-8 py-4 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl
-                       font-heading text-xl text-white shadow-lg active:scale-95 transition-transform"
-          >
-            Again!
-          </button>
-          <button
-            onClick={onNewTheme}
-            className="px-8 py-4 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl
-                       font-heading text-xl text-white shadow-lg active:scale-95 transition-transform"
-          >
-            New Board
-          </button>
+        <div className="flex flex-col items-center gap-3 mt-6 animate-bounce-in">
+          {nextLevel && (
+            <button
+              onClick={onLevelUp}
+              className="px-10 py-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl
+                         font-heading text-xl text-white shadow-lg active:scale-95 transition-transform
+                         ring-2 ring-yellow-300/50 animate-pulse"
+            >
+              Level Up! &rarr; {nextLevel.label}
+            </button>
+          )}
+          <div className="flex gap-3">
+            <button
+              onClick={onPlayAgain}
+              className="px-6 py-3 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl
+                         font-heading text-lg text-white shadow-lg active:scale-95 transition-transform"
+            >
+              Again!
+            </button>
+            <button
+              onClick={onNewTheme}
+              className="px-6 py-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl
+                         font-heading text-lg text-white shadow-lg active:scale-95 transition-transform"
+            >
+              New Board
+            </button>
+          </div>
         </div>
       )}
     </div>

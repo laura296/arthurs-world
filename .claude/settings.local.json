@@ -15,7 +15,31 @@
       "mcp__plugin_playwright_playwright__browser_snapshot",
       "mcp__plugin_playwright_playwright__browser_click",
       "mcp__plugin_playwright_playwright__browser_wait_for",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npx:*)",
+      "Bash(npx --yes acorn-jsx:*)",
+      "Bash(node -e:*)",
+      "Bash(node scripts/generate-narration.mjs)",
+      "Bash(node scripts/generate-illustrations.mjs)",
+      "Bash(grep -r \"animate-\" /c/Users/Shadow/Arthur/src/games/*.jsx)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node node_modules/vite/bin/vite.js build)",
+      "Bash(wc -l /c/Users/Shadow/Arthur/src/components/animals/*.jsx)",
+      "Bash(done)",
+      "Bash(git status -u)",
+      "Bash(git stash push -m \"WIP before storybook-overhaul merge\")",
+      "Bash(git checkout --theirs src/games/PopCritters.jsx)",
+      "Bash(git reset HEAD)",
+      "Bash(git checkout -- src/hooks/useSound.js tailwind.config.js)",
+      "Bash(git stash pop stash@{0})",
+      "Bash(git checkout --theirs src/pages/GameGrid.jsx)",
+      "Bash(git reset HEAD src/pages/GameGrid.jsx)",
+      "Bash(git stash drop stash@{0})",
+      "Bash(git branch -d feature/storybook-overhaul)",
+      "Bash(git worktree remove .worktrees/storybook-overhaul)",
+      "Skill(commit-commands:commit)",
+      "Skill(commit-commands:commit:*)",
+      "Bash(git checkout HEAD -- src/games/PopCritters.jsx)"
     ]
   }
 }

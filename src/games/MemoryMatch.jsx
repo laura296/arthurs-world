@@ -5,7 +5,7 @@ import CardParade from './memory-match/CardParade';
 import GameBoard from './memory-match/GameBoard';
 import WinCelebration from './memory-match/WinCelebration';
 import {
-  buildDeck, getLevelForTheme,
+  buildDeck, getLevelForTheme, getNextLevel, levelUpTheme,
   loadProgress, saveProgress, loadSecrets, saveSecrets,
 } from './memory-match/cardData';
 
@@ -68,6 +68,20 @@ export default function MemoryMatch() {
     startGame(theme);
   }, [theme, startGame]);
 
+  const handleLevelUp = useCallback(() => {
+    const newLevel = levelUpTheme(theme);
+    const deck = buildDeck(theme, newLevel);
+    const seen = new Set();
+    const chars = [];
+    for (const c of deck) {
+      if (!seen.has(c.characterId)) { seen.add(c.characterId); chars.push(c); }
+    }
+    setLevel(newLevel);
+    setCards(deck);
+    setParadeChars(chars);
+    setPhase('parade');
+  }, [theme]);
+
   const handleNewTheme = useCallback(() => {
     setPhase('pick-theme');
     setTheme(null);
@@ -107,7 +121,9 @@ export default function MemoryMatch() {
       {phase === 'won' && (
         <WinCelebration
           theme={theme}
+          nextLevel={getNextLevel(level)}
           onPlayAgain={handlePlayAgain}
+          onLevelUp={handleLevelUp}
           onNewTheme={handleNewTheme}
         />
       )}

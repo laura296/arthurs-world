@@ -6,22 +6,22 @@
  */
 const games = [
   // ── Games ──
-  { id: 'bubble-pop',    emoji: '🫧', title: 'Bubble Pop',    path: 'bubble-pop',    category: 'games', bg: 'from-sky to-blue-500' },
-  { id: 'feed-animals',  emoji: '🐄', title: 'Feed Animals',  path: 'feed-animals',  category: 'games', bg: 'from-leaf to-green-700' },
-  { id: 'pop-critters',  emoji: '🐹', title: 'Pop Critters',  path: 'pop-critters',  category: 'games', bg: 'from-amber-400 to-orange-500' },
-  { id: 'build-a-scene', emoji: '🎭', title: 'Build a Scene', path: 'build-a-scene', category: 'games', bg: 'from-amber-400 to-orange-600' },
+  { id: 'bubble-pop',    emoji: '🫧', title: 'Bubble Pop',    path: 'bubble-pop',    category: 'games', bg: 'from-sky to-blue-500',           cover: '/arthurs-world/images/cards/bubble-pop.png' },
+  { id: 'feed-animals',  emoji: '🐄', title: 'Feed Animals',  path: 'feed-animals',  category: 'games', bg: 'from-leaf to-green-700',         cover: '/arthurs-world/images/cards/feed-animals.png' },
+  { id: 'pop-critters',  emoji: '🐹', title: 'Pop Critters',  path: 'pop-critters',  category: 'games', bg: 'from-amber-400 to-orange-500',   cover: '/arthurs-world/images/cards/pop-critters.png' },
+  { id: 'build-a-scene', emoji: '🎭', title: 'Build a Scene', path: 'build-a-scene', category: 'games', bg: 'from-amber-400 to-orange-600',   cover: '/arthurs-world/images/cards/build-a-scene.png' },
 
   // ── Videos ──
   { id: 'youtube-kids',  emoji: '📺', title: 'YouTube Kids',  path: 'youtube-kids',  category: 'videos', bg: 'from-red-500 to-red-700', external: 'https://www.youtubekids.com' },
 
   // ── Puzzles ──
-  { id: 'memory-match',  emoji: '🧠', title: 'Memory',        path: 'memory-match',  category: 'puzzles', bg: 'from-teal-400 to-cyan-600' },
+  { id: 'memory-match',  emoji: '🧠', title: 'Memory',        path: 'memory-match',  category: 'puzzles', bg: 'from-teal-400 to-cyan-600',    cover: '/arthurs-world/images/cards/memory-match.png' },
 
   // ── Art ──
-  { id: 'colouring',     emoji: '🎨', title: 'Colouring',     path: 'colouring',     category: 'art', bg: 'from-candy to-pink-700' },
+  { id: 'colouring',     emoji: '🎨', title: 'Colouring',     path: 'colouring',     category: 'art', bg: 'from-candy to-pink-700',           cover: '/arthurs-world/images/cards/colouring.png' },
 
   // ── Music ──
-  { id: 'music-pad',     emoji: '🎵', title: 'Music',         path: 'music-pad',     category: 'music', bg: 'from-purple-500 to-violet-700' },
+  { id: 'music-pad',     emoji: '🎵', title: 'Music',         path: 'music-pad',     category: 'music', bg: 'from-purple-500 to-violet-700',  cover: '/arthurs-world/images/cards/music-pad.png' },
 
   // ── Books ──
   { id: 'farm-book',     emoji: '📖', title: 'Farm Book',     path: 'farm-book',     category: 'books', bg: 'from-yellow-400 to-amber-600' },

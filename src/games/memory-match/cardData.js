@@ -288,14 +288,28 @@ export function saveSecrets(secrets) {
 
 // ===== HELPERS ===============================================================
 
-/** Get current level for a theme based on completions */
+/** Get current level for a theme based on stored level index */
 export function getLevelForTheme(themeId, progress) {
-  const completions = progress[themeId]?.completions || 0;
-  let level = LEVELS[0];
-  for (const l of LEVELS) {
-    if (completions >= l.unlockAt) level = l;
+  const levelIndex = progress[themeId]?.levelIndex || 0;
+  return LEVELS[Math.min(levelIndex, LEVELS.length - 1)];
+}
+
+/** Get the next level (or null if already at max) */
+export function getNextLevel(currentLevel) {
+  const idx = LEVELS.findIndex(l => l.id === currentLevel.id);
+  return idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+}
+
+/** Bump a theme's stored level to the next one */
+export function levelUpTheme(themeId) {
+  const progress = loadProgress();
+  if (!progress[themeId]) progress[themeId] = { completions: 0, levelIndex: 0 };
+  const current = progress[themeId].levelIndex || 0;
+  if (current < LEVELS.length - 1) {
+    progress[themeId].levelIndex = current + 1;
   }
-  return level;
+  saveProgress(progress);
+  return getLevelForTheme(themeId, progress);
 }
 
 /** Shuffle array (Fisher-Yates) */

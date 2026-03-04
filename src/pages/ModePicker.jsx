@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { playBoing } from '../hooks/useSound';
+import { playNavigate } from '../hooks/useSound';
 import NightSkyScene from '../components/scenes/NightSkyScene';
+import ArthurBear from '../components/ArthurBear';
 
 const modes = [
   { id: 'quiet', emoji: '🌙', label: 'Quiet', bg: 'from-navy to-blue-900', to: '/games/quiet' },
@@ -15,18 +16,21 @@ export default function ModePicker() {
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6">
       <NightSkyScene />
 
-      <h1 className="relative z-10 text-5xl font-heading text-sun drop-shadow-lg animate-float">
-        🌟 Arthur's World 🌟
-      </h1>
+      <div className="relative z-10 flex flex-col items-center gap-2 animate-spring-in">
+        <ArthurBear expression="excited" size={80} />
+        <h1 className="text-5xl font-heading text-sun drop-shadow-lg animate-float">
+          Arthur's World
+        </h1>
+      </div>
 
       <div className="relative z-10 flex flex-col gap-6 w-full max-w-sm">
         {modes.map((m, i) => (
           <button
             key={m.id}
-            onClick={() => { playBoing(); navigate(m.to); }}
-            className={`game-card bg-gradient-to-br ${m.bg} p-8 flex flex-col items-center gap-3
-                       animate-bounce-in`}
-            style={{ animationDelay: `${i * 0.15}s`, animationFillMode: 'backwards' }}
+            onClick={() => { playNavigate(); navigate(m.to); }}
+            className={`game-card tap-ripple bg-gradient-to-br ${m.bg} p-8 flex flex-col items-center gap-3
+                       animate-spring-in`}
+            style={{ animationDelay: `${0.15 + i * 0.1}s`, animationFillMode: 'backwards' }}
           >
             <span className="text-7xl">{m.emoji}</span>
             <span className="text-2xl font-heading text-white drop-shadow">{m.label}</span>

@@ -3,6 +3,8 @@ import BackButton from '../components/BackButton';
 import FarmScene from '../components/scenes/FarmScene';
 import { Cow, Pig, Chicken, Horse, Sheep, Goat } from '../components/animals';
 import { playSuccess, playBoing, playPop, playTap } from '../hooks/useSound';
+import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 const ALL_FOODS = ['🌾', '🍎', '🌽', '🥕', '🌿', '🥬', '🍌', '🧀', '🥦', '🍓'];
 
@@ -41,6 +43,9 @@ export default function FeedAnimals() {
   const [stars, setStars] = useState([]);
   const [chomps, setChomps] = useState(0);
 
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
+
   const animal = ANIMALS[currentIdx];
   const AnimalSVG = ANIMAL_COMPONENTS[animal.component];
 
@@ -71,6 +76,10 @@ export default function FeedAnimals() {
           clearInterval(chompInterval);
           setPhase('celebrating');
           playSuccess();
+          const cx = window.innerWidth / 2;
+          const cy = window.innerHeight / 2 - 50;
+          burst(cx, cy, { count: 14, spread: 80, colors: ['#facc15', '#22c55e', '#38bdf8'], shapes: ['star', 'heart'] });
+          peek('excited');
 
           const newStars = Array.from({ length: 15 }, (_, i) => ({
             id: i,
@@ -201,6 +210,9 @@ export default function FeedAnimals() {
           />
         ))}
       </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
 
       <style>{`
         @keyframes starFall {

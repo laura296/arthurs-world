@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { setGlobalMute } from './hooks/useSound';
+import { SectionProvider } from './contexts/SectionContext';
+import ArthurBear from './components/ArthurBear';
 
 // Lazy load all routes
 const ModePicker = lazy(() => import('./pages/ModePicker'));
@@ -32,8 +34,9 @@ const BuildAScene = lazy(() => import('./games/BuildAScene'));
 
 function Loading() {
   return (
-    <div className="w-full h-full flex items-center justify-center bg-night">
-      <span className="text-6xl animate-bounce">🌟</span>
+    <div className="w-full h-full flex flex-col items-center justify-center bg-night gap-4">
+      <ArthurBear expression="happy" size={100} className="animate-float" />
+      <span className="text-xl font-heading text-sun/80 animate-pulse">Loading...</span>
     </div>
   );
 }
@@ -57,32 +60,32 @@ export default function App() {
 
         {/* All mode-aware routes wrapped in MuteByMode */}
         <Route path="/games/:mode" element={<MuteByMode><SectionPicker /></MuteByMode>} />
-        <Route path="/games/:mode/:section" element={<MuteByMode><GameGrid /></MuteByMode>} />
+        <Route path="/games/:mode/:section" element={<MuteByMode><SectionProvider><GameGrid /></SectionProvider></MuteByMode>} />
 
-        {/* Individual games/stories */}
-        <Route path="/games/:mode/:section/bubble-pop" element={<MuteByMode><BubblePop /></MuteByMode>} />
-        <Route path="/games/:mode/:section/feed-animals" element={<MuteByMode><FeedAnimals /></MuteByMode>} />
-        <Route path="/games/:mode/:section/pop-critters" element={<MuteByMode><PopCritters /></MuteByMode>} />
-        <Route path="/games/:mode/:section/colouring" element={<MuteByMode><Colouring /></MuteByMode>} />
-        <Route path="/games/:mode/:section/music-pad" element={<MuteByMode><MusicPad /></MuteByMode>} />
-        <Route path="/games/:mode/:section/memory-match" element={<MuteByMode><MemoryMatch /></MuteByMode>} />
-        <Route path="/games/:mode/:section/farm-book" element={<MuteByMode><FarmBook /></MuteByMode>} />
-        <Route path="/games/:mode/:section/three-pigs" element={<MuteByMode><ThreeLittlePigs /></MuteByMode>} />
-        <Route path="/games/:mode/:section/goldilocks" element={<MuteByMode><Goldilocks /></MuteByMode>} />
-        <Route path="/games/:mode/:section/red-riding" element={<MuteByMode><RedRidingHood /></MuteByMode>} />
-        <Route path="/games/:mode/:section/whale-throat" element={<MuteByMode><WhaleThroat /></MuteByMode>} />
-        <Route path="/games/:mode/:section/camel-hump" element={<MuteByMode><CamelHump /></MuteByMode>} />
-        <Route path="/games/:mode/:section/rhino-skin" element={<MuteByMode><RhinoSkin /></MuteByMode>} />
-        <Route path="/games/:mode/:section/leopard-spots" element={<MuteByMode><LeopardSpots /></MuteByMode>} />
-        <Route path="/games/:mode/:section/elephant-child" element={<MuteByMode><ElephantChild /></MuteByMode>} />
-        <Route path="/games/:mode/:section/old-man-kangaroo" element={<MuteByMode><OldManKangaroo /></MuteByMode>} />
-        <Route path="/games/:mode/:section/armadillos" element={<MuteByMode><Armadillos /></MuteByMode>} />
-        <Route path="/games/:mode/:section/first-letter" element={<MuteByMode><FirstLetter /></MuteByMode>} />
-        <Route path="/games/:mode/:section/alphabet-made" element={<MuteByMode><AlphabetMade /></MuteByMode>} />
-        <Route path="/games/:mode/:section/crab-sea" element={<MuteByMode><CrabSea /></MuteByMode>} />
-        <Route path="/games/:mode/:section/cat-walked" element={<MuteByMode><CatWalked /></MuteByMode>} />
-        <Route path="/games/:mode/:section/butterfly-stamped" element={<MuteByMode><ButterflyStamped /></MuteByMode>} />
-        <Route path="/games/:mode/:section/build-a-scene" element={<MuteByMode><BuildAScene /></MuteByMode>} />
+        {/* Individual games/stories — wrapped in SectionProvider for theme context */}
+        <Route path="/games/:mode/:section/bubble-pop" element={<MuteByMode><SectionProvider><BubblePop /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/feed-animals" element={<MuteByMode><SectionProvider><FeedAnimals /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/pop-critters" element={<MuteByMode><SectionProvider><PopCritters /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/colouring" element={<MuteByMode><SectionProvider><Colouring /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/music-pad" element={<MuteByMode><SectionProvider><MusicPad /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/memory-match" element={<MuteByMode><SectionProvider><MemoryMatch /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/farm-book" element={<MuteByMode><SectionProvider><FarmBook /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/three-pigs" element={<MuteByMode><SectionProvider><ThreeLittlePigs /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/goldilocks" element={<MuteByMode><SectionProvider><Goldilocks /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/red-riding" element={<MuteByMode><SectionProvider><RedRidingHood /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/whale-throat" element={<MuteByMode><SectionProvider><WhaleThroat /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/camel-hump" element={<MuteByMode><SectionProvider><CamelHump /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/rhino-skin" element={<MuteByMode><SectionProvider><RhinoSkin /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/leopard-spots" element={<MuteByMode><SectionProvider><LeopardSpots /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/elephant-child" element={<MuteByMode><SectionProvider><ElephantChild /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/old-man-kangaroo" element={<MuteByMode><SectionProvider><OldManKangaroo /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/armadillos" element={<MuteByMode><SectionProvider><Armadillos /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/first-letter" element={<MuteByMode><SectionProvider><FirstLetter /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/alphabet-made" element={<MuteByMode><SectionProvider><AlphabetMade /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/crab-sea" element={<MuteByMode><SectionProvider><CrabSea /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/cat-walked" element={<MuteByMode><SectionProvider><CatWalked /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/butterfly-stamped" element={<MuteByMode><SectionProvider><ButterflyStamped /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/build-a-scene" element={<MuteByMode><SectionProvider><BuildAScene /></SectionProvider></MuteByMode>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

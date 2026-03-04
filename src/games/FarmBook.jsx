@@ -1,6 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import BackButton from '../components/BackButton';
 import { playTap, playSuccess } from '../hooks/useSound';
+import { useCelebration } from '../components/CelebrationOverlay';
+import { useParticleBurst } from '../components/ParticleBurst';
 
 const PAGES = [
   { bg: 'from-sky to-blue-300', emoji: '🌅', scene: '🏠🌾🌻', caption: 'Good morning, farm!' },
@@ -16,10 +18,23 @@ const PAGES = [
 export default function FarmBook() {
   const [page, setPage] = useState(0);
   const [turning, setTurning] = useState(false);
+  const celebratedRef = useRef(false);
+  const { celebrate, CelebrationLayer } = useCelebration();
+  const { burst, ParticleLayer } = useParticleBurst();
 
   const current = PAGES[page];
   const isLast = page === PAGES.length - 1;
   const isFirst = page === 0;
+
+  useEffect(() => {
+    if (isLast && !celebratedRef.current) {
+      celebratedRef.current = true;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2 - 60;
+      burst(cx, cy, { count: 12, spread: 80, colors: ['#facc15', '#22c55e', '#38bdf8'], shapes: ['star', 'heart'] });
+      setTimeout(() => celebrate({ message: 'The End! 🎉' }), 400);
+    }
+  }, [isLast, celebrate, burst]);
 
   const turn = useCallback((dir) => {
     if (turning) return;
@@ -78,7 +93,7 @@ export default function FarmBook() {
         )}
         {isLast && (
           <button
-            onClick={() => { setPage(0); playTap(); }}
+            onClick={() => { setPage(0); celebratedRef.current = false; playTap(); }}
             className="w-20 h-20 rounded-full bg-sun/60 backdrop-blur-sm flex items-center
                        justify-center text-4xl active:scale-90 transition-transform animate-bounce"
           >
@@ -86,6 +101,9 @@ export default function FarmBook() {
           </button>
         )}
       </div>
+
+      <CelebrationLayer />
+      <ParticleLayer />
     </div>
   );
 }

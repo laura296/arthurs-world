@@ -5,7 +5,9 @@ import SceneCanvas from './build-a-scene/SceneCanvas';
 import StickerTray from './build-a-scene/StickerTray';
 import AnimateMode from './build-a-scene/AnimateMode';
 import { SCENES, buildTray, getSurprise } from './build-a-scene/sceneData';
-import { playThud, playPoof, playBoing } from '../hooks/useSound';
+import { playThud, playPoof, playBoing, playSparkle } from '../hooks/useSound';
+import { useArthurPeek } from '../components/ArthurPeek';
+import { useParticleBurst } from '../components/ParticleBurst';
 
 const STORAGE_KEY = 'build-a-scene-state';
 let uidCounter = 0;
@@ -40,6 +42,9 @@ export default function BuildAScene() {
   const [dragSticker, setDragSticker] = useState(null);
   const [showResume, setShowResume] = useState(false);
   const nextZ = useRef(1);
+  const placedCount = useRef(0);
+  const { peek, ArthurPeekLayer } = useArthurPeek();
+  const { burst, ParticleLayer } = useParticleBurst();
 
   // Check for saved state on mount
   useEffect(() => {
@@ -110,8 +115,12 @@ export default function BuildAScene() {
       setPlacedStickers(prev => [...prev, newSticker]);
       setUndoStack(prev => [...prev.slice(-4), newSticker.uid]);
       playThud();
+      placedCount.current++;
+      if (placedCount.current % 5 === 0) {
+        peek('happy');
+      }
     }
-  }, []);
+  }, [peek]);
 
   const handleStickerRemove = useCallback((stickerUid) => {
     setPlacedStickers(prev => prev.filter(s => s.uid !== stickerUid));
@@ -160,6 +169,11 @@ export default function BuildAScene() {
 
     if (result.isSecret) {
       setDiscoveredSecrets(prev => new Set([...prev, result.sticker.id]));
+      playSparkle();
+      peek('excited');
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      burst(cx, cy, { count: 12, spread: 70, colors: ['#facc15', '#ec4899', '#a78bfa'], shapes: ['star', 'circle'] });
     }
 
     return result;
@@ -265,6 +279,9 @@ export default function BuildAScene() {
         onStopAnimate={() => setIsAnimating(false)}
         placedCount={placedStickers.length}
       />
+
+      <ArthurPeekLayer />
+      <ParticleLayer />
     </div>
   );
 }

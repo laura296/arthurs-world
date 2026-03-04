@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import games from '../data/games';
 import BackButton from '../components/BackButton';
-import Starfield from '../components/Starfield';
-import { playBoing } from '../hooks/useSound';
+import SectionBackground from '../components/backgrounds/SectionBackground';
+import { playSectionTap } from '../hooks/useSound';
+import { useAmbient } from '../hooks/useAmbient';
+import { SECTION_THEMES } from '../data/sectionThemes';
 
 const sectionMeta = {
   games:   { emoji: '🎮', label: 'Games' },
@@ -13,20 +15,33 @@ const sectionMeta = {
   videos:  { emoji: '📺', label: 'Videos' },
 };
 
+/** Map section animationVibe to a Tailwind animation class */
+const vibeAnimation = {
+  bouncy: 'animate-spring-in',
+  smooth: 'animate-smooth-in',
+  painterly: 'animate-gentle-in',
+  gentle: 'animate-gentle-in',
+  rhythmic: 'animate-rhythmic-in',
+};
+
 export default function GameGrid() {
   const { mode, section } = useParams();
   const navigate = useNavigate();
 
+  useAmbient(section);
+
   const filtered = games.filter(g => g.category === section);
   const meta = sectionMeta[section] || { emoji: '', label: section };
+  const theme = SECTION_THEMES[section];
+  const anim = vibeAnimation[theme?.animationVibe] || 'animate-spring-in';
 
   return (
     <div className="relative w-full h-full bg-night overflow-y-auto no-scrollbar">
-      <Starfield />
+      <SectionBackground section={section} />
       <BackButton />
 
       <div className="relative z-10 p-6 pt-20">
-        <h2 className="text-3xl font-heading text-sun text-center mb-6 drop-shadow">
+        <h2 className={`text-3xl font-heading text-sun text-center mb-6 drop-shadow ${anim}`}>
           {meta.emoji} {meta.label}
         </h2>
 
@@ -35,34 +50,39 @@ export default function GameGrid() {
             <button
               key={game.id}
               onClick={() => {
-                playBoing();
+                playSectionTap(section);
                 if (game.external) {
                   window.open(game.external, '_blank');
                 } else {
                   navigate(`/games/${mode}/${section}/${game.path}`);
                 }
               }}
-              className={`game-card overflow-hidden bg-gradient-to-br ${game.bg} flex flex-col items-center
-                         justify-center gap-2 min-h-[120px] animate-bounce-in
+              className={`game-card tap-ripple overflow-hidden bg-gradient-to-br ${game.bg} flex flex-col items-center
+                         justify-center gap-2 min-h-[120px] ${anim}
                          ${game.cover ? 'p-0' : 'p-5'}`}
-              style={{ animationDelay: `${i * 0.08}s`, animationFillMode: 'backwards' }}
+              style={{
+                animationDelay: `${i * 0.06}s`,
+                animationFillMode: 'backwards',
+                borderBottom: `3px solid ${theme?.palette?.primary || '#fff'}`,
+              }}
             >
               {game.cover ? (
-                /* Book cover card */
-                <div className="relative w-full h-full min-h-[160px]">
+                <div className="relative w-full h-full min-h-[160px] flex flex-col items-center justify-center">
                   <img
                     src={game.cover}
-                    alt={game.title}
+                    alt=""
                     className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                  {/* Emoji fallback visible when image hasn't loaded */}
+                  <span className="relative z-[1] text-5xl">{game.emoji}</span>
+                  <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-black/70 to-transparent p-3">
                     <span className="text-sm font-heading text-white drop-shadow leading-tight">
                       {game.title}
                     </span>
                   </div>
                 </div>
               ) : (
-                /* Standard emoji card */
                 <>
                   <span className="text-5xl">{game.emoji}</span>
                   <span className="text-lg font-heading text-white drop-shadow">{game.title}</span>

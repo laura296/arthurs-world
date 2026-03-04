@@ -34,3 +34,103 @@
 /* Scrollbar hidden but scrollable */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Spring Physics ── */
+
+@keyframes springIn {
+  0% { transform: scale(0) translateY(20px); opacity: 0; }
+  60% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  80% { transform: scale(0.96) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes springTap {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.92); }
+  70% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gentleIn {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rhythmicIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.06); opacity: 1; }
+  70% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+@keyframes smoothIn {
+  0% { transform: translateX(-20px); opacity: 0; }
+  60% { transform: translateX(4px); opacity: 1; }
+  100% { transform: translateX(0); }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(calc(100vh + 40px)) rotate(720deg); opacity: 0.7; }
+}
+
+@keyframes peekIn {
+  0% { transform: translateY(100%) scale(0.5); opacity: 0; }
+  50% { transform: translateY(-10%) scale(1.1); opacity: 1; }
+  70% { transform: translateY(5%) scale(0.95); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes peekOut {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(100%) scale(0.5); opacity: 0; }
+}
+
+@keyframes radiateRing {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes celebrationText {
+  0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  80% { transform: scale(0.95) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes particleFly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--particle-tx), var(--particle-ty)) scale(0); opacity: 0; }
+}
+
+/* Tap ripple */
+.tap-ripple {
+  @apply relative overflow-hidden;
+}
+.tap-ripple::after {
+  content: '';
+  @apply absolute inset-0 pointer-events-none rounded-[inherit];
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
+  transform: scale(0);
+  opacity: 0;
+}
+.tap-ripple:active::after {
+  animation: rippleExpand 0.4s ease-out;
+}
+@keyframes rippleExpand {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes stringWobble {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(1px); }
+}
