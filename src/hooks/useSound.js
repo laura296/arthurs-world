@@ -188,6 +188,36 @@ export function playSplash() {
   noise.stop(ctx.currentTime + 0.25);
 }
 
+/** Shoo — low sawtooth buzz for shooing animals away */
+export function playShoo() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.value = 200;
+  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.25);
+}
+
+/** Bang — random low percussive hit for noise meter */
+export function playBang() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.value = 120 + Math.random() * 80;
+  gain.gain.setValueAtTime(0.3, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.1);
+}
+
 /** Musical note (for music pad) — basic tone, used as fallback */
 export function playNote(freq, duration = 0.5) {
   if (globalMuted) return;

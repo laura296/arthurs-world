@@ -76,6 +76,16 @@ export default {
         'peek-in': 'peekIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'peek-out': 'peekOut 0.3s ease-in forwards',
         'celebration-text': 'celebrationText 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        // Ellie storybook animations
+        'ellie-float': 'ellieFloat 3s ease-in-out infinite',
+        'ellie-glow': 'ellieGlow 2s ease-in-out infinite',
+        'ellie-drift-in': 'ellieDriftIn 2s ease-out forwards',
+        'ellie-shoo-away': 'ellieShooAway 0.6s ease-in forwards',
+        'ellie-bob': 'ellieBob 2s ease-in-out infinite',
+        'ellie-ripple': 'ellieRipple 0.6s ease-out forwards',
+        'ellie-meter-pulse': 'ellieMeterPulse 0.3s ease-out',
+        'ellie-spin-away': 'ellieSpinAway 0.5s ease-in forwards',
+        'ellie-fade-in': 'ellieFadeIn 0.8s ease-out',
       },
       keyframes: {
         bounceIn: {
@@ -297,6 +307,45 @@ export default {
         hotspotRipple: {
           '0%': { transform: 'scale(0.5)', opacity: '0.8' },
           '100%': { transform: 'scale(3)', opacity: '0' },
+        },
+        // Ellie storybook keyframes
+        ellieFloat: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+        ellieGlow: {
+          '0%, 100%': { boxShadow: '0 0 15px #facc15, 0 0 30px #facc15' },
+          '50%': { boxShadow: '0 0 25px #facc15, 0 0 50px #facc15, 0 0 70px #facc15' },
+        },
+        ellieDriftIn: {
+          '0%': { transform: 'translate(var(--drift-x), var(--drift-y)) scale(0.8)', opacity: '0' },
+          '100%': { transform: 'translate(0, 0) scale(1)', opacity: '1' },
+        },
+        ellieShooAway: {
+          '0%': { transform: 'rotate(0deg) scale(1)', opacity: '1' },
+          '50%': { transform: 'rotate(180deg) scale(1.2)', opacity: '0.8' },
+          '100%': { transform: 'rotate(360deg) scale(0) translateY(-100px)', opacity: '0' },
+        },
+        ellieBob: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(-8px) scale(1.03)' },
+        },
+        ellieRipple: {
+          '0%': { transform: 'scale(0.3)', opacity: '0.8', borderWidth: '4px' },
+          '100%': { transform: 'scale(3)', opacity: '0', borderWidth: '1px' },
+        },
+        ellieMeterPulse: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        ellieSpinAway: {
+          '0%': { transform: 'rotate(0deg) scale(1)', opacity: '1' },
+          '100%': { transform: 'rotate(720deg) scale(0)', opacity: '0' },
+        },
+        ellieFadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },
