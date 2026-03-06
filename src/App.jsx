@@ -31,6 +31,7 @@ const CrabSea = lazy(() => import('./stories/CrabSea'));
 const CatWalked = lazy(() => import('./stories/CatWalked'));
 const ButterflyStamped = lazy(() => import('./stories/ButterflyStamped'));
 const BuildAScene = lazy(() => import('./games/BuildAScene'));
+const EllieStorybook = lazy(() => import('./stories/ellie/EllieStorybook'));
 
 function Loading() {
   return (
@@ -86,6 +87,7 @@ export default function App() {
         <Route path="/games/:mode/:section/cat-walked" element={<MuteByMode><SectionProvider><CatWalked /></SectionProvider></MuteByMode>} />
         <Route path="/games/:mode/:section/butterfly-stamped" element={<MuteByMode><SectionProvider><ButterflyStamped /></SectionProvider></MuteByMode>} />
         <Route path="/games/:mode/:section/build-a-scene" element={<MuteByMode><SectionProvider><BuildAScene /></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/ellie-tiny-folk" element={<MuteByMode><SectionProvider><EllieStorybook /></SectionProvider></MuteByMode>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -39,7 +39,12 @@
       "Bash(git worktree remove .worktrees/storybook-overhaul)",
       "Skill(commit-commands:commit)",
       "Skill(commit-commands:commit:*)",
-      "Bash(git checkout HEAD -- src/games/PopCritters.jsx)"
+      "Bash(git checkout HEAD -- src/games/PopCritters.jsx)",
+      "Bash(python -c \":*)",
+      "Bash(wc -l /c/Users/Shadow/Arthur/src/games/*.jsx)",
+      "Bash(wc -l /c/Users/Shadow/Arthur/src/stories/*.jsx)",
+      "Bash(wc -l /c/Users/Shadow/Arthur/src/pages/*.jsx)",
+      "Bash(wc -l /c/Users/Shadow/Arthur/src/components/*.jsx)"
     ]
   }
 }

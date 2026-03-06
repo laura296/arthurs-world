@@ -24,6 +24,7 @@ const games = [
   { id: 'music-pad',     emoji: '🎵', title: 'Music',         path: 'music-pad',     category: 'music', bg: 'from-purple-500 to-violet-700',  cover: '/arthurs-world/images/cards/music-pad.png' },
 
   // ── Books ──
+  { id: 'ellie-tiny-folk', emoji: '🐘', title: "Ellie's Story", path: 'ellie-tiny-folk', category: 'books', bg: 'from-purple-300 to-pink-400' },
   { id: 'farm-book',     emoji: '📖', title: 'Farm Book',     path: 'farm-book',     category: 'books', bg: 'from-yellow-400 to-amber-600' },
   { id: 'three-pigs',    emoji: '🐷', title: '3 Little Pigs', path: 'three-pigs',    category: 'books', bg: 'from-pink-400 to-rose-500',    cover: '/arthurs-world/images/three-pigs/page-1.png' },
   { id: 'goldilocks',    emoji: '🐻', title: 'Goldilocks',    path: 'goldilocks',    category: 'books', bg: 'from-amber-400 to-yellow-600', cover: '/arthurs-world/images/goldilocks/page-1.png' },
