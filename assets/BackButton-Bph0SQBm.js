@@ -1,0 +1,2 @@
+import{u as i,j as e,H as n}from"./index-Cy96a4Tf.js";function r(){const t=i();return e.jsx("button",{onClick:()=>{n(),t(-1)},className:`fixed top-4 left-4 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm\r
+                 flex items-center justify-center active:scale-90 transition-transform tap-ripple`,"aria-label":"Go back",children:e.jsx("svg",{viewBox:"0 0 24 24",width:"28",height:"28",fill:"none",stroke:"white",strokeWidth:"2.5",strokeLinecap:"round",strokeLinejoin:"round",children:e.jsx("polyline",{points:"15 18 9 12 15 6"})})})}export{r as B};
