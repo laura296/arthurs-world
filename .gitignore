@@ -10,3 +10,5 @@ firebase-debug.log
 !public/audio/**/*.mp3
 .playwright-mcp/
 .worktrees/
+firebase-debug*.log
+nul
