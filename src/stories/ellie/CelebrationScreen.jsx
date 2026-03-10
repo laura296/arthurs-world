@@ -1,29 +1,14 @@
-import { useState, useEffect } from 'react';
-import { getImage, blobToUrl } from '../../lib/imageCache';
-import { VERSION, FOLK_NAMES } from './storyData';
+import { useEffect } from 'react';
+import { STATIC_ASSETS, FOLK_NAMES } from './storyData';
 import { playFanfare } from '../../hooks/useSound';
 import { useCelebration } from '../../components/CelebrationOverlay';
 
 export default function CelebrationScreen({ onReplay }) {
-  const [heroUrl, setHeroUrl] = useState(null);
-  const [folkUrls, setFolkUrls] = useState([]);
+  const heroUrl = STATIC_ASSETS.scene(4);
+  const folkUrls = FOLK_NAMES.map(name => STATIC_ASSETS.folk(name));
   const { celebrate, CelebrationLayer } = useCelebration();
 
   useEffect(() => {
-    // Load scene 4 as the celebration backdrop
-    getImage(`${VERSION}-scene-4`).then(blob => {
-      if (blob) setHeroUrl(blobToUrl(blob));
-    });
-
-    // Load Tiny Folk sprites for the parade
-    Promise.all(
-      FOLK_NAMES.map(async name => {
-        const blob = await getImage(`${VERSION}-folk-${name}`);
-        return blob ? blobToUrl(blob) : null;
-      })
-    ).then(urls => setFolkUrls(urls.filter(Boolean)));
-
-    // Play fanfare and celebrate
     playFanfare();
     setTimeout(() => {
       celebrate({ message: 'The End!', duration: 5000 });
@@ -33,11 +18,7 @@ export default function CelebrationScreen({ onReplay }) {
   return (
     <div className="w-full h-full relative overflow-hidden">
       {/* Background */}
-      {heroUrl ? (
-        <img src={heroUrl} alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-300 via-yellow-200 to-orange-300" />
-      )}
+      <img src={heroUrl} alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
 
       {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-black/20" />

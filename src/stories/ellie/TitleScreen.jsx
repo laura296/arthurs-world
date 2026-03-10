@@ -1,16 +1,8 @@
-import { useState, useEffect } from 'react';
-import { getImage, blobToUrl } from '../../lib/imageCache';
-import { VERSION } from './storyData';
+import { STATIC_ASSETS } from './storyData';
 import { playTone } from '../../hooks/useSound';
 
 export default function TitleScreen({ onStart }) {
-  const [heroUrl, setHeroUrl] = useState(null);
-
-  useEffect(() => {
-    getImage(`${VERSION}-character-sheet`).then(blob => {
-      if (blob) setHeroUrl(blobToUrl(blob));
-    });
-  }, []);
+  const heroUrl = STATIC_ASSETS.characterSheet;
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-night gap-6 p-8">
@@ -32,15 +24,11 @@ export default function TitleScreen({ onStart }) {
       ))}
 
       {/* Hero image */}
-      {heroUrl ? (
-        <img
-          src={heroUrl}
-          alt="Ellie the Elephant"
-          className="w-56 h-auto rounded-3xl shadow-2xl border-3 border-sun/30 animate-ellie-fade-in"
-        />
-      ) : (
-        <span className="text-8xl animate-float">🐘</span>
-      )}
+      <img
+        src={heroUrl}
+        alt="Ellie the Elephant"
+        className="w-56 h-auto rounded-3xl shadow-2xl border-3 border-sun/30 animate-ellie-fade-in"
+      />
 
       {/* Title */}
       <div className="text-center animate-ellie-fade-in" style={{ animationDelay: '0.3s' }}>

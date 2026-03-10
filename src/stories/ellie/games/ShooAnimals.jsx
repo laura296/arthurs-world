@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getImage, blobToUrl } from '../../../lib/imageCache';
-import { VERSION, ANIMAL_NAMES } from '../storyData';
+import { ANIMAL_NAMES, STATIC_ASSETS } from '../storyData';
 import { playShoo, playTone } from '../../../hooks/useSound';
 
 const TARGET_SHOOS = 8;
@@ -23,23 +22,16 @@ function randomEdge() {
   return { startX: x, startY: y, targetX, targetY };
 }
 
+// Static sprite URLs — no async loading needed
+const spriteUrls = Object.fromEntries(
+  ANIMAL_NAMES.map(name => [name, STATIC_ASSETS.animal(name)])
+);
+
 export default function ShooAnimals({ onComplete, burst }) {
   const [animals, setAnimals] = useState([]);
   const [shooed, setShooed] = useState(0);
-  const [spriteUrls, setSpriteUrls] = useState({});
   const spawnCount = useRef(0);
   const completed = useRef(false);
-
-  // Load all animal sprite URLs
-  useEffect(() => {
-    const urls = {};
-    Promise.all(
-      ANIMAL_NAMES.map(async name => {
-        const blob = await getImage(`${VERSION}-animal-${name}`);
-        if (blob) urls[name] = blobToUrl(blob);
-      })
-    ).then(() => setSpriteUrls(urls));
-  }, []);
 
   // Spawn animals on interval
   useEffect(() => {
@@ -62,7 +54,7 @@ export default function ShooAnimals({ onComplete, burst }) {
     }, SPAWN_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [spriteUrls]);
+  }, []);
 
   const handleShoo = useCallback((id) => {
     playShoo();

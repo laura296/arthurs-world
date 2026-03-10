@@ -1,0 +1,218 @@
+import React from 'react';
+import StoryBook from '../../components/StoryBook';
+
+const storyData = {
+  title: 'Snow White',
+  pages: [
+    // ── Page 1: Introduction ──
+    {
+      bg: 'from-green-300 to-emerald-600',
+      image: '/arthurs-world/images/disney/snow-white/page-1.png',
+      text: 'Once upon a time, there lived a princess named Snow White. She was the fairest in the land!',
+      elements: [
+        { id: 'snow-white', x: 50, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'bird', x: 70, y: 28, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'deer', x: 22, y: 60, hotspot: true, w: 110, h: 110, z: 2 },
+        { id: 'flowers', x: 40, y: 72, hotspot: true, w: 90, h: 90, z: 1 },
+        { id: 'hidden-bunny', x: 85, y: 68, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'snow-white-sound', type: 'tap-sound', targetId: 'snow-white', data: { say: 'Good morning, little friends!' } },
+        { id: 'bird-animate', type: 'tap-animate', targetId: 'bird', data: { animation: 'animate-fly', duration: 1000 } },
+        { id: 'deer-sound', type: 'tap-sound', targetId: 'deer', data: { sfx: 'deer' } },
+        { id: 'flowers-color', type: 'tap-color', targetId: 'flowers', data: { colors: ['#f43f5e', '#fbbf24', '#c084fc', '#60a5fa'] } },
+        { id: 'bunny-reveal', type: 'tap-reveal', targetId: 'hidden-bunny', data: { content: 'Hello!' } },
+      ],
+    },
+
+    // ── Page 2: The Magic Mirror ──
+    {
+      bg: 'from-purple-600 to-gray-800',
+      image: '/arthurs-world/images/disney/snow-white/page-2.png',
+      text: 'The Evil Queen had a magic mirror. She asked it, "Who is the fairest of them all?"',
+      elements: [
+        { id: 'queen', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'mirror', x: 68, y: 35, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'crown-queen', x: 35, y: 30, hotspot: true, w: 70, h: 70, z: 3 },
+        { id: 'flame', x: 15, y: 45, hotspot: true, w: 70, h: 70, z: 1 },
+      ],
+      interactions: [
+        { id: 'queen-sound', type: 'tap-sound', targetId: 'queen', data: { say: 'Mirror mirror on the wall!' } },
+        { id: 'mirror-sparkle', type: 'tap-sparkle', targetId: 'mirror', data: {} },
+        { id: 'mirror-swap', type: 'tap-swap', targetId: 'mirror', data: { altContent: 'Snow White!' } },
+        { id: 'crown-spin', type: 'tap-spin', targetId: 'crown-queen', data: {} },
+        { id: 'flame-color', type: 'tap-color', targetId: 'flame', data: { colors: ['#ef4444', '#f97316', '#fbbf24', '#a855f7'] } },
+      ],
+    },
+
+    // ── Page 3: Into the Forest ──
+    {
+      bg: 'from-green-700 to-gray-900',
+      image: '/arthurs-world/images/disney/snow-white/page-3.png',
+      text: 'Snow White ran deep into the dark forest. The trees were tall and scary!',
+      elements: [
+        { id: 'snow-white-run', x: 50, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'tree-left', x: 15, y: 35, hotspot: true, w: 120, h: 120, z: 1 },
+        { id: 'tree-right', x: 85, y: 38, hotspot: true, w: 120, h: 120, z: 1 },
+        { id: 'owl', x: 75, y: 22, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'hidden-eyes', x: 25, y: 42, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'snow-white-run-sound', type: 'tap-sound', targetId: 'snow-white-run', data: { say: 'Oh my, where am I?' } },
+        { id: 'tree-left-shake', type: 'tap-shake', targetId: 'tree-left', data: {} },
+        { id: 'tree-right-shake', type: 'tap-shake', targetId: 'tree-right', data: {} },
+        { id: 'owl-sound', type: 'tap-sound', targetId: 'owl', data: { say: 'Hoo hoo!', sfx: 'owl' } },
+        { id: 'eyes-reveal', type: 'tap-reveal', targetId: 'hidden-eyes', data: { content: 'Who goes there?' } },
+      ],
+    },
+
+    // ── Page 4: The Cottage ──
+    {
+      bg: 'from-green-400 to-amber-400',
+      image: '/arthurs-world/images/disney/snow-white/page-4.png',
+      text: 'Snow White found a tiny cottage in the woods! Everything inside was so small!',
+      elements: [
+        { id: 'cottage', x: 50, y: 35, hotspot: true, w: 150, h: 150, z: 2 },
+        { id: 'door', x: 50, y: 55, hotspot: true, w: 80, h: 80, z: 3 },
+        { id: 'chimney', x: 55, y: 18, hotspot: true, w: 60, h: 60, z: 2 },
+        { id: 'garden', x: 25, y: 68, hotspot: true, w: 100, h: 100, z: 1 },
+      ],
+      interactions: [
+        { id: 'cottage-sparkle', type: 'tap-sparkle', targetId: 'cottage', data: {} },
+        { id: 'door-sound', type: 'tap-sound', targetId: 'door', data: { say: 'Knock knock! Anyone home?' } },
+        { id: 'chimney-wiggle', type: 'tap-wiggle', targetId: 'chimney', data: {} },
+        { id: 'garden-color', type: 'tap-color', targetId: 'garden', data: { colors: ['#22c55e', '#f43f5e', '#fbbf24', '#c084fc'] } },
+      ],
+    },
+
+    // ── Page 5: The Seven Dwarfs ──
+    {
+      bg: 'from-amber-300 to-orange-500',
+      image: '/arthurs-world/images/disney/snow-white/page-5.png',
+      text: 'Seven little dwarfs lived in the cottage! They worked in the diamond mine all day.',
+      elements: [
+        { id: 'dwarf1', x: 15, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf2', x: 28, y: 58, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf3', x: 41, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf4', x: 54, y: 58, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf5', x: 67, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf6', x: 80, y: 58, hotspot: true, w: 80, h: 80, z: 2 },
+        { id: 'dwarf7', x: 50, y: 40, hotspot: true, w: 80, h: 80, z: 2 },
+      ],
+      interactions: [
+        { id: 'dwarf1-animate', type: 'tap-animate', targetId: 'dwarf1', data: { animation: 'animate-dance', duration: 800 } },
+        { id: 'dwarf2-sound', type: 'tap-sound', targetId: 'dwarf2', data: { say: 'Hi ho!' } },
+        { id: 'dwarf3-wiggle', type: 'tap-wiggle', targetId: 'dwarf3', data: {} },
+        { id: 'dwarf4-count', type: 'tap-count', targetId: 'dwarf4', data: { max: 7 } },
+        { id: 'dwarf5-spin', type: 'tap-spin', targetId: 'dwarf5', data: {} },
+        { id: 'dwarf6-shake', type: 'tap-shake', targetId: 'dwarf6', data: {} },
+        { id: 'dwarf7-sound', type: 'tap-sound', targetId: 'dwarf7', data: { say: 'Off to work we go!' } },
+      ],
+    },
+
+    // ── Page 6: The Poison Apple ──
+    {
+      bg: 'from-green-600 to-gray-800',
+      image: '/arthurs-world/images/disney/snow-white/page-6.png',
+      text: 'The Evil Queen disguised herself as an old woman. She brought a shiny red apple.',
+      elements: [
+        { id: 'old-woman', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'apple', x: 60, y: 55, hotspot: true, w: 90, h: 90, z: 3 },
+        { id: 'snow-white-apple', x: 70, y: 48, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'hidden-skull', x: 15, y: 72, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'old-woman-sound', type: 'tap-sound', targetId: 'old-woman', data: { say: 'Try this delicious apple, dearie!' } },
+        { id: 'apple-color', type: 'tap-color', targetId: 'apple', data: { colors: ['#ef4444', '#22c55e', '#a855f7'] } },
+        { id: 'apple-grow', type: 'tap-grow', targetId: 'apple', data: {} },
+        { id: 'snow-white-apple-sound', type: 'tap-sound', targetId: 'snow-white-apple', data: { say: 'It looks so yummy!' } },
+        { id: 'skull-reveal', type: 'tap-reveal', targetId: 'hidden-skull', data: { content: 'Oh no! Don\'t eat it!' } },
+      ],
+    },
+
+    // ── Page 7: Snow White Sleeps ──
+    {
+      bg: 'from-blue-400 to-indigo-700',
+      image: '/arthurs-world/images/disney/snow-white/page-7.png',
+      text: 'Snow White bit the apple and fell into a deep sleep. The dwarfs were so sad!',
+      elements: [
+        { id: 'snow-white-sleep', x: 50, y: 50, hotspot: true, w: 140, h: 140, z: 2 },
+        { id: 'dwarfs-sad', x: 20, y: 62, hotspot: true, w: 110, h: 110, z: 2 },
+        { id: 'flowers-bed', x: 50, y: 72, hotspot: true, w: 120, h: 120, z: 1 },
+        { id: 'candle', x: 80, y: 35, hotspot: true, w: 70, h: 70, z: 2 },
+      ],
+      interactions: [
+        { id: 'snow-white-sleep-sparkle', type: 'tap-sparkle', targetId: 'snow-white-sleep', data: {} },
+        { id: 'dwarfs-sad-sound', type: 'tap-sound', targetId: 'dwarfs-sad', data: { say: 'Oh no! Wake up Snow White!' } },
+        { id: 'flowers-bed-color', type: 'tap-color', targetId: 'flowers-bed', data: { colors: ['#f43f5e', '#fbbf24', '#c084fc', '#60a5fa'] } },
+        { id: 'candle-wiggle', type: 'tap-wiggle', targetId: 'candle', data: {} },
+      ],
+    },
+
+    // ── Page 8: The Prince Arrives ──
+    {
+      bg: 'from-amber-300 to-rose-400',
+      image: '/arthurs-world/images/disney/snow-white/page-8.png',
+      text: 'A brave prince heard about Snow White. He rode through the forest to find her!',
+      elements: [
+        { id: 'prince', x: 40, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'horse', x: 25, y: 58, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'forest-path', x: 70, y: 50, hotspot: true, w: 130, h: 130, z: 1 },
+        { id: 'hidden-bird', x: 80, y: 22, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'prince-sound', type: 'tap-sound', targetId: 'prince', data: { say: 'I will find her!' } },
+        { id: 'horse-sound', type: 'tap-sound', targetId: 'horse', data: { sfx: 'horse' } },
+        { id: 'horse-animate', type: 'tap-animate', targetId: 'horse', data: { animation: 'animate-dance', duration: 1000 } },
+        { id: 'bird-reveal', type: 'tap-reveal', targetId: 'hidden-bird', data: { content: 'This way!' } },
+      ],
+    },
+
+    // ── Page 9: True Love's Kiss ──
+    {
+      bg: 'from-pink-300 to-purple-400',
+      image: '/arthurs-world/images/disney/snow-white/page-9.png',
+      text: 'The Prince kissed Snow White, and she woke up! True love broke the spell!',
+      elements: [
+        { id: 'snow-white-wake', x: 50, y: 48, hotspot: true, w: 140, h: 140, z: 2 },
+        { id: 'prince-wake', x: 35, y: 50, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'sparkles', x: 50, y: 28, hotspot: true, w: 100, h: 100, z: 1 },
+        { id: 'hearts-love', x: 50, y: 18, hotspot: true, w: 90, h: 90, z: 1 },
+        { id: 'dwarfs-happy', x: 75, y: 65, hotspot: true, w: 100, h: 100, z: 2 },
+      ],
+      interactions: [
+        { id: 'snow-white-wake-sparkle', type: 'tap-sparkle', targetId: 'snow-white-wake', data: {} },
+        { id: 'snow-white-wake-sound', type: 'tap-sound', targetId: 'snow-white-wake', data: { say: 'Where am I? Oh, thank you!' } },
+        { id: 'sparkles-spin', type: 'tap-spin', targetId: 'sparkles', data: {} },
+        { id: 'hearts-color', type: 'tap-color', targetId: 'hearts-love', data: { colors: ['#f43f5e', '#ec4899', '#f472b6'] } },
+        { id: 'dwarfs-happy-animate', type: 'tap-animate', targetId: 'dwarfs-happy', data: { animation: 'animate-dance', duration: 1000 } },
+      ],
+    },
+
+    // ── Page 10: Happily Ever After ──
+    {
+      bg: 'from-yellow-300 to-pink-300',
+      image: '/arthurs-world/images/disney/snow-white/page-10.png',
+      text: 'Snow White and the Prince lived happily ever after with all their forest friends!',
+      elements: [
+        { id: 'couple-final', x: 50, y: 45, hotspot: true, w: 150, h: 150, z: 2 },
+        { id: 'castle-sunset', x: 50, y: 15, hotspot: true, w: 140, h: 140, z: 1 },
+        { id: 'star-1', x: 20, y: 18, hotspot: true, w: 80, h: 80, z: 1 },
+        { id: 'star-2', x: 80, y: 18, hotspot: true, w: 80, h: 80, z: 1 },
+        { id: 'heart-end', x: 50, y: 72, hotspot: true, w: 100, h: 100, z: 1 },
+      ],
+      interactions: [
+        { id: 'couple-final-dance', type: 'tap-animate', targetId: 'couple-final', data: { animation: 'animate-dance', duration: 1500 } },
+        { id: 'couple-final-sparkle', type: 'tap-sparkle', targetId: 'couple-final', data: {} },
+        { id: 'castle-sunset-sparkle', type: 'tap-sparkle', targetId: 'castle-sunset', data: {} },
+        { id: 'star-1-spin', type: 'tap-spin', targetId: 'star-1', data: {} },
+        { id: 'star-2-color', type: 'tap-color', targetId: 'star-2', data: { colors: ['#fbbf24', '#f0abfc', '#60a5fa', '#34d399'] } },
+        { id: 'heart-end-sound', type: 'tap-sound', targetId: 'heart-end', data: { say: 'The End! Happily ever after!' } },
+      ],
+    },
+  ],
+};
+
+export default function SnowWhite() {
+  return <StoryBook story={storyData} />;
+}

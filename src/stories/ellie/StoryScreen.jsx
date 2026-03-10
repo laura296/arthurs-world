@@ -1,51 +1,30 @@
-import { useState, useEffect } from 'react';
-import { getImage, blobToUrl } from '../../lib/imageCache';
-import { CHAPTERS } from './storyData';
+import { useEffect } from 'react';
+import { CHAPTERS, STATIC_ASSETS } from './storyData';
 import { playPageTurn } from '../../hooks/useSound';
-
-function speakText(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 0.85;
-  u.pitch = 1.1;
-  u.lang = 'en-GB';
-  window.speechSynthesis.speak(u);
-}
+import { speakText, stopSpeaking } from '../../hooks/useNarration';
 
 export default function StoryScreen({ chapter, onAdvance }) {
-  const [bgUrl, setBgUrl] = useState(null);
   const data = CHAPTERS[chapter];
-
-  useEffect(() => {
-    getImage(data.sceneKey).then(blob => {
-      if (blob) setBgUrl(blobToUrl(blob));
-    });
-  }, [data.sceneKey]);
+  const bgUrl = STATIC_ASSETS.scene(chapter + 1);
 
   // Auto-narrate on mount
   useEffect(() => {
     const timer = setTimeout(() => speakText(data.narration), 600);
     return () => {
       clearTimeout(timer);
-      window.speechSynthesis?.cancel();
+      stopSpeaking();
     };
   }, [data.narration]);
 
   return (
     <div className="w-full h-full relative overflow-hidden">
       {/* Full-bleed background image */}
-      {bgUrl && (
-        <img
-          src={bgUrl}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover animate-ellie-fade-in"
-          draggable={false}
-        />
-      )}
-      {!bgUrl && (
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-700 to-indigo-900" />
-      )}
+      <img
+        src={bgUrl}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover animate-ellie-fade-in"
+        draggable={false}
+      />
 
       {/* Chapter title */}
       <div className="absolute top-6 left-0 right-0 z-20 text-center">

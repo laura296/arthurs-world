@@ -300,21 +300,47 @@ export function playDrum(freq) {
   noise.stop(ctx.currentTime + 0.2);
 }
 
-/** Xylophone — square wave, bright & short with harmonics */
+/** Xylophone — bright metallic tone with overtones, like wooden bars struck with mallets */
 export function playXylophone(freq) {
   if (globalMuted) return;
   const ctx = getCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.value = freq;
-  // Sharp attack, quick decay — bright and clicky
-  gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.005);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.25);
+  const t = ctx.currentTime;
+
+  // Fundamental sine — warm body
+  const osc1 = ctx.createOscillator();
+  const g1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.value = freq;
+  g1.gain.setValueAtTime(0, t);
+  g1.gain.linearRampToValueAtTime(0.25, t + 0.002);
+  g1.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+  osc1.connect(g1).connect(ctx.destination);
+  osc1.start(t);
+  osc1.stop(t + 0.65);
+
+  // 3x harmonic — metallic brightness
+  const osc2 = ctx.createOscillator();
+  const g2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.value = freq * 3;
+  g2.gain.setValueAtTime(0, t);
+  g2.gain.linearRampToValueAtTime(0.08, t + 0.001);
+  g2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+  osc2.connect(g2).connect(ctx.destination);
+  osc2.start(t);
+  osc2.stop(t + 0.35);
+
+  // 4x harmonic — initial click/attack
+  const osc3 = ctx.createOscillator();
+  const g3 = ctx.createGain();
+  osc3.type = 'sine';
+  osc3.frequency.value = freq * 4;
+  g3.gain.setValueAtTime(0, t);
+  g3.gain.linearRampToValueAtTime(0.05, t + 0.001);
+  g3.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+  osc3.connect(g3).connect(ctx.destination);
+  osc3.start(t);
+  osc3.stop(t + 0.2);
 }
 
 // ── Build-a-Scene sounds ──

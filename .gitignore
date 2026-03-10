@@ -5,5 +5,8 @@ dist
 firebase-debug.log
 *.png
 !public/*.png
+!public/images/**/*.png
+*.mp3
+!public/audio/**/*.mp3
 .playwright-mcp/
 .worktrees/

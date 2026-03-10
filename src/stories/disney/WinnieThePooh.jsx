@@ -1,0 +1,222 @@
+import React from 'react';
+import StoryBook from '../../components/StoryBook';
+
+const storyData = {
+  title: 'Winnie the Pooh',
+  pages: [
+    // ── Page 1: The Hundred Acre Wood ──
+    {
+      bg: 'from-green-300 to-amber-400',
+      image: '/arthurs-world/images/disney/pooh/page-1.png',
+      text: 'In the Hundred Acre Wood, a little bear named Winnie the Pooh woke up feeling hungry!',
+      elements: [
+        { id: 'pooh', x: 50, y: 50, hotspot: true, w: 140, h: 140, z: 2 },
+        { id: 'tree-house', x: 50, y: 22, hotspot: true, w: 130, h: 130, z: 1 },
+        { id: 'flowers', x: 25, y: 70, hotspot: true, w: 90, h: 90, z: 1 },
+        { id: 'bee', x: 72, y: 28, hotspot: true, w: 60, h: 60, z: 2 },
+        { id: 'hidden-piglet', x: 15, y: 58, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-sound', type: 'tap-sound', targetId: 'pooh', data: { say: 'Oh bother! I need some honey!' } },
+        { id: 'pooh-wiggle', type: 'tap-wiggle', targetId: 'pooh', data: {} },
+        { id: 'tree-house-sparkle', type: 'tap-sparkle', targetId: 'tree-house', data: {} },
+        { id: 'flowers-color', type: 'tap-color', targetId: 'flowers', data: { colors: ['#fbbf24', '#f43f5e', '#c084fc', '#60a5fa'] } },
+        { id: 'bee-animate', type: 'tap-animate', targetId: 'bee', data: { animation: 'animate-fly', duration: 1000 } },
+        { id: 'piglet-reveal', type: 'tap-reveal', targetId: 'hidden-piglet', data: { content: 'Oh d-d-dear!' } },
+      ],
+    },
+
+    // ── Page 2: The Honey Pot ──
+    {
+      bg: 'from-amber-300 to-yellow-500',
+      image: '/arthurs-world/images/disney/pooh/page-2.png',
+      text: 'Pooh looked in his honey pot. Oh no — it was empty! Not even a smidge of honey!',
+      elements: [
+        { id: 'pooh-sad', x: 50, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'honey-pot', x: 50, y: 70, hotspot: true, w: 100, h: 100, z: 2 },
+        { id: 'tummy', x: 55, y: 58, hotspot: true, w: 70, h: 70, z: 3 },
+        { id: 'hidden-roo', x: 82, y: 65, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-sad-sound', type: 'tap-sound', targetId: 'pooh-sad', data: { say: 'Think think think...' } },
+        { id: 'honey-pot-shake', type: 'tap-shake', targetId: 'honey-pot', data: {} },
+        { id: 'honey-pot-swap', type: 'tap-swap', targetId: 'honey-pot', data: { altContent: 'Empty!' } },
+        { id: 'tummy-wiggle', type: 'tap-wiggle', targetId: 'tummy', data: {} },
+        { id: 'roo-reveal', type: 'tap-reveal', targetId: 'hidden-roo', data: { content: 'Try Rabbit\'s house!' } },
+      ],
+    },
+
+    // ── Page 3: Visit Piglet ──
+    {
+      bg: 'from-pink-300 to-green-400',
+      image: '/arthurs-world/images/disney/pooh/page-3.png',
+      text: 'Pooh went to visit his best friend Piglet! Piglet was very small and very brave.',
+      elements: [
+        { id: 'pooh-walk', x: 35, y: 52, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'piglet', x: 65, y: 58, hotspot: true, w: 100, h: 100, z: 2 },
+        { id: 'acorn', x: 75, y: 72, hotspot: true, w: 60, h: 60, z: 1 },
+        { id: 'butterfly', x: 50, y: 22, hotspot: true, w: 70, h: 70, z: 2 },
+        { id: 'piglet-house', x: 80, y: 30, hotspot: true, w: 100, h: 100, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-walk-sound', type: 'tap-sound', targetId: 'pooh-walk', data: { say: 'Hello Piglet! Do you have any honey?' } },
+        { id: 'piglet-sound', type: 'tap-sound', targetId: 'piglet', data: { say: 'Oh P-Pooh! Let me help you find some!' } },
+        { id: 'piglet-animate', type: 'tap-animate', targetId: 'piglet', data: { animation: 'animate-dance', duration: 800 } },
+        { id: 'acorn-count', type: 'tap-count', targetId: 'acorn', data: { max: 5 } },
+        { id: 'butterfly-animate', type: 'tap-animate', targetId: 'butterfly', data: { animation: 'animate-fly', duration: 1000 } },
+      ],
+    },
+
+    // ── Page 4: Tigger Bounces In ──
+    {
+      bg: 'from-orange-400 to-amber-500',
+      image: '/arthurs-world/images/disney/pooh/page-4.png',
+      text: 'Tigger bounced in! Bouncing is what Tiggers do best!',
+      elements: [
+        { id: 'tigger', x: 50, y: 42, hotspot: true, w: 140, h: 140, z: 3 },
+        { id: 'pooh-tigger', x: 25, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'piglet-tigger', x: 78, y: 60, hotspot: true, w: 90, h: 90, z: 2 },
+        { id: 'bounce-trail', x: 50, y: 68, hotspot: true, w: 80, h: 80, z: 1 },
+      ],
+      interactions: [
+        { id: 'tigger-animate', type: 'tap-animate', targetId: 'tigger', data: { animation: 'animate-spring-in', duration: 800 } },
+        { id: 'tigger-sound', type: 'tap-sound', targetId: 'tigger', data: { say: 'Hoo hoo hoo hoo! The wonderful thing about Tiggers!' } },
+        { id: 'pooh-tigger-shake', type: 'tap-shake', targetId: 'pooh-tigger', data: {} },
+        { id: 'piglet-tigger-sound', type: 'tap-sound', targetId: 'piglet-tigger', data: { say: 'Oh d-d-dear, Tigger!' } },
+        { id: 'bounce-trail-sparkle', type: 'tap-sparkle', targetId: 'bounce-trail', data: {} },
+      ],
+    },
+
+    // ── Page 5: The Bee Tree ──
+    {
+      bg: 'from-green-400 to-emerald-600',
+      image: '/arthurs-world/images/disney/pooh/page-5.png',
+      text: 'They found a tree full of bees! That means honey! Pooh started to climb up.',
+      elements: [
+        { id: 'bee-tree', x: 50, y: 30, hotspot: true, w: 150, h: 150, z: 1 },
+        { id: 'pooh-climb', x: 45, y: 52, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'bees', x: 60, y: 22, hotspot: true, w: 80, h: 80, z: 3 },
+        { id: 'honey-drip', x: 55, y: 38, hotspot: true, w: 60, h: 60, z: 2 },
+        { id: 'hidden-owl', x: 80, y: 25, hotspot: true, w: 60, h: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-climb-sound', type: 'tap-sound', targetId: 'pooh-climb', data: { say: 'Almost there! Just a little more honey!' } },
+        { id: 'pooh-climb-wiggle', type: 'tap-wiggle', targetId: 'pooh-climb', data: {} },
+        { id: 'bees-animate', type: 'tap-animate', targetId: 'bees', data: { animation: 'animate-fly', duration: 800 } },
+        { id: 'bees-sound', type: 'tap-sound', targetId: 'bees', data: { say: 'Buzz buzz buzz!' } },
+        { id: 'honey-drip-color', type: 'tap-color', targetId: 'honey-drip', data: { colors: ['#fbbf24', '#f59e0b', '#d97706'] } },
+        { id: 'owl-reveal', type: 'tap-reveal', targetId: 'hidden-owl', data: { content: 'Hoo! Be careful!' } },
+      ],
+    },
+
+    // ── Page 6: Oh Bother! ──
+    {
+      bg: 'from-amber-400 to-orange-500',
+      image: '/arthurs-world/images/disney/pooh/page-6.png',
+      text: 'Oh bother! The bees chased Pooh! He fell right into a puddle of mud!',
+      elements: [
+        { id: 'pooh-mud', x: 50, y: 55, hotspot: true, w: 140, h: 140, z: 2 },
+        { id: 'bees-chase', x: 40, y: 28, hotspot: true, w: 100, h: 100, z: 3 },
+        { id: 'mud-splash', x: 50, y: 70, hotspot: true, w: 110, h: 110, z: 1 },
+        { id: 'piglet-worried', x: 80, y: 52, hotspot: true, w: 90, h: 90, z: 2 },
+      ],
+      interactions: [
+        { id: 'pooh-mud-shake', type: 'tap-shake', targetId: 'pooh-mud', data: {} },
+        { id: 'pooh-mud-sound', type: 'tap-sound', targetId: 'pooh-mud', data: { say: 'Oh bother bother bother!' } },
+        { id: 'bees-chase-animate', type: 'tap-animate', targetId: 'bees-chase', data: { animation: 'animate-fly', duration: 600 } },
+        { id: 'mud-splash-sparkle', type: 'tap-sparkle', targetId: 'mud-splash', data: {} },
+        { id: 'piglet-worried-sound', type: 'tap-sound', targetId: 'piglet-worried', data: { say: 'Are you alright, Pooh?' } },
+      ],
+    },
+
+    // ── Page 7: Rabbit's House ──
+    {
+      bg: 'from-green-300 to-amber-300',
+      image: '/arthurs-world/images/disney/pooh/page-7.png',
+      text: 'They went to Rabbit\'s house! Rabbit had lots and lots of honey!',
+      elements: [
+        { id: 'rabbit', x: 35, y: 50, hotspot: true, w: 120, h: 120, z: 2 },
+        { id: 'pooh-happy', x: 60, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'honey-jars', x: 50, y: 70, hotspot: true, w: 110, h: 110, z: 2 },
+        { id: 'carrots', x: 18, y: 65, hotspot: true, w: 80, h: 80, z: 1 },
+        { id: 'rabbit-door', x: 50, y: 28, hotspot: true, w: 100, h: 100, z: 1 },
+      ],
+      interactions: [
+        { id: 'rabbit-sound', type: 'tap-sound', targetId: 'rabbit', data: { say: 'Come in, come in! But don\'t eat too much!' } },
+        { id: 'pooh-happy-sound', type: 'tap-sound', targetId: 'pooh-happy', data: { say: 'Oh thank you, Rabbit!' } },
+        { id: 'honey-jars-count', type: 'tap-count', targetId: 'honey-jars', data: { max: 5 } },
+        { id: 'honey-jars-sparkle', type: 'tap-sparkle', targetId: 'honey-jars', data: {} },
+        { id: 'carrots-wiggle', type: 'tap-wiggle', targetId: 'carrots', data: {} },
+      ],
+    },
+
+    // ── Page 8: Pooh Gets Stuck ──
+    {
+      bg: 'from-amber-300 to-green-500',
+      image: '/arthurs-world/images/disney/pooh/page-8.png',
+      text: 'Pooh ate SO much honey that he got stuck in Rabbit\'s front door! Oh bother!',
+      elements: [
+        { id: 'pooh-stuck', x: 50, y: 50, hotspot: true, w: 160, h: 160, z: 2 },
+        { id: 'rabbit-push', x: 25, y: 52, hotspot: true, w: 110, h: 110, z: 2 },
+        { id: 'piglet-pull', x: 75, y: 55, hotspot: true, w: 90, h: 90, z: 2 },
+        { id: 'tigger-pull', x: 85, y: 48, hotspot: true, w: 100, h: 100, z: 2 },
+      ],
+      interactions: [
+        { id: 'pooh-stuck-wiggle', type: 'tap-wiggle', targetId: 'pooh-stuck', data: {} },
+        { id: 'pooh-stuck-sound', type: 'tap-sound', targetId: 'pooh-stuck', data: { say: 'Oh bother! I\'m stuck!' } },
+        { id: 'rabbit-push-shake', type: 'tap-shake', targetId: 'rabbit-push', data: {} },
+        { id: 'rabbit-push-sound', type: 'tap-sound', targetId: 'rabbit-push', data: { say: 'Push! Push!' } },
+        { id: 'piglet-pull-animate', type: 'tap-animate', targetId: 'piglet-pull', data: { animation: 'animate-dance', duration: 600 } },
+        { id: 'tigger-pull-sound', type: 'tap-sound', targetId: 'tigger-pull', data: { say: 'Hoo hoo! Pull!' } },
+      ],
+    },
+
+    // ── Page 9: POP! ──
+    {
+      bg: 'from-yellow-300 to-green-400',
+      image: '/arthurs-world/images/disney/pooh/page-9.png',
+      text: 'POP! Everyone pulled together and Pooh popped right out! He flew through the air!',
+      elements: [
+        { id: 'pooh-fly', x: 50, y: 35, hotspot: true, w: 140, h: 140, z: 3 },
+        { id: 'friends-fall', x: 30, y: 62, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'pop-effect', x: 50, y: 50, hotspot: true, w: 100, h: 100, z: 2 },
+        { id: 'stars-dizzy', x: 50, y: 20, hotspot: true, w: 80, h: 80, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-fly-animate', type: 'tap-animate', targetId: 'pooh-fly', data: { animation: 'animate-fly', duration: 1200 } },
+        { id: 'pooh-fly-sound', type: 'tap-sound', targetId: 'pooh-fly', data: { say: 'Whooooa!' } },
+        { id: 'friends-fall-shake', type: 'tap-shake', targetId: 'friends-fall', data: {} },
+        { id: 'pop-effect-sparkle', type: 'tap-sparkle', targetId: 'pop-effect', data: {} },
+        { id: 'stars-spin', type: 'tap-spin', targetId: 'stars-dizzy', data: {} },
+      ],
+    },
+
+    // ── Page 10: A Lovely Day ──
+    {
+      bg: 'from-amber-200 to-pink-300',
+      image: '/arthurs-world/images/disney/pooh/page-10.png',
+      text: 'What a lovely day! Pooh and his friends shared honey together. Because friends are the best!',
+      elements: [
+        { id: 'pooh-end', x: 35, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
+        { id: 'piglet-end', x: 55, y: 55, hotspot: true, w: 90, h: 90, z: 2 },
+        { id: 'tigger-end', x: 72, y: 48, hotspot: true, w: 110, h: 110, z: 2 },
+        { id: 'honey-pot-full', x: 50, y: 70, hotspot: true, w: 90, h: 90, z: 2 },
+        { id: 'sunset', x: 50, y: 15, hotspot: true, w: 120, h: 120, z: 1 },
+        { id: 'heart-end', x: 50, y: 78, hotspot: true, w: 100, h: 100, z: 1 },
+      ],
+      interactions: [
+        { id: 'pooh-end-animate', type: 'tap-animate', targetId: 'pooh-end', data: { animation: 'animate-dance', duration: 1500 } },
+        { id: 'pooh-end-sound', type: 'tap-sound', targetId: 'pooh-end', data: { say: 'Silly old bear!' } },
+        { id: 'piglet-end-animate', type: 'tap-animate', targetId: 'piglet-end', data: { animation: 'animate-dance', duration: 1200 } },
+        { id: 'tigger-end-animate', type: 'tap-animate', targetId: 'tigger-end', data: { animation: 'animate-spring-in', duration: 1000 } },
+        { id: 'honey-pot-full-sparkle', type: 'tap-sparkle', targetId: 'honey-pot-full', data: {} },
+        { id: 'sunset-color', type: 'tap-color', targetId: 'sunset', data: { colors: ['#fbbf24', '#f97316', '#f43f5e', '#c084fc'] } },
+        { id: 'heart-end-sound', type: 'tap-sound', targetId: 'heart-end', data: { say: 'The End! Friends are the best!' } },
+      ],
+    },
+  ],
+};
+
+export default function WinnieThePooh() {
+  return <StoryBook story={storyData} />;
+}

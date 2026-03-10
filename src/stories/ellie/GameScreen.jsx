@@ -1,22 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-import { getImage, blobToUrl } from '../../lib/imageCache';
-import { CHAPTERS } from './storyData';
+import { useState, useCallback } from 'react';
+import { CHAPTERS, STATIC_ASSETS } from './storyData';
 import { useCelebration } from '../../components/CelebrationOverlay';
 import { useParticleBurst } from '../../components/ParticleBurst';
 import { playSuccess } from '../../hooks/useSound';
 
 export default function GameScreen({ chapter, GameComponent, onComplete }) {
-  const [bgUrl, setBgUrl] = useState(null);
+  const bgUrl = STATIC_ASSETS.gameBg(chapter + 1);
   const { celebrate, CelebrationLayer } = useCelebration();
   const { burst, ParticleLayer } = useParticleBurst();
   const [done, setDone] = useState(false);
   const data = CHAPTERS[chapter];
-
-  useEffect(() => {
-    getImage(data.gameBgKey).then(blob => {
-      if (blob) setBgUrl(blobToUrl(blob));
-    });
-  }, [data.gameBgKey]);
 
   const handleComplete = useCallback(() => {
     if (done) return;
@@ -37,17 +30,12 @@ export default function GameScreen({ chapter, GameComponent, onComplete }) {
   return (
     <div className="w-full h-full relative overflow-hidden">
       {/* Background */}
-      {bgUrl && (
-        <img
-          src={bgUrl}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          draggable={false}
-        />
-      )}
-      {!bgUrl && (
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-800 to-purple-900" />
-      )}
+      <img
+        src={bgUrl}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        draggable={false}
+      />
 
       {/* Game title */}
       <div className="absolute top-4 left-0 right-0 z-20 text-center">

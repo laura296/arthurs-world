@@ -1,0 +1,112 @@
+/**
+ * Video metadata for the offline video player.
+ * Videos are downloaded to public/videos/ by scripts/download-videos.mjs
+ */
+const videos = [
+  {
+    id: 'baby-shark',
+    title: 'Baby Shark',
+    src: '/arthurs-world/videos/baby-shark.mp4',
+    thumb: '/arthurs-world/videos/baby-shark.webp',
+    bg: 'from-yellow-400 to-orange-500',
+    color: '#f59e0b',
+  },
+  {
+    id: 'wheels-on-bus',
+    title: 'Wheels on the Bus',
+    src: '/arthurs-world/videos/wheels-on-bus.mp4',
+    thumb: '/arthurs-world/videos/wheels-on-bus.webp',
+    bg: 'from-red-400 to-rose-600',
+    color: '#f87171',
+  },
+  {
+    id: 'let-it-go',
+    title: 'Let It Go',
+    src: '/arthurs-world/videos/let-it-go.mp4',
+    thumb: '/arthurs-world/videos/let-it-go.webp',
+    bg: 'from-sky-300 to-blue-600',
+    color: '#38bdf8',
+  },
+  {
+    id: 'old-macdonald',
+    title: 'Old MacDonald',
+    src: '/arthurs-world/videos/old-macdonald.mp4',
+    thumb: '/arthurs-world/videos/old-macdonald.webp',
+    bg: 'from-green-400 to-emerald-600',
+    color: '#4ade80',
+  },
+  {
+    id: 'bath-song',
+    title: 'Bath Song',
+    src: '/arthurs-world/videos/bath-song.mp4',
+    thumb: '/arthurs-world/videos/bath-song.webp',
+    bg: 'from-cyan-400 to-blue-500',
+    color: '#22d3ee',
+  },
+  {
+    id: 'head-shoulders',
+    title: 'Head Shoulders',
+    src: '/arthurs-world/videos/head-shoulders.mp4',
+    thumb: '/arthurs-world/videos/head-shoulders.webp',
+    bg: 'from-amber-400 to-yellow-600',
+    color: '#fbbf24',
+  },
+  {
+    id: 'twinkle-star',
+    title: 'Twinkle Twinkle',
+    src: '/arthurs-world/videos/twinkle-star.mp4',
+    thumb: '/arthurs-world/videos/twinkle-star.webp',
+    bg: 'from-indigo-400 to-purple-600',
+    color: '#818cf8',
+  },
+  {
+    id: 'itsy-bitsy-spider',
+    title: 'Itsy Bitsy Spider',
+    src: '/arthurs-world/videos/itsy-bitsy-spider.mp4',
+    thumb: '/arthurs-world/videos/itsy-bitsy-spider.webp',
+    bg: 'from-pink-400 to-rose-600',
+    color: '#f472b6',
+  },
+  {
+    id: 'if-youre-happy',
+    title: "If You're Happy",
+    src: '/arthurs-world/videos/if-youre-happy.mp4',
+    thumb: '/arthurs-world/videos/if-youre-happy.webp',
+    bg: 'from-fuchsia-400 to-pink-600',
+    color: '#e879f9',
+  },
+  {
+    id: 'five-little-ducks',
+    title: 'Five Little Ducks',
+    src: '/arthurs-world/videos/five-little-ducks.mp4',
+    thumb: '/arthurs-world/videos/five-little-ducks.webp',
+    bg: 'from-violet-400 to-purple-600',
+    color: '#a78bfa',
+  },
+  {
+    id: 'yes-yes-vegetables',
+    title: 'Yes Yes Vegetables',
+    src: '/arthurs-world/videos/yes-yes-vegetables.mp4',
+    thumb: '/arthurs-world/videos/yes-yes-vegetables.webp',
+    bg: 'from-lime-400 to-green-600',
+    color: '#a3e635',
+  },
+  {
+    id: 'dinosaur-dance',
+    title: 'Dinosaur Dance',
+    src: '/arthurs-world/videos/dinosaur-dance.mp4',
+    thumb: '/arthurs-world/videos/dinosaur-dance.webp',
+    bg: 'from-emerald-400 to-teal-600',
+    color: '#34d399',
+  },
+  {
+    id: 'youre-welcome',
+    title: "You're Welcome",
+    src: '/arthurs-world/videos/youre-welcome.mp4',
+    thumb: '/arthurs-world/videos/youre-welcome.webp',
+    bg: 'from-teal-400 to-cyan-600',
+    color: '#2dd4bf',
+  },
+];
+
+export default videos;

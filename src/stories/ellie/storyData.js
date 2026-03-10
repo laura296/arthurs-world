@@ -114,7 +114,7 @@ export const SCREENS = [
   { type: 'game',  chapter: 3 },
 ];
 
-// ── All image keys (for cache checks) ──
+// ── All image keys (for cache checks — legacy, kept for reference) ──
 
 export function getAllImageKeys() {
   const keys = [`${VERSION}-character-sheet`];
@@ -126,3 +126,14 @@ export function getAllImageKeys() {
   FOLK_NAMES.forEach(name => keys.push(`${VERSION}-folk-${name}`));
   return keys;
 }
+
+// ── Static asset paths (pre-generated images in public/images/ellie/) ──
+const BASE = '/arthurs-world/images/ellie';
+
+export const STATIC_ASSETS = {
+  characterSheet: `${BASE}/character-sheet.png`,
+  scene: (i) => `${BASE}/scene-${i}.png`,
+  gameBg: (i) => `${BASE}/game-bg-${i}.png`,
+  animal: (name) => `${BASE}/animal-${name}.png`,
+  folk: (name) => `${BASE}/folk-${name}.png`,
+};

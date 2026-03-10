@@ -1,7 +1,5 @@
 import React from 'react';
 import StoryBook from '../components/StoryBook';
-import ForestScene from '../components/scenes/ForestScene';
-import CottageScene from '../components/scenes/CottageScene';
 
 const storyData = {
   title: 'Goldilocks',
@@ -10,50 +8,14 @@ const storyData = {
     // ── Page 1: Walk in the forest ──
     {
       bg: 'from-green-400 to-green-700',
-      scene: <ForestScene />,
       image: '/arthurs-world/images/goldilocks/page-1.png',
       text: 'Once upon a time, a little girl called Goldilocks went for a walk in the forest.',
       elements: [
-        {
-          id: 'girl-1',
-          x: 45,
-          y: 55,
-          content: <span>👧</span>,
-          size: 56,
-          z: 12,
-        },
-        {
-          id: 'flower-1',
-          x: 25,
-          y: 68,
-          content: <span>🌸</span>,
-          size: 40,
-          z: 10,
-        },
-        {
-          id: 'butterfly-1',
-          x: 65,
-          y: 35,
-          content: <span>🦋</span>,
-          size: 38,
-          z: 11,
-        },
-        {
-          id: 'tree-1',
-          x: 80,
-          y: 50,
-          content: <span>🌲</span>,
-          size: 52,
-          z: 8,
-        },
-        {
-          id: 'mushroom-1',
-          x: 14,
-          y: 72,
-          content: <span>🍄</span>,
-          size: 28,
-          z: 9,
-        },
+        { id: 'girl-1', x: 45, y: 55, hotspot: true, w: 140, h: 140, z: 12 },
+        { id: 'flower-1', x: 25, y: 68, hotspot: true, w: 80, h: 80, z: 10 },
+        { id: 'butterfly-1', x: 65, y: 35, hotspot: true, w: 75, h: 75, z: 11 },
+        { id: 'tree-1', x: 80, y: 50, hotspot: true, w: 120, h: 120, z: 8 },
+        { id: 'mushroom-1', x: 14, y: 72, hotspot: true, w: 60, h: 60, z: 9 },
       ],
       interactions: [
         {
@@ -84,7 +46,7 @@ const storyData = {
           id: 'int-1e',
           type: 'tap-reveal',
           targetId: 'mushroom-1',
-          data: { content: <span>🐛</span> },
+          data: { content: <span>A caterpillar!</span> },
         },
       ],
     },
@@ -92,50 +54,14 @@ const storyData = {
     // ── Page 2: Finding the cottage ──
     {
       bg: 'from-green-300 to-amber-200',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-2.png',
       text: 'She found a little cottage in the woods. Who lives here?',
       elements: [
-        {
-          id: 'cottage-2',
-          x: 50,
-          y: 40,
-          content: <span>🏠</span>,
-          size: 64,
-          z: 10,
-        },
-        {
-          id: 'girl-2',
-          x: 28,
-          y: 60,
-          content: <span>👧</span>,
-          size: 52,
-          z: 12,
-        },
-        {
-          id: 'door-2',
-          x: 50,
-          y: 58,
-          content: <span>🚪</span>,
-          size: 44,
-          z: 11,
-        },
-        {
-          id: 'window-2',
-          x: 68,
-          y: 34,
-          content: <span>🪟</span>,
-          size: 32,
-          z: 9,
-        },
-        {
-          id: 'bird-2',
-          x: 82,
-          y: 22,
-          content: <span>🐦</span>,
-          size: 28,
-          z: 11,
-        },
+        { id: 'cottage-2', x: 50, y: 40, hotspot: true, w: 150, h: 150, z: 10 },
+        { id: 'girl-2', x: 28, y: 60, hotspot: true, w: 130, h: 130, z: 12 },
+        { id: 'door-2', x: 50, y: 58, hotspot: true, w: 100, h: 100, z: 11 },
+        { id: 'window-2', x: 68, y: 34, hotspot: true, w: 70, h: 70, z: 9 },
+        { id: 'bird-2', x: 82, y: 22, hotspot: true, w: 65, h: 65, z: 11 },
       ],
       interactions: [
         {
@@ -154,7 +80,7 @@ const storyData = {
           id: 'int-2c',
           type: 'tap-reveal',
           targetId: 'door-2',
-          data: { content: <span>🔓</span> },
+          data: { content: <span>It is open!</span> },
         },
         {
           id: 'int-2d',
@@ -174,57 +100,21 @@ const storyData = {
     // ── Page 3: Three bowls of porridge ──
     {
       bg: 'from-amber-100 to-amber-300',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-3.png',
       text: 'Inside she found three bowls of porridge. Big, medium and small!',
       elements: [
-        {
-          id: 'bowl-big',
-          x: 25,
-          y: 50,
-          content: <span>🥣</span>,
-          size: 60,
-          z: 10,
-        },
-        {
-          id: 'bowl-medium',
-          x: 50,
-          y: 52,
-          content: <span>🥣</span>,
-          size: 48,
-          z: 10,
-        },
-        {
-          id: 'bowl-small',
-          x: 72,
-          y: 54,
-          content: <span>🥣</span>,
-          size: 38,
-          z: 10,
-        },
-        {
-          id: 'steam-3',
-          x: 25,
-          y: 36,
-          content: <span>♨️</span>,
-          size: 36,
-          z: 9,
-        },
-        {
-          id: 'ice-3',
-          x: 50,
-          y: 38,
-          content: <span>❄️</span>,
-          size: 26,
-          z: 9,
-        },
+        { id: 'bowl-big', x: 25, y: 50, hotspot: true, w: 140, h: 140, z: 10 },
+        { id: 'bowl-medium', x: 50, y: 52, hotspot: true, w: 110, h: 110, z: 10 },
+        { id: 'bowl-small', x: 72, y: 54, hotspot: true, w: 90, h: 90, z: 10 },
+        { id: 'steam-3', x: 25, y: 36, hotspot: true, w: 80, h: 80, z: 9 },
+        { id: 'ice-3', x: 50, y: 38, hotspot: true, w: 65, h: 65, z: 9 },
       ],
       interactions: [
         {
           id: 'int-3a',
           type: 'tap-swap',
           targetId: 'bowl-big',
-          data: { altContent: <span>🔥🥣🔥</span> },
+          data: { altContent: <span>Too hot!</span> },
         },
         {
           id: 'int-3a2',
@@ -236,7 +126,7 @@ const storyData = {
           id: 'int-3b',
           type: 'tap-swap',
           targetId: 'bowl-medium',
-          data: { altContent: <span>🧊🥣🧊</span> },
+          data: { altContent: <span>Too cold!</span> },
         },
         {
           id: 'int-3b2',
@@ -248,7 +138,7 @@ const storyData = {
           id: 'int-3c',
           type: 'tap-swap',
           targetId: 'bowl-small',
-          data: { altContent: <span>✨🥣✨</span> },
+          data: { altContent: <span>Just right!</span> },
         },
         {
           id: 'int-3c2',
@@ -274,42 +164,13 @@ const storyData = {
     // ── Page 4: Eating the porridge ──
     {
       bg: 'from-amber-100 to-amber-300',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-4.png',
       text: 'Goldilocks ate up all the little bowl of porridge. Yum yum!',
       elements: [
-        {
-          id: 'girl-4',
-          x: 40,
-          y: 48,
-          content: <span>👧</span>,
-          size: 56,
-          z: 12,
-        },
-        {
-          id: 'bowl-4',
-          x: 60,
-          y: 56,
-          content: <span>🥣</span>,
-          size: 42,
-          z: 10,
-        },
-        {
-          id: 'spoon-4',
-          x: 78,
-          y: 42,
-          content: <span>🥄</span>,
-          size: 36,
-          z: 11,
-        },
-        {
-          id: 'yum-4',
-          x: 28,
-          y: 32,
-          content: <span>😋</span>,
-          size: 30,
-          z: 9,
-        },
+        { id: 'girl-4', x: 40, y: 48, hotspot: true, w: 140, h: 140, z: 12 },
+        { id: 'bowl-4', x: 60, y: 56, hotspot: true, w: 100, h: 100, z: 10 },
+        { id: 'spoon-4', x: 78, y: 42, hotspot: true, w: 80, h: 80, z: 11 },
+        { id: 'yum-4', x: 28, y: 32, hotspot: true, w: 70, h: 70, z: 9 },
       ],
       interactions: [
         {
@@ -340,7 +201,7 @@ const storyData = {
           id: 'int-4e',
           type: 'tap-reveal',
           targetId: 'yum-4',
-          data: { content: <span>🤤</span> },
+          data: { content: <span>Yummy!</span> },
         },
       ],
     },
@@ -348,49 +209,20 @@ const storyData = {
     // ── Page 5: Three chairs ──
     {
       bg: 'from-amber-100 to-orange-200',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-5.png',
       text: 'Then she found three chairs. Big, medium and small!',
       elements: [
-        {
-          id: 'chair-big',
-          x: 22,
-          y: 48,
-          content: <span>🪑</span>,
-          size: 60,
-          z: 10,
-        },
-        {
-          id: 'chair-medium',
-          x: 48,
-          y: 50,
-          content: <span>🪑</span>,
-          size: 48,
-          z: 10,
-        },
-        {
-          id: 'chair-small',
-          x: 72,
-          y: 52,
-          content: <span>🪑</span>,
-          size: 38,
-          z: 10,
-        },
-        {
-          id: 'cushion-5',
-          x: 88,
-          y: 65,
-          content: <span>🟫</span>,
-          size: 24,
-          z: 9,
-        },
+        { id: 'chair-big', x: 22, y: 48, hotspot: true, w: 140, h: 140, z: 10 },
+        { id: 'chair-medium', x: 48, y: 50, hotspot: true, w: 110, h: 110, z: 10 },
+        { id: 'chair-small', x: 72, y: 52, hotspot: true, w: 90, h: 90, z: 10 },
+        { id: 'cushion-5', x: 88, y: 65, hotspot: true, w: 55, h: 55, z: 9 },
       ],
       interactions: [
         {
           id: 'int-5a',
           type: 'tap-swap',
           targetId: 'chair-big',
-          data: { altContent: <span>🪨🪑</span> },
+          data: { altContent: <span>Too hard!</span> },
         },
         {
           id: 'int-5a2',
@@ -402,7 +234,7 @@ const storyData = {
           id: 'int-5b',
           type: 'tap-swap',
           targetId: 'chair-medium',
-          data: { altContent: <span>☁️🪑</span> },
+          data: { altContent: <span>Too soft!</span> },
         },
         {
           id: 'int-5b2',
@@ -426,7 +258,7 @@ const storyData = {
           id: 'int-5e',
           type: 'tap-reveal',
           targetId: 'cushion-5',
-          data: { content: <span>🐁</span> },
+          data: { content: <span>A mouse!</span> },
         },
       ],
     },
@@ -434,50 +266,14 @@ const storyData = {
     // ── Page 6: Chair breaks ──
     {
       bg: 'from-amber-200 to-orange-300',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-6.png',
       text: 'Oh no! The little chair broke! CRASH!',
       elements: [
-        {
-          id: 'broken-6',
-          x: 50,
-          y: 55,
-          content: <span>💥🪑</span>,
-          size: 48,
-          z: 10,
-        },
-        {
-          id: 'girl-6',
-          x: 35,
-          y: 45,
-          content: <span>👧</span>,
-          size: 52,
-          z: 12,
-        },
-        {
-          id: 'star-6a',
-          x: 65,
-          y: 38,
-          content: <span>⭐</span>,
-          size: 32,
-          z: 11,
-        },
-        {
-          id: 'splinter-6',
-          x: 60,
-          y: 68,
-          content: <span>🪵</span>,
-          size: 28,
-          z: 9,
-        },
-        {
-          id: 'star-6b',
-          x: 72,
-          y: 50,
-          content: <span>⭐</span>,
-          size: 28,
-          z: 11,
-        },
+        { id: 'broken-6', x: 50, y: 55, hotspot: true, w: 110, h: 110, z: 10 },
+        { id: 'girl-6', x: 35, y: 45, hotspot: true, w: 130, h: 130, z: 12 },
+        { id: 'star-6a', x: 65, y: 38, hotspot: true, w: 70, h: 70, z: 11 },
+        { id: 'splinter-6', x: 60, y: 68, hotspot: true, w: 60, h: 60, z: 9 },
+        { id: 'star-6b', x: 72, y: 50, hotspot: true, w: 65, h: 65, z: 11 },
       ],
       interactions: [
         {
@@ -516,57 +312,21 @@ const storyData = {
     // ── Page 7: Three beds ──
     {
       bg: 'from-indigo-200 to-purple-300',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-7.png',
       text: 'Goldilocks felt sleepy. She found three beds upstairs.',
       elements: [
-        {
-          id: 'bed-big',
-          x: 20,
-          y: 50,
-          content: <span>🛏️</span>,
-          size: 58,
-          z: 10,
-        },
-        {
-          id: 'bed-medium',
-          x: 48,
-          y: 52,
-          content: <span>🛏️</span>,
-          size: 46,
-          z: 10,
-        },
-        {
-          id: 'bed-small',
-          x: 73,
-          y: 54,
-          content: <span>🛏️</span>,
-          size: 36,
-          z: 10,
-        },
-        {
-          id: 'moon-7',
-          x: 85,
-          y: 20,
-          content: <span>🌙</span>,
-          size: 44,
-          z: 8,
-        },
-        {
-          id: 'teddy-7',
-          x: 15,
-          y: 70,
-          content: <span>🧸</span>,
-          size: 26,
-          z: 9,
-        },
+        { id: 'bed-big', x: 20, y: 50, hotspot: true, w: 140, h: 140, z: 10 },
+        { id: 'bed-medium', x: 48, y: 52, hotspot: true, w: 110, h: 110, z: 10 },
+        { id: 'bed-small', x: 73, y: 54, hotspot: true, w: 90, h: 90, z: 10 },
+        { id: 'moon-7', x: 85, y: 20, hotspot: true, w: 100, h: 100, z: 8 },
+        { id: 'teddy-7', x: 15, y: 70, hotspot: true, w: 60, h: 60, z: 9 },
       ],
       interactions: [
         {
           id: 'int-7a',
           type: 'tap-swap',
           targetId: 'bed-big',
-          data: { altContent: <span>🪨🛏️</span> },
+          data: { altContent: <span>Too hard!</span> },
         },
         {
           id: 'int-7a2',
@@ -578,7 +338,7 @@ const storyData = {
           id: 'int-7b',
           type: 'tap-swap',
           targetId: 'bed-medium',
-          data: { altContent: <span>☁️🛏️</span> },
+          data: { altContent: <span>Too soft!</span> },
         },
         {
           id: 'int-7b2',
@@ -608,7 +368,7 @@ const storyData = {
           id: 'int-7e',
           type: 'tap-reveal',
           targetId: 'teddy-7',
-          data: { content: <span>💤</span> },
+          data: { content: <span>Zzz...</span> },
         },
       ],
     },
@@ -616,50 +376,14 @@ const storyData = {
     // ── Page 8: Fast asleep ──
     {
       bg: 'from-indigo-300 to-indigo-600',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-8.png',
       text: 'She fell fast asleep in the little bed. Zzzzz...',
       elements: [
-        {
-          id: 'sleeping-8',
-          x: 45,
-          y: 52,
-          content: <span>😴</span>,
-          size: 56,
-          z: 12,
-        },
-        {
-          id: 'zzz-8',
-          x: 60,
-          y: 35,
-          content: <span style={{ fontWeight: 'bold', color: '#c7d2fe' }}>Zzz</span>,
-          size: 36,
-          z: 11,
-        },
-        {
-          id: 'star-8a',
-          x: 25,
-          y: 22,
-          content: <span>⭐</span>,
-          size: 28,
-          z: 10,
-        },
-        {
-          id: 'star-8b',
-          x: 75,
-          y: 18,
-          content: <span>⭐</span>,
-          size: 24,
-          z: 10,
-        },
-        {
-          id: 'blanket-8',
-          x: 45,
-          y: 66,
-          content: <span>🟪</span>,
-          size: 22,
-          z: 9,
-        },
+        { id: 'sleeping-8', x: 45, y: 52, hotspot: true, w: 140, h: 140, z: 12 },
+        { id: 'zzz-8', x: 60, y: 35, hotspot: true, w: 80, h: 80, z: 11 },
+        { id: 'star-8a', x: 25, y: 22, hotspot: true, w: 65, h: 65, z: 10 },
+        { id: 'star-8b', x: 75, y: 18, hotspot: true, w: 60, h: 60, z: 10 },
+        { id: 'blanket-8', x: 45, y: 66, hotspot: true, w: 50, h: 50, z: 9 },
       ],
       interactions: [
         {
@@ -690,7 +414,7 @@ const storyData = {
           id: 'int-8e',
           type: 'tap-reveal',
           targetId: 'blanket-8',
-          data: { content: <span>🧶</span> },
+          data: { content: <span>A ball of yarn!</span> },
         },
       ],
     },
@@ -698,50 +422,14 @@ const storyData = {
     // ── Page 9: The three bears come home ──
     {
       bg: 'from-amber-200 to-amber-400',
-      scene: <CottageScene />,
       image: '/arthurs-world/images/goldilocks/page-9.png',
       text: "The three bears came home! Who's been eating my porridge?",
       elements: [
-        {
-          id: 'papa-bear',
-          x: 22,
-          y: 45,
-          content: <span>🐻</span>,
-          size: 64,
-          z: 12,
-        },
-        {
-          id: 'mama-bear',
-          x: 48,
-          y: 48,
-          content: <span>🐻</span>,
-          size: 52,
-          z: 12,
-        },
-        {
-          id: 'baby-bear',
-          x: 70,
-          y: 52,
-          content: <span>🧸</span>,
-          size: 42,
-          z: 12,
-        },
-        {
-          id: 'bowls-9',
-          x: 50,
-          y: 68,
-          content: <span>🥣🥣🥣</span>,
-          size: 30,
-          z: 10,
-        },
-        {
-          id: 'doorway-9',
-          x: 88,
-          y: 38,
-          content: <span>🚪</span>,
-          size: 34,
-          z: 8,
-        },
+        { id: 'papa-bear', x: 22, y: 45, hotspot: true, w: 160, h: 160, z: 12 },
+        { id: 'mama-bear', x: 48, y: 48, hotspot: true, w: 130, h: 130, z: 12 },
+        { id: 'baby-bear', x: 70, y: 52, hotspot: true, w: 100, h: 100, z: 12 },
+        { id: 'bowls-9', x: 50, y: 68, hotspot: true, w: 70, h: 70, z: 10 },
+        { id: 'doorway-9', x: 88, y: 38, hotspot: true, w: 75, h: 75, z: 8 },
       ],
       interactions: [
         {
@@ -798,50 +486,14 @@ const storyData = {
     // ── Page 10: Goldilocks runs home ──
     {
       bg: 'from-green-300 to-green-600',
-      scene: <ForestScene />,
       image: '/arthurs-world/images/goldilocks/page-10.png',
       text: 'Goldilocks woke up and ran all the way home! The end!',
       elements: [
-        {
-          id: 'girl-10',
-          x: 30,
-          y: 50,
-          content: <span>👧</span>,
-          size: 52,
-          z: 12,
-        },
-        {
-          id: 'bears-10',
-          x: 72,
-          y: 48,
-          content: <span>🐻👋</span>,
-          size: 48,
-          z: 11,
-        },
-        {
-          id: 'hearts-10',
-          x: 50,
-          y: 28,
-          content: <span>❤️</span>,
-          size: 36,
-          z: 10,
-        },
-        {
-          id: 'flowers-10',
-          x: 55,
-          y: 68,
-          content: <span>🌸</span>,
-          size: 34,
-          z: 9,
-        },
-        {
-          id: 'rainbow-10',
-          x: 50,
-          y: 18,
-          content: <span>🌈</span>,
-          size: 42,
-          z: 8,
-        },
+        { id: 'girl-10', x: 30, y: 50, hotspot: true, w: 130, h: 130, z: 12 },
+        { id: 'bears-10', x: 72, y: 48, hotspot: true, w: 120, h: 120, z: 11 },
+        { id: 'hearts-10', x: 50, y: 28, hotspot: true, w: 80, h: 80, z: 10 },
+        { id: 'flowers-10', x: 55, y: 68, hotspot: true, w: 75, h: 75, z: 9 },
+        { id: 'rainbow-10', x: 50, y: 18, hotspot: true, w: 100, h: 100, z: 8 },
       ],
       interactions: [
         {

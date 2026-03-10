@@ -7,6 +7,8 @@ import {
 } from '../hooks/useSound';
 import { useCelebration } from './CelebrationOverlay';
 import { useParticleBurst } from './ParticleBurst';
+import { speakText as speakNarration, stopSpeaking } from '../hooks/useNarration';
+import { playAnimalSound } from '../hooks/useAnimalSounds';
 
 /**
  * Interactive StoryBook engine.
@@ -43,17 +45,7 @@ function stopNarration() {
     currentAudio.currentTime = 0;
     currentAudio = null;
   }
-  window.speechSynthesis?.cancel();
-}
-
-function speakFallback(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 0.85;
-  u.pitch = 1.1;
-  u.lang = 'en-GB';
-  window.speechSynthesis.speak(u);
+  stopSpeaking();
 }
 
 function speak(text, audioSrc) {
@@ -63,10 +55,10 @@ function speak(text, audioSrc) {
     currentAudio = audio;
     audio.play().catch(() => {
       currentAudio = null;
-      speakFallback(text);
+      speakNarration(text);
     });
   } else {
-    speakFallback(text);
+    speakNarration(text);
   }
 }
 
@@ -211,8 +203,13 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           break;
         }
         case 'tap-sound': {
-          playBoing();
-          speak(inter.data.say);
+          // Prefer synthesised SFX, fall back to TTS
+          if (inter.data.sfx && playAnimalSound(inter.data.sfx)) {
+            playBoing();
+          } else {
+            playBoing();
+            speak(inter.data.say);
+          }
           setPageState(prev => ({
             ...prev,
             [el.id]: { ...prev[el.id], animating: true },
@@ -226,7 +223,12 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           break;
         }
         case 'tap-count': {
-          playPop();
+          // Play animal SFX if provided, otherwise default pop
+          if (inter.data.sfx) {
+            playAnimalSound(inter.data.sfx);
+          } else {
+            playPop();
+          }
           const max = inter.data.max || 5;
           const count = (state.count || 0) + 1;
           if (count >= max) playSuccess();

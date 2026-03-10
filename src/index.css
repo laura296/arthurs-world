@@ -134,3 +134,15 @@
   60% { transform: translateX(-2px); }
   80% { transform: translateX(1px); }
 }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-12deg); }
+  75% { transform: rotate(12deg); }
+}
+
+@keyframes celebrateStar {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  50% { transform: translateY(-40px) rotate(180deg) scale(1.3); opacity: 0.8; }
+  100% { transform: translateY(-80px) rotate(360deg) scale(0); opacity: 0; }
+}

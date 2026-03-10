@@ -13,6 +13,10 @@ const sectionMeta = {
   books:   { emoji: '📚', label: 'Books' },
   music:   { emoji: '🎵', label: 'Music' },
   videos:  { emoji: '📺', label: 'Videos' },
+  'disney-princesses': { emoji: '👸', label: 'Princesses' },
+  'disney-villains':   { emoji: '🦹', label: 'Villains' },
+  'disney-pooh':       { emoji: '🍯', label: 'Pooh' },
+  'disney-dalmatians': { emoji: '🐾', label: 'Puppies' },
 };
 
 /** Map section animationVibe to a Tailwind animation class */
@@ -74,8 +78,7 @@ export default function GameGrid() {
                     className="absolute inset-0 w-full h-full object-cover"
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
-                  {/* Emoji fallback visible when image hasn't loaded */}
-                  <span className="relative z-[1] text-5xl">{game.emoji}</span>
+                  {/* Title overlay on cover image */}
                   <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-black/70 to-transparent p-3">
                     <span className="text-sm font-heading text-white drop-shadow leading-tight">
                       {game.title}

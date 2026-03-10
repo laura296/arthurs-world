@@ -103,6 +103,7 @@ function createAmbient(section) {
     }
 
     case 'art': {
+      // Gentle rain: lowpass-filtered noise (soft patter, no hiss)
       const rainBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
       const rainData = rainBuffer.getChannelData(0);
       for (let i = 0; i < rainData.length; i++) rainData[i] = Math.random() * 2 - 1;
@@ -110,14 +111,27 @@ function createAmbient(section) {
       rain.buffer = rainBuffer;
       rain.loop = true;
       const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 3000;
-      filter.Q.value = 0.5;
+      filter.type = 'lowpass';
+      filter.frequency.value = 800;
       const g = ctx.createGain();
-      g.gain.value = 0.02;
+      g.gain.value = 0.015;
       rain.connect(filter).connect(g).connect(masterGain);
       rain.start();
-      nodes.push({ stop: () => rain.stop() });
+      // Occasional drip accents
+      const dripInterval = setInterval(() => {
+        if (isMuted()) return;
+        const osc = ctx.createOscillator();
+        const dg = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200 + Math.random() * 600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.06);
+        dg.gain.setValueAtTime(0.012, ctx.currentTime);
+        dg.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        osc.connect(dg).connect(masterGain);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      }, 3000 + Math.random() * 5000);
+      nodes.push({ stop: () => { rain.stop(); clearInterval(dripInterval); } });
       break;
     }
 

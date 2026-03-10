@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { getImage, blobToUrl } from '../../../lib/imageCache';
-import { VERSION, FOLK_NAMES } from '../storyData';
+import { useState, useCallback, useRef } from 'react';
+import { FOLK_NAMES, STATIC_ASSETS } from '../storyData';
 import { playSparkle, playTone } from '../../../hooks/useSound';
 
 const TARGET_POPS = 8;
@@ -24,27 +23,21 @@ function randomPositions() {
 }
 
 export default function PopTinyFolk({ onComplete, burst }) {
-  const [folk, setFolk] = useState([]);
   const [popped, setPopped] = useState(0);
   const completed = useRef(false);
 
-  // Initialize folk with positions and sprite URLs
-  useEffect(() => {
+  // Initialize folk with positions and static sprite URLs (no async loading)
+  const [folk, setFolk] = useState(() => {
     const positions = randomPositions();
-    Promise.all(
-      FOLK_NAMES.map(async (name, i) => {
-        const blob = await getImage(`${VERSION}-folk-${name}`);
-        return {
-          id: i,
-          name,
-          x: positions[i].x,
-          y: positions[i].y,
-          url: blob ? blobToUrl(blob) : null,
-          popped: false,
-        };
-      })
-    ).then(setFolk);
-  }, []);
+    return FOLK_NAMES.map((name, i) => ({
+      id: i,
+      name,
+      x: positions[i].x,
+      y: positions[i].y,
+      url: STATIC_ASSETS.folk(name),
+      popped: false,
+    }));
+  });
 
   const handlePop = useCallback((id) => {
     playSparkle();
