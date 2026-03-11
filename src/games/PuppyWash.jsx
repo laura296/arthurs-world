@@ -12,7 +12,25 @@ const BUBBLE_COLORS = ['#bfdbfe', '#93c5fd', '#ddd6fe', '#e9d5ff', '#fbcfe8'];
 const SPARKLE_COLORS = ['#fbbf24', '#f59e0b', '#fcd34d', '#fde68a'];
 const MUD_COLORS = ['#92400e', '#78350f', '#a16207', '#854d0e'];
 
-/** Image with emoji fallback */
+// ── Soft-edge scene image ────────────────────────────────────────────
+// Blends character images into the background by fading their edges
+// This is the single biggest quality improvement — no more "sticker" look
+function SceneImg({ src, alt, emoji, className = '', style = {}, soft = true }) {
+  const [failed, setFailed] = useState(false);
+  if (failed || !src) {
+    return <span className={`select-none ${className}`} style={{ fontSize: '4rem', lineHeight: 1, ...style }} role="img" aria-label={alt}>{emoji}</span>;
+  }
+  return (
+    <img src={src} alt={alt} className={className} draggable={false}
+         onError={() => setFailed(true)}
+         style={{
+           ...style,
+           ...(soft ? { maskImage: 'radial-gradient(ellipse 48% 48% at 50% 50%, black 55%, transparent 90%)', WebkitMaskImage: 'radial-gradient(ellipse 48% 48% at 50% 50%, black 55%, transparent 90%)' } : {}),
+         }} />
+  );
+}
+
+/** Simple image with emoji fallback (for UI items, not scene characters) */
 function FallbackImg({ src, alt, emoji, className = '', style = {} }) {
   const [failed, setFailed] = useState(false);
   if (failed || !src) {
@@ -79,36 +97,38 @@ function StoryIntro({ onFinish }) {
     <div ref={ref} className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10 cursor-pointer"
          onClick={handleTap}>
       <ParticleLayer />
-      <div className={`mb-6 transition-all duration-500 ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-        <FallbackImg src={page <= 1 ? `${IMG}/puppy-happy.png` : `${IMG}/puppy-muddy.png`}
+      {/* Big centered puppy — blended into scene */}
+      <div className={`mb-4 transition-all duration-500 ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+        <SceneImg src={page <= 1 ? `${IMG}/puppy-happy.png` : `${IMG}/puppy-muddy.png`}
              alt="Puppy" emoji={page <= 1 ? '🐶' : '😟'}
-             className="w-44 h-44 sm:w-56 sm:h-56 object-contain drop-shadow-lg" />
+             className="w-56 h-56 sm:w-72 sm:h-72 object-contain drop-shadow-xl puppy-breathe" />
       </div>
-      <div className={`max-w-md text-center transition-all duration-500 bg-white/70 backdrop-blur rounded-2xl px-5 py-3 shadow-lg ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`max-w-sm text-center transition-all duration-500 bg-white/80 backdrop-blur-md rounded-3xl px-6 py-4 shadow-xl border border-white/40 ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <p className="text-lg sm:text-xl font-heading text-amber-900 leading-relaxed">
           <span className="text-3xl mr-2">{s.emoji}</span>
           {s.text}
         </p>
       </div>
-      <p className="absolute bottom-8 text-sm text-white font-heading animate-pulse drop-shadow-md">
+      <p className="absolute bottom-8 text-sm text-white font-heading animate-pulse drop-shadow-lg"
+         style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
         {page < STORY_PAGES.length - 1 ? 'Tap to continue...' : 'Tap to start helping!'}
       </p>
       <div className="absolute bottom-16 flex gap-2">
         {STORY_PAGES.map((_, i) => (
-          <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all ${i === page ? 'bg-amber-500 scale-125' : 'bg-amber-300/40'}`} />
+          <div key={i} className={`w-3 h-3 rounded-full transition-all shadow-sm ${i === page ? 'bg-white scale-125' : 'bg-white/30'}`} />
         ))}
       </div>
     </div>
   );
 }
 
-// ── Floating Bubbles (persistent decoration during/after wash) ─────
+// ── Floating Bubbles ─────────────────────────────────────────────────
 function FloatingBubbles({ count, active }) {
   const bubbles = useMemo(() =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
       x: 5 + Math.random() * 90,
-      size: 12 + Math.random() * 28,
+      size: 16 + Math.random() * 36,
       delay: Math.random() * 3,
       dur: 3 + Math.random() * 4,
       drift: -20 + Math.random() * 40,
@@ -122,8 +142,9 @@ function FloatingBubbles({ count, active }) {
              style={{
                left: `${b.x}%`, bottom: '-5%',
                width: `${b.size}px`, height: `${b.size}px`,
-               background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), rgba(147,197,253,0.3), transparent)`,
-               border: '1px solid rgba(255,255,255,0.3)',
+               background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7) 0%, rgba(147,197,253,0.25) 40%, transparent 70%)`,
+               boxShadow: 'inset -2px -3px 6px rgba(147,197,253,0.15), 0 0 3px rgba(255,255,255,0.2)',
+               border: '1px solid rgba(255,255,255,0.25)',
                animation: `bubble-float ${b.dur}s ease-out infinite`,
                animationDelay: `${b.delay}s`,
                '--drift': `${b.drift}px`,
@@ -134,12 +155,11 @@ function FloatingBubbles({ count, active }) {
 }
 
 // ── Soap Pump Step ──────────────────────────────────────────────────
-// Static soap bottle on the right. Tap the pump top to squirt soap down.
-// After 5 pumps, bubbles fill the screen and step completes.
+// The whole soap bottle is tappable. Puppy sits big and centered in the bath.
+// Foam builds up dramatically, puppy progressively gets cleaner.
 function SoapPumpStep({ onComplete }) {
   const [pumps, setPumps] = useState(0);
   const [pumping, setPumping] = useState(false);
-  const [squirts, setSquirts] = useState([]); // falling soap drops
   const [done, setDone] = useState(false);
   const { burst, ParticleLayer } = useParticleBurst();
   const containerRef = useRef(null);
@@ -149,12 +169,13 @@ function SoapPumpStep({ onComplete }) {
     if (pumps >= TARGET && !done) {
       setDone(true);
       playSparkle();
-      // Big bubble explosion
       const rect = containerRef.current?.getBoundingClientRect();
       if (rect) {
-        burst(rect.width / 2, rect.height * 0.4, { colors: BUBBLE_COLORS, count: 25, spread: 100 });
+        burst(rect.width / 2, rect.height * 0.35, { colors: BUBBLE_COLORS, count: 30, spread: 120 });
+        setTimeout(() => burst(rect.width * 0.3, rect.height * 0.5, { colors: BUBBLE_COLORS, count: 15, spread: 60 }), 200);
+        setTimeout(() => burst(rect.width * 0.7, rect.height * 0.5, { colors: BUBBLE_COLORS, count: 15, spread: 60 }), 400);
       }
-      setTimeout(onComplete, 1500);
+      setTimeout(onComplete, 1800);
     }
   }, [pumps, done, onComplete, burst]);
 
@@ -162,128 +183,97 @@ function SoapPumpStep({ onComplete }) {
     if (done || pumping) return;
     setPumping(true);
     playPop();
-
-    // Add a squirt drop
-    setSquirts(prev => [...prev, { id: Date.now(), x: 68 + Math.random() * 4 }]);
-
-    // Bubble burst at nozzle area
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
-      burst(rect.width * 0.70, rect.height * 0.42, { colors: BUBBLE_COLORS, count: 6, spread: 30 });
+      // Burst from near the soap bottle toward the puppy
+      burst(rect.width * 0.65, rect.height * 0.45, { colors: BUBBLE_COLORS, count: 8, spread: 50 });
     }
-
     setPumps(p => p + 1);
     setTimeout(() => setPumping(false), 400);
   }, [done, pumping, burst]);
 
-  // Clean up old squirts
-  useEffect(() => {
-    if (squirts.length > 10) {
-      setSquirts(prev => prev.slice(-8));
-    }
-  }, [squirts]);
+  const pumpRatio = pumps / TARGET;
 
   return (
     <div ref={containerRef} className="absolute inset-0 z-10">
       <ParticleLayer />
 
-      {/* Title */}
-      <div className="absolute top-4 left-16 right-16 z-20 text-center bg-white/70 backdrop-blur rounded-2xl px-4 py-2 shadow-lg">
-        <h2 className="text-lg font-heading text-amber-900">Bath Time!</h2>
-        <p className="text-xs text-amber-700 font-heading">Press the soap to wash puppy!</p>
+      {/* Title — minimal, top center */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
+        <p className="text-sm font-heading text-amber-900">
+          {done ? '✨ So clean!' : 'Tap the soap! 🧴'}
+        </p>
       </div>
 
-      {/* Muddy puppy on the left — gets progressively covered in foam */}
-      <div className="absolute z-[5]" style={{ left: '10%', top: '25%' }}>
-        {/* Muddy puppy fades out as soapy puppy fades in */}
-        <div className="relative w-40 h-40 sm:w-52 sm:h-52">
-          <FallbackImg src={`${IMG}/puppy-muddy.png`} alt="Puppy" emoji="🐶"
-               className="absolute inset-0 w-full h-full object-contain drop-shadow-lg transition-opacity duration-500"
-               style={{ opacity: 1 - (pumps / TARGET) * 0.7 }} />
-          <FallbackImg src={`${IMG}/puppy-soapy.png`} alt="" emoji=""
-               className="absolute inset-0 w-full h-full object-contain drop-shadow-lg transition-opacity duration-500"
-               style={{ opacity: (pumps / TARGET) * 0.9 }} />
-          {/* Foam layer — grows with each pump */}
+      {/* ── Puppy — BIG and centered, sitting in the bath ── */}
+      <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '12%' }}>
+        <div className="relative">
+          {/* Muddy → soapy crossfade */}
+          <SceneImg src={`${IMG}/puppy-muddy.png`} alt="Puppy" emoji="🐶"
+               className={`w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-700 ${pumping ? 'puppy-wiggle' : 'puppy-breathe'}`}
+               style={{ opacity: 1 - pumpRatio * 0.85 }} />
+          <SceneImg src={`${IMG}/puppy-soapy.png`} alt="" emoji=""
+               className={`absolute inset-0 w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-700 ${pumping ? 'puppy-wiggle' : 'puppy-breathe'}`}
+               style={{ opacity: pumpRatio * 0.95 }} />
+
+          {/* Foam accumulation — big soft blobs that build up */}
           {pumps > 0 && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full"
-                 style={{ opacity: Math.min(pumps / TARGET, 0.8) }}>
-              {/* Big foam blobs */}
-              {Array.from({ length: pumps * 4 }, (_, i) => (
-                <div key={i} className="absolute rounded-full animate-pulse"
-                     style={{
-                       width: `${14 + (i % 3) * 10}px`,
-                       height: `${14 + (i % 3) * 10}px`,
-                       background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(186,230,253,0.5))',
-                       left: `${5 + (i * 17) % 85}%`,
-                       top: `${10 + (i * 23) % 75}%`,
-                       animationDelay: `${(i * 0.2) % 1}s`,
-                     }} />
-              ))}
+            <div className="absolute inset-0 pointer-events-none" style={{ opacity: Math.min(pumpRatio * 1.2, 1) }}>
+              {Array.from({ length: pumps * 5 }, (_, i) => {
+                const size = 18 + (i % 4) * 12;
+                return (
+                  <div key={i} className="absolute rounded-full bubble-wobble"
+                       style={{
+                         width: `${size}px`, height: `${size}px`,
+                         background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,0.85), rgba(186,230,253,0.4) 60%, transparent)',
+                         boxShadow: 'inset -1px -2px 4px rgba(147,197,253,0.2)',
+                         left: `${8 + (i * 13 + i * i * 7) % 80}%`,
+                         top: `${15 + (i * 17 + i * i * 3) % 65}%`,
+                         animationDelay: `${(i * 0.15) % 2}s`,
+                       }} />
+                );
+              })}
             </div>
           )}
         </div>
       </div>
 
-      {/* Soap bottle on the right — static, tap the top to pump */}
-      <div className="absolute z-20" style={{ right: '8%', top: '28%' }}>
-        {/* Pump top (tappable) */}
+      {/* ── Soap bottle — right side, big and tappable ── */}
+      <div className="absolute z-20" style={{ right: '4%', bottom: '18%' }}>
         <button onClick={handlePump}
-          className={`relative cursor-pointer active:scale-95 transition-transform ${!done ? 'hover:scale-105' : ''}`}
+          className={`relative cursor-pointer transition-transform duration-200 ${!done ? 'hover:scale-110 active:scale-90' : 'opacity-60'}`}
           disabled={done}>
-          <div className={`transition-transform duration-150 ${pumping ? 'translate-y-2' : ''}`}>
-            {/* Pump nozzle */}
-            <div className="w-6 h-8 mx-auto bg-gradient-to-b from-gray-300 to-gray-400 rounded-t-lg shadow-md" />
-            {/* Pump head (the pressable bit) */}
-            <div className="w-14 h-5 mx-auto bg-gradient-to-b from-pink-300 to-pink-400 rounded-full shadow-md
-                            border border-pink-200/50 flex items-center justify-center">
-              <span className="text-[8px] font-heading text-pink-700">PUSH</span>
-            </div>
-          </div>
-          {/* Bottle body */}
-          <div className="w-16 h-24 sm:w-20 sm:h-28 mx-auto mt-[-2px]">
+          <div className={`transition-transform duration-150 ${pumping ? 'scale-90 translate-y-1' : ''}`}>
             <FallbackImg src={`${IMG}/soap-bottle.png`} alt="Soap" emoji="🧴"
-                 className="w-full h-full object-contain drop-shadow-lg" />
+                 className="w-24 h-32 sm:w-28 sm:h-36 object-contain drop-shadow-xl" />
           </div>
+          {/* Tap hint glow */}
+          {!done && pumps === 0 && (
+            <div className="absolute inset-0 rounded-3xl animate-pulse"
+                 style={{ boxShadow: '0 0 20px 8px rgba(236,72,153,0.3)' }} />
+          )}
         </button>
+      </div>
 
-        {/* Soap squirt drops falling from nozzle */}
-        {squirts.map(s => (
-          <div key={s.id} className="absolute pointer-events-none animate-soap-squirt"
-               style={{ left: '30%', top: '45%' }}>
-            <div className="w-3 h-4 rounded-full bg-gradient-to-b from-pink-200 to-pink-300 opacity-80" />
-          </div>
+      {/* ── Progress — paw prints filling up ── */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3
+                      bg-white/70 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/30">
+        {Array.from({ length: TARGET }).map((_, i) => (
+          <span key={i} className={`text-2xl transition-all duration-500 ${i < pumps ? 'scale-110 drop-shadow-md' : 'opacity-25 scale-75 grayscale'}`}>
+            {i < pumps ? '🐾' : '🐾'}
+          </span>
         ))}
       </div>
 
-      {/* Pump counter — filling meter */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
-        <div className="flex gap-2">
-          {Array.from({ length: TARGET }).map((_, i) => (
-            <div key={i}
-              className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-500
-                         ${i < pumps
-                           ? 'bg-blue-200/80 border-blue-300 scale-110 shadow-md shadow-blue-200/50'
-                           : 'bg-white/20 border-white/30 scale-90'}`}>
-              {i < pumps ? (
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-white/80 to-blue-200/60"
-                     style={{ border: '1px solid rgba(255,255,255,0.5)' }} />
-              ) : null}
-            </div>
-          ))}
-        </div>
-        <span className="text-xs font-heading text-white drop-shadow-md">
-          {done ? 'So many bubbles!' : `Pump ${pumps}/${TARGET}`}
-        </span>
-      </div>
-
       {/* Bubble flood when done */}
-      <FloatingBubbles count={done ? 30 : pumps * 4} active={pumps > 0} />
+      <FloatingBubbles count={done ? 40 : pumps * 5} active={pumps > 0} />
     </div>
   );
 }
 
 // ── Rub/Swipe Step (scrub, dry, brush) ──────────────────────────────
-// Swipe/rub finger over the puppy to scrub/dry/brush it
+// Big centered puppy. Rub finger over it. Progressive crossfade from
+// startImg → puppyImg as progress increases. Puppy wiggles when touched.
 function RubStep({ config, onComplete }) {
   const containerRef = useRef(null);
   const puppyRef = useRef(null);
@@ -294,24 +284,29 @@ function RubStep({ config, onComplete }) {
   const { burst, ParticleLayer } = useParticleBurst();
 
   const target = config.target;
+  const ratio = progress / target;
 
   useEffect(() => {
     if (progress >= target && !done) {
       setDone(true);
       playSuccess();
-      setTimeout(onComplete, 800);
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        burst(rect.width / 2, rect.height * 0.3, { colors: config.particles, count: 20, spread: 80 });
+      }
+      setTimeout(onComplete, 1000);
     }
-  }, [progress, target, done, onComplete]);
+  }, [progress, target, done, onComplete, burst, config.particles]);
 
   const isOverPuppy = useCallback((clientX, clientY) => {
     const el = puppyRef.current;
     if (!el) return false;
     const r = el.getBoundingClientRect();
-    const pad = 30;
+    const pad = 40;
     return clientX >= r.left - pad && clientX <= r.right + pad && clientY >= r.top - pad && clientY <= r.bottom + pad;
   }, []);
 
-  const handlePointerDown = useCallback((e) => {
+  const handlePointerDown = useCallback(() => {
     if (done) return;
     setTouching(true);
   }, [done]);
@@ -321,12 +316,12 @@ function RubStep({ config, onComplete }) {
     e.preventDefault();
     if (isOverPuppy(e.clientX, e.clientY)) {
       const now = Date.now();
-      if (now - lastBurstTime.current > 350) {
+      if (now - lastBurstTime.current > 300) {
         lastBurstTime.current = now;
         playPop();
         const rect = containerRef.current?.getBoundingClientRect();
         if (rect) {
-          burst(e.clientX - rect.left, e.clientY - rect.top, { colors: config.particles, count: 5, spread: 40 });
+          burst(e.clientX - rect.left, e.clientY - rect.top, { colors: config.particles, count: 6, spread: 50 });
         }
         setProgress(p => Math.min(p + 1, target));
       }
@@ -347,41 +342,46 @@ function RubStep({ config, onComplete }) {
       <ParticleLayer />
 
       {/* Title */}
-      <div className="absolute top-4 left-16 right-16 z-20 text-center bg-white/70 backdrop-blur rounded-2xl px-4 py-2 shadow-lg">
-        <h2 className="text-lg font-heading text-amber-900">{config.title}</h2>
-        <p className="text-xs text-amber-700 font-heading">{config.voice}</p>
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
+        <p className="text-sm font-heading text-amber-900">
+          {done ? '✨ All done!' : config.voice}
+        </p>
       </div>
 
-      {/* Puppy — crossfades from startImg to endImg as progress increases */}
+      {/* ── Big centered puppy — crossfading ── */}
       <div ref={puppyRef}
            className={`absolute left-1/2 -translate-x-1/2 z-[5] transition-transform duration-200
-                       ${touching ? 'scale-105' : ''} ${done ? 'animate-bounce' : ''}`}
-           style={{ top: '18%' }}>
-        <div className="relative w-44 h-44 sm:w-56 sm:h-56">
+                       ${done ? 'animate-bounce' : ''}`}
+           style={{ top: '10%' }}>
+        <div className="relative">
           {config.startImg && (
-            <FallbackImg src={config.startImg} alt="Puppy" emoji={config.puppyEmoji}
-                 className="absolute inset-0 w-full h-full object-contain drop-shadow-lg transition-opacity duration-300"
-                 style={{ opacity: 1 - progress / target }} />
+            <SceneImg src={config.startImg} alt="Puppy" emoji={config.puppyEmoji}
+                 className={`w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-500 ${touching ? 'puppy-wiggle' : 'puppy-breathe'}`}
+                 style={{ opacity: 1 - ratio }} />
           )}
-          <FallbackImg src={config.puppyImg} alt="Puppy" emoji={config.puppyEmoji}
-               className="absolute inset-0 w-full h-full object-contain drop-shadow-lg transition-opacity duration-300"
-               style={{ opacity: config.startImg ? progress / target : 1 }} />
+          <SceneImg src={config.puppyImg} alt="Puppy" emoji={config.puppyEmoji}
+               className={`${config.startImg ? 'absolute inset-0' : ''} w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-500 ${touching ? 'puppy-wiggle' : 'puppy-breathe'}`}
+               style={{ opacity: config.startImg ? ratio : 1 }} />
         </div>
       </div>
 
-      {/* Tool display */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20">
-        <div className="bg-white/50 backdrop-blur rounded-2xl p-3 flex items-center gap-2 shadow-md">
+      {/* Tool + instruction — bottom area */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-white/30 flex items-center gap-3">
           <FallbackImg src={config.toolImg} alt="" emoji={config.toolEmoji}
-               className="w-10 h-10 object-contain" style={{ fontSize: '2rem' }} />
-          <span className="text-xs font-heading text-amber-700/70">Rub puppy gently!</span>
+               className="w-12 h-12 object-contain" style={{ fontSize: '2.5rem' }} />
+          <div>
+            <p className="font-heading text-amber-900 text-sm">{config.title}</p>
+            <p className="text-xs text-amber-700/60">Rub your finger over puppy!</p>
+          </div>
         </div>
       </div>
 
-      {/* Progress hearts */}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
+      {/* Progress bar — hearts */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20
+                      bg-white/60 backdrop-blur-md rounded-full px-4 py-1.5 shadow-lg border border-white/30">
         {Array.from({ length: target }, (_, i) => (
-          <span key={i} className={`text-xl transition-all duration-300 ${i < progress ? 'scale-125' : 'opacity-30 scale-75'}`}>
+          <span key={i} className={`text-xl transition-all duration-300 ${i < progress ? 'scale-125' : 'opacity-25 scale-75'}`}>
             {i < progress ? '❤️' : '🤍'}
           </span>
         ))}
@@ -390,51 +390,33 @@ function RubStep({ config, onComplete }) {
   );
 }
 
-// ── Gentle touch guard ──────────────────────────────────────────────
-function useGentleTouch() {
-  const taps = useRef([]);
-  const [showGentle, setShowGentle] = useState(false);
-
-  const recordTap = useCallback(() => {
-    const now = Date.now();
-    taps.current = [...taps.current.filter(t => now - t < 800), now];
-    if (taps.current.length >= 4) {
-      setShowGentle(true);
-      taps.current = [];
-      setTimeout(() => setShowGentle(false), 2000);
-      return true;
-    }
-    return false;
-  }, []);
-
-  return { showGentle, recordTap };
-}
-
 // ── Select Screen ───────────────────────────────────────────────────
 function SelectScreen({ onSelect }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 opacity-40 pointer-events-none">
-        <FallbackImg src={`${IMG}/pongo.png`} alt="" emoji="🐕‍🦺" className="w-14 h-14 sm:w-20 sm:h-20 object-contain" style={{ fontSize: '2.5rem' }} />
-        <FallbackImg src={`${IMG}/perdita.png`} alt="" emoji="🐕" className="w-14 h-14 sm:w-20 sm:h-20 object-contain" style={{ fontSize: '2.5rem' }} />
+      {/* Parent dogs watching from above */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 opacity-30 pointer-events-none">
+        <SceneImg src={`${IMG}/pongo.png`} alt="" emoji="🐕‍🦺" className="w-16 h-16 sm:w-24 sm:h-24 object-contain" style={{ fontSize: '2.5rem' }} />
+        <SceneImg src={`${IMG}/perdita.png`} alt="" emoji="🐕" className="w-16 h-16 sm:w-24 sm:h-24 object-contain" style={{ fontSize: '2.5rem' }} />
       </div>
 
-      <div className="bg-white/70 backdrop-blur rounded-2xl px-6 py-3 mb-4 shadow-lg text-center">
+      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-4 shadow-xl border border-white/40 text-center">
         <h2 className="text-xl sm:text-2xl font-heading text-amber-900">
           Which puppy needs help?
         </h2>
-        <p className="text-sm text-amber-700 font-heading">Let's help a puppy!</p>
+        <p className="text-sm text-amber-700 font-heading mt-1">Choose a puppy to care for</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
         {PUPPIES.map(puppy => (
           <button key={puppy.id} onClick={() => { playNavigate(); onSelect(puppy); }}
-            className="flex-1 bg-white/60 backdrop-blur rounded-3xl p-4 border-2 border-amber-200/50
+            className="flex-1 bg-white/60 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30
                        hover:bg-white/80 hover:scale-105 active:scale-95 transition-all
-                       flex flex-col items-center gap-2 shadow-lg cursor-pointer">
-            <FallbackImg src={puppy.img} alt={puppy.name} emoji={puppy.emoji} className="w-24 h-24 sm:w-28 sm:h-28 object-contain" />
-            <span className="font-heading text-amber-800 text-base">{puppy.name}</span>
-            <span className="text-xs text-amber-600/60">{puppy.label}</span>
+                       flex flex-col items-center gap-2 shadow-xl cursor-pointer">
+            <SceneImg src={puppy.img} alt={puppy.name} emoji={puppy.emoji}
+                 className="w-28 h-28 sm:w-32 sm:h-32 object-contain" />
+            <span className="font-heading text-amber-900 text-base">{puppy.name}</span>
+            <span className="text-xs text-amber-700/60">{puppy.label}</span>
           </button>
         ))}
       </div>
@@ -454,25 +436,26 @@ function ChoiceScreen({ items, title, subtitle, onChoose }) {
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
-      <div className="bg-white/70 backdrop-blur rounded-2xl px-6 py-3 mb-4 shadow-lg text-center">
+      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-4 shadow-xl border border-white/40 text-center">
         <h2 className="text-xl sm:text-2xl font-heading text-amber-900">{title}</h2>
-        <p className="text-sm text-amber-700 font-heading">{subtitle}</p>
+        <p className="text-sm text-amber-700 font-heading mt-1">{subtitle}</p>
       </div>
 
       <div className="flex flex-wrap justify-center gap-4">
         {items.map(item => (
           <button key={item.id} onClick={() => !chosen && handleChoose(item)}
-            className={`bg-white/60 backdrop-blur rounded-3xl p-4 border-2 shadow-lg
+            className={`bg-white/60 backdrop-blur-md rounded-3xl p-4 border-2 shadow-xl
                        flex flex-col items-center gap-2 transition-all cursor-pointer
                        w-28 sm:w-32
                        ${chosen === item.id
                          ? 'border-pink-400 scale-110 bg-pink-50/80 shadow-pink-200'
                          : chosen
-                         ? 'border-amber-200/30 opacity-40 scale-90'
-                         : 'border-amber-200/50 hover:bg-white/80 hover:scale-105 active:scale-95'
+                         ? 'border-white/20 opacity-40 scale-90'
+                         : 'border-white/30 hover:bg-white/80 hover:scale-105 active:scale-95'
                        }`}>
-            <FallbackImg src={item.img} alt={item.label} emoji={item.emoji} className="w-16 h-16 sm:w-20 sm:h-20 object-contain" />
-            <span className="font-heading text-amber-800 text-sm">{item.label}</span>
+            <SceneImg src={item.img} alt={item.label} emoji={item.emoji}
+                 className="w-18 h-18 sm:w-22 sm:h-22 object-contain" soft={false} />
+            <span className="font-heading text-amber-900 text-sm">{item.label}</span>
           </button>
         ))}
       </div>
@@ -490,9 +473,9 @@ function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
     playCelebrate();
     const rect = ref.current?.getBoundingClientRect();
     if (rect) {
-      burst(rect.width / 2, rect.height * 0.35, { colors: HEART_COLORS, count: 20, spread: 100 });
-      setTimeout(() => burst(rect.width * 0.3, rect.height * 0.4, { colors: SPARKLE_COLORS, count: 12, spread: 60 }), 400);
-      setTimeout(() => burst(rect.width * 0.7, rect.height * 0.4, { colors: SPARKLE_COLORS, count: 12, spread: 60 }), 600);
+      burst(rect.width / 2, rect.height * 0.3, { colors: HEART_COLORS, count: 25, spread: 120 });
+      setTimeout(() => burst(rect.width * 0.25, rect.height * 0.35, { colors: SPARKLE_COLORS, count: 15, spread: 70 }), 400);
+      setTimeout(() => burst(rect.width * 0.75, rect.height * 0.35, { colors: SPARKLE_COLORS, count: 15, spread: 70 }), 600);
     }
     setTimeout(() => setShowBadge(true), 1200);
   }, [burst]);
@@ -500,28 +483,28 @@ function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
   return (
     <div ref={ref} className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
       <ParticleLayer />
-      <div className="relative mb-4 animate-bounce" style={{ animationDuration: '1.5s' }}>
-        <FallbackImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🎉"
-             className="w-36 h-36 sm:w-44 sm:h-44 object-contain drop-shadow-lg" />
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className="absolute text-2xl animate-float-up"
+      <div className="relative mb-4" style={{ animation: 'celebrate-bounce 1.5s ease-in-out infinite' }}>
+        <SceneImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🎉"
+             className="w-52 h-52 sm:w-64 sm:h-64 object-contain drop-shadow-xl" />
+        {[...Array(6)].map((_, i) => (
+          <span key={i} className="absolute text-2xl animate-float-up pointer-events-none"
                 style={{
-                  left: `${20 + i * 15}%`, top: `${10 + Math.random() * 20}%`,
+                  left: `${15 + i * 14}%`, top: `${5 + Math.random() * 20}%`,
                   animationDelay: `${i * 0.3}s`, animationDuration: `${1.5 + Math.random()}s`,
                 }}>❤️</span>
         ))}
       </div>
-      <div className="bg-white/70 backdrop-blur rounded-2xl px-6 py-3 mb-2 shadow-lg text-center">
+      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-3 shadow-xl border border-white/40 text-center">
         <h2 className="text-2xl sm:text-3xl font-heading text-amber-900">You Were Kind!</h2>
-        <p className="text-base text-amber-700 font-heading">Puppy feels happy and safe!</p>
+        <p className="text-base text-amber-700 font-heading mt-1">Puppy feels happy and safe</p>
       </div>
       {showBadge && (
         <div className="animate-spring-in mb-4">
-          <div className="bg-gradient-to-b from-amber-50 to-pink-50 rounded-2xl px-6 py-3 border-2 border-amber-300/50 shadow-lg flex items-center gap-3">
-            <FallbackImg src={`${IMG}/heart-badge.png`} alt="Kind Helper" emoji="💖" className="w-12 h-12 object-contain" />
+          <div className="bg-gradient-to-b from-amber-50 to-pink-50 rounded-2xl px-6 py-3 border-2 border-amber-200/50 shadow-xl flex items-center gap-3">
+            <FallbackImg src={`${IMG}/heart-badge.png`} alt="Kind Helper" emoji="💖" className="w-14 h-14 object-contain" />
             <div>
-              <p className="font-heading text-amber-800 text-sm">Kind Helper Heart</p>
-              <p className="text-xs text-amber-600/60">You earned a badge!</p>
+              <p className="font-heading text-amber-900 text-sm">Kind Helper Heart</p>
+              <p className="text-xs text-amber-700/60">You earned a badge!</p>
             </div>
           </div>
         </div>
@@ -529,12 +512,12 @@ function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
       <div className="flex gap-3">
         <button onClick={() => { playNavigate(); onFinish('room'); }}
           className="bg-pink-500 hover:bg-pink-400 active:scale-95 text-white font-heading text-base
-                     px-6 py-3 rounded-full shadow-lg transition-all">
+                     px-6 py-3 rounded-full shadow-xl transition-all border border-pink-400/50">
           Puppy Room 🏠
         </button>
         <button onClick={() => { playNavigate(); onFinish('again'); }}
           className="bg-amber-500 hover:bg-amber-400 active:scale-95 text-white font-heading text-base
-                     px-6 py-3 rounded-full shadow-lg transition-all">
+                     px-6 py-3 rounded-full shadow-xl transition-all border border-amber-400/50">
           Help Another! 🐾
         </button>
       </div>
@@ -553,27 +536,32 @@ function PuppyRoom({ puppies, onBack }) {
       <div className="relative z-10 p-4 h-full flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <button onClick={() => { playNavigate(); onBack(); }}
-            className="bg-white/70 backdrop-blur rounded-full px-4 py-2 font-heading text-amber-800
-                       text-sm hover:bg-white/90 active:scale-95 transition-all shadow">
+            className="bg-white/80 backdrop-blur-md rounded-full px-4 py-2 font-heading text-amber-900
+                       text-sm hover:bg-white/90 active:scale-95 transition-all shadow-lg border border-white/40">
             ← Back
           </button>
-          <h2 className="font-heading text-xl text-amber-900 bg-white/70 backdrop-blur rounded-full px-4 py-1 shadow">Puppy Room</h2>
+          <h2 className="font-heading text-xl text-amber-900 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
+            Puppy Room
+          </h2>
           <div className="w-16" />
         </div>
         {puppies.length === 0 ? (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-amber-700/60 font-heading text-center">Help some puppies and they'll appear here!</p>
+            <div className="bg-white/70 backdrop-blur-md rounded-3xl px-8 py-6 shadow-xl border border-white/30 text-center">
+              <p className="text-amber-700 font-heading text-lg">Help some puppies and</p>
+              <p className="text-amber-700 font-heading text-lg">they'll appear here!</p>
+            </div>
           </div>
         ) : (
           <div className="flex-1 flex flex-wrap justify-center gap-4 overflow-auto">
             {puppies.map((p, i) => (
               <button key={i} onClick={() => playBoing()}
-                className="bg-white/50 rounded-3xl p-3 flex flex-col items-center gap-1
-                           hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer w-28">
-                <FallbackImg src={`${IMG}/puppy-sleeping.png`} alt="" emoji="😴"
-                     className="w-20 h-20 object-contain" />
-                <span className="text-xs font-heading text-amber-800">{p.name}</span>
-                <span className="text-[10px] text-amber-600/50">{p.accessory}</span>
+                className="bg-white/60 backdrop-blur-md rounded-3xl p-3 flex flex-col items-center gap-1
+                           hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer w-28 border border-white/30">
+                <SceneImg src={`${IMG}/puppy-sleeping.png`} alt="" emoji="😴"
+                     className="w-22 h-22 object-contain" />
+                <span className="text-xs font-heading text-amber-900">{p.name}</span>
+                <span className="text-[10px] text-amber-700/50">{p.accessory}</span>
               </button>
             ))}
           </div>
@@ -657,9 +645,9 @@ export default function PuppyWash() {
         </>
       )}
 
-      {/* Warm Disney glow */}
+      {/* Warm ambient glow — Disney "magic hour" feel */}
       <div className="absolute inset-0 pointer-events-none z-[2]"
-           style={{ background: 'radial-gradient(ellipse at center 40%, #fbbf2408 0%, transparent 70%)' }} />
+           style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.06) 0%, transparent 60%)' }} />
 
       <BackButton />
 
@@ -680,9 +668,9 @@ export default function PuppyWash() {
       {/* Dress screen */}
       {step === 'dress' && (
         <>
-          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '10%' }}>
-            <FallbackImg src={`${IMG}/puppy-fluffy.png`} alt="Fluffy puppy" emoji="🐩"
-                 className="w-32 h-32 sm:w-40 sm:h-40 object-contain drop-shadow-lg" />
+          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '6%' }}>
+            <SceneImg src={`${IMG}/puppy-fluffy.png`} alt="Fluffy puppy" emoji="🐩"
+                 className="w-40 h-40 sm:w-52 sm:h-52 object-contain drop-shadow-xl puppy-breathe" />
           </div>
           <ChoiceScreen items={ACCESSORIES} title="Pick Something Nice"
                         subtitle="Choose something pretty for puppy!" onChoose={handleDressChoice} />
@@ -692,9 +680,9 @@ export default function PuppyWash() {
       {/* Care choice screen */}
       {step === 'care' && (
         <>
-          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '8%' }}>
-            <FallbackImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🥰"
-                 className="w-28 h-28 sm:w-36 sm:h-36 object-contain drop-shadow-lg" />
+          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '5%' }}>
+            <SceneImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🥰"
+                 className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-xl puppy-breathe" />
           </div>
           <ChoiceScreen items={CARE_ITEMS} title="Choose Something Kind"
                         subtitle="What would make puppy feel loved?" onChoose={handleCareChoice} />
@@ -712,23 +700,54 @@ export default function PuppyWash() {
         <PuppyRoom puppies={savedPuppies} onBack={() => setStep('select')} />
       )}
 
-      {/* CSS animations */}
+      {/* CSS animations — character personality */}
       <style>{`
         @keyframes float-up {
           0% { transform: translateY(0) scale(1); opacity: 1; }
           100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
         }
         .animate-float-up { animation: float-up 2s ease-out forwards; }
+
         @keyframes bubble-float {
           0% { transform: translateY(0) translateX(0) scale(0.3); opacity: 0; }
           15% { opacity: 0.7; }
           100% { transform: translateY(-110vh) translateX(var(--drift, 0px)) scale(1); opacity: 0; }
         }
-        @keyframes soap-squirt {
-          0% { transform: translateY(0) scale(1); opacity: 0.9; }
-          100% { transform: translateY(80px) scale(0.5); opacity: 0; }
+
+        @keyframes celebrate-bounce {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          25% { transform: translateY(-10px) rotate(-2deg); }
+          75% { transform: translateY(-10px) rotate(2deg); }
         }
-        .animate-soap-squirt { animation: soap-squirt 0.6s ease-in forwards; }
+
+        /* Puppy breathes gently when idle */
+        .puppy-breathe {
+          animation: puppy-breathe 3s ease-in-out infinite;
+        }
+        @keyframes puppy-breathe {
+          0%, 100% { transform: scale(1) translateY(0); }
+          50% { transform: scale(1.02) translateY(-3px); }
+        }
+
+        /* Puppy wiggles when being washed/rubbed */
+        .puppy-wiggle {
+          animation: puppy-wiggle 0.3s ease-in-out infinite;
+        }
+        @keyframes puppy-wiggle {
+          0%, 100% { transform: rotate(0deg) scale(1.02); }
+          25% { transform: rotate(-2deg) scale(1.04); }
+          75% { transform: rotate(2deg) scale(1.04); }
+        }
+
+        /* Foam blobs wobble gently */
+        .bubble-wobble {
+          animation: bubble-wobble 2s ease-in-out infinite;
+        }
+        @keyframes bubble-wobble {
+          0%, 100% { transform: scale(1) translate(0, 0); }
+          33% { transform: scale(1.1) translate(2px, -2px); }
+          66% { transform: scale(0.95) translate(-1px, 1px); }
+        }
       `}</style>
     </div>
   );
