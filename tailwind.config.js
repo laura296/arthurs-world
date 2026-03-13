@@ -86,6 +86,22 @@ export default {
         'ellie-meter-pulse': 'ellieMeterPulse 0.3s ease-out',
         'ellie-spin-away': 'ellieSpinAway 0.5s ease-in forwards',
         'ellie-fade-in': 'ellieFadeIn 0.8s ease-out',
+        // Inside Out character & game animations
+        'io-joy-bounce': 'ioJoyBounce 3s ease-in-out infinite',
+        'io-anger-shake': 'ioAngerShake 0.3s ease-in-out infinite',
+        'io-anxiety-jitter': 'ioAnxietyJitter 0.15s linear infinite',
+        'io-sadness-sway': 'ioSadnessSway 4s ease-in-out infinite',
+        'io-fear-tremble': 'ioFearTremble 0.1s linear infinite',
+        'io-float-drift': 'ioFloatDrift 5s ease-in-out infinite',
+        'io-glow-pulse': 'ioGlowPulse 2s ease-in-out infinite',
+        'io-slide-in-left': 'ioSlideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'io-slide-in-right': 'ioSlideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'io-countdown-pop': 'ioCountdownPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'io-steam-rise': 'ioSteamRise 1s ease-out forwards',
+        'io-ember-float': 'ioEmberFloat 1.5s ease-out forwards',
+        'io-orb-roll': 'ioOrbRoll 8s linear infinite',
+        'io-breathe': 'ioBreathe 3s ease-in-out infinite',
+        'io-sparkle-spin': 'ioSparkleSpin 2s linear infinite',
       },
       keyframes: {
         bounceIn: {
@@ -346,6 +362,75 @@ export default {
         ellieFadeIn: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        // Inside Out keyframes
+        ioJoyBounce: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '30%': { transform: 'translateY(-4px) rotate(1deg)' },
+          '60%': { transform: 'translateY(-2px) rotate(-0.5deg)' },
+        },
+        ioAngerShake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-2px)' },
+          '75%': { transform: 'translateX(2px)' },
+        },
+        ioAnxietyJitter: {
+          '0%': { transform: 'translate(0, 0)' },
+          '25%': { transform: 'translate(1px, -1px)' },
+          '50%': { transform: 'translate(-1px, 1px)' },
+          '75%': { transform: 'translate(1px, 0.5px)' },
+          '100%': { transform: 'translate(0, 0)' },
+        },
+        ioSadnessSway: {
+          '0%, 100%': { transform: 'translateX(0) rotate(0deg)' },
+          '50%': { transform: 'translateX(3px) rotate(1deg)' },
+        },
+        ioFearTremble: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-1px)' },
+        },
+        ioFloatDrift: {
+          '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+          '25%': { transform: 'translateY(-8px) translateX(3px)' },
+          '75%': { transform: 'translateY(-4px) translateX(-3px)' },
+        },
+        ioGlowPulse: {
+          '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+          '50%': { opacity: '0.8', transform: 'scale(1.08)' },
+        },
+        ioSlideInLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        ioSlideInRight: {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        ioCountdownPop: {
+          '0%': { transform: 'scale(2.5)', opacity: '0' },
+          '40%': { transform: 'scale(0.9)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        ioSteamRise: {
+          '0%': { transform: 'translateY(0) scale(0.5)', opacity: '0.6' },
+          '100%': { transform: 'translateY(-40px) scale(1.5)', opacity: '0' },
+        },
+        ioEmberFloat: {
+          '0%': { transform: 'translateY(0) scale(1)', opacity: '0.8' },
+          '100%': { transform: 'translateY(-50px) translateX(15px) scale(0)', opacity: '0' },
+        },
+        ioOrbRoll: {
+          '0%': { transform: 'translateX(-100px)' },
+          '100%': { transform: 'translateX(calc(100% + 100px))' },
+        },
+        ioBreathe: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.02)' },
+        },
+        ioSparkleSpin: {
+          '0%': { transform: 'rotate(0deg)', opacity: '1' },
+          '50%': { opacity: '0.5' },
+          '100%': { transform: 'rotate(360deg)', opacity: '1' },
         },
       },
     },

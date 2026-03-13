@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import NightSkyScene from '../components/scenes/NightSkyScene';
+import TiltCard from '../components/TiltCard';
 import { playNavigate } from '../hooks/useSound';
 import { SECTION_THEMES } from '../data/sectionThemes';
 
@@ -35,11 +36,11 @@ export default function SectionPicker() {
             const theme = SECTION_THEMES[s.id];
             const accent = theme?.palette?.primary || '#fff';
             return (
-              <button
+              <TiltCard
                 key={s.id}
                 onClick={() => { playNavigate(); navigate(`/games/${mode}/${s.id}`); }}
                 className="game-card tap-ripple overflow-hidden
-                           flex flex-col items-center justify-center min-h-[150px] animate-spring-in p-0"
+                           flex flex-col items-center justify-center min-h-[150px] animate-spring-in p-0 rounded-3xl"
                 style={{
                   background: `linear-gradient(to bottom right, ${s.grad[0]}, ${s.grad[1]})`,
                   animationDelay: `${i * 0.08}s`,
@@ -62,7 +63,7 @@ export default function SectionPicker() {
                     <span className="text-lg font-heading text-white drop-shadow">{s.label}</span>
                   </div>
                 </div>
-              </button>
+              </TiltCard>
             );
           })}
         </div>

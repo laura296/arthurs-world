@@ -5,103 +5,89 @@ import {
   playTone, playCelebrate, playNavigate,
 } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
+import PuppyImage from './puppy-wash/PuppyImage';
 
-const IMG = '/arthurs-world/images/disney/puppy-wash';
 const HEART_COLORS = ['#f472b6', '#ec4899', '#f9a8d4', '#fda4af', '#fb7185'];
 const BUBBLE_COLORS = ['#bfdbfe', '#93c5fd', '#ddd6fe', '#e9d5ff', '#fbcfe8'];
 const SPARKLE_COLORS = ['#fbbf24', '#f59e0b', '#fcd34d', '#fde68a'];
-const MUD_COLORS = ['#92400e', '#78350f', '#a16207', '#854d0e'];
+const BALL_COLORS = ['#ef4444', '#f97316', '#22c55e', '#3b82f6'];
 
-// ── Soft-edge scene image ────────────────────────────────────────────
-// Blends character images into the background by fading their edges
-// This is the single biggest quality improvement — no more "sticker" look
-function SceneImg({ src, alt, emoji, className = '', style = {}, soft = true }) {
-  const [failed, setFailed] = useState(false);
-  if (failed || !src) {
-    return <span className={`select-none ${className}`} style={{ fontSize: '4rem', lineHeight: 1, ...style }} role="img" aria-label={alt}>{emoji}</span>;
-  }
-  return (
-    <img src={src} alt={alt} className={className} draggable={false}
-         onError={() => setFailed(true)}
-         style={{
-           ...style,
-           ...(soft ? { maskImage: 'radial-gradient(ellipse 48% 48% at 50% 50%, black 55%, transparent 90%)', WebkitMaskImage: 'radial-gradient(ellipse 48% 48% at 50% 50%, black 55%, transparent 90%)' } : {}),
-         }} />
-  );
-}
-
-/** Simple image with emoji fallback (for UI items, not scene characters) */
-function FallbackImg({ src, alt, emoji, className = '', style = {} }) {
-  const [failed, setFailed] = useState(false);
-  if (failed || !src) {
-    return <span className={`select-none ${className}`} style={{ fontSize: '4rem', lineHeight: 1, ...style }} role="img" aria-label={alt}>{emoji}</span>;
-  }
-  return <img src={src} alt={alt} className={className} style={style} draggable={false}
-              onError={() => setFailed(true)} />;
-}
-
-// ── Data ─────────────────────────────────────────────────────────────
+// ── Puppy data ─────────────────────────────────────────────────────
 const PUPPIES = [
-  { id: 'muddy',  name: 'Muddy Pup',  img: `${IMG}/puppy-muddy.png`,  emoji: '🐶', label: 'Needs a bath!' },
-  { id: 'sleepy', name: 'Sleepy Pup', img: `${IMG}/puppy-sleepy.png`, emoji: '😴', label: 'Feeling sleepy' },
-  { id: 'shy',    name: 'Shy Pup',    img: `${IMG}/puppy-shy.png`,    emoji: '🙈', label: 'A bit shy' },
+  {
+    id: 'bean', breed: 'terrier', name: 'Bean',
+    emoji: '🐕', label: "Let's play tug!",
+    activity: 'tug',
+    storyPages: [
+      { text: 'Bean the Irish Terrier found his favourite rope toy!', emoji: '🧸' },
+      { text: 'He picked it up and gave it a big shake!', emoji: '💪' },
+      { text: '"Grrr! Play tug with me!" says Bean.', emoji: '🐾' },
+      { text: 'Grab the rope and pull! Bean loves it!', emoji: '🎉' },
+    ],
+  },
+  {
+    id: 'patch', breed: 'dalmatian', name: 'Patch',
+    emoji: '🐾', label: 'Needs a bath!',
+    activity: 'wash',
+    storyPages: [
+      { text: 'One sunny morning, little Patch went out to play...', emoji: '☀️' },
+      { text: 'Splash! Squelch! Patch found the BIGGEST mud puddle!', emoji: '💦' },
+      { text: 'Oh no! Now Patch is covered in mud from nose to tail!', emoji: '🐾' },
+      { text: "Don't worry — YOU can help! Let's give Patch a bath!", emoji: '🛁' },
+    ],
+  },
+  {
+    id: 'sunny', breed: 'golden', name: 'Sunny',
+    emoji: '🌟', label: 'Wants to play fetch!',
+    activity: 'fetch',
+    storyPages: [
+      { text: 'Sunny the golden puppy loves the park!', emoji: '🌳' },
+      { text: 'She found a shiny red ball in the grass!', emoji: '🔴' },
+      { text: '"Throw it! Throw it!" Sunny wags her tail.', emoji: '🐕' },
+      { text: 'Tap the ball to throw it for Sunny!', emoji: '⚾' },
+    ],
+  },
 ];
 
 const ACCESSORIES = [
-  { id: 'collar', label: 'Red Collar',      img: `${IMG}/collar-red.png`,      emoji: '❤️' },
-  { id: 'bow',    label: 'Blue Bow',        img: `${IMG}/bow-blue.png`,        emoji: '🎀' },
-  { id: 'bandana',label: 'Yellow Bandana',  img: `${IMG}/bandana-yellow.png`,  emoji: '🧣' },
+  { id: 'collar', label: 'Red Collar',     emoji: '❤️' },
+  { id: 'bow',    label: 'Blue Bow',       emoji: '🎀' },
+  { id: 'bandana',label: 'Yellow Bandana', emoji: '🧣' },
 ];
-
-const CARE_ITEMS = [
-  { id: 'treat',   label: 'Treat',   img: `${IMG}/treat-bone.png`,   emoji: '🦴' },
-  { id: 'water',   label: 'Water',   img: `${IMG}/water-bowl.png`,   emoji: '💧' },
-  { id: 'toy',     label: 'Toy',     img: `${IMG}/toy-ball.png`,     emoji: '🎾' },
-  { id: 'blanket', label: 'Blanket', img: `${IMG}/blanket-soft.png`, emoji: '🛏️' },
-];
-
-const STEPS = ['story', 'select', 'wash', 'scrub', 'dry', 'brush', 'dress', 'care', 'celebrate', 'room'];
 
 // ── Story Intro ──────────────────────────────────────────────────────
-const STORY_PAGES = [
-  { text: 'One sunny morning, a little dalmatian puppy went out to play...', emoji: '☀️' },
-  { text: 'Splash! Squelch! The puppy found the BIGGEST mud puddle!',       emoji: '💦' },
-  { text: 'Oh no! Now puppy is covered in mud from nose to tail!',          emoji: '🐾' },
-  { text: "Don't worry — YOU can help! Let's give puppy a bath!",           emoji: '🛁' },
-];
-
-function StoryIntro({ onFinish }) {
+function StoryIntro({ puppy, onFinish }) {
   const [page, setPage] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);
   const { burst, ParticleLayer } = useParticleBurst();
   const ref = useRef(null);
+  const pages = puppy.storyPages;
 
   const handleTap = useCallback(() => {
     playPop();
     const rect = ref.current?.getBoundingClientRect();
     if (rect) {
-      const colors = page < 2 ? MUD_COLORS : page === 2 ? HEART_COLORS : BUBBLE_COLORS;
-      burst(rect.width / 2, rect.height * 0.4, { colors, count: 8, spread: 60 });
+      burst(rect.width / 2, rect.height * 0.4, { colors: HEART_COLORS, count: 8, spread: 60 });
     }
-    if (page < STORY_PAGES.length - 1) {
+    if (page < pages.length - 1) {
       setFadeIn(false);
-      setTimeout(() => { setPage(p => Math.min(p + 1, STORY_PAGES.length - 1)); setFadeIn(true); }, 300);
+      setTimeout(() => { setPage(p => Math.min(p + 1, pages.length - 1)); setFadeIn(true); }, 300);
     } else {
       onFinish();
     }
-  }, [page, onFinish, burst]);
+  }, [page, pages, onFinish, burst]);
 
-  const s = STORY_PAGES[page];
+  const s = pages[page];
+  const puppyState = puppy.activity === 'wash' ? (page <= 1 ? 'clean' : 'muddy') : 'excited';
 
   return (
     <div ref={ref} className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10 cursor-pointer"
          onClick={handleTap}>
       <ParticleLayer />
-      {/* Big centered puppy — blended into scene */}
       <div className={`mb-4 transition-all duration-500 ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-        <SceneImg src={page <= 1 ? `${IMG}/puppy-happy.png` : `${IMG}/puppy-muddy.png`}
-             alt="Puppy" emoji={page <= 1 ? '🐶' : '😟'}
-             className="w-56 h-56 sm:w-72 sm:h-72 object-contain drop-shadow-xl puppy-breathe" />
+        <PuppyImage breed={puppy.breed} state={puppyState}
+          animation={page <= 1 ? 'idle' : 'happy'}
+          className="w-48 h-48 sm:w-64 sm:h-64" />
       </div>
       <div className={`max-w-sm text-center transition-all duration-500 bg-white/80 backdrop-blur-md rounded-3xl px-6 py-4 shadow-xl border border-white/40 ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <p className="text-lg sm:text-xl font-heading text-amber-900 leading-relaxed">
@@ -111,10 +97,10 @@ function StoryIntro({ onFinish }) {
       </div>
       <p className="absolute bottom-8 text-sm text-white font-heading animate-pulse drop-shadow-lg"
          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-        {page < STORY_PAGES.length - 1 ? 'Tap to continue...' : 'Tap to start helping!'}
+        {page < pages.length - 1 ? 'Tap to continue...' : 'Tap to start!'}
       </p>
       <div className="absolute bottom-16 flex gap-2">
-        {STORY_PAGES.map((_, i) => (
+        {pages.map((_, i) => (
           <div key={i} className={`w-3 h-3 rounded-full transition-all shadow-sm ${i === page ? 'bg-white scale-125' : 'bg-white/30'}`} />
         ))}
       </div>
@@ -142,7 +128,7 @@ function FloatingBubbles({ count, active }) {
              style={{
                left: `${b.x}%`, bottom: '-5%',
                width: `${b.size}px`, height: `${b.size}px`,
-               background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7) 0%, rgba(147,197,253,0.25) 40%, transparent 70%)`,
+               background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,0.7) 0%, rgba(147,197,253,0.25) 40%, transparent 70%)',
                boxShadow: 'inset -2px -3px 6px rgba(147,197,253,0.15), 0 0 3px rgba(255,255,255,0.2)',
                border: '1px solid rgba(255,255,255,0.25)',
                animation: `bubble-float ${b.dur}s ease-out infinite`,
@@ -154,10 +140,41 @@ function FloatingBubbles({ count, active }) {
   );
 }
 
-// ── Soap Pump Step ──────────────────────────────────────────────────
-// The whole soap bottle is tappable. Puppy sits big and centered in the bath.
-// Foam builds up dramatically, puppy progressively gets cleaner.
-function SoapPumpStep({ onComplete }) {
+// ── Select Screen ───────────────────────────────────────────────────
+function SelectScreen({ onSelect }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-6 shadow-xl border border-white/40 text-center">
+        <h2 className="text-xl sm:text-2xl font-heading text-amber-900">
+          Choose a Puppy!
+        </h2>
+        <p className="text-sm text-amber-700 font-heading mt-1">Each one wants something different</p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
+        {PUPPIES.map(puppy => (
+          <button key={puppy.id} onClick={() => { playNavigate(); onSelect(puppy); }}
+            className="flex-1 bg-white/60 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30
+                       hover:bg-white/80 hover:scale-105 active:scale-95 transition-all
+                       flex flex-col items-center gap-2 shadow-xl cursor-pointer">
+            <PuppyImage breed={puppy.breed}
+              state={puppy.activity === 'wash' ? 'muddy' : 'excited'}
+              animation="idle"
+              className="w-24 h-24 sm:w-28 sm:h-28" />
+            <span className="font-heading text-amber-900 text-base">{puppy.name}</span>
+            <span className="text-xs text-amber-700/60">{puppy.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ── WASH ACTIVITY STEPS ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+
+function SoapPumpStep({ puppy, onComplete }) {
   const [pumps, setPumps] = useState(0);
   const [pumping, setPumping] = useState(false);
   const [done, setDone] = useState(false);
@@ -172,8 +189,6 @@ function SoapPumpStep({ onComplete }) {
       const rect = containerRef.current?.getBoundingClientRect();
       if (rect) {
         burst(rect.width / 2, rect.height * 0.35, { colors: BUBBLE_COLORS, count: 30, spread: 120 });
-        setTimeout(() => burst(rect.width * 0.3, rect.height * 0.5, { colors: BUBBLE_COLORS, count: 15, spread: 60 }), 200);
-        setTimeout(() => burst(rect.width * 0.7, rect.height * 0.5, { colors: BUBBLE_COLORS, count: 15, spread: 60 }), 400);
       }
       setTimeout(onComplete, 1800);
     }
@@ -185,7 +200,6 @@ function SoapPumpStep({ onComplete }) {
     playPop();
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
-      // Burst from near the soap bottle toward the puppy
       burst(rect.width * 0.65, rect.height * 0.45, { colors: BUBBLE_COLORS, count: 8, spread: 50 });
     }
     setPumps(p => p + 1);
@@ -193,61 +207,32 @@ function SoapPumpStep({ onComplete }) {
   }, [done, pumping, burst]);
 
   const pumpRatio = pumps / TARGET;
+  // Crossfade: muddy at 0, soapy at 1
+  const puppyState = pumpRatio < 0.5 ? 'muddy' : 'soapy';
 
   return (
     <div ref={containerRef} className="absolute inset-0 z-10">
       <ParticleLayer />
-
-      {/* Title — minimal, top center */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
         <p className="text-sm font-heading text-amber-900">
           {done ? '✨ So clean!' : 'Tap the soap! 🧴'}
         </p>
       </div>
 
-      {/* ── Puppy — BIG and centered, sitting in the bath ── */}
-      <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '12%' }}>
-        <div className="relative">
-          {/* Muddy → soapy crossfade */}
-          <SceneImg src={`${IMG}/puppy-muddy.png`} alt="Puppy" emoji="🐶"
-               className={`w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-700 ${pumping ? 'puppy-wiggle' : 'puppy-breathe'}`}
-               style={{ opacity: 1 - pumpRatio * 0.85 }} />
-          <SceneImg src={`${IMG}/puppy-soapy.png`} alt="" emoji=""
-               className={`absolute inset-0 w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-700 ${pumping ? 'puppy-wiggle' : 'puppy-breathe'}`}
-               style={{ opacity: pumpRatio * 0.95 }} />
-
-          {/* Foam accumulation — big soft blobs that build up */}
-          {pumps > 0 && (
-            <div className="absolute inset-0 pointer-events-none" style={{ opacity: Math.min(pumpRatio * 1.2, 1) }}>
-              {Array.from({ length: pumps * 5 }, (_, i) => {
-                const size = 18 + (i % 4) * 12;
-                return (
-                  <div key={i} className="absolute rounded-full bubble-wobble"
-                       style={{
-                         width: `${size}px`, height: `${size}px`,
-                         background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,0.85), rgba(186,230,253,0.4) 60%, transparent)',
-                         boxShadow: 'inset -1px -2px 4px rgba(147,197,253,0.2)',
-                         left: `${8 + (i * 13 + i * i * 7) % 80}%`,
-                         top: `${15 + (i * 17 + i * i * 3) % 65}%`,
-                         animationDelay: `${(i * 0.15) % 2}s`,
-                       }} />
-                );
-              })}
-            </div>
-          )}
-        </div>
+      <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '10%' }}>
+        <PuppyImage breed={puppy.breed} state={puppyState} showInBath
+          animation={pumping ? 'wiggle' : 'idle'}
+          className="w-56 h-56 sm:w-72 sm:h-72" />
       </div>
 
-      {/* ── Soap bottle — right side, big and tappable ── */}
+      {/* Soap bottle */}
       <div className="absolute z-20" style={{ right: '4%', bottom: '18%' }}>
         <button onClick={handlePump}
           className={`relative cursor-pointer transition-transform duration-200 ${!done ? 'hover:scale-110 active:scale-90' : 'opacity-60'}`}
           disabled={done}>
-          <div className={`transition-transform duration-150 ${pumping ? 'scale-90 translate-y-1' : ''}`}>
-            <FallbackImg src={`${IMG}/soap-bottle.png`} alt="Soap" emoji="🧴"
-                 className="w-24 h-32 sm:w-28 sm:h-36 object-contain drop-shadow-xl" />
+          <div className={`transition-transform duration-150 text-6xl ${pumping ? 'scale-90 translate-y-1' : ''}`}>
+            🧴
           </div>
-          {/* Tap hint glow */}
           {!done && pumps === 0 && (
             <div className="absolute inset-0 rounded-3xl animate-pulse"
                  style={{ boxShadow: '0 0 20px 8px rgba(236,72,153,0.3)' }} />
@@ -255,26 +240,22 @@ function SoapPumpStep({ onComplete }) {
         </button>
       </div>
 
-      {/* ── Progress — paw prints filling up ── */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3
                       bg-white/70 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/30">
         {Array.from({ length: TARGET }).map((_, i) => (
           <span key={i} className={`text-2xl transition-all duration-500 ${i < pumps ? 'scale-110 drop-shadow-md' : 'opacity-25 scale-75 grayscale'}`}>
-            {i < pumps ? '🐾' : '🐾'}
+            🐾
           </span>
         ))}
       </div>
 
-      {/* Bubble flood when done */}
       <FloatingBubbles count={done ? 40 : pumps * 5} active={pumps > 0} />
     </div>
   );
 }
 
-// ── Rub/Swipe Step (scrub, dry, brush) ──────────────────────────────
-// Big centered puppy. Rub finger over it. Progressive crossfade from
-// startImg → puppyImg as progress increases. Puppy wiggles when touched.
-function RubStep({ config, onComplete }) {
+// Rub step — used for scrub, dry, brush, belly rubs
+function RubStep({ puppy, config, onComplete }) {
   const containerRef = useRef(null);
   const puppyRef = useRef(null);
   const [progress, setProgress] = useState(0);
@@ -332,6 +313,9 @@ function RubStep({ config, onComplete }) {
     setTouching(false);
   }, []);
 
+  // Determine puppy state based on step
+  const puppyState = typeof config.puppyState === 'function' ? config.puppyState(ratio) : config.puppyState;
+
   return (
     <div ref={containerRef} className="absolute inset-0 z-10"
          onPointerDown={handlePointerDown}
@@ -341,43 +325,32 @@ function RubStep({ config, onComplete }) {
          style={{ touchAction: 'none' }}>
       <ParticleLayer />
 
-      {/* Title */}
       <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
         <p className="text-sm font-heading text-amber-900">
           {done ? '✨ All done!' : config.voice}
         </p>
       </div>
 
-      {/* ── Big centered puppy — crossfading ── */}
       <div ref={puppyRef}
            className={`absolute left-1/2 -translate-x-1/2 z-[5] transition-transform duration-200
                        ${done ? 'animate-bounce' : ''}`}
            style={{ top: '10%' }}>
-        <div className="relative">
-          {config.startImg && (
-            <SceneImg src={config.startImg} alt="Puppy" emoji={config.puppyEmoji}
-                 className={`w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-500 ${touching ? 'puppy-wiggle' : 'puppy-breathe'}`}
-                 style={{ opacity: 1 - ratio }} />
-          )}
-          <SceneImg src={config.puppyImg} alt="Puppy" emoji={config.puppyEmoji}
-               className={`${config.startImg ? 'absolute inset-0' : ''} w-60 h-60 sm:w-80 sm:h-80 object-contain drop-shadow-xl transition-opacity duration-500 ${touching ? 'puppy-wiggle' : 'puppy-breathe'}`}
-               style={{ opacity: config.startImg ? ratio : 1 }} />
-        </div>
+        <PuppyImage breed={puppy.breed} state={puppyState}
+          animation={touching ? 'wiggle' : 'idle'}
+          showInBath={config.showInBath}
+          className="w-56 h-56 sm:w-72 sm:h-72" />
       </div>
 
-      {/* Tool + instruction — bottom area */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
         <div className="bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-white/30 flex items-center gap-3">
-          <FallbackImg src={config.toolImg} alt="" emoji={config.toolEmoji}
-               className="w-12 h-12 object-contain" style={{ fontSize: '2.5rem' }} />
+          <span className="text-3xl">{config.toolEmoji}</span>
           <div>
             <p className="font-heading text-amber-900 text-sm">{config.title}</p>
-            <p className="text-xs text-amber-700/60">Rub your finger over puppy!</p>
+            <p className="text-xs text-amber-700/60">Rub your finger over {puppy.name}!</p>
           </div>
         </div>
       </div>
 
-      {/* Progress bar — hearts */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20
                       bg-white/60 backdrop-blur-md rounded-full px-4 py-1.5 shadow-lg border border-white/30">
         {Array.from({ length: target }, (_, i) => (
@@ -390,42 +363,234 @@ function RubStep({ config, onComplete }) {
   );
 }
 
-// ── Select Screen ───────────────────────────────────────────────────
-function SelectScreen({ onSelect }) {
+// ══════════════════════════════════════════════════════════════════════
+// ── FETCH ACTIVITY STEPS ─────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+
+function FetchStep({ puppy, onComplete }) {
+  const [throws, setThrows] = useState(0);
+  const [ballState, setBallState] = useState('ready'); // ready, flying, returning
+  const [done, setDone] = useState(false);
+  const { burst, ParticleLayer } = useParticleBurst();
+  const containerRef = useRef(null);
+  const TARGET = 4;
+
+  useEffect(() => {
+    if (throws >= TARGET && !done) {
+      setDone(true);
+      playSparkle();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        burst(rect.width / 2, rect.height * 0.3, { colors: SPARKLE_COLORS, count: 25, spread: 100 });
+      }
+      setTimeout(onComplete, 1500);
+    }
+  }, [throws, done, onComplete, burst]);
+
+  const handleThrow = useCallback(() => {
+    if (done || ballState !== 'ready') return;
+    playBoing();
+    setBallState('flying');
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) {
+      burst(rect.width / 2, rect.height * 0.7, { colors: BALL_COLORS, count: 6, spread: 40 });
+    }
+    // Ball flies, puppy chases
+    setTimeout(() => {
+      playPop();
+      setBallState('returning');
+      if (rect) {
+        burst(rect.width / 2, rect.height * 0.3, { colors: HEART_COLORS, count: 8, spread: 50 });
+      }
+    }, 1200);
+    // Puppy brings it back
+    setTimeout(() => {
+      playSuccess();
+      setBallState('ready');
+      setThrows(t => t + 1);
+    }, 2200);
+  }, [done, ballState, burst]);
+
+  const puppyAnim = ballState === 'flying' ? 'bounce' : ballState === 'returning' ? 'happy' : 'idle';
+
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
-      {/* Parent dogs watching from above */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 flex gap-4 opacity-30 pointer-events-none">
-        <SceneImg src={`${IMG}/pongo.png`} alt="" emoji="🐕‍🦺" className="w-16 h-16 sm:w-24 sm:h-24 object-contain" style={{ fontSize: '2.5rem' }} />
-        <SceneImg src={`${IMG}/perdita.png`} alt="" emoji="🐕" className="w-16 h-16 sm:w-24 sm:h-24 object-contain" style={{ fontSize: '2.5rem' }} />
+    <div ref={containerRef} className="absolute inset-0 z-10">
+      <ParticleLayer />
+
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
+        <p className="text-sm font-heading text-amber-900">
+          {done ? `✨ ${puppy.name} loved that!` : ballState === 'flying' ? `${puppy.name} is running!` : ballState === 'returning' ? 'Good catch!' : 'Tap the ball to throw!'}
+        </p>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-4 shadow-xl border border-white/40 text-center">
-        <h2 className="text-xl sm:text-2xl font-heading text-amber-900">
-          Which puppy needs help?
-        </h2>
-        <p className="text-sm text-amber-700 font-heading mt-1">Choose a puppy to care for</p>
+      {/* Puppy */}
+      <div className={`absolute left-1/2 -translate-x-1/2 z-[5] transition-all duration-700
+                       ${ballState === 'flying' ? 'translate-x-[30%] scale-90' : ballState === 'returning' ? '-translate-x-1/2 scale-100' : '-translate-x-1/2'}`}
+           style={{ top: '8%' }}>
+        <PuppyImage breed={puppy.breed}
+          state={ballState === 'returning' ? 'excited' : 'clean'}
+          animation={puppyAnim}
+          className="w-52 h-52 sm:w-68 sm:h-68" />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
-        {PUPPIES.map(puppy => (
-          <button key={puppy.id} onClick={() => { playNavigate(); onSelect(puppy); }}
-            className="flex-1 bg-white/60 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30
-                       hover:bg-white/80 hover:scale-105 active:scale-95 transition-all
-                       flex flex-col items-center gap-2 shadow-xl cursor-pointer">
-            <SceneImg src={puppy.img} alt={puppy.name} emoji={puppy.emoji}
-                 className="w-28 h-28 sm:w-32 sm:h-32 object-contain" />
-            <span className="font-heading text-amber-900 text-base">{puppy.name}</span>
-            <span className="text-xs text-amber-700/60">{puppy.label}</span>
+      {/* Ball */}
+      {ballState === 'ready' && !done && (
+        <div className="absolute z-20" style={{ left: '50%', bottom: '22%', transform: 'translateX(-50%)' }}>
+          <button onClick={handleThrow}
+            className="cursor-pointer hover:scale-110 active:scale-90 transition-transform">
+            <div className="w-20 h-20 rounded-full bg-red-500 shadow-xl flex items-center justify-center
+                           border-4 border-red-400 relative">
+              <div className="absolute inset-0 rounded-full"
+                   style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%)' }} />
+              <span className="text-white font-bold text-sm font-heading drop-shadow">THROW!</span>
+            </div>
+            {throws === 0 && (
+              <div className="absolute inset-0 rounded-full animate-pulse"
+                   style={{ boxShadow: '0 0 20px 8px rgba(239,68,68,0.3)' }} />
+            )}
           </button>
+        </div>
+      )}
+
+      {/* Flying ball animation */}
+      {ballState === 'flying' && (
+        <div className="absolute z-20 fetch-ball-fly" style={{ left: '50%', bottom: '25%' }}>
+          <div className="w-12 h-12 rounded-full bg-red-500 shadow-lg border-2 border-red-400">
+            <div className="absolute inset-0 rounded-full"
+                 style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%)' }} />
+          </div>
+        </div>
+      )}
+
+      {/* Progress */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3
+                      bg-white/70 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/30">
+        {Array.from({ length: TARGET }).map((_, i) => (
+          <span key={i} className={`text-2xl transition-all duration-500 ${i < throws ? 'scale-110' : 'opacity-25 scale-75 grayscale'}`}>
+            {i < throws ? '⚾' : '⚪'}
+          </span>
         ))}
       </div>
     </div>
   );
 }
 
-// ── Choice Screen (dress / care) ────────────────────────────────────
-function ChoiceScreen({ items, title, subtitle, onChoose }) {
+// ══════════════════════════════════════════════════════════════════════
+// ── TUG ACTIVITY STEPS ───────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+
+function TugStep({ puppy, onComplete }) {
+  const containerRef = useRef(null);
+  const [tugs, setTugs] = useState(0);
+  const [pulling, setPulling] = useState(false);
+  const [done, setDone] = useState(false);
+  const lastTugTime = useRef(0);
+  const { burst, ParticleLayer } = useParticleBurst();
+  const TARGET = 8;
+
+  useEffect(() => {
+    if (tugs >= TARGET && !done) {
+      setDone(true);
+      playCelebrate();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        burst(rect.width / 2, rect.height * 0.3, { colors: SPARKLE_COLORS, count: 25, spread: 100 });
+      }
+      setTimeout(onComplete, 1500);
+    }
+  }, [tugs, done, onComplete, burst]);
+
+  const handlePointerDown = useCallback(() => {
+    if (done) return;
+    setPulling(true);
+  }, [done]);
+
+  const handlePointerMove = useCallback((e) => {
+    if (!pulling || done) return;
+    e.preventDefault();
+    const now = Date.now();
+    if (now - lastTugTime.current > 350) {
+      lastTugTime.current = now;
+      playPop();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        burst(e.clientX - rect.left, e.clientY - rect.top, { colors: HEART_COLORS, count: 4, spread: 30 });
+      }
+      setTugs(t => Math.min(t + 1, TARGET));
+    }
+  }, [pulling, done, burst]);
+
+  const handlePointerUp = useCallback(() => {
+    setPulling(false);
+  }, []);
+
+  const ratio = tugs / TARGET;
+
+  return (
+    <div ref={containerRef} className="absolute inset-0 z-10"
+         onPointerDown={handlePointerDown}
+         onPointerMove={handlePointerMove}
+         onPointerUp={handlePointerUp}
+         onPointerLeave={handlePointerUp}
+         style={{ touchAction: 'none' }}>
+      <ParticleLayer />
+
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
+        <p className="text-sm font-heading text-amber-900">
+          {done ? `✨ ${puppy.name} wins!` : pulling ? 'Pull! Pull! 💪' : 'Swipe to play tug!'}
+        </p>
+      </div>
+
+      {/* Puppy holding rope */}
+      <div className={`absolute z-[5] transition-all duration-200 ${pulling ? 'translate-x-2' : ''}`}
+           style={{ left: '50%', top: '8%', transform: `translateX(-50%) ${pulling ? 'translateX(8px)' : ''}` }}>
+        <PuppyImage breed={puppy.breed}
+          state={done ? 'excited' : 'clean'}
+          animation={pulling ? 'wiggle' : done ? 'happy' : 'idle'}
+          className="w-52 h-52 sm:w-68 sm:h-68" />
+      </div>
+
+      {/* Rope visual extending to player area */}
+      <div className="absolute z-[4] pointer-events-none" style={{ left: '15%', top: '58%', width: '70%' }}>
+        <svg viewBox="0 0 200 40" className="w-full" style={{ overflow: 'visible' }}>
+          <path d={`M 180 20 Q 120 ${pulling ? 10 : 25}, 40 ${pulling ? 15 : 30} Q 20 ${pulling ? 18 : 35}, 0 ${pulling ? 20 : 38}`}
+                stroke="#d4960a" strokeWidth="8" fill="none" strokeLinecap="round"
+                className={pulling ? 'tug-pull' : ''} />
+          <path d={`M 180 20 Q 120 ${pulling ? 10 : 25}, 40 ${pulling ? 15 : 30} Q 20 ${pulling ? 18 : 35}, 0 ${pulling ? 20 : 38}`}
+                stroke="#e8b830" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray="10 8"
+                className={pulling ? 'tug-pull' : ''} />
+        </svg>
+      </div>
+
+      {/* Pull instruction */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-white/30 flex items-center gap-3">
+          <span className="text-3xl">🪢</span>
+          <div>
+            <p className="font-heading text-amber-900 text-sm">Tug of War!</p>
+            <p className="text-xs text-amber-700/60">Swipe back and forth!</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Tug strength meter */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20
+                      bg-white/60 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/30">
+        <div className="flex gap-1 items-center">
+          {Array.from({ length: TARGET }, (_, i) => (
+            <div key={i} className={`h-5 rounded-full transition-all duration-300 ${i < tugs ? 'bg-amber-400 w-5' : 'bg-gray-200 w-3'}`} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// ── SHARED STEPS ─────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+
+function ChoiceScreen({ puppy, items, title, subtitle, onChoose }) {
   const [chosen, setChosen] = useState(null);
 
   const handleChoose = useCallback((item) => {
@@ -436,6 +601,12 @@ function ChoiceScreen({ items, title, subtitle, onChoose }) {
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+      {/* Show puppy above choices */}
+      <div className="mb-2">
+        <PuppyImage breed={puppy.breed} state="fluffy" animation="idle"
+          className="w-32 h-32 sm:w-44 sm:h-44" />
+      </div>
+
       <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-4 shadow-xl border border-white/40 text-center">
         <h2 className="text-xl sm:text-2xl font-heading text-amber-900">{title}</h2>
         <p className="text-sm text-amber-700 font-heading mt-1">{subtitle}</p>
@@ -453,8 +624,7 @@ function ChoiceScreen({ items, title, subtitle, onChoose }) {
                          ? 'border-white/20 opacity-40 scale-90'
                          : 'border-white/30 hover:bg-white/80 hover:scale-105 active:scale-95'
                        }`}>
-            <SceneImg src={item.img} alt={item.label} emoji={item.emoji}
-                 className="w-18 h-18 sm:w-22 sm:h-22 object-contain" soft={false} />
+            <span className="text-4xl">{item.emoji}</span>
             <span className="font-heading text-amber-900 text-sm">{item.label}</span>
           </button>
         ))}
@@ -463,8 +633,7 @@ function ChoiceScreen({ items, title, subtitle, onChoose }) {
   );
 }
 
-// ── Celebrate Screen ────────────────────────────────────────────────
-function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
+function CelebrateScreen({ puppy, accessory, onFinish }) {
   const { burst, ParticleLayer } = useParticleBurst();
   const ref = useRef(null);
   const [showBadge, setShowBadge] = useState(false);
@@ -480,12 +649,19 @@ function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
     setTimeout(() => setShowBadge(true), 1200);
   }, [burst]);
 
+  const activityBadge = {
+    wash: { text: 'Bath Time Hero', emoji: '🛁' },
+    fetch: { text: 'Super Thrower', emoji: '⚾' },
+    tug: { text: 'Tug Champion', emoji: '💪' },
+  }[puppy.activity] || { text: 'Kind Helper', emoji: '💖' };
+
   return (
     <div ref={ref} className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
       <ParticleLayer />
       <div className="relative mb-4" style={{ animation: 'celebrate-bounce 1.5s ease-in-out infinite' }}>
-        <SceneImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🎉"
-             className="w-52 h-52 sm:w-64 sm:h-64 object-contain drop-shadow-xl" />
+        <PuppyImage breed={puppy.breed} state="excited"
+          animation="happy"
+          className="w-44 h-44 sm:w-56 sm:h-56" />
         {[...Array(6)].map((_, i) => (
           <span key={i} className="absolute text-2xl animate-float-up pointer-events-none"
                 style={{
@@ -495,212 +671,158 @@ function CelebrateScreen({ puppy, accessory, careItem, onFinish }) {
         ))}
       </div>
       <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-3 shadow-xl border border-white/40 text-center">
-        <h2 className="text-2xl sm:text-3xl font-heading text-amber-900">You Were Kind!</h2>
-        <p className="text-base text-amber-700 font-heading mt-1">Puppy feels happy and safe</p>
+        <h2 className="text-2xl sm:text-3xl font-heading text-amber-900">{puppy.name} Is Happy!</h2>
+        <p className="text-base text-amber-700 font-heading mt-1">You were so kind and gentle</p>
       </div>
       {showBadge && (
         <div className="animate-spring-in mb-4">
           <div className="bg-gradient-to-b from-amber-50 to-pink-50 rounded-2xl px-6 py-3 border-2 border-amber-200/50 shadow-xl flex items-center gap-3">
-            <FallbackImg src={`${IMG}/heart-badge.png`} alt="Kind Helper" emoji="💖" className="w-14 h-14 object-contain" />
+            <span className="text-4xl">{activityBadge.emoji}</span>
             <div>
-              <p className="font-heading text-amber-900 text-sm">Kind Helper Heart</p>
+              <p className="font-heading text-amber-900 text-sm">{activityBadge.text}</p>
               <p className="text-xs text-amber-700/60">You earned a badge!</p>
             </div>
           </div>
         </div>
       )}
-      <div className="flex gap-3">
-        <button onClick={() => { playNavigate(); onFinish('room'); }}
-          className="bg-pink-500 hover:bg-pink-400 active:scale-95 text-white font-heading text-base
-                     px-6 py-3 rounded-full shadow-xl transition-all border border-pink-400/50">
-          Puppy Room 🏠
-        </button>
-        <button onClick={() => { playNavigate(); onFinish('again'); }}
-          className="bg-amber-500 hover:bg-amber-400 active:scale-95 text-white font-heading text-base
-                     px-6 py-3 rounded-full shadow-xl transition-all border border-amber-400/50">
-          Help Another! 🐾
-        </button>
-      </div>
+      <button onClick={() => { playNavigate(); onFinish(); }}
+        className="bg-amber-500 hover:bg-amber-400 active:scale-95 text-white font-heading text-base
+                   px-8 py-3 rounded-full shadow-xl transition-all border border-amber-400/50">
+        Play Again! 🐾
+      </button>
     </div>
   );
 }
 
-// ── Puppy Room ──────────────────────────────────────────────────────
-function PuppyRoom({ puppies, onBack }) {
-  return (
-    <div className="absolute inset-0 z-10">
-      <img src={`${IMG}/bg-room.png`} alt="" className="absolute inset-0 w-full h-full object-cover"
-           onError={(e) => { e.target.style.display = 'none'; }} />
-      <div className="absolute inset-0 z-[-1]"
-           style={{ background: 'linear-gradient(to bottom, #fef3c7, #fde68a, #f5d0fe)' }} />
-      <div className="relative z-10 p-4 h-full flex flex-col">
-        <div className="flex justify-between items-center mb-4">
-          <button onClick={() => { playNavigate(); onBack(); }}
-            className="bg-white/80 backdrop-blur-md rounded-full px-4 py-2 font-heading text-amber-900
-                       text-sm hover:bg-white/90 active:scale-95 transition-all shadow-lg border border-white/40">
-            ← Back
-          </button>
-          <h2 className="font-heading text-xl text-amber-900 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
-            Puppy Room
-          </h2>
-          <div className="w-16" />
-        </div>
-        {puppies.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="bg-white/70 backdrop-blur-md rounded-3xl px-8 py-6 shadow-xl border border-white/30 text-center">
-              <p className="text-amber-700 font-heading text-lg">Help some puppies and</p>
-              <p className="text-amber-700 font-heading text-lg">they'll appear here!</p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 flex flex-wrap justify-center gap-4 overflow-auto">
-            {puppies.map((p, i) => (
-              <button key={i} onClick={() => playBoing()}
-                className="bg-white/60 backdrop-blur-md rounded-3xl p-3 flex flex-col items-center gap-1
-                           hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer w-28 border border-white/30">
-                <SceneImg src={`${IMG}/puppy-sleeping.png`} alt="" emoji="😴"
-                     className="w-22 h-22 object-contain" />
-                <span className="text-xs font-heading text-amber-900">{p.name}</span>
-                <span className="text-[10px] text-amber-700/50">{p.accessory}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+// ══════════════════════════════════════════════════════════════════════
+// ── MAIN GAME ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
 
-// ── Main Game ───────────────────────────────────────────────────────
 export default function PuppyWash() {
   const containerRef = useRef(null);
-  const [step, setStep] = useState('story');
+  const [step, setStep] = useState('select');
   const [puppy, setPuppy] = useState(null);
   const [accessory, setAccessory] = useState(null);
-  const [careItem, setCareItem] = useState(null);
-  const [savedPuppies, setSavedPuppies] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('puppyWashRoom') || '[]'); }
-    catch { return []; }
-  });
 
-  useEffect(() => {
-    localStorage.setItem('puppyWashRoom', JSON.stringify(savedPuppies));
-  }, [savedPuppies]);
-
-  const advanceStep = useCallback(() => {
-    const idx = STEPS.indexOf(step);
-    if (idx < STEPS.length - 1) {
-      playSuccess();
-      setStep(STEPS[idx + 1]);
-    }
-  }, [step]);
+  const advanceTo = useCallback((next) => {
+    setStep(next);
+  }, []);
 
   const handlePuppySelect = useCallback((p) => {
     setPuppy(p);
-    setStep('wash');
+    setStep('story');
   }, []);
 
   const handleDressChoice = useCallback((item) => {
     setAccessory(item);
-    advanceStep();
-  }, [advanceStep]);
+    setStep('celebrate');
+  }, []);
 
-  const handleCareChoice = useCallback((item) => {
-    setCareItem(item);
-    advanceStep();
-  }, [advanceStep]);
+  const handleFinish = useCallback(() => {
+    setPuppy(null);
+    setAccessory(null);
+    setStep('select');
+  }, []);
 
-  const handleCelebrateFinish = useCallback((action) => {
-    setSavedPuppies(prev => [...prev, {
-      name: puppy?.name || 'Puppy',
-      accessory: accessory?.label || '',
-      care: careItem?.label || '',
-      date: Date.now(),
-    }]);
-    if (action === 'room') {
-      setStep('room');
-    } else {
-      setPuppy(null); setAccessory(null); setCareItem(null);
-      setStep('story');
-    }
-  }, [puppy, accessory, careItem]);
-
-  // Step configs for rub steps — startImg crossfades into puppyImg
-  const rubConfigs = {
-    scrub: { title: 'Scrub Scrub',  voice: 'Rub the mud off gently!',           toolImg: null,              toolEmoji: '🧽', target: 5, particles: BUBBLE_COLORS,  startImg: `${IMG}/puppy-muddy.png`, puppyImg: `${IMG}/puppy-soapy.png`, puppyEmoji: '🧽' },
-    dry:   { title: 'Dry Off',      voice: 'Rub the towel over puppy!',          toolImg: `${IMG}/towel.png`,toolEmoji: '🧣', target: 5, particles: HEART_COLORS,   startImg: `${IMG}/puppy-wet.png`,   puppyImg: `${IMG}/puppy-fluffy.png`,puppyEmoji: '🐕' },
-    brush: { title: 'Brush Softly', voice: 'Stroke to make fur soft and shiny!', toolImg: `${IMG}/brush.png`,toolEmoji: '✨', target: 5, particles: SPARKLE_COLORS, puppyImg: `${IMG}/puppy-fluffy.png`,puppyEmoji: '✨' },
-  };
+  // Background gradient per activity
+  const bgGradient = !puppy ? 'linear-gradient(to bottom, #fef3c7, #fde68a, #fecdd3)'
+    : puppy.activity === 'wash' ? 'linear-gradient(to bottom, #e0f2fe, #bae6fd, #fecdd3)'
+    : puppy.activity === 'fetch' ? 'linear-gradient(to bottom, #d9f99d, #bef264, #fef3c7)'
+    : 'linear-gradient(to bottom, #fef3c7, #fde68a, #fed7aa)';
 
   return (
     <div ref={containerRef}
          className="relative w-full h-full overflow-hidden touch-none select-none">
       {/* Background */}
-      {step === 'room' ? null : (
-        <>
-          <img src={`${IMG}/bg-bath.png`} alt="" className="absolute inset-0 w-full h-full object-cover z-0"
-               onError={(e) => { e.target.style.display = 'none'; }} />
-          <div className="absolute inset-0 z-[-1]"
-               style={{ background: 'linear-gradient(to bottom, #fef3c7, #fde68a, #fecdd3)' }} />
-        </>
-      )}
+      <div className="absolute inset-0 z-0" style={{ background: bgGradient }} />
 
-      {/* Warm ambient glow — Disney "magic hour" feel */}
+      {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none z-[2]"
            style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.06) 0%, transparent 60%)' }} />
 
       <BackButton />
 
-      {/* Story intro */}
-      {step === 'story' && <StoryIntro onFinish={() => setStep('select')} />}
-
-      {/* Select screen */}
+      {/* Select puppy */}
       {step === 'select' && <SelectScreen onSelect={handlePuppySelect} />}
 
-      {/* Wash: Soap pump mechanic */}
-      {step === 'wash' && <SoapPumpStep key="wash" onComplete={advanceStep} />}
-
-      {/* Scrub / Dry / Brush: Rub-the-puppy mechanic */}
-      {['scrub', 'dry', 'brush'].includes(step) && rubConfigs[step] && (
-        <RubStep key={step} config={rubConfigs[step]} onComplete={advanceStep} />
+      {/* Story intro */}
+      {step === 'story' && puppy && (
+        <StoryIntro puppy={puppy}
+          onFinish={() => advanceTo(puppy.activity === 'wash' ? 'soap' : puppy.activity)} />
       )}
 
-      {/* Dress screen */}
-      {step === 'dress' && (
-        <>
-          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '6%' }}>
-            <SceneImg src={`${IMG}/puppy-fluffy.png`} alt="Fluffy puppy" emoji="🐩"
-                 className="w-40 h-40 sm:w-52 sm:h-52 object-contain drop-shadow-xl puppy-breathe" />
-          </div>
-          <ChoiceScreen items={ACCESSORIES} title="Pick Something Nice"
-                        subtitle="Choose something pretty for puppy!" onChoose={handleDressChoice} />
-        </>
+      {/* ── WASH ACTIVITY ── */}
+      {step === 'soap' && puppy && (
+        <SoapPumpStep key="soap" puppy={puppy} onComplete={() => advanceTo('scrub')} />
+      )}
+      {step === 'scrub' && puppy && (
+        <RubStep key="scrub" puppy={puppy}
+          config={{
+            title: 'Scrub Scrub', voice: 'Rub the mud off gently!',
+            toolEmoji: '🧽', target: 5, particles: BUBBLE_COLORS,
+            puppyState: (r) => r < 0.5 ? 'soapy' : 'wet',
+            showInBath: true,
+          }}
+          onComplete={() => advanceTo('dry')} />
+      )}
+      {step === 'dry' && puppy && (
+        <RubStep key="dry" puppy={puppy}
+          config={{
+            title: 'Dry Off', voice: `Rub the towel over ${puppy?.name}!`,
+            toolEmoji: '🧣', target: 5, particles: HEART_COLORS,
+            puppyState: (r) => r < 0.5 ? 'wet' : 'clean',
+            showInBath: false,
+          }}
+          onComplete={() => advanceTo('brush')} />
+      )}
+      {step === 'brush' && puppy && (
+        <RubStep key="brush" puppy={puppy}
+          config={{
+            title: 'Brush Softly', voice: 'Stroke to make fur soft and shiny!',
+            toolEmoji: '✨', target: 5, particles: SPARKLE_COLORS,
+            puppyState: (r) => r < 0.5 ? 'clean' : 'fluffy',
+            showInBath: false,
+          }}
+          onComplete={() => advanceTo('dress')} />
+      )}
+      {step === 'dress' && puppy && (
+        <ChoiceScreen puppy={puppy} items={ACCESSORIES}
+          title="Pick Something Nice"
+          subtitle={`Choose something pretty for ${puppy?.name}!`}
+          onChoose={handleDressChoice} />
       )}
 
-      {/* Care choice screen */}
-      {step === 'care' && (
-        <>
-          <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '5%' }}>
-            <SceneImg src={`${IMG}/puppy-happy.png`} alt="Happy puppy" emoji="🥰"
-                 className="w-36 h-36 sm:w-48 sm:h-48 object-contain drop-shadow-xl puppy-breathe" />
-          </div>
-          <ChoiceScreen items={CARE_ITEMS} title="Choose Something Kind"
-                        subtitle="What would make puppy feel loved?" onChoose={handleCareChoice} />
-        </>
+      {/* ── FETCH ACTIVITY ── */}
+      {step === 'fetch' && puppy && (
+        <FetchStep key="fetch" puppy={puppy}
+          onComplete={() => advanceTo('belly-rub')} />
       )}
 
-      {/* Celebrate */}
-      {step === 'celebrate' && (
-        <CelebrateScreen puppy={puppy} accessory={accessory} careItem={careItem}
-                         onFinish={handleCelebrateFinish} />
+      {/* ── TUG ACTIVITY ── */}
+      {step === 'tug' && puppy && (
+        <TugStep key="tug" puppy={puppy}
+          onComplete={() => advanceTo('belly-rub')} />
       )}
 
-      {/* Puppy Room */}
-      {step === 'room' && (
-        <PuppyRoom puppies={savedPuppies} onBack={() => setStep('select')} />
+      {/* ── SHARED: Belly rubs after play activities ── */}
+      {step === 'belly-rub' && puppy && (
+        <RubStep key="belly" puppy={puppy}
+          config={{
+            title: 'Belly Rubs!', voice: `${puppy?.name} wants belly rubs!`,
+            toolEmoji: '🤗', target: 5, particles: HEART_COLORS,
+            puppyState: 'excited',
+            showInBath: false,
+          }}
+          onComplete={() => advanceTo(puppy.activity === 'wash' ? 'dress' : 'celebrate')} />
       )}
 
-      {/* CSS animations — character personality */}
+      {/* ── CELEBRATE ── */}
+      {step === 'celebrate' && puppy && (
+        <CelebrateScreen puppy={puppy} accessory={accessory}
+          onFinish={handleFinish} />
+      )}
+
+      {/* CSS animations */}
       <style>{`
         @keyframes float-up {
           0% { transform: translateY(0) scale(1); opacity: 1; }
@@ -720,33 +842,27 @@ export default function PuppyWash() {
           75% { transform: translateY(-10px) rotate(2deg); }
         }
 
-        /* Puppy breathes gently when idle */
-        .puppy-breathe {
-          animation: puppy-breathe 3s ease-in-out infinite;
+        @keyframes fetch-ball-fly {
+          0% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+          50% { transform: translate(30%, -200%) scale(0.7); opacity: 0.8; }
+          100% { transform: translate(80%, -50%) scale(0.5); opacity: 0; }
         }
-        @keyframes puppy-breathe {
-          0%, 100% { transform: scale(1) translateY(0); }
-          50% { transform: scale(1.02) translateY(-3px); }
+        .fetch-ball-fly { animation: fetch-ball-fly 1.2s ease-out forwards; }
+
+        .tug-pull {
+          animation: tug-shake 0.15s ease-in-out infinite;
+        }
+        @keyframes tug-shake {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(3px); }
         }
 
-        /* Puppy wiggles when being washed/rubbed */
-        .puppy-wiggle {
-          animation: puppy-wiggle 0.3s ease-in-out infinite;
+        .animate-spring-in {
+          animation: spring-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
-        @keyframes puppy-wiggle {
-          0%, 100% { transform: rotate(0deg) scale(1.02); }
-          25% { transform: rotate(-2deg) scale(1.04); }
-          75% { transform: rotate(2deg) scale(1.04); }
-        }
-
-        /* Foam blobs wobble gently */
-        .bubble-wobble {
-          animation: bubble-wobble 2s ease-in-out infinite;
-        }
-        @keyframes bubble-wobble {
-          0%, 100% { transform: scale(1) translate(0, 0); }
-          33% { transform: scale(1.1) translate(2px, -2px); }
-          66% { transform: scale(0.95) translate(-1px, 1px); }
+        @keyframes spring-in {
+          0% { transform: scale(0); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
     </div>

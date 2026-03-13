@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import games from '../data/games';
 import BackButton from '../components/BackButton';
 import SectionBackground from '../components/backgrounds/SectionBackground';
+import TiltCard from '../components/TiltCard';
 import { playSectionTap } from '../hooks/useSound';
 import { useAmbient } from '../hooks/useAmbient';
 import { SECTION_THEMES } from '../data/sectionThemes';
@@ -51,7 +52,7 @@ export default function GameGrid() {
 
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pb-8">
           {filtered.map((game, i) => (
-            <button
+            <TiltCard
               key={game.id}
               onClick={() => {
                 playSectionTap(section);
@@ -62,7 +63,7 @@ export default function GameGrid() {
                 }
               }}
               className={`game-card tap-ripple overflow-hidden bg-gradient-to-br ${game.bg} flex flex-col items-center
-                         justify-center gap-2 min-h-[120px] ${anim}
+                         justify-center gap-2 min-h-[120px] ${anim} rounded-3xl
                          ${game.cover ? 'p-0' : 'p-5'}`}
               style={{
                 animationDelay: `${i * 0.06}s`,
@@ -91,7 +92,7 @@ export default function GameGrid() {
                   <span className="text-lg font-heading text-white drop-shadow">{game.title}</span>
                 </>
               )}
-            </button>
+            </TiltCard>
           ))}
         </div>
       </div>

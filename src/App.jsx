@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { setGlobalMute } from './hooks/useSound';
 import { SectionProvider } from './contexts/SectionContext';
 import ArthurBear from './components/ArthurBear';
 import GameErrorBoundary from './components/GameErrorBoundary';
+import PageTransition from './components/PageTransition';
 
 // Lazy load all routes
 const ModePicker = lazy(() => import('./pages/ModePicker'));
@@ -46,12 +47,84 @@ const HoneyHunt = lazy(() => import('./games/HoneyHunt'));
 const HadesRiverStyx = lazy(() => import('./games/HadesRiverStyx'));
 const UrsulaPotions = lazy(() => import('./games/UrsulaPotions'));
 const PuppyWash = lazy(() => import('./games/PuppyWash'));
+const InsideOutHub = lazy(() => import('./games/inside-out/InsideOutHub'));
+const ControlPanelMeltdown = lazy(() => import('./games/inside-out/ControlPanelMeltdown'));
+const AngerCoolDown = lazy(() => import('./games/inside-out/AngerCoolDown'));
+const AlarmAvalanche = lazy(() => import('./games/inside-out/AlarmAvalanche'));
+const ChainReactionCrisis = lazy(() => import('./games/inside-out/ChainReactionCrisis'));
+
+// ── Enhanced Loading Screen ──────────────────────────────────────────
+const LOADING_MESSAGES = [
+  'Getting ready...',
+  'Sprinkling magic...',
+  'Almost there...',
+  'Loading adventures...',
+];
+
+const SPARKLE_POSITIONS = [
+  { angle: 0,   rx: 56, ry: 40, size: 6,  delay: 0 },
+  { angle: 45,  rx: 50, ry: 36, size: 5,  delay: 0.3 },
+  { angle: 90,  rx: 58, ry: 42, size: 7,  delay: 0.6 },
+  { angle: 135, rx: 52, ry: 38, size: 4,  delay: 0.9 },
+  { angle: 180, rx: 54, ry: 40, size: 6,  delay: 1.2 },
+  { angle: 225, rx: 48, ry: 34, size: 5,  delay: 1.5 },
+  { angle: 270, rx: 56, ry: 44, size: 7,  delay: 1.8 },
+  { angle: 315, rx: 50, ry: 38, size: 4,  delay: 2.1 },
+];
 
 function Loading() {
+  const [msgIdx, setMsgIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setMsgIdx(i => (i + 1) % LOADING_MESSAGES.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-night gap-4">
-      <ArthurBear expression="happy" size={100} className="animate-float" />
-      <span className="text-xl font-heading text-sun/80 animate-pulse">Loading...</span>
+    <div className="w-full h-full flex flex-col items-center justify-center bg-night gap-4 overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none"
+           style={{ background: 'radial-gradient(ellipse at 50% 45%, rgba(250,204,21,0.08) 0%, transparent 60%)' }} />
+
+      {/* Orbiting sparkles */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {SPARKLE_POSITIONS.map((sp, i) => (
+            <div key={i} className="absolute loading-orbit-sparkle"
+                 style={{
+                   '--orbit-rx': `${sp.rx}px`,
+                   '--orbit-ry': `${sp.ry}px`,
+                   '--orbit-start': `${sp.angle}deg`,
+                   animationDelay: `${sp.delay}s`,
+                 }}>
+              <svg width={sp.size} height={sp.size} viewBox="0 0 20 20">
+                <path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z"
+                      fill="#facc15" opacity="0.8" />
+              </svg>
+            </div>
+          ))}
+        </div>
+
+        {/* Pulse glow behind bear */}
+        <div className="absolute inset-[-30%] rounded-full animate-pulse"
+             style={{ background: 'radial-gradient(circle, rgba(250,204,21,0.12) 0%, transparent 70%)' }} />
+
+        <ArthurBear expression="happy" size={100} className="animate-float relative z-10" />
+      </div>
+
+      <span className="text-xl font-heading text-sun/80 transition-opacity duration-500"
+            key={msgIdx}
+            style={{ animation: 'gentleIn 0.5s ease-out' }}>
+        {LOADING_MESSAGES[msgIdx]}
+      </span>
+
+      {/* Tiny progress dots */}
+      <div className="flex gap-2">
+        {[0, 1, 2].map(i => (
+          <div key={i} className="w-2 h-2 rounded-full bg-sun/40"
+               style={{ animation: `loadingDot 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -67,66 +140,89 @@ function MuteByMode({ children }) {
   return children;
 }
 
-export default function App() {
+// ── Shorthand wrappers ──────────────────────────────────────────────
+const M = ({ children }) => <MuteByMode>{children}</MuteByMode>;
+const S = ({ children }) => <SectionProvider>{children}</SectionProvider>;
+const E = ({ children }) => <GameErrorBoundary>{children}</GameErrorBoundary>;
+
+/** Page route: wraps in PageTransition for entrance animation */
+const P = ({ children, variant }) => <PageTransition variant={variant}>{children}</PageTransition>;
+/** Game route: MuteByMode + SectionProvider + ErrorBoundary + PageTransition */
+const G = ({ children }) => <M><S><E><P>{children}</P></E></S></M>;
+
+// ── Routes ──────────────────────────────────────────────────────────
+function AppRoutes() {
   return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route path="/" element={<ModePicker />} />
+    <Routes>
+      <Route path="/" element={<P><ModePicker /></P>} />
 
-        {/* All mode-aware routes wrapped in MuteByMode */}
-        <Route path="/games/:mode" element={<MuteByMode><SectionPicker /></MuteByMode>} />
-        {/* Disney Hub — must be before :section so it matches first */}
-        <Route path="/games/:mode/disney" element={<MuteByMode><DisneyHub /></MuteByMode>} />
-        <Route path="/games/:mode/:section" element={<MuteByMode><SectionProvider><GameGrid /></SectionProvider></MuteByMode>} />
+      {/* Mode-aware hub routes */}
+      <Route path="/games/:mode" element={<M><P><SectionPicker /></P></M>} />
+      <Route path="/games/:mode/disney" element={<M><P variant="magical"><DisneyHub /></P></M>} />
+      <Route path="/games/:mode/:section" element={<M><S><P><GameGrid /></P></S></M>} />
 
-        {/* Individual games/stories — wrapped in SectionProvider + ErrorBoundary */}
-        <Route path="/games/:mode/:section/bubble-pop" element={<MuteByMode><SectionProvider><GameErrorBoundary><BubblePop /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/feed-animals" element={<MuteByMode><SectionProvider><GameErrorBoundary><FeedAnimals /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/pop-critters" element={<MuteByMode><SectionProvider><GameErrorBoundary><PopCritters /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/colouring-book" element={<MuteByMode><SectionProvider><GameErrorBoundary><ColouringBook /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/free-art" element={<MuteByMode><SectionProvider><GameErrorBoundary><Colouring /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/music-pad" element={<MuteByMode><SectionProvider><GameErrorBoundary><MusicPad /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/memory-match" element={<MuteByMode><SectionProvider><GameErrorBoundary><MemoryMatch /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/farm-book" element={<MuteByMode><SectionProvider><GameErrorBoundary><FarmBook /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/three-pigs" element={<MuteByMode><SectionProvider><GameErrorBoundary><ThreeLittlePigs /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/goldilocks" element={<MuteByMode><SectionProvider><GameErrorBoundary><Goldilocks /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/red-riding" element={<MuteByMode><SectionProvider><GameErrorBoundary><RedRidingHood /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/whale-throat" element={<MuteByMode><SectionProvider><GameErrorBoundary><WhaleThroat /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/camel-hump" element={<MuteByMode><SectionProvider><GameErrorBoundary><CamelHump /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/rhino-skin" element={<MuteByMode><SectionProvider><GameErrorBoundary><RhinoSkin /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/leopard-spots" element={<MuteByMode><SectionProvider><GameErrorBoundary><LeopardSpots /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/elephant-child" element={<MuteByMode><SectionProvider><GameErrorBoundary><ElephantChild /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/old-man-kangaroo" element={<MuteByMode><SectionProvider><GameErrorBoundary><OldManKangaroo /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/armadillos" element={<MuteByMode><SectionProvider><GameErrorBoundary><Armadillos /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/first-letter" element={<MuteByMode><SectionProvider><GameErrorBoundary><FirstLetter /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/alphabet-made" element={<MuteByMode><SectionProvider><GameErrorBoundary><AlphabetMade /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/crab-sea" element={<MuteByMode><SectionProvider><GameErrorBoundary><CrabSea /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/cat-walked" element={<MuteByMode><SectionProvider><GameErrorBoundary><CatWalked /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/butterfly-stamped" element={<MuteByMode><SectionProvider><GameErrorBoundary><ButterflyStamped /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/build-a-scene" element={<MuteByMode><SectionProvider><GameErrorBoundary><BuildAScene /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/shape-match" element={<MuteByMode><SectionProvider><GameErrorBoundary><ShapeMatch /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/ellie-tiny-folk" element={<MuteByMode><SectionProvider><GameErrorBoundary><EllieStorybook /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/video/:videoId" element={<MuteByMode><SectionProvider><GameErrorBoundary><VideoPlayer /></GameErrorBoundary></SectionProvider></MuteByMode>} />
+        {/* Individual games/stories */}
+        <Route path="/games/:mode/:section/bubble-pop" element={<G><BubblePop /></G>} />
+        <Route path="/games/:mode/:section/feed-animals" element={<G><FeedAnimals /></G>} />
+        <Route path="/games/:mode/:section/pop-critters" element={<G><PopCritters /></G>} />
+        <Route path="/games/:mode/:section/colouring-book" element={<G><ColouringBook /></G>} />
+        <Route path="/games/:mode/:section/free-art" element={<G><Colouring /></G>} />
+        <Route path="/games/:mode/:section/music-pad" element={<G><MusicPad /></G>} />
+        <Route path="/games/:mode/:section/memory-match" element={<G><MemoryMatch /></G>} />
+        <Route path="/games/:mode/:section/farm-book" element={<G><FarmBook /></G>} />
+        <Route path="/games/:mode/:section/three-pigs" element={<G><ThreeLittlePigs /></G>} />
+        <Route path="/games/:mode/:section/goldilocks" element={<G><Goldilocks /></G>} />
+        <Route path="/games/:mode/:section/red-riding" element={<G><RedRidingHood /></G>} />
+        <Route path="/games/:mode/:section/whale-throat" element={<G><WhaleThroat /></G>} />
+        <Route path="/games/:mode/:section/camel-hump" element={<G><CamelHump /></G>} />
+        <Route path="/games/:mode/:section/rhino-skin" element={<G><RhinoSkin /></G>} />
+        <Route path="/games/:mode/:section/leopard-spots" element={<G><LeopardSpots /></G>} />
+        <Route path="/games/:mode/:section/elephant-child" element={<G><ElephantChild /></G>} />
+        <Route path="/games/:mode/:section/old-man-kangaroo" element={<G><OldManKangaroo /></G>} />
+        <Route path="/games/:mode/:section/armadillos" element={<G><Armadillos /></G>} />
+        <Route path="/games/:mode/:section/first-letter" element={<G><FirstLetter /></G>} />
+        <Route path="/games/:mode/:section/alphabet-made" element={<G><AlphabetMade /></G>} />
+        <Route path="/games/:mode/:section/crab-sea" element={<G><CrabSea /></G>} />
+        <Route path="/games/:mode/:section/cat-walked" element={<G><CatWalked /></G>} />
+        <Route path="/games/:mode/:section/butterfly-stamped" element={<G><ButterflyStamped /></G>} />
+        <Route path="/games/:mode/:section/build-a-scene" element={<G><BuildAScene /></G>} />
+        <Route path="/games/:mode/:section/shape-match" element={<G><ShapeMatch /></G>} />
+        <Route path="/games/:mode/:section/ellie-tiny-folk" element={<G><EllieStorybook /></G>} />
+        <Route path="/games/:mode/:section/video/:videoId" element={<G><VideoPlayer /></G>} />
 
         {/* Disney: Princesses */}
-        <Route path="/games/:mode/:section/cinderella" element={<MuteByMode><SectionProvider><GameErrorBoundary><Cinderella /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/snow-white" element={<MuteByMode><SectionProvider><GameErrorBoundary><SnowWhite /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/fairy-dust" element={<MuteByMode><SectionProvider><GameErrorBoundary><FairyDust /></GameErrorBoundary></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/cinderella" element={<G><Cinderella /></G>} />
+        <Route path="/games/:mode/:section/snow-white" element={<G><SnowWhite /></G>} />
+        <Route path="/games/:mode/:section/fairy-dust" element={<G><FairyDust /></G>} />
 
         {/* Disney: Villains */}
-        <Route path="/games/:mode/:section/captain-hook" element={<MuteByMode><SectionProvider><GameErrorBoundary><CaptainHook /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/hades-river-styx" element={<MuteByMode><SectionProvider><GameErrorBoundary><HadesRiverStyx /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/ursula-potions" element={<MuteByMode><SectionProvider><GameErrorBoundary><UrsulaPotions /></GameErrorBoundary></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/captain-hook" element={<G><CaptainHook /></G>} />
+        <Route path="/games/:mode/:section/hades-river-styx" element={<G><HadesRiverStyx /></G>} />
+        <Route path="/games/:mode/:section/ursula-potions" element={<G><UrsulaPotions /></G>} />
 
         {/* Disney: Pooh */}
-        <Route path="/games/:mode/:section/winnie-the-pooh" element={<MuteByMode><SectionProvider><GameErrorBoundary><WinnieThePooh /></GameErrorBoundary></SectionProvider></MuteByMode>} />
-        <Route path="/games/:mode/:section/honey-hunt" element={<MuteByMode><SectionProvider><GameErrorBoundary><HoneyHunt /></GameErrorBoundary></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/winnie-the-pooh" element={<G><WinnieThePooh /></G>} />
+        <Route path="/games/:mode/:section/honey-hunt" element={<G><HoneyHunt /></G>} />
+
+        {/* Disney: Inside Out */}
+        <Route path="/games/:mode/:section/inside-out-hub" element={<G><InsideOutHub /></G>} />
+        <Route path="/games/:mode/:section/control-panel-meltdown" element={<G><ControlPanelMeltdown /></G>} />
+        <Route path="/games/:mode/:section/anger-cool-down" element={<G><AngerCoolDown /></G>} />
+        <Route path="/games/:mode/:section/alarm-avalanche" element={<G><AlarmAvalanche /></G>} />
+        <Route path="/games/:mode/:section/chain-reaction-crisis" element={<G><ChainReactionCrisis /></G>} />
 
         {/* Disney: Dalmatians */}
-        <Route path="/games/:mode/:section/puppy-wash" element={<MuteByMode><SectionProvider><GameErrorBoundary><PuppyWash /></GameErrorBoundary></SectionProvider></MuteByMode>} />
+        <Route path="/games/:mode/:section/puppy-wash" element={<G><PuppyWash /></G>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <AppRoutes />
     </Suspense>
   );
 }

@@ -26,18 +26,18 @@ function PagePicker({ onSelect }) {
          style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%)' }}>
       <h2 className="text-2xl sm:text-3xl font-heading text-amber-900 mb-1">Colouring Book</h2>
       <p className="text-sm text-amber-700/70 font-heading mb-5">Pick a picture to colour in!</p>
-      <div className="grid grid-cols-2 gap-4 max-w-md w-full">
+      <div className="grid grid-cols-2 gap-3 max-w-lg w-full px-2">
         {PAGES.map(page => (
           <button
             key={page.id}
             onClick={() => { playPop(); onSelect(page); }}
-            className="bg-white rounded-3xl p-3 shadow-lg border-2 border-amber-200/50
-                       hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer"
+            className="bg-white rounded-3xl p-2 shadow-lg border-2 border-amber-200/50
+                       hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-1 cursor-pointer"
           >
             <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <img src={page.src} alt={page.name} className="w-full h-full object-contain" draggable={false} />
+              <img src={page.src} alt={page.name} className="w-full h-full object-cover" draggable={false} />
             </div>
-            <span className="font-heading text-amber-800 text-sm">{page.emoji} {page.name}</span>
+            <span className="font-heading text-amber-800 text-xs">{page.emoji} {page.name}</span>
           </button>
         ))}
       </div>
@@ -183,14 +183,14 @@ export default function ColouringBook() {
         const dpr = window.devicePixelRatio || 1;
         const cw = c.width / dpr;
         const ch = c.height / dpr;
-        /* Replicate object-contain positioning */
+        /* Replicate object-cover positioning */
         const imgAspect = bgImg.naturalWidth / bgImg.naturalHeight;
         const canvasAspect = cw / ch;
         let dw, dh, dx, dy;
         if (imgAspect > canvasAspect) {
-          dw = cw; dh = cw / imgAspect; dx = 0; dy = (ch - dh) / 2;
-        } else {
           dh = ch; dw = ch * imgAspect; dy = 0; dx = (cw - dw) / 2;
+        } else {
+          dw = cw; dh = cw / imgAspect; dx = 0; dy = (ch - dh) / 2;
         }
         tctx.drawImage(bgImg, dx * dpr, dy * dpr, dw * dpr, dh * dpr);
       }
@@ -235,7 +235,7 @@ export default function ColouringBook() {
           id="colouring-bg-img"
           src={page.src}
           alt={page.name}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-90"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-90"
           draggable={false}
         />
         {/* Drawing canvas on top */}

@@ -155,6 +155,21 @@ export const SECTION_THEMES = {
     ambient: 'birds',
     animationVibe: 'bouncy',
   },
+  'disney-insideout': {
+    id: 'disney-insideout',
+    label: 'Inside Out',
+    palette: {
+      primary: '#facc15',
+      secondary: '#7c3aed',
+      accent: '#ef4444',
+      bg: 'from-violet-600 to-indigo-900',
+      cardBg: 'from-violet-600/20 to-indigo-900/20',
+    },
+    particles: { shapes: ['star', 'circle', 'diamond'], colors: ['#facc15', '#3b82f6', '#ef4444', '#8b5cf6', '#22c55e'] },
+    tapSound: 'boing',
+    ambient: 'wind',
+    animationVibe: 'bouncy',
+  },
   'disney-dalmatians': {
     id: 'disney-dalmatians',
     label: 'Puppies',

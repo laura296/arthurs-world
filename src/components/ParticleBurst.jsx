@@ -8,6 +8,14 @@ import { useState, useCallback } from 'react';
  *   const { burst, ParticleLayer } = useParticleBurst();
  *   burst(x, y, { colors, shapes, count });
  *   return <><ParticleLayer /><rest of UI /></>;
+ *
+ * Physics options (all opt-in, backwards compatible):
+ *   gravity: true      — particles arc downward (particleFlyGravity)
+ *   spin: true         — particles rotate during flight (particleFlySpin)
+ *   sizeDecay: 'pulse' — scale up then shrink (particleFlyPulse)
+ *   opacityCurve: 'late' — stay visible 60% then fade (particleFlyLate)
+ *
+ * Combine: { gravity: true, spin: true } picks the first matching variant.
  */
 
 const SHAPE_PATHS = {
@@ -17,20 +25,41 @@ const SHAPE_PATHS = {
   diamond: 'M12 2L22 12L12 22L2 12z',
 };
 
+/** Pick a CSS keyframe name based on physics options */
+function pickAnimation({ gravity, spin, sizeDecay, opacityCurve }) {
+  if (gravity && spin) return 'particleFlyGravity';
+  if (gravity) return 'particleFlyGravity';
+  if (spin) return 'particleFlySpin';
+  if (sizeDecay === 'pulse') return 'particleFlyPulse';
+  if (opacityCurve === 'late') return 'particleFlyLate';
+  return 'particleFly';
+}
+
 let burstIdCounter = 0;
 
 export function useParticleBurst() {
   const [bursts, setBursts] = useState([]);
 
-  const burst = useCallback((x, y, options = {}) => {
+  const burst = useCallback((xOrOpts, y, options = {}) => {
+    let x;
+    if (typeof xOrOpts === 'object' && xOrOpts !== null) {
+      ({ x, y, ...options } = xOrOpts);
+    } else {
+      x = xOrOpts;
+    }
     const {
       count = 10,
       colors = ['#facc15', '#38bdf8', '#ec4899'],
       shapes = ['star', 'circle'],
       spread = 80,
       duration = 600,
+      gravity = false,
+      spin = false,
+      sizeDecay,
+      opacityCurve,
     } = options;
 
+    const animName = pickAnimation({ gravity, spin, sizeDecay, opacityCurve });
     const id = ++burstIdCounter;
     const particles = Array.from({ length: count }, (_, i) => {
       const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
@@ -47,7 +76,7 @@ export function useParticleBurst() {
       };
     });
 
-    setBursts(prev => [...prev, { id, x, y, particles, duration }]);
+    setBursts(prev => [...prev, { id, x, y, particles, duration, animName }]);
 
     setTimeout(() => {
       setBursts(prev => prev.filter(b => b.id !== id));
@@ -63,7 +92,7 @@ export function useParticleBurst() {
               key={p.id}
               className="absolute"
               style={{
-                animation: `particleFly ${b.duration}ms ease-out ${p.delay}ms forwards`,
+                animation: `${b.animName} ${b.duration}ms ease-out ${p.delay}ms forwards`,
                 '--particle-tx': `${p.tx}px`,
                 '--particle-ty': `${p.ty}px`,
               }}

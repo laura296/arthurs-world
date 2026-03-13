@@ -70,8 +70,15 @@ const games = [
   { id: 'winnie-the-pooh',  emoji: '🍯', title: 'Winnie the Pooh',  path: 'winnie-the-pooh',  category: 'disney-pooh', bg: 'from-amber-300 to-yellow-500',      cover: '/arthurs-world/images/disney/pooh/page-1.png' },
   { id: 'honey-hunt',       emoji: '🐝', title: 'Honey Hunt',       path: 'honey-hunt',       category: 'disney-pooh', bg: 'from-amber-400 to-orange-500' },
 
+  // ── Disney: Inside Out ──
+  { id: 'inside-out-hub',            emoji: '🧠', title: 'Headquarters',    path: 'inside-out-hub',            category: 'disney-insideout', bg: 'from-violet-600 to-indigo-900' },
+  { id: 'control-panel-meltdown',    emoji: '🎛️', title: 'Control Panel',   path: 'control-panel-meltdown',    category: 'disney-insideout', bg: 'from-yellow-400 to-amber-600' },
+  { id: 'anger-cool-down',           emoji: '🔥', title: 'Cool Down!',      path: 'anger-cool-down',           category: 'disney-insideout', bg: 'from-red-500 to-orange-600' },
+  { id: 'alarm-avalanche',           emoji: '🚨', title: 'Alarm Sort',      path: 'alarm-avalanche',           category: 'disney-insideout', bg: 'from-teal-400 to-orange-500' },
+  { id: 'chain-reaction-crisis',     emoji: '⚡', title: 'Chain Reaction',  path: 'chain-reaction-crisis',     category: 'disney-insideout', bg: 'from-red-600 to-purple-800' },
+
   // ── Disney: Dalmatians ──
-  { id: 'puppy-wash',        emoji: '🐾', title: 'Puppy Wash Day',   path: 'puppy-wash',       category: 'disney-dalmatians', bg: 'from-pink-200 to-amber-100', cover: '/arthurs-world/images/disney/puppy-wash/puppy-happy.png' },
+  { id: 'puppy-wash',        emoji: '🐾', title: 'Puppy',            path: 'puppy-wash',       category: 'disney-dalmatians', bg: 'from-pink-200 to-amber-100', cover: '/arthurs-world/images/disney/puppy-wash/puppy-happy.png' },
 ];
 
 export default games;
