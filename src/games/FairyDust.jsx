@@ -317,66 +317,139 @@ function Fireflies({ count = 12 }) {
    FAIRY GUIDE (Pip-like sprite)
    ══════════════════════════════════════════════ */
 
-function FairyGuide({ plantCount }) {
-  const happy = plantCount > 3;
+function FairyGuide({ plantCount, isIntro }) {
+  // Progressive happiness: 0-2 calm, 3-4 happy, 5+ ecstatic
+  const mood = plantCount >= 5 ? 'ecstatic' : plantCount >= 3 ? 'happy' : 'calm';
+  const wingSpeed = mood === 'ecstatic' ? '0.5s' : mood === 'happy' ? '0.8s' : '1.2s';
+  const glowIntensity = mood === 'ecstatic' ? 0.8 : mood === 'happy' ? 0.6 : 0.4;
+
   return (
     <div
       className="absolute z-20 pointer-events-none select-none"
       style={{
         right: '5%', top: '18%',
-        animation: 'seed-float 3s ease-in-out infinite',
-        filter: 'drop-shadow(0 0 12px rgba(240,171,252,0.6))',
+        animation: isIntro
+          ? 'hazel-wave 1.2s ease-in-out'
+          : mood === 'ecstatic'
+            ? 'hazel-dance 0.8s ease-in-out infinite'
+            : 'seed-float 3s ease-in-out infinite',
+        filter: `drop-shadow(0 0 ${8 + plantCount * 2}px rgba(240,171,252,${glowIntensity}))`,
+        transition: 'filter 1s ease',
       }}
     >
-      <svg width="44" height="56" viewBox="0 0 44 56">
-        {/* Wings */}
-        <ellipse cx="8" cy="24" rx="10" ry="14" fill="#c084fc" opacity="0.35" transform="rotate(-20 8 24)">
-          <animate attributeName="rx" values="10;8;10" dur="1.2s" repeatCount="indefinite" />
+      <svg width="52" height="66" viewBox="0 0 52 66">
+        {/* Wings — flap faster as garden fills */}
+        <ellipse cx="8" cy="28" rx="12" ry="16" fill="#c084fc" opacity={0.25 + plantCount * 0.03} transform="rotate(-20 8 28)">
+          <animate attributeName="rx" values="12;8;12" dur={wingSpeed} repeatCount="indefinite" />
         </ellipse>
-        <ellipse cx="36" cy="24" rx="10" ry="14" fill="#c084fc" opacity="0.35" transform="rotate(20 36 24)">
-          <animate attributeName="rx" values="10;8;10" dur="1.2s" repeatCount="indefinite" begin="0.1s" />
+        <ellipse cx="44" cy="28" rx="12" ry="16" fill="#c084fc" opacity={0.25 + plantCount * 0.03} transform="rotate(20 44 28)">
+          <animate attributeName="rx" values="12;8;12" dur={wingSpeed} repeatCount="indefinite" begin="0.1s" />
         </ellipse>
-        <ellipse cx="10" cy="20" rx="7" ry="10" fill="#e9d5ff" opacity="0.5" transform="rotate(-15 10 20)">
-          <animate attributeName="rx" values="7;5;7" dur="1.2s" repeatCount="indefinite" />
+        <ellipse cx="11" cy="24" rx="8" ry="12" fill="#e9d5ff" opacity={0.4 + plantCount * 0.04} transform="rotate(-15 11 24)">
+          <animate attributeName="rx" values="8;5;8" dur={wingSpeed} repeatCount="indefinite" />
         </ellipse>
-        <ellipse cx="34" cy="20" rx="7" ry="10" fill="#e9d5ff" opacity="0.5" transform="rotate(15 34 20)">
-          <animate attributeName="rx" values="7;5;7" dur="1.2s" repeatCount="indefinite" begin="0.1s" />
+        <ellipse cx="41" cy="24" rx="8" ry="12" fill="#e9d5ff" opacity={0.4 + plantCount * 0.04} transform="rotate(15 41 24)">
+          <animate attributeName="rx" values="8;5;8" dur={wingSpeed} repeatCount="indefinite" begin="0.1s" />
         </ellipse>
+
+        {/* Wing sparkles — appear at 3+ plants */}
+        {mood !== 'calm' && [
+          [5, 20], [47, 22], [3, 32], [49, 30],
+        ].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r={1.5} fill="#fbbf24" opacity="0.7">
+            <animate attributeName="opacity" values="0;0.8;0" dur={`${1 + i * 0.3}s`} repeatCount="indefinite" begin={`${i * 0.2}s`} />
+          </circle>
+        ))}
+
         {/* Body */}
-        <ellipse cx="22" cy="32" rx="6" ry="10" fill="#e9d5ff" />
-        <ellipse cx="22" cy="34" rx="4" ry="6" fill="#f0abfc" opacity="0.4" />
-        {/* Head */}
-        <circle cx="22" cy="18" r="8" fill="#fde68a" />
-        {/* Hair */}
-        <ellipse cx="22" cy="12" rx="9" ry="5" fill="#f0abfc" />
-        <circle cx="15" cy="14" r="3" fill="#f0abfc" />
-        <circle cx="29" cy="14" r="3" fill="#f0abfc" />
-        {/* Eyes */}
-        {happy ? (
+        <ellipse cx="26" cy="38" rx="7" ry="12" fill="#e9d5ff" />
+        <ellipse cx="26" cy="40" rx="5" ry="7" fill="#f0abfc" opacity="0.4" />
+
+        {/* Arms */}
+        {mood === 'ecstatic' ? (
           <>
-            <path d="M18 17 Q20 15 22 17" stroke="#4c1d95" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-            <path d="M22 17 Q24 15 26 17" stroke="#4c1d95" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <ellipse cx="18" cy="34" rx="3" ry="5" fill="#fde68a" transform="rotate(-30 18 34)" />
+            <ellipse cx="34" cy="34" rx="3" ry="5" fill="#fde68a" transform="rotate(30 34 34)" />
           </>
         ) : (
           <>
-            <circle cx="19" cy="17" r="1.5" fill="#4c1d95" />
-            <circle cx="25" cy="17" r="1.5" fill="#4c1d95" />
-            <circle cx="18.5" cy="16.5" r="0.5" fill="white" />
-            <circle cx="24.5" cy="16.5" r="0.5" fill="white" />
+            <ellipse cx="19" cy="38" rx="3" ry="4" fill="#fde68a" transform="rotate(-10 19 38)" />
+            <ellipse cx="33" cy="38" rx="3" ry="4" fill="#fde68a" transform="rotate(10 33 38)" />
           </>
         )}
-        {/* Cheeks */}
-        <circle cx="16" cy="19" r="2" fill="#f9a8d4" opacity="0.5" />
-        <circle cx="28" cy="19" r="2" fill="#f9a8d4" opacity="0.5" />
-        {/* Mouth */}
-        <path d={happy ? "M20 21 Q22 23 24 21" : "M20 21 Q22 22.5 24 21"} stroke="#8B5E83" strokeWidth="0.8" fill="none" />
-        {/* Wand */}
-        <line x1="30" y1="30" x2="38" y2="22" stroke="#D4A853" strokeWidth="1.5" strokeLinecap="round" />
-        <polygon points="38,18 40,22 36,22" fill="#fbbf24" />
-        {/* Sparkle on wand */}
-        <circle cx="38" cy="18" r="2" fill="#fbbf24">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+
+        {/* Head */}
+        <circle cx="26" cy="21" r="10" fill="#fde68a" />
+        {/* Hair */}
+        <ellipse cx="26" cy="14" rx="11" ry="6" fill="#f0abfc" />
+        <circle cx="17" cy="16" r="3.5" fill="#f0abfc" />
+        <circle cx="35" cy="16" r="3.5" fill="#f0abfc" />
+        {/* Hair sparkle */}
+        <circle cx="26" cy="10" r="2" fill="#fbbf24" opacity="0.6">
+          <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite" />
         </circle>
+
+        {/* Eyes — change with mood */}
+        {mood === 'ecstatic' ? (
+          <>
+            {/* Sparkle eyes */}
+            <path d="M22 20 Q24 17 26 20" stroke="#4c1d95" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+            <path d="M26 20 Q28 17 30 20" stroke="#4c1d95" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          </>
+        ) : mood === 'happy' ? (
+          <>
+            <path d="M22 20 Q24 18 26 20" stroke="#4c1d95" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+            <path d="M26 20 Q28 18 30 20" stroke="#4c1d95" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          </>
+        ) : (
+          <>
+            <circle cx="23" cy="20" r="2" fill="#4c1d95" />
+            <circle cx="29" cy="20" r="2" fill="#4c1d95" />
+            <circle cx="22.5" cy="19.5" r="0.7" fill="white" />
+            <circle cx="28.5" cy="19.5" r="0.7" fill="white" />
+            {/* Blink */}
+            <rect x="21" y="18" width="5" height="4" fill="#fde68a" opacity="0">
+              <animate attributeName="opacity" values="0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0" dur="4s" repeatCount="indefinite" />
+            </rect>
+            <rect x="27" y="18" width="5" height="4" fill="#fde68a" opacity="0">
+              <animate attributeName="opacity" values="0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0" dur="4s" repeatCount="indefinite" />
+            </rect>
+          </>
+        )}
+
+        {/* Cheeks — rosier when happy */}
+        <circle cx="19" cy="23" r="2.5" fill="#f9a8d4" opacity={0.3 + plantCount * 0.05} style={{ transition: 'opacity 0.5s' }} />
+        <circle cx="33" cy="23" r="2.5" fill="#f9a8d4" opacity={0.3 + plantCount * 0.05} style={{ transition: 'opacity 0.5s' }} />
+
+        {/* Mouth — bigger smile as mood improves */}
+        {mood === 'ecstatic'
+          ? <path d="M23 25 Q26 29 29 25" stroke="#8B5E83" strokeWidth="1.2" fill="none" />
+          : mood === 'happy'
+            ? <path d="M23 25 Q26 28 29 25" stroke="#8B5E83" strokeWidth="1" fill="none" />
+            : <path d="M24 25 Q26 27 28 25" stroke="#8B5E83" strokeWidth="0.8" fill="none" />
+        }
+
+        {/* Wand */}
+        <line x1="35" y1="36" x2="44" y2="26" stroke="#D4A853" strokeWidth="1.8" strokeLinecap="round" />
+        <polygon points="44,22 47,27 41,27" fill="#fbbf24" />
+        {/* Wand sparkle — grows with mood */}
+        <circle cx="44" cy="22" r={mood === 'ecstatic' ? 4 : mood === 'happy' ? 3 : 2} fill="#fbbf24">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur={mood === 'ecstatic' ? '0.5s' : '1s'} repeatCount="indefinite" />
+          <animate attributeName="r" values={mood === 'ecstatic' ? '3;5;3' : mood === 'happy' ? '2;3.5;2' : '1.5;2.5;1.5'} dur="1.5s" repeatCount="indefinite" />
+        </circle>
+
+        {/* Extra sparkle trail when ecstatic */}
+        {mood === 'ecstatic' && [
+          [40, 18], [48, 24], [42, 28],
+        ].map(([x, y], i) => (
+          <circle key={`ws-${i}`} cx={x} cy={y} r="1.5" fill="#fde68a">
+            <animate attributeName="opacity" values="0;1;0" dur={`${0.8 + i * 0.2}s`} repeatCount="indefinite" begin={`${i * 0.25}s`} />
+          </circle>
+        ))}
+
+        {/* Feet */}
+        <ellipse cx="23" cy="50" rx="3" ry="2" fill="#fde68a" />
+        <ellipse cx="29" cy="50" rx="3" ry="2" fill="#fde68a" />
       </svg>
     </div>
   );
@@ -419,15 +492,39 @@ function makeSeed(w, h) {
 
 function GardenPlant({ plant, slotW, slotIdx, onTap }) {
   const [bouncing, setBouncing] = useState(false);
+  const [petals, setPetals] = useState([]);
   const swayDelay = useMemo(() => Math.random() * 2, []);
+  const tapCount = useRef(0);
 
   const handleTap = useCallback(() => {
     if (bouncing) return;
     setBouncing(true);
-    playBoing();
+    tapCount.current += 1;
+
+    // Different sounds for variety
+    if (tapCount.current % 3 === 0) {
+      playSparkle();
+    } else {
+      playBoing();
+    }
+
+    // Shed petals/sparkles on tap
+    const newPetals = Array.from({ length: 4 + Math.floor(Math.random() * 3) }, (_, i) => ({
+      id: Date.now() + i,
+      x: 30 + (Math.random() - 0.5) * 40,
+      color: plant.rare
+        ? ['#fbbf24', '#a78bfa', '#f0abfc', '#67e8f9'][i % 4]
+        : [plant.color, '#fbbf24', '#f0abfc', '#4ade80'][i % 4],
+      size: 6 + Math.random() * 8,
+      delay: i * 0.08,
+      drift: (Math.random() - 0.5) * 30,
+    }));
+    setPetals(newPetals);
+    setTimeout(() => setPetals([]), 1200);
+
     onTap?.();
     setTimeout(() => setBouncing(false), 500);
-  }, [bouncing, onTap]);
+  }, [bouncing, onTap, plant]);
 
   return (
     <div
@@ -456,6 +553,18 @@ function GardenPlant({ plant, slotW, slotIdx, onTap }) {
           }} />
         )}
       </div>
+      {/* Falling petals/sparkles on tap */}
+      {petals.map(p => (
+        <div key={p.id} className="absolute pointer-events-none" style={{
+          left: `${p.x}%`, top: '20%',
+          width: p.size, height: p.size,
+          borderRadius: '50%',
+          background: p.color,
+          boxShadow: `0 0 ${p.size}px ${p.color}80`,
+          animation: `petal-fall 1s ease-in ${p.delay}s both`,
+          transform: `translateX(${p.drift}px)`,
+        }} />
+      ))}
     </div>
   );
 }
@@ -510,10 +619,17 @@ export default function FairyDust() {
   const { celebrate, CelebrationLayer } = useCelebration();
 
   const [round, setRound] = useState(0);
-  const [phase, setPhase] = useState('playing');
+  const [phase, setPhase] = useState('intro');
   const [seeds, setSeeds] = useState([]);
   const [garden, setGarden] = useState([]);
   const [flyingSeed, setFlyingSeed] = useState(null);
+
+  // Intro auto-dismiss
+  useEffect(() => {
+    if (phase !== 'intro') return;
+    const t = setTimeout(() => setPhase('playing'), 2500);
+    return () => clearTimeout(t);
+  }, [phase]);
 
   const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
 
@@ -692,7 +808,7 @@ export default function FairyDust() {
     setRound(0);
     setGarden(Array.from({ length: ROUNDS[0].slots }, () => null));
     setSeeds([]);
-    setPhase('playing');
+    setPhase('intro');
   }, []);
 
   const filledCount = garden.filter(g => g !== null).length;
@@ -714,7 +830,31 @@ export default function FairyDust() {
       <ParticleLayer />
 
       {/* Fairy guide */}
-      <FairyGuide plantCount={filledCount} />
+      <FairyGuide plantCount={filledCount} isIntro={phase === 'intro'} />
+
+      {/* Intro overlay — fairy waves, seeds preview */}
+      {phase === 'intro' && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+          <div className="bg-purple-900/60 backdrop-blur-sm rounded-3xl px-8 py-6 border-2 border-purple-400/30 flex flex-col items-center gap-3"
+            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
+            <div className="flex gap-3">
+              {SEED_TYPES.slice(0, 5).map((s, i) => (
+                <div key={s.label} className="text-3xl"
+                  style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.3 + i * 0.12}s both` }}>
+                  {s.emoji}
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-1" style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}>
+              {[0, 1, 2].map(i => (
+                <svg key={i} width={16} height={16} viewBox="0 0 16 16">
+                  <polygon points="8,0 10,6 16,6 11,10 13,16 8,12 3,16 5,10 0,6 6,6" fill="#fbbf24" />
+                </svg>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Fireflies */}
       <Fireflies count={filledCount >= 3 ? 14 : 8} />
@@ -815,7 +955,6 @@ export default function FairyDust() {
         {/* soil SVG */}
         <svg
           className="absolute left-0 right-0"
-          style={{ bottom: '4px' }}
           width={dims.w} height={dims.h * 0.32}
           viewBox={`0 0 ${dims.w} ${dims.h * 0.32}`}
           style={{ bottom: '4px', overflow: 'visible' }}

@@ -222,68 +222,190 @@ function PlayroomScene({ round }) {
 
 /* ── Hazel the Hedgehog mascot (matching game host) ── */
 
-function HazelGuide({ state }) {
+function HazelGuide({ state, score }) {
   const isHappy = state === 'correct';
   const isThinking = state === 'wrong';
+  const isIntro = state === 'intro';
+  const isDancing = state === 'dancing';
+
+  // Hazel gets bouncier as score increases
+  const excitement = Math.min(score / 80, 1);
+
   return (
     <div
       className="absolute z-20 pointer-events-none select-none"
       style={{
         left: '4%', bottom: '30%',
-        animation: isHappy ? 'springTap 0.5s ease-out' : isThinking ? 'wiggle 0.4s ease-in-out' : 'seed-float 3s ease-in-out infinite',
+        animation: isDancing
+          ? 'hazel-dance 0.6s ease-in-out 3'
+          : isHappy
+            ? 'hazel-celebrate 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            : isThinking
+              ? 'wiggle 0.4s ease-in-out'
+              : isIntro
+                ? 'hazel-wave 1.2s ease-in-out'
+                : `seed-float ${3 - excitement}s ease-in-out infinite`,
         transformOrigin: 'bottom center',
       }}
     >
-      <svg width="60" height="72" viewBox="0 0 60 72">
+      <svg width="70" height="84" viewBox="0 0 70 84">
         {/* Body — spiky */}
-        <ellipse cx="30" cy="42" rx="22" ry="18" fill="#8B6914" />
-        {/* Spines */}
-        {[-35, -25, -15, -5, 5, 15, 25, 35].map((angle, i) => {
+        <ellipse cx="35" cy="48" rx="24" ry="20" fill="#8B6914" />
+        {/* Spines — they perk up when happy */}
+        {[-40, -30, -20, -10, 0, 10, 20, 30, 40].map((angle, i) => {
           const rad = (angle - 90) * Math.PI / 180;
-          const x1 = 30 + 18 * Math.cos(rad);
-          const y1 = 42 + 14 * Math.sin(rad);
-          const x2 = 30 + 28 * Math.cos(rad);
-          const y2 = 42 + 22 * Math.sin(rad);
-          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#6B4E3D" strokeWidth="2.5" strokeLinecap="round" />;
+          const x1 = 35 + 20 * Math.cos(rad);
+          const y1 = 48 + 16 * Math.sin(rad);
+          const spineLen = isHappy || isDancing ? 32 : 28;
+          const x2 = 35 + spineLen * Math.cos(rad);
+          const y2 = 48 + (spineLen - 4) * Math.sin(rad);
+          return (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke={isHappy ? '#8B6914' : '#6B4E3D'}
+              strokeWidth="2.5" strokeLinecap="round"
+              style={{ transition: 'all 0.3s ease' }}
+            />
+          );
         })}
         {/* Belly */}
-        <ellipse cx="30" cy="48" rx="14" ry="10" fill="#D4A853" />
-        {/* Face */}
-        <circle cx="30" cy="30" r="14" fill="#D4A853" />
-        {/* Ears */}
-        <circle cx="18" cy="22" r="5" fill="#C4922A" /><circle cx="18" cy="22" r="3" fill="#E8C97A" />
-        <circle cx="42" cy="22" r="5" fill="#C4922A" /><circle cx="42" cy="22" r="3" fill="#E8C97A" />
-        {/* Eyes */}
-        {isHappy ? (
+        <ellipse cx="35" cy="55" rx="16" ry="12" fill="#D4A853" />
+        {/* Arms */}
+        {isHappy || isDancing ? (
           <>
-            <path d="M24 28 Q26 25 28 28" stroke="#3a2a15" strokeWidth="2" fill="none" strokeLinecap="round" />
-            <path d="M32 28 Q34 25 36 28" stroke="#3a2a15" strokeWidth="2" fill="none" strokeLinecap="round" />
+            {/* Arms up celebrating */}
+            <ellipse cx="14" cy="42" rx="5" ry="7" fill="#C4922A" transform="rotate(-30 14 42)" />
+            <ellipse cx="56" cy="42" rx="5" ry="7" fill="#C4922A" transform="rotate(30 56 42)" />
+            {/* Paw pads */}
+            <circle cx="11" cy="37" r="3.5" fill="#D4A853" />
+            <circle cx="59" cy="37" r="3.5" fill="#D4A853" />
+          </>
+        ) : isIntro ? (
+          <>
+            {/* One arm waving */}
+            <ellipse cx="14" cy="50" rx="5" ry="7" fill="#C4922A" transform="rotate(-10 14 50)" />
+            <ellipse cx="56" cy="40" rx="5" ry="7" fill="#C4922A" transform="rotate(40 56 40)">
+              <animateTransform attributeName="transform" type="rotate"
+                values="40 56 40;20 56 40;40 56 40" dur="0.6s" repeatCount="2" />
+            </ellipse>
+            <circle cx="59" cy="35" r="3.5" fill="#D4A853">
+              <animate attributeName="cy" values="35;32;35" dur="0.6s" repeatCount="2" />
+            </circle>
           </>
         ) : (
           <>
-            <circle cx="26" cy="28" r="2.5" fill="#3a2a15" />
-            <circle cx="34" cy="28" r="2.5" fill="#3a2a15" />
-            <circle cx="25" cy="27" r="0.8" fill="white" />
-            <circle cx="33" cy="27" r="0.8" fill="white" />
+            {/* Arms resting */}
+            <ellipse cx="14" cy="52" rx="5" ry="7" fill="#C4922A" transform="rotate(-10 14 52)" />
+            <ellipse cx="56" cy="52" rx="5" ry="7" fill="#C4922A" transform="rotate(10 56 52)" />
+          </>
+        )}
+        {/* Face */}
+        <circle cx="35" cy="34" r="16" fill="#D4A853" />
+        {/* Ears */}
+        <circle cx="21" cy="24" r="5.5" fill="#C4922A" /><circle cx="21" cy="24" r="3.5" fill="#E8C97A" />
+        <circle cx="49" cy="24" r="5.5" fill="#C4922A" /><circle cx="49" cy="24" r="3.5" fill="#E8C97A" />
+        {/* Eyes */}
+        {isHappy || isDancing ? (
+          <>
+            <path d="M28 32 Q31 28 34 32" stroke="#3a2a15" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+            <path d="M36 32 Q39 28 42 32" stroke="#3a2a15" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+          </>
+        ) : isThinking ? (
+          <>
+            <circle cx="31" cy="31" r="3" fill="#3a2a15" />
+            <circle cx="39" cy="31" r="3" fill="#3a2a15" />
+            <circle cx="30" cy="30" r="1" fill="white" />
+            <circle cx="38" cy="30" r="1" fill="white" />
+            {/* Sweat drop */}
+            <ellipse cx="48" cy="26" rx="2" ry="3" fill="#87CEEB" opacity="0.6">
+              <animate attributeName="cy" values="26;29;26" dur="0.5s" repeatCount="1" />
+            </ellipse>
+          </>
+        ) : (
+          <>
+            <circle cx="31" cy="31" r="3" fill="#3a2a15" />
+            <circle cx="39" cy="31" r="3" fill="#3a2a15" />
+            <circle cx="30" cy="30" r="1" fill="white" />
+            <circle cx="38" cy="30" r="1" fill="white" />
+            {/* Blink animation */}
+            <rect x="28" y="29" width="6" height="4" fill="#D4A853" opacity="0">
+              <animate attributeName="opacity" values="0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0" dur="4s" repeatCount="indefinite" />
+            </rect>
+            <rect x="36" y="29" width="6" height="4" fill="#D4A853" opacity="0">
+              <animate attributeName="opacity" values="0;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0" dur="4s" repeatCount="indefinite" />
+            </rect>
           </>
         )}
         {/* Nose */}
-        <ellipse cx="30" cy="33" rx="3" ry="2.5" fill="#3a2a15" />
-        {/* Cheeks */}
-        <circle cx="22" cy="32" r="3" fill="#F48FB1" opacity="0.4" />
-        <circle cx="38" cy="32" r="3" fill="#F48FB1" opacity="0.4" />
+        <ellipse cx="35" cy="37" rx="3.5" ry="3" fill="#3a2a15" />
+        {/* Nose shine */}
+        <ellipse cx="34" cy="36" rx="1.5" ry="1" fill="white" opacity="0.3" />
+        {/* Cheeks — extra rosy when happy */}
+        <circle cx="25" cy="37" r="3.5" fill="#F48FB1" opacity={isHappy ? 0.6 : 0.35} style={{ transition: 'opacity 0.3s' }} />
+        <circle cx="45" cy="37" r="3.5" fill="#F48FB1" opacity={isHappy ? 0.6 : 0.35} style={{ transition: 'opacity 0.3s' }} />
         {/* Mouth */}
-        {isHappy
-          ? <path d="M26 35 Q30 39 34 35" stroke="#6B4E3D" strokeWidth="1.2" fill="none" />
+        {isHappy || isDancing
+          ? <path d="M30 40 Q35 46 40 40" stroke="#6B4E3D" strokeWidth="1.5" fill="none" />
           : isThinking
-            ? <circle cx="30" cy="36" r="2" fill="#6B4E3D" opacity="0.5" />
-            : <path d="M27 36 Q30 38 33 36" stroke="#6B4E3D" strokeWidth="1" fill="none" />
+            ? <ellipse cx="35" cy="41" rx="2.5" ry="2" fill="#6B4E3D" opacity="0.5" />
+            : <path d="M32 40 Q35 43 38 40" stroke="#6B4E3D" strokeWidth="1.2" fill="none" />
         }
         {/* Feet */}
-        <ellipse cx="22" cy="60" rx="5" ry="3" fill="#8B6914" />
-        <ellipse cx="38" cy="60" rx="5" ry="3" fill="#8B6914" />
+        <ellipse cx="25" cy="70" rx="6" ry="3.5" fill="#8B6914" />
+        <ellipse cx="45" cy="70" rx="6" ry="3.5" fill="#8B6914" />
+        {/* Toe pads */}
+        <circle cx="22" cy="69" r="1.5" fill="#D4A853" opacity="0.5" />
+        <circle cx="25" cy="70.5" r="1.5" fill="#D4A853" opacity="0.5" />
+        <circle cx="42" cy="69" r="1.5" fill="#D4A853" opacity="0.5" />
+        <circle cx="45" cy="70.5" r="1.5" fill="#D4A853" opacity="0.5" />
       </svg>
+
+      {/* Sparkles around Hazel when celebrating */}
+      {(isHappy || isDancing) && (
+        <div className="absolute inset-0 pointer-events-none">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="absolute" style={{
+              left: `${10 + i * 18}px`, top: `${5 + (i % 2) * 20}px`,
+              animation: `pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
+            }}>
+              <svg width="12" height="12" viewBox="0 0 12 12">
+                <polygon points="6,0 7.5,4 12,4.5 8.5,7.5 9.5,12 6,9.5 2.5,12 3.5,7.5 0,4.5 4.5,4" fill="#fbbf24" />
+              </svg>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
+  );
+}
+
+/* ── golden shape — special rare variant ── */
+
+function GoldenShapeSVG({ shape, size = 80 }) {
+  const id = `golden-${shape.name}`.replace(/\s/g, '');
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <defs>
+        <linearGradient id={`${id}-g`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fde68a" />
+          <stop offset="30%" stopColor="#fbbf24" />
+          <stop offset="50%" stopColor="#fff7cc" />
+          <stop offset="70%" stopColor="#f59e0b" />
+          <stop offset="100%" stopColor="#d97706" />
+        </linearGradient>
+        <filter id={`${id}-glow`}>
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <g fill={`url(#${id}-g)`} stroke="#d97706" strokeWidth="2"
+        strokeLinejoin="round" filter={`url(#${id}-glow)`}>
+        {shape.path(size)}
+      </g>
+      {/* shimmer highlight */}
+      <g fill="white" stroke="none" opacity="0.3">
+        {shape.path(size * 0.6)}
+      </g>
+    </svg>
   );
 }
 
@@ -370,7 +492,7 @@ function generateQuestion(round, mode) {
 export default function ShapeMatch() {
   const [round, setRound] = useState(0);
   const [questionNum, setQuestionNum] = useState(0);
-  const [phase, setPhase] = useState('playing');
+  const [phase, setPhase] = useState('intro');
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [scorePopup, setScorePopup] = useState(null);
@@ -379,7 +501,8 @@ export default function ShapeMatch() {
   const [targetPulse, setTargetPulse] = useState(false);
   const [questionKey, setQuestionKey] = useState(0);
   const [hintIdx, setHintIdx] = useState(-1);
-  const [guideState, setGuideState] = useState('idle');
+  const [guideState, setGuideState] = useState('intro');
+  const [isGolden, setIsGolden] = useState(false);
 
   const modeIdx = useRef(0);
   const hintTimer = useRef(null);
@@ -393,6 +516,16 @@ export default function ShapeMatch() {
   const [question, setQuestion] = useState(() =>
     generateQuestion(0, MODES[0])
   );
+
+  // intro auto-dismiss
+  useEffect(() => {
+    if (phase !== 'intro') return;
+    const t = setTimeout(() => {
+      setPhase('playing');
+      setGuideState('idle');
+    }, 2200);
+    return () => clearTimeout(t);
+  }, [phase]);
 
   // hint sparkle
   useEffect(() => {
@@ -413,6 +546,7 @@ export default function ShapeMatch() {
 
     if (nextQ >= config.questionsPerRound) {
       setPhase('round-end');
+      setGuideState('dancing');
       playFanfare();
       celebrate({ duration: 3000 });
       peek('excited');
@@ -421,6 +555,7 @@ export default function ShapeMatch() {
         const nextRound = round + 1;
         if (nextRound >= ROUNDS.length) {
           setPhase('won');
+          setGuideState('dancing');
           celebrate({ duration: 5000 });
           return;
         }
@@ -431,6 +566,7 @@ export default function ShapeMatch() {
         setQuestionKey(k => k + 1);
         setPhase('playing');
         setGuideState('idle');
+        setIsGolden(false);
       }, 3200);
     } else {
       modeIdx.current = (modeIdx.current + 1) % MODES.length;
@@ -439,6 +575,8 @@ export default function ShapeMatch() {
       setQuestionKey(k => k + 1);
       setPhase('playing');
       setGuideState('idle');
+      // ~15% chance of golden shape (surprise delight)
+      setIsGolden(Math.random() < 0.15);
     }
   }, [questionNum, round, config.questionsPerRound, celebrate, peek]);
 
@@ -451,19 +589,26 @@ export default function ShapeMatch() {
       playPop();
       setCorrectId(option.id);
       setPhase('correct');
-      setGuideState('correct');
 
       const newStreak = streak + 1;
       setStreak(newStreak);
-      const bonus = newStreak >= 3 ? 5 : 0;
-      const gained = 10 + bonus;
+      const goldenBonus = isGolden ? 15 : 0;
+      const streakBonus = newStreak >= 3 ? 5 : 0;
+      const gained = 10 + streakBonus + goldenBonus;
       const newScore = score + gained;
       setScore(newScore);
 
-      setScorePopup(gained);
-      setTimeout(() => setScorePopup(null), 800);
+      // Hazel dances on golden or streak milestones, otherwise just happy
+      if (isGolden || newStreak >= 5) {
+        setGuideState('dancing');
+      } else {
+        setGuideState('correct');
+      }
 
-      if (bonus > 0) playCollectPing();
+      setScorePopup(isGolden ? `+${gained} ✨` : `+${gained}`);
+      setTimeout(() => setScorePopup(null), 1000);
+
+      if (streakBonus > 0) playCollectPing();
       if (Math.floor(newScore / 50) > Math.floor(score / 50)) {
         setTimeout(() => peek('excited'), 400);
       }
@@ -471,19 +616,26 @@ export default function ShapeMatch() {
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2;
       burst(cx, cy, {
-        count: 14,
-        spread: 80,
-        colors: [question.correctColour.fill, question.correctColour.glow || '#facc15', '#facc15', '#38bdf8'],
-        shapes: ['star', 'circle', 'heart'],
+        count: isGolden ? 24 : 14,
+        spread: isGolden ? 120 : 80,
+        colors: isGolden
+          ? ['#fbbf24', '#fde68a', '#f59e0b', '#fff7cc', '#d97706']
+          : [question.correctColour.fill, question.correctColour.glow || '#facc15', '#facc15', '#38bdf8'],
+        shapes: isGolden ? ['star', 'diamond', 'star'] : ['star', 'circle', 'heart'],
       });
 
-      playSuccess();
+      if (isGolden) {
+        playFanfare();
+      } else {
+        playSuccess();
+      }
 
       setTimeout(() => {
         setCorrectId(null);
         setWrongId(null);
+        setIsGolden(false);
         nextQuestion();
-      }, 1200);
+      }, isGolden ? 1600 : 1200);
     } else {
       playBoing();
       setWrongId(option.id);
@@ -508,8 +660,9 @@ export default function ShapeMatch() {
     setQuestionNum(0);
     setScore(0);
     setStreak(0);
-    setPhase('playing');
-    setGuideState('idle');
+    setIsGolden(false);
+    setPhase('intro');
+    setGuideState('intro');
     setQuestion(generateQuestion(0, MODES[0]));
     setQuestionKey(k => k + 1);
   }, []);
@@ -529,7 +682,7 @@ export default function ShapeMatch() {
       <BackButton />
 
       {/* Hazel the Hedgehog guide */}
-      <HazelGuide state={guideState} />
+      <HazelGuide state={guideState} score={score} />
 
       {/* score */}
       <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-amber-200/60 flex items-center gap-1.5">
@@ -570,21 +723,47 @@ export default function ShapeMatch() {
         </div>
       )}
 
+      {/* ── intro overlay ── */}
+      {phase === 'intro' && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl px-8 py-6 shadow-2xl border-4 border-amber-200/60 flex flex-col items-center gap-3"
+            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
+            <div className="flex gap-2">
+              {SHAPES.slice(0, 4).map((s, i) => (
+                <div key={s.name} style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.3 + i * 0.12}s both` }}>
+                  <ShapeSVG shape={s} color={COLORS[i]} size={44} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── target shape — centred with outline cutout on a "card" ── */}
       <div className="absolute top-[12%] left-0 right-0 flex flex-col items-center z-10 px-4">
         <div
           key={`target-${questionKey}`}
-          className={`bg-white/90 backdrop-blur-sm rounded-3xl px-10 py-6 shadow-2xl border-4 flex flex-col items-center gap-1 transition-all duration-300 ${
-            targetPulse
-              ? 'border-orange-400 scale-110'
-              : 'border-amber-200/60 scale-100'
+          className={`backdrop-blur-sm rounded-3xl px-10 py-6 shadow-2xl border-4 flex flex-col items-center gap-1 transition-all duration-300 ${
+            isGolden
+              ? 'bg-amber-50/95 border-amber-400'
+              : targetPulse
+                ? 'bg-white/90 border-orange-400 scale-110'
+                : 'bg-white/90 border-amber-200/60 scale-100'
           }`}
           style={{
             animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
-            boxShadow: `0 8px 32px ${correctColour.fill}20, 0 4px 12px rgba(0,0,0,0.08)`,
+            boxShadow: isGolden
+              ? '0 0 30px rgba(251,191,36,0.4), 0 8px 32px rgba(251,191,36,0.2), 0 4px 12px rgba(0,0,0,0.08)'
+              : `0 8px 32px ${correctColour.fill}20, 0 4px 12px rgba(0,0,0,0.08)`,
           }}
         >
-          <ShapeSVG shape={correctShape} color={correctColour} size={130} />
+          {isGolden ? (
+            <div style={{ animation: 'hint-glow 1.5s ease-in-out infinite' }}>
+              <GoldenShapeSVG shape={correctShape} size={130} />
+            </div>
+          ) : (
+            <ShapeSVG shape={correctShape} color={correctColour} size={130} />
+          )}
         </div>
 
         {/* bouncing arrow */}
