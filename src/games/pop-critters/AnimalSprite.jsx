@@ -28,7 +28,7 @@ export default function AnimalSprite({ type, visible, riseSpeed = 400, onTap, ta
       }}
     >
       <button
-        onClick={onTap}
+        onClick={(e) => onTap(e)}
         disabled={!visible}
         className={`pointer-events-auto active:scale-90 transition-transform w-full h-full ${
           tapped ? 'animate-pop' : ''

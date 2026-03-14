@@ -21,7 +21,7 @@ export default function GameHole({ critter, riseSpeed, onTap }) {
             visible={critter.visible}
             riseSpeed={riseSpeed}
             tapped={critter.tapped}
-            onTap={() => onTap(critter.id)}
+            onTap={(e) => onTap(critter.id, e)}
           />
         )}
       </div>

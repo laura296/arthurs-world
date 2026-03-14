@@ -115,6 +115,9 @@ export default {
         'io-orb-roll': 'ioOrbRoll 8s linear infinite',
         'io-breathe': 'ioBreathe 3s ease-in-out infinite',
         'io-sparkle-spin': 'ioSparkleSpin 2s linear infinite',
+        // Music Pad stage animations
+        'float-up': 'float-up 8s linear infinite',
+        'bear-dance': 'bear-dance 0.7s ease-in-out infinite alternate',
       },
       keyframes: {
         bounceIn: {
