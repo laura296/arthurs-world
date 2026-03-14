@@ -150,17 +150,17 @@ class DrumLoop {
 
 const SPRITE_BASE = '/arthurs-world/assets/characters/tortoise-hare-race';
 const HARE_IMAGES = {
-  sleeping:    `${SPRITE_BASE}/hare-sleeping.png`,
-  distraction: `${SPRITE_BASE}/hare-sleeping.png`,
-  sprinting:   `${SPRITE_BASE}/hare-running.png`,
-  chasing:     `${SPRITE_BASE}/hare-panic.png`,
-  panic:       `${SPRITE_BASE}/hare-panic.png`,
+  sleeping:    `${SPRITE_BASE}/hare-sleeping.webp`,
+  distraction: `${SPRITE_BASE}/hare-sleeping.webp`,
+  sprinting:   `${SPRITE_BASE}/hare-running.webp`,
+  chasing:     `${SPRITE_BASE}/hare-panic.webp`,
+  panic:       `${SPRITE_BASE}/hare-panic.webp`,
 };
 
 function TortoiseSprite({ size = 80, winner = false }) {
   return (
     <img
-      src={winner ? `${SPRITE_BASE}/tortoise-winner.png` : `${SPRITE_BASE}/tortoise-walking.png`}
+      src={winner ? `${SPRITE_BASE}/tortoise-winner.webp` : `${SPRITE_BASE}/tortoise-walking.webp`}
       alt="Tortoise"
       width={size}
       height={size}
@@ -172,7 +172,7 @@ function TortoiseSprite({ size = 80, winner = false }) {
 }
 
 function HareSprite({ hareState = 'sprinting', size = 70 }) {
-  const src = HARE_IMAGES[hareState] || `${SPRITE_BASE}/hare-running.png`;
+  const src = HARE_IMAGES[hareState] || `${SPRITE_BASE}/hare-running.webp`;
   return (
     <img
       src={src}
@@ -195,7 +195,7 @@ function MeadowBackground({ scrollX }) {
     <div className="absolute inset-0 overflow-hidden" style={{ background: C.kraft }}>
       {/* Generated background (slow parallax) */}
       <img
-        src={`${SPRITE_BASE}/race-background.png`}
+        src={`${SPRITE_BASE}/race-background.webp`}
         alt=""
         className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
         style={{ transform: `translateX(${-scrollX * 0.15}px) scale(1.2)`, transformOrigin: 'left center' }}
@@ -453,7 +453,7 @@ function IntroScreen({ onStart }) {
       onPointerDown={e => e.stopPropagation()}>
       {/* Full-bleed intro scene image */}
       <img
-        src={`${SPRITE_BASE}/intro-scene.png`}
+        src={`${SPRITE_BASE}/intro-scene.webp`}
         alt="Tortoise and Hare at the starting line"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ opacity: 0.85 }}

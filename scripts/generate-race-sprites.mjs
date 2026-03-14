@@ -3,22 +3,24 @@
  * Generate character sprites for the Tortoise & Hare Race game.
  *
  * Usage:
- *   node scripts/generate-race-sprites.mjs
+ *   node scripts/generate-race-sprites.mjs           # skip existing
+ *   node scripts/generate-race-sprites.mjs --force    # regenerate all
  *
  * Environment:
- *   VITE_OPENAI_API_KEY — your OpenAI API key (required, from .env)
+ *   VITE_OPENAI_API_KEY — your OpenAI API key (from .env or .env.local)
  *
- * Generates PNG character sprites with transparent backgrounds and saves
- * them to public/assets/characters/tortoise-hare-race/
+ * Generates PNG sprites, then converts to optimised WebP (512×512 chars, 2048w scenes).
  */
 
-import { writeFile, mkdir, readFile } from 'fs/promises';
+import sharp from 'sharp';
+import { writeFile, mkdir, stat } from 'fs/promises';
 import { existsSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
+const FORCE = process.argv.includes('--force');
 
 // Read .env / .env.local manually (no dotenv dependency)
 for (const f of ['.env', '.env.local']) {
@@ -33,61 +35,90 @@ for (const f of ['.env', '.env.local']) {
 
 const API_KEY = process.env.VITE_OPENAI_API_KEY;
 if (!API_KEY) {
-  console.error('ERROR: Set VITE_OPENAI_API_KEY in .env');
+  console.error('ERROR: Set VITE_OPENAI_API_KEY in .env or .env.local');
   process.exit(1);
 }
 
 const OUT_DIR = join(ROOT, 'public', 'assets', 'characters', 'tortoise-hare-race');
 
-// ─── Art style ───────────────────────────────────────────────────
-const STYLE = `Children's picture book character sprite on a PURE WHITE background (#FFFFFF). The character should be the ONLY element — no ground, no grass, no scenery, no shadows on the ground. Style: warm gouache illustration with visible brush texture, thick soft brown outlines (not black), rounded chunky proportions. Colour palette: warm amber (#F5B041), golden yellow (#FACC15), forest green (#6B8E5A), soft cream (#FDF5E6), warm brown (#C4A265), rosy pink (#F48FB1). The character has a large head (1/3 of body), big expressive eyes with white highlights, rosy cheek circles. Overall feel: Pixar-meets-watercolour — soft, friendly, touchable. Square format. No text.`;
+// ─── Art Direction ──────────────────────────────────────────────────
+// Consistent style block ensures all characters look like they belong together.
+// Key traits: gouache texture, warm palette, thick brown outlines, oversized heads.
 
-// ─── Sprites to generate ─────────────────────────────────────────
+const CHAR_STYLE = [
+  'Children\'s picture book character on a PURE TRANSPARENT background.',
+  'NOTHING else in the image — no ground, no grass, no shadows, no scenery, no props except what is specified.',
+  'Art style: soft gouache painting with gentle visible brush strokes. Thick rounded brown outlines (never black). Smooth cel-shaded colour fills with subtle warm gradients.',
+  'Proportions: large round head (40% of total height), small rounded body, stubby limbs.',
+  'Eyes: large, round, dark brown with two white highlight dots (big + small). Thick curved brow lines above.',
+  'Cheeks: soft rosy-pink circular blush spots.',
+  'Colour palette: forest green (#5A7A4A), warm amber (#D4A843), golden cream (#F5E6D0), rosy pink (#E8A0A0), warm brown (#6B4E3D), sky blue (#8AAEC4).',
+  'Feel: Pixar-meets-watercolour. Soft, friendly, safe, glowing. Suitable for a 3-year-old.',
+  'Square format 1:1. Character centered with space around edges. No text anywhere.',
+].join(' ');
+
+const SCENE_STYLE = [
+  'Children\'s picture book illustration in warm golden-hour gouache style.',
+  'Thick soft brown outlines, gentle visible brush strokes, smooth colour fills.',
+  'Colour palette: warm amber (#D4A843), golden yellow (#E8D070), forest green (#5A7A4A), soft cream (#F5E6D0), sky blue (#8AAEC4), rosy pink (#E8A0A0).',
+  'Warm glowing light from the right. Soft purple-blue shadows, never grey or black.',
+  'Feel: magical, safe, inviting. Like a treasured storybook illustration.',
+].join(' ');
+
+// ─── Sprites to generate ────────────────────────────────────────────
 const SPRITES = [
   {
     name: 'tortoise-walking',
-    prompt: `${STYLE} A cute cartoon tortoise walking to the right, seen from the side. Green domed shell with hexagonal pattern details and a lighter green highlight on top. Four stubby green legs mid-stride. Friendly face with a big smile, large dark eyes with white sparkle, rosy cheeks. Short stubby tail behind. The tortoise looks determined and happy. Whole body visible, centered in frame.`,
+    prompt: `${CHAR_STYLE} A cute cartoon TORTOISE walking to the RIGHT in side-profile view. Olive-green domed shell with a simple hexagonal pattern in lighter green. Shell has a warm amber edge/rim. Four short stubby olive-green legs — the two visible legs are in a walking pose (one forward, one back). Head is round with a slight beak-like mouth area. Big warm smile showing determination. Small round ears or head bumps. Short stubby tail visible behind. The tortoise is compact and adorable — looks like a plush toy come to life.`,
   },
   {
     name: 'hare-sleeping',
-    prompt: `${STYLE} A cute cartoon hare/rabbit curled up sleeping peacefully, seen from the side. Golden-brown fur with a cream-coloured belly. Long floppy ears drooped down. Eyes closed with gentle curved lines. Small pink nose. Fluffy white cotton-ball tail. Legs tucked underneath. A few tiny "Z" letters floating above to show sleeping. Peaceful and cozy expression. Whole body visible, centered in frame.`,
+    prompt: `${CHAR_STYLE} A cute cartoon HARE curled up sleeping on its side, facing RIGHT. Golden-brown fur with soft amber highlights. Cream-coloured tummy and inner ears. Two long floppy ears drooped down and resting on the ground. Eyes CLOSED — shown as gentle curved smile-lines. Small pink triangle nose. Tiny peaceful smile. Fluffy white cotton-ball tail. Front paws tucked under chin. Back legs curled up. Two or three small blue "Z" letters floating above the head. The pose is round and cozy, like a sleeping cat.`,
   },
   {
     name: 'hare-running',
-    prompt: `${STYLE} A cute cartoon hare/rabbit sprinting fast to the right, seen from the side. Golden-brown fur with cream belly visible. Long ears streaming back behind from speed. Wide happy grin. Bright excited eyes. Back legs extended far behind, front legs reaching forward — classic running pose. Small motion lines behind for speed. Fluffy white tail bouncing. Energetic and joyful. Whole body visible, centered in frame.`,
+    prompt: `${CHAR_STYLE} A cute cartoon HARE sprinting fast to the RIGHT in a dynamic running pose. Golden-brown fur with cream tummy. Two long ears streaming straight back from speed. BIG wide joyful grin — mouth open, teeth showing. Bright excited eyes — wide open, sparkling. Front legs reaching forward, back legs extended far behind (classic cartoon sprint). Three small speed lines trailing behind the body. Fluffy white tail bouncing up. The whole pose conveys speed and excitement. The hare looks like it's having the time of its life.`,
   },
   {
     name: 'hare-panic',
-    prompt: `${STYLE} A cute cartoon hare/rabbit looking shocked and panicked, seen from the side facing right. Golden-brown fur, cream belly. Long ears standing straight up in alarm. Huge wide eyes (bigger than normal), tiny pupils, sweat drops. Mouth open in a surprised "O" shape. Body leaning forward ready to run. One paw raised. Small exclamation marks near head. Worried but still cute, not scary. Whole body visible, centered in frame.`,
+    prompt: `${CHAR_STYLE} A cute cartoon HARE looking comically PANICKED, facing RIGHT. Golden-brown fur, cream tummy. Two long ears standing STRAIGHT UP in alarm — stiff and pointed. Eyes are HUGE and round (bigger than normal) with tiny dot pupils. Mouth is a big round surprised "O" shape. Two small sweat drops near the forehead. Body leaning forward urgently. One front paw raised. The expression is worried and funny — like a cartoon character who just realised they overslept. Still cute and non-scary, played for comedy.`,
   },
   {
     name: 'tortoise-winner',
-    prompt: `${STYLE} A cute cartoon tortoise standing proudly with a big golden trophy/cup held up high. Green domed shell, four stubby legs. Huge beaming smile, eyes squeezed with joy, rosy cheeks glowing. Small golden confetti stars around. The tortoise looks triumphant and incredibly happy. Side view facing right. Whole body visible, centered in frame.`,
+    prompt: `${CHAR_STYLE} A cute cartoon TORTOISE celebrating a victory, facing RIGHT. Same olive-green shell with hexagonal pattern. The tortoise is standing on back legs, front legs raised high holding a GOLDEN TROPHY CUP above its head. Eyes squeezed shut with pure joy (happy curved lines). Enormous beaming smile. Rosy cheeks extra bright. A few small golden star sparkles around the trophy. A tiny gold medal ribbon around the neck. The pose radiates pure triumph and happiness — the proudest little tortoise ever.`,
   },
   {
     name: 'intro-scene',
-    prompt: `Children's picture book illustration in warm golden-hour gouache style. A cute cartoon tortoise and a cute cartoon hare standing at a race starting line in a sunny countryside meadow. The tortoise (left) is small with a green shell, big smile, looking determined. The hare (right) is taller with golden-brown fur, long ears, looking cocky and confident with arms crossed. Between them is a simple "START" banner. Rolling green hills, warm amber sky, wildflowers. Thick soft brown outlines, visible brush texture. Warm palette: amber, golden yellow, forest green, cream. No text except "START" on the banner. Landscape format 3:2.`,
+    prompt: `${SCENE_STYLE} Wide landscape illustration: a sunny countryside meadow with a race starting line. On the LEFT, a small cute cartoon tortoise with a green dome shell, stubby legs, big determined smile — looking ready. On the RIGHT, a taller cute cartoon hare with golden-brown fur, long ears, standing with arms crossed and a cocky smirk. Between them, a simple red-and-white "START" banner on two wooden poles. The path ahead stretches into rolling green hills. Warm amber sky with a few fluffy clouds. Wildflowers (yellow, pink, blue) dot the grass. A white picket fence in the background. Landscape format. No text except "START" on the banner.`,
     size: '1536x1024',
+    isScene: true,
+  },
+  {
+    name: 'race-background',
+    prompt: `${SCENE_STYLE} Wide panoramic countryside background for a side-scrolling race game. NO characters or animals. Rolling green hills with varying heights. A brown dirt path runs horizontally across the lower third. Scattered wildflowers in yellow, pink, and white. A few round-canopy trees in the middle distance. A simple white picket fence running along parts of the path. Warm amber sky fills the top half with soft clouds. Distant blue-purple mountains on the horizon. Small butterflies and birds as tiny dots in the sky. Everything bathed in warm golden sunlight. Landscape format 3:2.`,
+    size: '1536x1024',
+    isScene: true,
   },
 ];
 
-// ─── API call ────────────────────────────────────────────────────
+// ─── API call ────────────────────────────────────────────────────────
+async function generateImage(prompt, size = '1024x1024', transparent = true) {
+  const body = {
+    model: 'gpt-image-1',
+    prompt,
+    n: 1,
+    size,
+    quality: 'high',
+  };
+  if (transparent) body.background = 'transparent';
 
-async function generateImage(prompt, size = '1024x1024') {
   const res = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${API_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      model: 'gpt-image-1',
-      prompt,
-      n: 1,
-      size,
-      quality: 'high',
-      background: 'transparent',
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
@@ -101,8 +132,28 @@ async function generateImage(prompt, size = '1024x1024') {
   return Buffer.from(b64, 'base64');
 }
 
-// ─── Main ────────────────────────────────────────────────────────
+// ─── Convert PNG to optimised WebP ──────────────────────────────────
+async function toWebP(pngPath, webpPath, isScene = false) {
+  let pipeline = sharp(pngPath);
+  const meta = await pipeline.metadata();
 
+  if (isScene) {
+    if (meta.width > 2048) {
+      pipeline = pipeline.resize(2048, null, { fit: 'inside', withoutEnlargement: true });
+    }
+  } else {
+    if (meta.width > 512 || meta.height > 512) {
+      pipeline = pipeline.resize(512, 512, { fit: 'inside', withoutEnlargement: true });
+    }
+  }
+
+  await pipeline.webp({ quality: 80, effort: 6 }).toFile(webpPath);
+  const origSize = (await stat(pngPath)).size;
+  const newSize = (await stat(webpPath)).size;
+  console.log(`  → WebP: ${(origSize / 1024).toFixed(0)}KB → ${(newSize / 1024).toFixed(0)}KB (${((1 - newSize / origSize) * 100).toFixed(0)}% smaller)`);
+}
+
+// ─── Main ────────────────────────────────────────────────────────────
 async function main() {
   if (!existsSync(OUT_DIR)) {
     await mkdir(OUT_DIR, { recursive: true });
@@ -110,26 +161,31 @@ async function main() {
   }
 
   for (const sprite of SPRITES) {
-    const outPath = join(OUT_DIR, `${sprite.name}.png`);
-    if (existsSync(outPath)) {
-      console.log(`SKIP ${sprite.name} (already exists)`);
+    const pngPath = join(OUT_DIR, `${sprite.name}.png`);
+    const webpPath = join(OUT_DIR, `${sprite.name}.webp`);
+
+    if (!FORCE && existsSync(webpPath)) {
+      console.log(`SKIP ${sprite.name} (webp exists, use --force to regenerate)`);
       continue;
     }
 
     console.log(`Generating ${sprite.name}...`);
     try {
-      const buf = await generateImage(sprite.prompt, sprite.size || '1024x1024');
-      await writeFile(outPath, buf);
-      console.log(`  ✓ Saved ${outPath} (${(buf.length / 1024).toFixed(0)} KB)`);
+      const transparent = !sprite.isScene || sprite.name !== 'race-background';
+      const buf = await generateImage(sprite.prompt, sprite.size || '1024x1024', transparent);
+      await writeFile(pngPath, buf);
+      console.log(`  ✓ PNG saved (${(buf.length / 1024).toFixed(0)} KB)`);
+
+      await toWebP(pngPath, webpPath, !!sprite.isScene);
     } catch (e) {
       console.error(`  ✗ Failed ${sprite.name}: ${e.message}`);
     }
 
-    // Small delay between API calls
-    await new Promise(r => setTimeout(r, 1000));
+    // Rate limit courtesy
+    await new Promise(r => setTimeout(r, 1500));
   }
 
-  console.log('\nDone! Images saved to public/assets/characters/tortoise-hare-race/');
+  console.log('\nDone! WebP images saved to public/assets/characters/tortoise-hare-race/');
 }
 
 main().catch(e => {

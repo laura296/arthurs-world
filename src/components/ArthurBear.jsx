@@ -12,18 +12,18 @@
 const BASE = '/arthurs-world/assets/characters/arthur-bear';
 
 const FACE_IMAGES = {
-  happy:   `${BASE}/happy-face.png`,
-  excited: `${BASE}/excited-face.png`,
-  sleepy:  `${BASE}/sleepy-face.png`,
-  curious: `${BASE}/curious-face.png`,
+  happy:   `${BASE}/happy-face.webp`,
+  excited: `${BASE}/excited-face.webp`,
+  sleepy:  `${BASE}/sleepy-face.webp`,
+  curious: `${BASE}/curious-face.webp`,
 };
 
 const FULL_IMAGES = {
-  happy:   `${BASE}/happy-full.png`,
-  excited: `${BASE}/excited-full.png`,
+  happy:   `${BASE}/happy-full.webp`,
+  excited: `${BASE}/excited-full.webp`,
   // Fallback to excited-full for states without a full-body variant
-  sleepy:  `${BASE}/excited-full.png`,
-  curious: `${BASE}/excited-full.png`,
+  sleepy:  `${BASE}/excited-full.webp`,
+  curious: `${BASE}/excited-full.webp`,
 };
 
 export default function ArthurBear({ expression = 'happy', size = 120, className = '', mode = 'face' }) {
