@@ -1,20 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CHAPTERS, STATIC_ASSETS } from './storyData';
 import { playPageTurn } from '../../hooks/useSound';
 import { speakText, stopSpeaking } from '../../hooks/useNarration';
 
+const AUDIO_DIR = '/arthurs-world/audio/ellie-tiny-folk';
+
+/** Play MP3 narration with TTS fallback */
+function playNarration(chapter, text, audioRef) {
+  stopSpeaking();
+  if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+  const src = `${AUDIO_DIR}/page-${chapter + 1}.mp3`;
+  const audio = new Audio(src);
+  audioRef.current = audio;
+  audio.play().catch(() => {
+    audioRef.current = null;
+    speakText(text);
+  });
+}
+
 export default function StoryScreen({ chapter, onAdvance }) {
   const data = CHAPTERS[chapter];
   const bgUrl = STATIC_ASSETS.scene(chapter + 1);
+  const audioRef = useRef(null);
 
   // Auto-narrate on mount
   useEffect(() => {
-    const timer = setTimeout(() => speakText(data.narration), 600);
+    const timer = setTimeout(() => playNarration(chapter, data.narration, audioRef), 600);
     return () => {
       clearTimeout(timer);
       stopSpeaking();
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     };
-  }, [data.narration]);
+  }, [chapter, data.narration]);
 
   return (
     <div className="w-full h-full relative overflow-hidden">
@@ -44,7 +61,7 @@ export default function StoryScreen({ chapter, onAdvance }) {
           </p>
           {/* Read aloud button */}
           <button
-            onClick={() => speakText(data.narration)}
+            onClick={() => playNarration(chapter, data.narration, audioRef)}
             className="absolute -top-4 right-4 w-10 h-10 rounded-full bg-sun shadow-lg
                        flex items-center justify-center text-xl active:scale-90 transition-transform"
           >

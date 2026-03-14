@@ -15,8 +15,21 @@ export default {
         leaf: '#22c55e',
         sky: '#38bdf8',
         candy: '#ec4899',
+        // Warm golden-hour palette
+        'aw-warm': 'var(--aw-bg-warm)',
+        'aw-gold': 'var(--aw-gold)',
+        'aw-amber': 'var(--aw-amber)',
+        'aw-forest': 'var(--aw-forest)',
+        'aw-sky': 'var(--aw-sky)',
+        'aw-wood': 'var(--aw-wood)',
+        'aw-cream': 'var(--aw-cream)',
+      },
+      boxShadow: {
+        'aw': '0 4px 12px var(--aw-shadow)',
+        'aw-lg': '0 8px 24px var(--aw-shadow)',
       },
       animation: {
+        'spin-slow': 'spin-slow 3s linear infinite',
         'bounce-in': 'bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'wiggle': 'wiggle 0.4s ease-in-out',
         'pop': 'pop 0.3s ease-out',

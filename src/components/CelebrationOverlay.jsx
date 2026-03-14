@@ -1,9 +1,26 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import ArthurBear from './ArthurBear';
+import LottieEffect from './animations/LottieEffect';
 import { playCelebrate } from '../hooks/useSound';
 
+/** Lazy-load Lottie data from public assets (avoids bundling JSON into JS chunk) */
+let _goldStarsCache = null;
+function useGoldStars() {
+  const [data, setData] = useState(_goldStarsCache);
+  const fetched = useRef(false);
+  useEffect(() => {
+    if (_goldStarsCache || fetched.current) return;
+    fetched.current = true;
+    fetch(import.meta.env.BASE_URL + 'assets/animations/gold-stars-celebration.json')
+      .then(r => r.json())
+      .then(json => { _goldStarsCache = json; setData(json); })
+      .catch(() => {});
+  }, []);
+  return data;
+}
+
 /**
- * Full-screen celebration overlay with confetti + Arthur Bear dancing.
+ * Full-screen celebration overlay with Lottie gold stars + confetti + Arthur Bear dancing.
  *
  * Usage:
  *   const { celebrate, CelebrationLayer } = useCelebration();
@@ -17,6 +34,7 @@ let celebrationId = 0;
 
 export function useCelebration() {
   const [active, setActive] = useState(null);
+  const goldStarsData = useGoldStars();
 
   const celebrate = useCallback((options = {}) => {
     const {
@@ -57,6 +75,13 @@ export function useCelebration() {
       >
         {/* Dim overlay */}
         <div className="absolute inset-0 bg-black/40" style={{ animation: 'fadeIn 0.3s ease-out' }} />
+
+        {/* Lottie gold stars burst */}
+        <LottieEffect
+          animationData={goldStarsData}
+          className="absolute inset-0 z-[201] pointer-events-none"
+          speed={1.2}
+        />
 
         {/* Confetti */}
         {confetti.map(c => (
@@ -112,7 +137,7 @@ export function useCelebration() {
         ))}
       </div>
     );
-  }, [active, dismiss]);
+  }, [active, dismiss, goldStarsData]);
 
   return { celebrate, CelebrationLayer };
 }

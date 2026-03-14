@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import BackButton from '../components/BackButton';
 import { playSuccess, playBoing, playPop, playFanfare, playCollectPing } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
@@ -87,6 +87,14 @@ const ROUNDS = [
   { shapes: 8, colours: 8, options: 4, questionsPerRound: 8 },
 ];
 
+/* ── round background palettes — each round feels different ── */
+const ROUND_PALETTES = [
+  { from: 'from-amber-100', via: 'via-orange-50', to: 'to-sky-100' },
+  { from: 'from-violet-100', via: 'via-pink-50', to: 'to-amber-100' },
+  { from: 'from-emerald-100', via: 'via-teal-50', to: 'to-cyan-100' },
+  { from: 'from-rose-100', via: 'via-orange-50', to: 'to-yellow-100' },
+];
+
 /* ── helpers ── */
 
 function shuffle(arr) {
@@ -169,8 +177,11 @@ export default function ShapeMatch() {
   const [wrongId, setWrongId] = useState(null);
   const [correctId, setCorrectId] = useState(null);
   const [targetPulse, setTargetPulse] = useState(false);
+  const [questionKey, setQuestionKey] = useState(0); // bumped each question for entrance anims
+  const [hintIdx, setHintIdx] = useState(-1); // index of correct option to sparkle
 
   const modeIdx = useRef(0);
+  const hintTimer = useRef(null);
 
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
@@ -182,6 +193,20 @@ export default function ShapeMatch() {
     generateQuestion(0, MODES[0])
   );
 
+  // hint sparkle: after 4s of no interaction, gently highlight the correct answer
+  useEffect(() => {
+    if (phase !== 'playing') {
+      setHintIdx(-1);
+      return;
+    }
+    setHintIdx(-1);
+    hintTimer.current = setTimeout(() => {
+      const correctI = question.options.findIndex(o => o.isCorrect);
+      setHintIdx(correctI);
+    }, 4000);
+    return () => clearTimeout(hintTimer.current);
+  }, [phase, questionKey, question.options]);
+
   const nextQuestion = useCallback(() => {
     const nextQ = questionNum + 1;
 
@@ -189,6 +214,7 @@ export default function ShapeMatch() {
       setPhase('round-end');
       playFanfare();
       celebrate({ duration: 3000 });
+      peek('excited');
 
       setTimeout(() => {
         const nextRound = round + 1;
@@ -201,18 +227,22 @@ export default function ShapeMatch() {
         setRound(nextRound);
         setQuestionNum(0);
         setQuestion(generateQuestion(nextRound, MODES[modeIdx.current]));
+        setQuestionKey(k => k + 1);
         setPhase('playing');
       }, 3200);
     } else {
       modeIdx.current = (modeIdx.current + 1) % MODES.length;
       setQuestionNum(nextQ);
       setQuestion(generateQuestion(round, MODES[modeIdx.current]));
+      setQuestionKey(k => k + 1);
       setPhase('playing');
     }
-  }, [questionNum, round, config.questionsPerRound, celebrate]);
+  }, [questionNum, round, config.questionsPerRound, celebrate, peek]);
 
   const pickOption = useCallback((option) => {
     if (phase !== 'playing') return;
+    clearTimeout(hintTimer.current);
+    setHintIdx(-1);
 
     if (option.isCorrect) {
       playPop();
@@ -275,17 +305,19 @@ export default function ShapeMatch() {
     setStreak(0);
     setPhase('playing');
     setQuestion(generateQuestion(0, MODES[0]));
+    setQuestionKey(k => k + 1);
   }, []);
 
   const totalQuestions = config.questionsPerRound;
-  const { correctShape, correctColour, mode, options } = question;
+  const { correctShape, correctColour, options } = question;
+  const palette = ROUND_PALETTES[Math.min(round, ROUND_PALETTES.length - 1)];
 
   // size options based on count
   const optSize = options.length <= 3 ? 96 : options.length === 4 ? 84 : 74;
   const svgSize = options.length <= 3 ? 70 : options.length === 4 ? 60 : 50;
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-gradient-to-b from-teal-200 via-cyan-100 to-sky-200">
+    <div className={`relative w-full h-full overflow-hidden bg-gradient-to-b ${palette.from} ${palette.via} ${palette.to} transition-colors duration-1000`}>
       {/* subtle dot pattern */}
       <div className="absolute inset-0 opacity-[0.04]" style={{
         backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
@@ -302,7 +334,7 @@ export default function ShapeMatch() {
             fill="#eab308" stroke="#ca8a04" strokeWidth={1}
           />
         </svg>
-        <span className="text-lg font-heading text-teal-800">{score}</span>
+        <span className="text-lg font-heading text-amber-800">{score}</span>
         {streak >= 3 && (
           <span className="text-lg font-heading text-orange-500 animate-bounce">
             x{streak}
@@ -317,49 +349,41 @@ export default function ShapeMatch() {
         </div>
       )}
 
+      {/* ── round transition overlay ── */}
+      {phase === 'round-end' && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+          <div className="flex gap-3 animate-bounce-in">
+            {[0, 1, 2].map(i => (
+              <svg key={i} width={48} height={48} viewBox="0 0 22 22" style={{ animationDelay: `${i * 150}ms` }} className="animate-spin-slow drop-shadow-lg">
+                <polygon
+                  points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
+                  fill="#eab308" stroke="#ca8a04" strokeWidth={1}
+                />
+              </svg>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── target shape (what to match) ── */}
       <div className="absolute top-16 left-0 right-0 flex flex-col items-center z-10 px-4">
-        <div className={`bg-white/80 backdrop-blur-sm rounded-3xl px-8 py-5 shadow-xl border-4 flex flex-col items-center gap-2 transition-all duration-300 ${
+        <div
+          key={`target-${questionKey}`}
+          className={`bg-white/80 backdrop-blur-sm rounded-3xl px-8 py-5 shadow-xl border-4 flex flex-col items-center gap-2 transition-all duration-300 ${
           targetPulse
             ? 'border-orange-400 scale-105'
             : 'border-white/60 scale-100'
-        }`}>
-          {/* arrow pointing down — visual cue: "find this one below" */}
-          <ShapeSVG shape={correctShape} color={correctColour} size={100} />
-
-          {/* mode hint icon: shape outline, colour swatch, or equals sign */}
-          <div className="flex items-center gap-2 mt-1">
-            {mode === 'match-shape' && (
-              <>
-                {/* dashed outline hint: match the shape */}
-                <ShapeSVG shape={correctShape} color={{ fill: '#94a3b8' }} size={28} outline />
-                <span className="text-slate-400 text-lg">=</span>
-                <span className="text-slate-400 text-lg">?</span>
-              </>
-            )}
-            {mode === 'match-colour' && (
-              <>
-                {/* colour swatch hint: match the colour */}
-                <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: correctColour.fill }} />
-                <span className="text-slate-400 text-lg">=</span>
-                <span className="text-slate-400 text-lg">?</span>
-              </>
-            )}
-            {mode === 'match-both' && (
-              <>
-                {/* both: shape outline + colour swatch */}
-                <ShapeSVG shape={correctShape} color={{ fill: '#94a3b8' }} size={24} outline />
-                <span className="text-slate-400 text-sm">+</span>
-                <div className="w-5 h-5 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: correctColour.fill }} />
-                <span className="text-slate-400 text-lg">=</span>
-                <span className="text-slate-400 text-lg">?</span>
-              </>
-            )}
-          </div>
+        }`}
+          style={{
+            animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+          }}
+        >
+          {/* target shape — nice and big, no confusing symbols */}
+          <ShapeSVG shape={correctShape} color={correctColour} size={110} />
         </div>
 
         {/* bouncing arrow pointing down to options */}
-        <div className="mt-2 animate-bounce text-teal-400 text-3xl leading-none select-none" aria-hidden>
+        <div className="mt-2 animate-bounce text-amber-400 text-3xl leading-none select-none" aria-hidden>
           <svg width={32} height={20} viewBox="0 0 32 20" fill="none">
             <path d="M4 4 L16 16 L28 4" stroke="currentColor" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -373,10 +397,11 @@ export default function ShapeMatch() {
             {options.map((opt, i) => {
               const isWrong = wrongId === opt.id;
               const isRight = correctId === opt.id;
+              const isHinted = hintIdx === i;
 
               return (
                 <button
-                  key={opt.id + '-' + i}
+                  key={`${opt.id}-${i}-${questionKey}`}
                   onClick={() => pickOption(opt)}
                   className={`rounded-3xl shadow-lg flex items-center justify-center
                     transition-all duration-200 border-4
@@ -384,13 +409,17 @@ export default function ShapeMatch() {
                       ? 'animate-wiggle bg-red-200/80 border-red-400 scale-90'
                       : isRight
                         ? 'bg-green-200/80 border-green-400 scale-110'
-                        : 'bg-white/70 backdrop-blur-sm border-white/50 active:scale-90 hover:bg-white/90'
+                        : isHinted
+                          ? 'bg-white/90 border-amber-300 shadow-amber-200/50 shadow-xl'
+                          : 'bg-white/70 backdrop-blur-sm border-white/50 active:scale-90 hover:bg-white/90'
                     }`}
                   style={{
                     width: optSize,
                     height: optSize,
-                    animationDelay: `${i * 0.08}s`,
-                    animationFillMode: 'backwards',
+                    animation: `pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
+                    ...(isHinted && !isWrong && !isRight ? {
+                      animation: `pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both, hint-glow 1.2s ease-in-out infinite`,
+                    } : {}),
                   }}
                 >
                   {isWrong
@@ -413,7 +442,7 @@ export default function ShapeMatch() {
             key={i}
             className={`rounded-full transition-all duration-300 shadow-md ${
               i < questionNum
-                ? 'bg-teal-400 scale-100'
+                ? 'bg-amber-400 scale-100'
                 : i === questionNum
                   ? 'bg-white scale-125 shadow-lg shadow-white/50'
                   : 'bg-white/40 scale-100'
@@ -425,17 +454,23 @@ export default function ShapeMatch() {
 
       {/* ── win screen ── */}
       {phase === 'won' && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-teal-400/90 to-cyan-500/90 backdrop-blur-sm">
-          <div className="bg-white/90 rounded-3xl px-8 py-6 shadow-2xl border-4 border-white/60 flex flex-col items-center gap-4 max-w-xs">
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-amber-300/90 to-orange-400/90 backdrop-blur-sm">
+          <div className="bg-white/90 rounded-3xl px-8 py-6 shadow-2xl border-4 border-white/60 flex flex-col items-center gap-4 max-w-xs"
+            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}
+          >
             <div className="flex gap-2">
               {SHAPES.slice(0, 5).map((s, i) => (
-                <ShapeSVG key={s.name} shape={s} color={COLORS[i]} size={36} />
+                <div key={s.name} style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both` }}>
+                  <ShapeSVG shape={s} color={COLORS[i]} size={36} />
+                </div>
               ))}
             </div>
             {/* star row instead of text */}
             <div className="flex gap-1">
               {[0,1,2].map(i => (
-                <svg key={i} width={36} height={36} viewBox="0 0 22 22">
+                <svg key={i} width={36} height={36} viewBox="0 0 22 22"
+                  style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.5 + i * 0.15}s both` }}
+                >
                   <polygon
                     points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
                     fill="#eab308" stroke="#ca8a04" strokeWidth={1}
@@ -445,7 +480,8 @@ export default function ShapeMatch() {
             </div>
             <button
               onClick={resetGame}
-              className="bg-teal-500 text-white font-heading text-xl px-8 py-3 rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center gap-2"
+              className="bg-orange-400 text-white font-heading text-xl px-8 py-3 rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center gap-2"
+              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
             >
               {/* replay icon */}
               <svg width={24} height={24} viewBox="0 0 24 24" fill="none">

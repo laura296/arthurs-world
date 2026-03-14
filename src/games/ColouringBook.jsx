@@ -183,14 +183,14 @@ export default function ColouringBook() {
         const dpr = window.devicePixelRatio || 1;
         const cw = c.width / dpr;
         const ch = c.height / dpr;
-        /* Replicate object-cover positioning */
+        /* Replicate object-contain positioning */
         const imgAspect = bgImg.naturalWidth / bgImg.naturalHeight;
         const canvasAspect = cw / ch;
         let dw, dh, dx, dy;
         if (imgAspect > canvasAspect) {
-          dh = ch; dw = ch * imgAspect; dy = 0; dx = (cw - dw) / 2;
-        } else {
           dw = cw; dh = cw / imgAspect; dx = 0; dy = (ch - dh) / 2;
+        } else {
+          dh = ch; dw = ch * imgAspect; dy = 0; dx = (cw - dw) / 2;
         }
         tctx.drawImage(bgImg, dx * dpr, dy * dpr, dw * dpr, dh * dpr);
       }
@@ -225,17 +225,17 @@ export default function ColouringBook() {
 
   /* ── Colouring mode ── */
   return (
-    <div className="relative w-full h-full bg-white overflow-hidden flex flex-col">
+    <div className="relative w-full h-full bg-white overflow-hidden">
       <BackButton />
 
-      {/* Canvas area */}
-      <div className="flex-1 relative">
+      {/* Full-screen canvas area */}
+      <div className="absolute inset-0">
         {/* Background coloring page image */}
         <img
           id="colouring-bg-img"
           src={page.src}
           alt={page.name}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-90"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-90"
           draggable={false}
         />
         {/* Drawing canvas on top */}
@@ -263,58 +263,55 @@ export default function ColouringBook() {
         🖼️
       </button>
 
-      {/* ── Toolbar ── */}
-      <div className="bg-gray-100 border-t border-gray-200">
-        {/* Row 1: Colour palette */}
-        <div className="flex items-center gap-1.5 px-3 pt-2 pb-1 overflow-x-auto no-scrollbar">
+      {/* ── Toolbar (overlaid at bottom) ── */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm">
+        {/* Single row: palette + tools */}
+        <div className="flex items-center gap-1 px-2 py-1.5 overflow-x-auto no-scrollbar">
           {PALETTE.map(c => (
             <button
               key={c}
               onClick={() => { setColor(c); setIsEraser(false); playTap(); }}
-              className={`w-10 h-10 rounded-full flex-shrink-0 border-4 transition-transform
+              className={`w-9 h-9 rounded-full flex-shrink-0 border-3 transition-transform
                 ${color === c && !isEraser
                   ? 'border-gray-800 scale-110'
                   : c === '#f5f5f4' ? 'border-gray-300' : 'border-transparent'}`}
               style={{ backgroundColor: c }}
             />
           ))}
-        </div>
 
-        {/* Row 2: Tools */}
-        <div className="flex items-center gap-1.5 px-3 pt-1 pb-2 overflow-x-auto no-scrollbar">
+          <div className="w-px h-7 bg-gray-300 mx-0.5 flex-shrink-0" />
+
           {/* Brush sizes */}
           {[6, 12, 24].map(s => (
             <button
               key={s}
               onClick={() => { setBrushSize(s); playTap(); }}
-              className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-                bg-gray-200 border-4 transition-transform
+              className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
+                bg-gray-200/80 border-3 transition-transform
                 ${brushSize === s ? 'border-gray-800 scale-110' : 'border-transparent'}`}
             >
               <div className="rounded-full bg-gray-800" style={{ width: s, height: s }} />
             </button>
           ))}
 
-          <div className="w-px h-8 bg-gray-300 mx-0.5 flex-shrink-0" />
+          <div className="w-px h-7 bg-gray-300 mx-0.5 flex-shrink-0" />
 
           {/* Eraser */}
           <button
             onClick={() => { setIsEraser(e => !e); playTap(); }}
-            className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-              text-xl transition-transform border-4
-              ${isEraser ? 'border-gray-800 scale-110 bg-pink-100' : 'border-transparent bg-gray-200'}`}
+            className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
+              text-lg transition-transform border-3
+              ${isEraser ? 'border-gray-800 scale-110 bg-pink-100' : 'border-transparent bg-gray-200/80'}`}
           >
             🧹
           </button>
-
-          <div className="w-px h-8 bg-gray-300 mx-0.5 flex-shrink-0" />
 
           {/* Undo */}
           <button
             onClick={undo}
             disabled={!canUndo}
-            className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-              text-xl transition-transform bg-gray-200
+            className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
+              text-lg transition-transform bg-gray-200/80
               ${canUndo ? 'active:scale-90' : 'opacity-30'}`}
           >
             ↩️
@@ -323,8 +320,8 @@ export default function ColouringBook() {
           {/* Save */}
           <button
             onClick={save}
-            className="w-11 h-11 rounded-2xl flex-shrink-0 bg-green-100 flex items-center justify-center
-              text-xl active:scale-90 transition-transform"
+            className="w-9 h-9 rounded-xl flex-shrink-0 bg-green-100/80 flex items-center justify-center
+              text-lg active:scale-90 transition-transform"
           >
             💾
           </button>
@@ -332,8 +329,8 @@ export default function ColouringBook() {
           {/* Clear */}
           <button
             onClick={clear}
-            className="w-11 h-11 rounded-2xl flex-shrink-0 bg-red-100 flex items-center justify-center
-              text-xl active:scale-90 transition-transform"
+            className="w-9 h-9 rounded-xl flex-shrink-0 bg-red-100/80 flex items-center justify-center
+              text-lg active:scale-90 transition-transform"
           >
             🗑️
           </button>

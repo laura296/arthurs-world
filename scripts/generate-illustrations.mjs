@@ -33,6 +33,9 @@ const STYLE_CARTOON = `Children's picture book illustration in the style of Axel
 // Kipling ink drawings with warm watercolour washes
 const STYLE_KIPLING = `Children's book illustration: black Indian ink line drawing on cream-coloured paper, with soft transparent watercolour washes added. STRICT VISUAL RULES: All outlines and details drawn in black ink with visible pen strokes and crosshatching for shadows. Watercolour washes are transparent and loose — warm sepia (#D4A574), burnt sienna (#A0522D), ochre yellow (#C8A951), dusty sage green (#8FBC8F), and soft sky blue (#87CEEB). The paper texture shows through the washes. Ink lines are confident and slightly scratchy, like a steel nib dip pen. Animals are drawn naturalistically but with slightly exaggerated expressive eyes and poses. Backgrounds have loose wash landscapes with ink detail only on key elements. Thin decorative ink border around the edges with small leaf/vine motifs. The overall feel is classic, warm, handcrafted — like a Victorian naturalist's sketchbook coloured in. No text. Landscape format 16:9.`;
 
+// Aesop's Fables — warm golden-hour watercolour, classic fable feel
+const STYLE_AESOP = `Children's picture book illustration in warm golden-hour watercolour style. STRICT VISUAL RULES: Soft watercolour washes with visible brush texture. Warm colour palette dominated by amber (#F5B041), golden yellow (#FACC15), forest green (#6B8E5A), soft sky blue (#87CEEB), cream (#FDF5E6), and warm brown (#C4A265). Light comes from a low golden sun casting long warm shadows. Characters have expressive cartoon faces with large eyes and rounded proportions — friendly and approachable. Backgrounds have soft rolling hills, meadows, and countryside. Gentle vignette edges fading to cream/warm white. The overall feel is like a classic Aesop's fable illustration: timeless, warm, wise, and gentle. Thick soft outlines in warm brown (not black). No text. No UI elements. Landscape format 16:9.`;
+
 // ─── Style mapping ───────────────────────────────────────────────
 
 const KIPLING_STORIES = new Set([
@@ -41,8 +44,15 @@ const KIPLING_STORIES = new Set([
   'alphabet-made', 'crab-sea', 'cat-walked', 'butterfly-stamped',
 ]);
 
+const AESOP_STORIES = new Set([
+  'tortoise-hare', 'lion-mouse', 'boy-cried-wolf',
+  'ant-grasshopper', 'fox-grapes', 'town-country-mouse',
+]);
+
 function getStyle(storyId) {
-  return KIPLING_STORIES.has(storyId) ? STYLE_KIPLING : STYLE_CARTOON;
+  if (KIPLING_STORIES.has(storyId)) return STYLE_KIPLING;
+  if (AESOP_STORIES.has(storyId)) return STYLE_AESOP;
+  return STYLE_CARTOON;
 }
 
 // ─── Per-story character descriptions ────────────────────────────
@@ -79,6 +89,19 @@ const CHARACTER_BLOCKS = {
   'cat-walked': `A sleek grey cat with green eyes and an independent proud expression. A prehistoric Woman tending a cave fire with a baby. A loyal brown dog. A strong brown horse. A gentle white-and-brown cow. The setting is a warm cave home with firelight.`,
 
   'butterfly-stamped': `A beautiful ornate butterfly with iridescent blue and gold wings. His smaller wife butterfly. King Solomon, a regal bearded king wearing robes and a crown, sitting on an elaborate golden throne. An oriental palace with domes and minarets.`,
+
+  // ── Aesop's Fables ──
+  'tortoise-hare': `A small green tortoise with a brown shell, kind determined eyes, wearing a red bandana around his neck. A tall brown hare with long floppy ears, cocky expression, wearing a blue headband. Both have expressive cartoon faces. Countryside with rolling green hills and wildflowers.`,
+
+  'lion-mouse': `A great big golden lion with a magnificent fluffy mane, large amber eyes, strong but gentle expression. A tiny brown mouse with big round ears, pink nose, bright clever eyes, wearing nothing but looking very small and brave. African savanna with warm golden grass.`,
+
+  'boy-cried-wolf': `A young shepherd boy about 6 years old with messy brown hair, wearing a simple tunic and sandals, carrying a wooden crook. Fluffy white sheep with black faces. A grey wolf with yellow eyes, sharp but not too scary. Rolling green hillside with a village below.`,
+
+  'ant-grasshopper': `A small hardworking black ant wearing a tiny apron, carrying food on her back, determined expression. A tall green grasshopper with long legs, cheerful expression, carrying a tiny fiddle. Summer meadow with wildflowers, later snowy winter landscape.`,
+
+  'fox-grapes': `A red fox with a bushy tail, pointed ears, clever amber eyes, sleek fur. He is lean and hungry-looking but handsome. A tall wooden vine trellis with big bunches of purple grapes hanging high up. Sunny woodland clearing with dappled light.`,
+
+  'town-country-mouse': `A small brown country mouse wearing a simple straw hat and apron, round and cheerful. A sleek grey town mouse wearing a tiny top hat and waistcoat, thin and elegant. The country has oak trees and wheat fields. The town has tall buildings and fancy houses.`,
 };
 
 // ─── Per-page scene descriptions ─────────────────────────────────
@@ -288,6 +311,76 @@ const SCENES = {
   ],
 };
 
+  // ══════════════════════════════════════════════════════════════
+  // AESOP'S FABLES (warm golden-hour watercolour)
+  // ══════════════════════════════════════════════════════════════
+
+  'tortoise-hare': [
+    'A sunny countryside meadow. A cocky brown hare stands on a hill flexing his muscles and showing off. A small green tortoise watches from below, looking determined. Wildflowers, butterflies, warm golden sunshine. Rolling green hills.',
+    'The tortoise bravely pointing at the hare, challenging him. The hare doubles over laughing, tears of laughter flying. A wooden signpost reads "RACE" with an arrow. Other small woodland animals watch. Warm afternoon light.',
+    'A dramatic race start — the hare zooms ahead in a blur of speed with dust clouds trailing. The tortoise takes his first careful step forward. A crowd of woodland animals cheer from behind a "START" banner. Energy and motion.',
+    'The hare sprawled lazily under a shady oak tree, fast asleep with a content smile. Zzz letters float above. His legs are crossed casually. In the far background, the tiny tortoise plods along the path. Warm dappled shade, butterflies.',
+    'The tortoise walking steadily along a winding country path, one determined step at a time. Golden afternoon sun low in the sky. Wildflowers line the path. A robin cheers from a fence post. Peaceful, steady progress.',
+    'The tortoise tiptoeing carefully past the sleeping hare under the tree. The hare snores peacefully. The tortoise has a finger to his lips saying "shhh." A snail on a nearby leaf gives a thumbs up. Gentle humour.',
+    'The hare suddenly awake, eyes wide with panic! In the distance, the tortoise is one step from the finish line ribbon. The hare leaps up in alarm. Dramatic tension, speed lines, exclamation marks. Late afternoon golden light.',
+    'The tortoise crossing the finish line with a big happy smile! Confetti and streamers fall. Woodland animals celebrate and cheer. A golden trophy sits on a podium. The exhausted hare arrives just behind, looking amazed. Warm golden sunset celebration.',
+  ],
+
+  'lion-mouse': [
+    'A magnificent golden lion sleeping peacefully on a warm rock in the African savanna. Golden grass sways gently. A warm sun hangs low. Small birds sit on his mane. Everything is peaceful and golden. Long warm shadows.',
+    'The lion jolted awake with a ROAR! A tiny brown mouse is perched on his nose looking startled. The lion\'s mane is dishevelled from sleep. Grass blows from the force of the roar. Dramatic moment, warm light.',
+    'The lion holding the tiny mouse gently in his enormous paw. The mouse is on her knees begging, tiny tears in her eyes. The lion looks down with a mixture of annoyance and amusement. Size contrast is dramatic. Warm amber tones.',
+    'The lion throwing his head back laughing heartily. The tiny mouse scurries away free, waving gratefully as she runs. The lion waves her off dismissively. Warm savanna sunset, golden grass, acacia tree silhouette.',
+    'The lion tangled in a hunter\'s rope net, struggling and roaring. The net is tied between two trees. The lion looks distressed. Dark moody sky contrasts with warm ground tones. Dramatic and tense. Ropes and knots detail.',
+    'The tiny mouse running at full speed across the savanna towards the sound of roaring. Her ears are perked forward, determined expression. Motion blur on her tiny legs. Warm golden path through the grass. Heroic and brave.',
+    'Close-up of the tiny mouse gnawing through the thick rope net with her sharp teeth. Rope fibres snap and fray. The lion watches hopefully from inside the net. Warm lamplight glow. Detail of teeth on rope. Determined effort.',
+    'The lion standing free and proud, the broken net on the ground. The tiny mouse sits on his head between his ears, both smiling. Hearts float above them. Beautiful golden sunset behind them. African acacia trees. Warm friendship.',
+  ],
+
+  'boy-cried-wolf': [
+    'A young shepherd boy sitting on a sunny green hillside with fluffy white sheep grazing peacefully around him. A quiet village with thatched roofs sits in the valley below. Warm golden morning light. Butterflies and daisies. Peaceful but boring.',
+    'The boy standing on a rock cupping his hands around his mouth, shouting. His face is mischievous and grinning. The sheep look startled. The word "WOLF!" seems to echo across the valley. Warm but dramatic lighting.',
+    'Worried villagers running up the green hill with pitchforks and sticks. They look concerned and out of breath. The boy stands at the top laughing and pointing at them. No wolf anywhere. The sheep graze calmly. Afternoon warmth.',
+    'The boy again on his rock, shouting with a gleeful troublemaker expression. The sheep roll their eyes. In the valley, villagers are just starting to look up again. Same sunny hillside, next day. Warm golden light.',
+    'Angry villagers shaking their fists at the laughing boy. Red faces, crossed arms, wagging fingers. One villager throws his hat down in frustration. The boy looks sheepish but still grinning. Warm but tense atmosphere.',
+    'A real grey wolf emerging from a dark forest edge at the bottom of the hill. Yellow eyes gleam. The boy spots it and his expression changes to genuine terror. Dramatic contrast between the dark forest edge and the warm hillside. Tension.',
+    'The boy desperately shouting from his rock, real tears streaming down his face. The sheep scatter in panic. The village below is quiet — no one is coming. The wolf creeps closer through the grass. Emotional and tense. Fading warm light.',
+    'A kind old farmer chasing the wolf away with a stick. The wolf runs off into the forest. The boy hugs a sheep, looking sorry and having learned his lesson. Warm golden sunset. The village is safe. A heart floats above. Redemption.',
+  ],
+
+  'ant-grasshopper': [
+    'A bright summer meadow full of wildflowers and buzzing bees. A tiny black ant carries a large breadcrumb on her back along a path towards her anthill home. She looks determined and hardworking. Warm golden sunshine, blue sky.',
+    'A tall green grasshopper standing on a flower, playing a tiny fiddle and dancing. Musical notes float in the warm air. Butterflies dance along. He is carefree and joyful. The meadow is lush and green. Peak summer warmth.',
+    'The grasshopper leaning on a daisy, talking down to the busy ant who carries food past him. The grasshopper gestures lazily at the sunshine. The ant shakes her head and keeps working. Warm contrast between leisure and industry.',
+    'The ant\'s cosy underground home shown in cross-section: neat shelves stacked with seeds, berries, and grain. The ant arranges her stores proudly. Above ground, the meadow is still sunny but leaves are starting to turn golden. Autumn approaching.',
+    'A dramatic seasonal change — snow falls on the meadow. Trees are bare. The ground is white. Wind blows. Snowflakes swirl. The once-green meadow is now cold and grey-blue. Dark clouds. A stark contrast to the summer scenes.',
+    'The grasshopper shivering in the snow, hugging himself. He is thin and hungry. His fiddle lies broken beside him. Snowflakes land on his drooping antennae. A single bare branch above. Sad and cold. Blue-grey tones with touches of warm brown.',
+    'The ant\'s warm door (a round hole in the ground with a tiny wooden door) opens with golden light spilling out. The ant stands in the doorway, welcoming the shivering grasshopper inside. Warm light contrasts cold snow. Kindness and generosity.',
+    'Both the ant and grasshopper sitting together inside the cosy anthill, sharing food by a tiny fireplace. They smile at each other. The shelves of food surround them. Hearts float above. Outside the window: snow. Inside: warmth and friendship.',
+  ],
+
+  'fox-grapes': [
+    'A handsome red fox trotting through a sunny woodland, tail high. Dappled golden light filters through the trees. Ferns and mushrooms on the forest floor. The fox sniffs the air, looking hungry. Warm autumn tones.',
+    'The fox stopping in his tracks, eyes wide and mouth watering. Above him on a tall wooden trellis, bunches of big juicy purple grapes hang down, glistening in the sunlight. Sparkles surround the grapes. The fox reaches up longingly. Dramatic upward perspective.',
+    'The fox leaping upward with all his might, front paws stretched high. His nose is inches from the lowest grape bunch but can\'t quite reach. Leaves scatter. Dynamic upward motion. The grapes dangle tantalizingly. Warm golden backlight.',
+    'The fox backing up for another attempt, determination on his face. Sweat drops fly. His legs are coiled like springs ready to jump. The grapes hang just as high. A small bird watches from a branch. Building tension.',
+    'The fox at the peak of his highest jump ever — paws outstretched, eyes wide, whole body stretched vertically. The tip of his paw just barely brushes the bottom grape. So close! Dramatic slow-motion feeling. Golden light rays.',
+    'The fox sitting on the ground looking grumpy with his arms crossed. He turns his head away from the grapes with a "hmph" expression. His tail droops. The grapes still hang perfectly above him, glistening. Warm but moody light.',
+    'The fox walking away down the forest path, nose in the air with a proud dismissive expression. Behind him, a small bluebird lands on the grape bunch and happily eats one. The bird looks at the viewer knowingly. Gentle humour. Golden path.',
+    'A whimsical final scene: the fox sits under a different tree, thoughtful. A thought bubble shows the grapes. A warm gentle smile suggests he\'s learned something about himself. Beautiful golden sunset through the forest. Wise and peaceful.',
+  ],
+
+  'town-country-mouse': [
+    'A charming countryside scene: a big oak tree with a tiny round door at its base. The brown country mouse sits outside on a tiny wooden chair, wearing a straw hat, looking content. Wheat fields, wildflowers, a warm golden afternoon. Cosy and peaceful.',
+    'The sleek grey town mouse arriving with a tiny suitcase, wearing a top hat and waistcoat. The country mouse greets him warmly at the door of his oak tree home. A winding path leads from the distance. Warm welcome scene.',
+    'Inside the cosy tree hole home: a tiny wooden table with acorn cups, a small plate of seeds and wild berries. The town mouse pokes at the food with a disappointed expression. The country mouse looks proud of his simple meal. Warm candlelight.',
+    'A wide view of a bustling city with tall colourful buildings, streetlamps, and cobblestone roads. Two tiny mice walk along the pavement, the country mouse looking up in wonder with his mouth open. The town mouse struts proudly. Evening city lights glow warm.',
+    'A grand dining table in a fancy house, seen from mouse-eye-level. Enormous plates of cheese, cake, chocolate, and fruit tower above the two mice. The country mouse\'s eyes are huge saucers of amazement. Warm candlelight, crystal glasses, silverware. Opulent.',
+    'A huge ginger cat bursting through a doorway! The cat\'s eyes are enormous and gleaming. Both mice scramble in opposite directions in pure panic. Cheese and cake fly. The cat\'s paw slams down. Dramatic action, motion blur. Tense!',
+    'Two tiny mice squeezed into a crack in the baseboard wall, trembling and hugging each other. The cat\'s eye peers in through the crack. Both mice look terrified. Dust motes in a shaft of light. Dramatic tension and scale.',
+    'The country mouse back at his oak tree home, sitting peacefully in his little chair with a cup of acorn tea. He smiles contentedly. The wheat field glows golden in the sunset. A small heart floats above. "Home sweet home" feeling. Warm and safe.',
+  ],
+
 // ─── OpenAI DALL-E 3 API ─────────────────────────────────────────
 
 const API_KEY = process.env.OPENAI_API_KEY;
@@ -340,6 +433,7 @@ async function main() {
   console.log(`   Size: 1792x1024 (landscape HD)`);
   console.log(`   Stories: ${storyIds.length} (${totalPages} pages total)`);
   console.log(`   Cartoon style: three-pigs, goldilocks, red-riding`);
+  console.log(`   Aesop golden-hour style: ${[...AESOP_STORIES].join(', ')}`);
   console.log(`   Kipling pen-and-ink style: ${[...KIPLING_STORIES].join(', ')}`);
   console.log('');
 
@@ -352,7 +446,7 @@ async function main() {
     await mkdir(dir, { recursive: true });
 
     const style = getStyle(storyId);
-    const styleLabel = KIPLING_STORIES.has(storyId) ? 'pen-and-ink' : 'cartoon';
+    const styleLabel = KIPLING_STORIES.has(storyId) ? 'pen-and-ink' : AESOP_STORIES.has(storyId) ? 'aesop golden-hour' : 'cartoon';
     console.log(`📖 ${storyId} (${scenes.length} pages, ${styleLabel} style)`);
 
     for (let i = 0; i < scenes.length; i++) {

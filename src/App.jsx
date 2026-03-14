@@ -37,7 +37,14 @@ const BuildAScene = lazy(() => import('./games/BuildAScene'));
 const ShapeMatch = lazy(() => import('./games/ShapeMatch'));
 const EllieStorybook = lazy(() => import('./stories/ellie/EllieStorybook'));
 const VideoPlayer = lazy(() => import('./games/VideoPlayer'));
-const DisneyHub = lazy(() => import('./pages/DisneyHub'));
+// Aesop's Fables
+const TortoiseAndHare = lazy(() => import('./stories/aesop/TortoiseAndHare'));
+const LionAndMouse = lazy(() => import('./stories/aesop/LionAndMouse'));
+const BoyWhoCriedWolf = lazy(() => import('./stories/aesop/BoyWhoCriedWolf'));
+const AntAndGrasshopper = lazy(() => import('./stories/aesop/AntAndGrasshopper'));
+const FoxAndGrapes = lazy(() => import('./stories/aesop/FoxAndGrapes'));
+const TownMouseCountryMouse = lazy(() => import('./stories/aesop/TownMouseCountryMouse'));
+// DisneyHub removed — Disney content integrated into main categories
 const Cinderella = lazy(() => import('./stories/disney/Cinderella'));
 const SnowWhite = lazy(() => import('./stories/disney/SnowWhite'));
 const CaptainHook = lazy(() => import('./stories/disney/CaptainHook'));
@@ -52,6 +59,8 @@ const ControlPanelMeltdown = lazy(() => import('./games/inside-out/ControlPanelM
 const AngerCoolDown = lazy(() => import('./games/inside-out/AngerCoolDown'));
 const AlarmAvalanche = lazy(() => import('./games/inside-out/AlarmAvalanche'));
 const ChainReactionCrisis = lazy(() => import('./games/inside-out/ChainReactionCrisis'));
+const MadHatterTeaParty = lazy(() => import('./games/alice/MadHatterTeaParty'));
+const TortoiseHareRace = lazy(() => import('./games/TortoiseHareRace'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -158,7 +167,6 @@ function AppRoutes() {
 
       {/* Mode-aware hub routes */}
       <Route path="/games/:mode" element={<M><P><SectionPicker /></P></M>} />
-      <Route path="/games/:mode/disney" element={<M><P variant="magical"><DisneyHub /></P></M>} />
       <Route path="/games/:mode/:section" element={<M><S><P><GameGrid /></P></S></M>} />
 
         {/* Individual games/stories */}
@@ -190,29 +198,35 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/ellie-tiny-folk" element={<G><EllieStorybook /></G>} />
         <Route path="/games/:mode/:section/video/:videoId" element={<G><VideoPlayer /></G>} />
 
-        {/* Disney: Princesses */}
+        {/* Aesop's Fables */}
+        <Route path="/games/:mode/:section/tortoise-hare" element={<G><TortoiseAndHare /></G>} />
+        <Route path="/games/:mode/:section/lion-mouse" element={<G><LionAndMouse /></G>} />
+        <Route path="/games/:mode/:section/boy-cried-wolf" element={<G><BoyWhoCriedWolf /></G>} />
+        <Route path="/games/:mode/:section/ant-grasshopper" element={<G><AntAndGrasshopper /></G>} />
+        <Route path="/games/:mode/:section/fox-grapes" element={<G><FoxAndGrapes /></G>} />
+        <Route path="/games/:mode/:section/town-country-mouse" element={<G><TownMouseCountryMouse /></G>} />
+
+        {/* Disney-origin content (now in games/books) */}
         <Route path="/games/:mode/:section/cinderella" element={<G><Cinderella /></G>} />
         <Route path="/games/:mode/:section/snow-white" element={<G><SnowWhite /></G>} />
-        <Route path="/games/:mode/:section/fairy-dust" element={<G><FairyDust /></G>} />
-
-        {/* Disney: Villains */}
         <Route path="/games/:mode/:section/captain-hook" element={<G><CaptainHook /></G>} />
+        <Route path="/games/:mode/:section/winnie-the-pooh" element={<G><WinnieThePooh /></G>} />
+        <Route path="/games/:mode/:section/fairy-dust" element={<G><FairyDust /></G>} />
         <Route path="/games/:mode/:section/hades-river-styx" element={<G><HadesRiverStyx /></G>} />
         <Route path="/games/:mode/:section/ursula-potions" element={<G><UrsulaPotions /></G>} />
-
-        {/* Disney: Pooh */}
-        <Route path="/games/:mode/:section/winnie-the-pooh" element={<G><WinnieThePooh /></G>} />
         <Route path="/games/:mode/:section/honey-hunt" element={<G><HoneyHunt /></G>} />
-
-        {/* Disney: Inside Out */}
         <Route path="/games/:mode/:section/inside-out-hub" element={<G><InsideOutHub /></G>} />
         <Route path="/games/:mode/:section/control-panel-meltdown" element={<G><ControlPanelMeltdown /></G>} />
         <Route path="/games/:mode/:section/anger-cool-down" element={<G><AngerCoolDown /></G>} />
         <Route path="/games/:mode/:section/alarm-avalanche" element={<G><AlarmAvalanche /></G>} />
         <Route path="/games/:mode/:section/chain-reaction-crisis" element={<G><ChainReactionCrisis /></G>} />
-
-        {/* Disney: Dalmatians */}
         <Route path="/games/:mode/:section/puppy-wash" element={<G><PuppyWash /></G>} />
+
+        {/* Aesop's Fables — Games */}
+        <Route path="/games/:mode/:section/tortoise-hare-race" element={<G><TortoiseHareRace /></G>} />
+
+        {/* Alice in Wonderland */}
+        <Route path="/games/:mode/:section/mad-hatter-tea-party" element={<G><MadHatterTeaParty /></G>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

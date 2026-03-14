@@ -9,15 +9,10 @@ import { SECTION_THEMES } from '../data/sectionThemes';
 
 const sectionMeta = {
   games:   { emoji: '🎮', label: 'Games' },
-  puzzles: { emoji: '🧩', label: 'Puzzles' },
   art:     { emoji: '🎨', label: 'Art' },
   books:   { emoji: '📚', label: 'Books' },
   music:   { emoji: '🎵', label: 'Music' },
   videos:  { emoji: '📺', label: 'Videos' },
-  'disney-princesses': { emoji: '👸', label: 'Princesses' },
-  'disney-villains':   { emoji: '🦹', label: 'Villains' },
-  'disney-pooh':       { emoji: '🍯', label: 'Pooh' },
-  'disney-dalmatians': { emoji: '🐾', label: 'Puppies' },
 };
 
 /** Map section animationVibe to a Tailwind animation class */

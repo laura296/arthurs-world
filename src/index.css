@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --aw-bg-warm: #FFF8F0;
+    --aw-gold: #F5B041;
+    --aw-amber: #E67E22;
+    --aw-forest: #6B8E5A;
+    --aw-sky: #87CEEB;
+    --aw-wood: #C4A265;
+    --aw-cream: #FDF5E6;
+    --aw-shadow: rgba(120, 80, 40, 0.15);
+  }
+
   body {
     @apply bg-night text-white font-body;
     touch-action: manipulation;
@@ -217,4 +228,33 @@
   0% { transform: translate(0, 0) scale(1); opacity: 1; }
   60% { transform: translate(calc(var(--particle-tx) * 0.6), calc(var(--particle-ty) * 0.6)) scale(0.8); opacity: 1; }
   100% { transform: translate(var(--particle-tx), var(--particle-ty)) scale(0); opacity: 0; }
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes hint-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+  50% { box-shadow: 0 0 20px 6px rgba(251, 191, 36, 0.4); }
+}
+
+@keyframes bloom-grow {
+  0% { transform: scale(0) translateY(10px); opacity: 0; }
+  40% { transform: scale(1.2) translateY(-4px); opacity: 1; }
+  60% { transform: scale(0.95) translateY(0); opacity: 1; }
+  80% { transform: scale(1.05) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes seed-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(8deg); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

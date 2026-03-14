@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Winnie the Pooh',
+  audioDir: '/arthurs-world/audio/winnie-the-pooh',
   pages: [
     // ── Page 1: The Hundred Acre Wood ──
     {

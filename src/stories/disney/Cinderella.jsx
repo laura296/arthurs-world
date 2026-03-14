@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Cinderella',
+  audioDir: '/arthurs-world/audio/cinderella',
   pages: [
     // ── Page 1: Introduction ──
     {

@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Snow White',
+  audioDir: '/arthurs-world/audio/snow-white',
   pages: [
     // ── Page 1: Introduction ──
     {

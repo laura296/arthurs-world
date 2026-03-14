@@ -1,18 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton';
-import NightSkyScene from '../components/scenes/NightSkyScene';
+import GoldenHourScene from '../components/scenes/GoldenHourScene';
 import TiltCard from '../components/TiltCard';
 import { playNavigate } from '../hooks/useSound';
 import { SECTION_THEMES } from '../data/sectionThemes';
 
 const sections = [
-  { id: 'games',   emoji: '🎮', label: 'Games',   hero: '/arthurs-world/images/sections/games.png',   grad: ['#7dd3fc', '#6366f1'] },
-  { id: 'puzzles', emoji: '🧩', label: 'Puzzles', hero: '/arthurs-world/images/sections/puzzles.png', grad: ['#2dd4bf', '#0891b2'] },
-  { id: 'art',     emoji: '🎨', label: 'Art',     hero: '/arthurs-world/images/sections/art.png',     grad: ['#f472b6', '#e11d48'] },
-  { id: 'books',   emoji: '📚', label: 'Books',   hero: '/arthurs-world/images/sections/books.png',   grad: ['#fbbf24', '#f97316'] },
-  { id: 'music',   emoji: '🎵', label: 'Music',   hero: '/arthurs-world/images/sections/music.png',   grad: ['#8b5cf6', '#6d28d9'] },
-  { id: 'videos',  emoji: '📺', label: 'Videos',  hero: '/arthurs-world/images/sections/videos.png',  grad: ['#ef4444', '#b91c1c'] },
-  { id: 'disney',  emoji: '🏰', label: 'Disney',  hero: '/arthurs-world/images/sections/disney.png',  grad: ['#34d399', '#0f766e'] },
+  { id: 'games',   emoji: '🎮', label: 'Games',   hero: '/arthurs-world/images/sections/games.png',   grad: ['#E8A838', '#D4842A'] },
+  { id: 'art',     emoji: '🎨', label: 'Art',     hero: '/arthurs-world/images/sections/art.png',     grad: ['#E88D6D', '#D4623A'] },
+  { id: 'books',   emoji: '📚', label: 'Books',   hero: '/arthurs-world/images/sections/books.png',   grad: ['#D4A853', '#B8862A'] },
+  { id: 'music',   emoji: '🎵', label: 'Music',   hero: '/arthurs-world/images/sections/music.png',   grad: ['#C49265', '#A06840'] },
+  { id: 'videos',  emoji: '📺', label: 'Videos',  hero: '/arthurs-world/images/sections/videos.png',  grad: ['#E67E22', '#C0592B'] },
 ];
 
 export default function SectionPicker() {
@@ -22,19 +20,20 @@ export default function SectionPicker() {
   const modeLabel = mode === 'quiet' ? '🌙 Quiet' : mode === 'noisy' ? '🔥 Noisy' : '🌟 All';
 
   return (
-    <div className="relative w-full h-full bg-night overflow-y-auto no-scrollbar">
-      <NightSkyScene />
+    <div className="relative w-full h-full bg-aw-warm overflow-y-auto no-scrollbar">
+      <GoldenHourScene />
       <BackButton />
 
       <div className="relative z-10 p-6 pt-20">
-        <h2 className="text-3xl font-heading text-sun text-center mb-6 drop-shadow animate-spring-in">
+        <h2 className="text-3xl font-heading text-amber-900 text-center mb-6 drop-shadow animate-spring-in"
+            style={{ textShadow: '0 2px 8px rgba(245, 176, 65, 0.3)' }}>
           {modeLabel}
         </h2>
 
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pb-8">
           {sections.map((s, i) => {
             const theme = SECTION_THEMES[s.id];
-            const accent = theme?.palette?.primary || '#fff';
+            const accent = theme?.palette?.primary || '#F5B041';
             return (
               <TiltCard
                 key={s.id}
@@ -46,6 +45,7 @@ export default function SectionPicker() {
                   animationDelay: `${i * 0.08}s`,
                   animationFillMode: 'backwards',
                   borderBottom: `3px solid ${accent}`,
+                  boxShadow: '0 4px 12px rgba(120, 80, 40, 0.2)',
                 }}
               >
                 {/* Hero image with frosted glass title — falls back to emoji+gradient */}
@@ -59,8 +59,8 @@ export default function SectionPicker() {
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                   {/* Frosted title bar */}
-                  <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-black/60 to-transparent px-3 py-2.5">
-                    <span className="text-lg font-heading text-white drop-shadow">{s.label}</span>
+                  <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-black/50 to-transparent px-3 py-2.5 backdrop-blur-[2px]">
+                    <span className="text-lg font-heading text-aw-cream drop-shadow">{s.label}</span>
                   </div>
                 </div>
               </TiltCard>
