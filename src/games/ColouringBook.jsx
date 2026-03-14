@@ -19,25 +19,28 @@ const PALETTE = [
 
 const MAX_UNDO = 20;
 
-/* ── Page picker grid ── */
+/* ── Page picker ── */
 function PagePicker({ onSelect }) {
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4"
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center"
          style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%)' }}>
-      <h2 className="text-2xl sm:text-3xl font-heading text-amber-900 mb-1">Colouring Book</h2>
-      <p className="text-sm text-amber-700/70 font-heading mb-5">Pick a picture to colour in!</p>
-      <div className="grid grid-cols-2 gap-3 max-w-lg w-full px-2">
+      <h2 className="text-2xl sm:text-3xl font-heading text-amber-900 mb-3">Colouring Book</h2>
+
+      {/* Horizontal scroll of large cards */}
+      <div className="flex gap-5 px-6 overflow-x-auto no-scrollbar snap-x snap-mandatory w-full"
+           style={{ maxHeight: '75vh' }}>
         {PAGES.map(page => (
           <button
             key={page.id}
             onClick={() => { playPop(); onSelect(page); }}
-            className="bg-white rounded-3xl p-2 shadow-lg border-2 border-amber-200/50
-                       hover:scale-105 active:scale-95 transition-all flex flex-col items-center gap-1 cursor-pointer"
+            className="snap-center flex-shrink-0 bg-white rounded-3xl p-3 shadow-xl border-2 border-amber-200/50
+                       hover:scale-[1.03] active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer"
+            style={{ width: 'min(45vw, 280px)' }}
           >
-            <div className="w-full aspect-[3/4] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <img src={page.src} alt={page.name} className="w-full h-full object-cover" draggable={false} />
+            <div className="w-full flex-1 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+              <img src={page.src} alt={page.name} className="w-full h-full object-contain" draggable={false} />
             </div>
-            <span className="font-heading text-amber-800 text-xs">{page.emoji} {page.name}</span>
+            <span className="font-heading text-amber-800 text-base">{page.emoji} {page.name}</span>
           </button>
         ))}
       </div>
@@ -57,18 +60,30 @@ export default function ColouringBook() {
   const [brushSize, setBrushSize] = useState(12);
   const [isEraser, setIsEraser] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
+  const [imgSize, setImgSize] = useState(null);
+  const containerRef = useRef(null);
 
-  /* ── canvas resize ── */
+  /* ── Load image dimensions ── */
+  useEffect(() => {
+    if (!page) { setImgSize(null); return; }
+    const img = new Image();
+    img.onload = () => setImgSize({ w: img.naturalWidth, h: img.naturalHeight });
+    img.src = page.src;
+  }, [page]);
+
+  /* ── canvas resize to match fitted container ── */
   useEffect(() => {
     const c = canvasRef.current;
-    if (!c) return;
+    const container = containerRef.current;
+    if (!c || !container) return;
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      const w = c.parentElement.clientWidth;
-      const h = c.parentElement.clientHeight;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (!w || !h) return;  // container not laid out yet
       const tmp = document.createElement('canvas');
-      tmp.width = c.width;
-      tmp.height = c.height;
+      tmp.width = c.width || 1;
+      tmp.height = c.height || 1;
       tmp.getContext('2d').drawImage(c, 0, 0);
       c.width = w * dpr;
       c.height = h * dpr;
@@ -81,7 +96,7 @@ export default function ColouringBook() {
     resize();
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
-  }, [page]);
+  }, [page, imgSize]);
 
   /* ── helpers ── */
   const getPos = useCallback((e) => {
@@ -176,24 +191,10 @@ export default function ColouringBook() {
     const tctx = tmp.getContext('2d');
     tctx.fillStyle = '#fff';
     tctx.fillRect(0, 0, tmp.width, tmp.height);
-    /* Draw the background page image if present */
+    /* Draw the background page image — container matches aspect ratio, just fill */
     if (page) {
       const bgImg = document.getElementById('colouring-bg-img');
-      if (bgImg) {
-        const dpr = window.devicePixelRatio || 1;
-        const cw = c.width / dpr;
-        const ch = c.height / dpr;
-        /* Replicate object-contain positioning */
-        const imgAspect = bgImg.naturalWidth / bgImg.naturalHeight;
-        const canvasAspect = cw / ch;
-        let dw, dh, dx, dy;
-        if (imgAspect > canvasAspect) {
-          dw = cw; dh = cw / imgAspect; dx = 0; dy = (ch - dh) / 2;
-        } else {
-          dh = ch; dw = ch * imgAspect; dy = 0; dx = (cw - dw) / 2;
-        }
-        tctx.drawImage(bgImg, dx * dpr, dy * dpr, dw * dpr, dh * dpr);
-      }
+      if (bgImg) tctx.drawImage(bgImg, 0, 0, tmp.width, tmp.height);
     }
     tctx.drawImage(c, 0, 0);
     tmp.toBlob(blob => {
@@ -224,117 +225,126 @@ export default function ColouringBook() {
   }
 
   /* ── Colouring mode ── */
+  const TB = 'w-13 h-13';  // 52px touch targets
+
   return (
-    <div className="relative w-full h-full bg-white overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden flex"
+         style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%)' }}>
       <BackButton />
 
-      {/* Full-screen canvas area */}
-      <div className="absolute inset-0">
-        {/* Background coloring page image */}
-        <img
-          id="colouring-bg-img"
-          src={page.src}
-          alt={page.name}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none opacity-90"
-          draggable={false}
-        />
-        {/* Drawing canvas on top */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0"
-          style={{ touchAction: 'none' }}
-          onPointerDown={startDraw}
-          onPointerMove={draw}
-          onPointerUp={stopDraw}
-          onPointerLeave={stopDraw}
-          onTouchStart={startDraw}
-          onTouchMove={draw}
-          onTouchEnd={stopDraw}
-        />
+      {/* ── Left sidebar: colour palette ── */}
+      <div className="flex flex-col items-center justify-center gap-1 py-2 px-1 overflow-y-auto no-scrollbar z-10">
+        {PALETTE.map(c => (
+          <button
+            key={c}
+            onClick={() => { setColor(c); setIsEraser(false); playTap(); }}
+            className={`${TB} rounded-full flex-shrink-0 border-[5px] transition-all shadow-md
+              ${color === c && !isEraser
+                ? 'border-gray-800 scale-115 shadow-lg'
+                : c === '#f5f5f4' ? 'border-gray-300' : 'border-white/60'}`}
+            style={{ backgroundColor: c }}
+          />
+        ))}
       </div>
 
-      {/* Change page button */}
-      <button
-        onClick={() => { playTap(); goBack(); }}
-        className="absolute top-14 right-3 z-10 w-11 h-11 rounded-2xl bg-white/90
-                   shadow-lg flex items-center justify-center text-xl active:scale-90 transition-transform"
-        title="Change page"
-      >
-        🖼️
-      </button>
-
-      {/* ── Toolbar (overlaid at bottom) ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm">
-        {/* Single row: palette + tools */}
-        <div className="flex items-center gap-1 px-2 py-1.5 overflow-x-auto no-scrollbar">
-          {PALETTE.map(c => (
-            <button
-              key={c}
-              onClick={() => { setColor(c); setIsEraser(false); playTap(); }}
-              className={`w-9 h-9 rounded-full flex-shrink-0 border-3 transition-transform
-                ${color === c && !isEraser
-                  ? 'border-gray-800 scale-110'
-                  : c === '#f5f5f4' ? 'border-gray-300' : 'border-transparent'}`}
-              style={{ backgroundColor: c }}
-            />
-          ))}
-
-          <div className="w-px h-7 bg-gray-300 mx-0.5 flex-shrink-0" />
-
-          {/* Brush sizes */}
-          {[6, 12, 24].map(s => (
-            <button
-              key={s}
-              onClick={() => { setBrushSize(s); playTap(); }}
-              className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
-                bg-gray-200/80 border-3 transition-transform
-                ${brushSize === s ? 'border-gray-800 scale-110' : 'border-transparent'}`}
-            >
-              <div className="rounded-full bg-gray-800" style={{ width: s, height: s }} />
-            </button>
-          ))}
-
-          <div className="w-px h-7 bg-gray-300 mx-0.5 flex-shrink-0" />
-
-          {/* Eraser */}
-          <button
-            onClick={() => { setIsEraser(e => !e); playTap(); }}
-            className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
-              text-lg transition-transform border-3
-              ${isEraser ? 'border-gray-800 scale-110 bg-pink-100' : 'border-transparent bg-gray-200/80'}`}
-          >
-            🧹
-          </button>
-
-          {/* Undo */}
-          <button
-            onClick={undo}
-            disabled={!canUndo}
-            className={`w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center
-              text-lg transition-transform bg-gray-200/80
-              ${canUndo ? 'active:scale-90' : 'opacity-30'}`}
-          >
-            ↩️
-          </button>
-
-          {/* Save */}
-          <button
-            onClick={save}
-            className="w-9 h-9 rounded-xl flex-shrink-0 bg-green-100/80 flex items-center justify-center
-              text-lg active:scale-90 transition-transform"
-          >
-            💾
-          </button>
-
-          {/* Clear */}
-          <button
-            onClick={clear}
-            className="w-9 h-9 rounded-xl flex-shrink-0 bg-red-100/80 flex items-center justify-center
-              text-lg active:scale-90 transition-transform"
-          >
-            🗑️
-          </button>
+      {/* ── Centre: image + canvas ── */}
+      <div className="flex-1 flex items-center justify-center">
+        <div
+          ref={containerRef}
+          className="relative max-w-full shadow-2xl rounded-xl overflow-hidden bg-white"
+          style={imgSize
+            ? { aspectRatio: `${imgSize.w} / ${imgSize.h}`, height: 'calc(100% - 16px)' }
+            : { width: '100%', height: 'calc(100% - 16px)' }}
+        >
+          <img
+            id="colouring-bg-img"
+            src={page.src}
+            alt={page.name}
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            draggable={false}
+          />
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0"
+            style={{ touchAction: 'none' }}
+            onPointerDown={startDraw}
+            onPointerMove={draw}
+            onPointerUp={stopDraw}
+            onPointerLeave={stopDraw}
+            onTouchStart={startDraw}
+            onTouchMove={draw}
+            onTouchEnd={stopDraw}
+          />
         </div>
+      </div>
+
+      {/* ── Right sidebar: tools ── */}
+      <div className="flex flex-col items-center justify-center gap-1 py-2 px-1 overflow-y-auto no-scrollbar z-10">
+        {/* Brush sizes — show selected colour on the dot */}
+        {[6, 14, 26].map(s => (
+          <button
+            key={s}
+            onClick={() => { setBrushSize(s); setIsEraser(false); playTap(); }}
+            className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+              bg-white/90 border-[5px] transition-all shadow-md
+              ${brushSize === s && !isEraser ? 'border-gray-800 scale-115 shadow-lg' : 'border-white/60'}`}
+          >
+            <div className="rounded-full" style={{ width: s, height: s, backgroundColor: color }} />
+          </button>
+        ))}
+
+        <div className="w-8 h-px bg-amber-300/40 flex-shrink-0" />
+
+        {/* Eraser */}
+        <button
+          onClick={() => { setIsEraser(e => !e); playTap(); }}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-xl transition-all border-[5px] shadow-md
+            ${isEraser ? 'border-gray-800 scale-115 bg-pink-200 shadow-lg' : 'border-white/60 bg-white/90'}`}
+        >
+          🧹
+        </button>
+
+        {/* Undo */}
+        <button
+          onClick={undo}
+          disabled={!canUndo}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-xl transition-all bg-white/90 shadow-md border-[5px] border-white/60
+            ${canUndo ? 'active:scale-90' : 'opacity-30'}`}
+        >
+          ↩️
+        </button>
+
+        <div className="w-8 h-px bg-amber-300/40 flex-shrink-0" />
+
+        {/* Change page */}
+        <button
+          onClick={() => { playTap(); goBack(); }}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-xl transition-all bg-amber-100/90 shadow-md border-[5px] border-white/60
+            active:scale-90`}
+        >
+          🖼️
+        </button>
+
+        {/* Save */}
+        <button
+          onClick={save}
+          className={`${TB} rounded-2xl flex-shrink-0 bg-green-200/90 flex items-center justify-center
+            text-xl active:scale-90 transition-all shadow-md border-[5px] border-white/60`}
+        >
+          💾
+        </button>
+
+        {/* Clear */}
+        <button
+          onClick={clear}
+          className={`${TB} rounded-2xl flex-shrink-0 bg-red-200/90 flex items-center justify-center
+            text-xl active:scale-90 transition-all shadow-md border-[5px] border-white/60`}
+        >
+          🗑️
+        </button>
       </div>
     </div>
   );
