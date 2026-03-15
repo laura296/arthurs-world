@@ -5,6 +5,7 @@ import { SectionProvider } from './contexts/SectionContext';
 import ArthurBear from './components/ArthurBear';
 import GameErrorBoundary from './components/GameErrorBoundary';
 import PageTransition from './components/PageTransition';
+import OfflineIndicator from './components/OfflineIndicator';
 import { useSessionTimer } from './components/SessionTimer';
 
 export const SessionTimerContext = createContext(null);
@@ -269,6 +270,7 @@ export default function App() {
         <AppRoutes />
       </Suspense>
       <sessionTimer.SessionTimerUI />
+      <OfflineIndicator />
     </SessionTimerContext.Provider>
   );
 }
