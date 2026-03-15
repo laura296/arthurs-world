@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BackButton from '../../components/BackButton';
 import { useCelebration } from '../../components/CelebrationOverlay';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { playBoing, playSuccess, playSparkle } from '../../hooks/useSound';
 import { OBJECTS, OBJECT_PITCH, pickSession, getCorrectAnswer } from './teaPartyData';
 import {
@@ -345,6 +346,7 @@ export default function MadHatterTeaParty() {
   // ── Rewards ──
   const { celebrate, CelebrationLayer } = useCelebration();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   // ── Remaining missing slots ──
   const remainingMissing = useMemo(() => {
@@ -431,6 +433,7 @@ export default function MadHatterTeaParty() {
     }
 
     playSuccess();
+    peek('happy');
     resetHints();
 
     // Reset reactions after brief celebration
@@ -439,7 +442,7 @@ export default function MadHatterTeaParty() {
       setHareReaction('idle');
       setDormouseReaction('idle');
     }, 1200);
-  }, [burst, resetHints]);
+  }, [burst, resetHints, peek]);
 
   // ── Handle wrong placement ──
   const handleWrong = useCallback(() => {
@@ -470,6 +473,7 @@ export default function MadHatterTeaParty() {
       // Final puzzle — big celebration
       setGameState(GAME_STATES.FINALE);
       playHatterCelebrate();
+      peek('excited');
       celebrate({
         message: 'Tea Time!',
         colors: ['#F5B041', '#C0392B', '#5B9BD5', '#FDF5E6'],
@@ -704,6 +708,7 @@ export default function MadHatterTeaParty() {
 
       <CelebrationLayer />
       <ParticleLayer />
+      <ArthurPeekLayer />
 
       {/* CSS animations (scoped via style tag) */}
       <style>{`

@@ -12,6 +12,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import BackButton from '../components/BackButton';
 import { useCelebration } from '../components/CelebrationOverlay';
+import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 // ── Palette (Gouache on Kraft) ──────────────────────────────────────
 const C = {
@@ -579,6 +581,8 @@ export default function TortoiseHareRace() {
   const distrIdx         = useRef(0);
   const tapCount         = useRef(0);
   const { celebrate, CelebrationLayer } = useCelebration();
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   // Sync refs
   useEffect(() => { phRef.current = phase; },       [phase]);
@@ -718,12 +722,19 @@ export default function TortoiseHareRace() {
     setRibbonBroken(true);
     setTimeout(() => setShowConfetti(true), 200);
     setHareState('panic');
+    peek('excited');
+    // Burst at centre screen
+    burst(window.innerWidth / 2, window.innerHeight * 0.5, {
+      count: 20, spread: 100,
+      colors: [C.buttercup, C.grass, C.pink, C.sky],
+      shapes: ['star', 'heart'],
+    });
     setTimeout(() => {
       setPhase('celebration');
       celebrate({ message: 'Slow and Steady Wins!', colors: [C.buttercup, C.grass, C.pink, C.sky] });
     }, 1500);
     setTimeout(playBell, 2500);
-  }, [phase, celebrate]);
+  }, [phase, celebrate, peek, burst]);
 
   // ── Hare wins sequence ──────────────────────────────────────
   useEffect(() => {
@@ -755,7 +766,11 @@ export default function TortoiseHareRace() {
 
     // Sparkle trail (always spawns, bigger when steady)
     spawnTrail();
-  }, []);
+
+    // Arthur peek at milestones
+    if (tapCount.current === 15) peek('happy');
+    if (tapCount.current === 35) peek('excited');
+  }, [peek]);
 
   function spawnTrail() {
     trailParts.current.push({
@@ -822,6 +837,8 @@ export default function TortoiseHareRace() {
 
       <BackButton />
       <CelebrationLayer />
+      <ParticleLayer />
+      <ArthurPeekLayer />
 
       {phase === 'intro' && <IntroScreen onStart={startRace} />}
 

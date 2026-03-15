@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { Joy, Anger, Anxiety, Sadness, Fear, Disgust, MemoryOrb } from './Characters';
 import { EMOTION_COLORS, ROOMS, recordWin, loadProgress, saveProgress } from './insideOutData';
 import {
@@ -269,6 +270,7 @@ function TapPopChallenge({ target, onComplete, burst, shake, addCombo, pop, say 
 export default function ChainReactionCrisis() {
   const navigate = useNavigate();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const { shake, ShakeWrapper } = useScreenShake();
   const { combo, addCombo, resetCombo, ComboDisplay } = useCombo();
   const { say, DialogueBubble } = useDialogue();
@@ -344,16 +346,18 @@ export default function ChainReactionCrisis() {
         setPhase('success');
         playVictoryFanfare();
         shake('heavy');
+        peek('excited');
       }, 600);
     } else {
       setPhase('transition');
+      peek('happy');
       setTimeout(() => {
         setChallengeIdx(i => i + 1);
         resetCombo();
         setPhase('challenge');
       }, 2000);
     }
-  }, [challengeIdx, combo, burst, shake, resetCombo]);
+  }, [challengeIdx, combo, burst, shake, resetCombo, peek]);
 
   // ── Stars reveal animation ──
   useEffect(() => {
@@ -464,6 +468,7 @@ export default function ChainReactionCrisis() {
       <CrisisBackground phase={phase} challengeIdx={challengeIdx} />
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
       <ComboDisplay />
       <DialogueBubble />
       <NumberLayer />

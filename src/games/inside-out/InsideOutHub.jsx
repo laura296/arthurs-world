@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { playPop, playSuccess, playBoing, playNavigate } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { Joy, Sadness, Anger, Anxiety, MemoryOrb } from './Characters';
 import {
   ROOMS, EMOTION_COLORS, RESTORATION_LEVELS,
@@ -283,6 +284,7 @@ export default function InsideOutHub() {
   const { mode, section } = useParams();
   const navigate = useNavigate();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const [progress, setProgress] = useState(() => refreshAlerts());
 
   useEffect(() => {
@@ -291,12 +293,14 @@ export default function InsideOutHub() {
 
   const handlePlay = (room) => {
     playNavigate();
+    peek('happy');
     burst({ x: window.innerWidth / 2, y: window.innerHeight / 2, colors: [room.color, '#fff'] });
     navigate(`/games/${mode}/${section}/${room.gamePath}`);
   };
 
   const handleBoss = () => {
     playBoing();
+    peek('excited');
     burst({ x: window.innerWidth / 2, y: 200, colors: ['#ef4444', '#facc15', '#3b82f6', '#22c55e'] });
     navigate(`/games/${mode}/${section}/chain-reaction-crisis`);
   };
@@ -323,6 +327,7 @@ export default function InsideOutHub() {
       <HQBackground />
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
 
       <div className="relative z-10 p-4 pt-14 pb-10 max-w-md mx-auto">
         {/* Console header with Joy */}

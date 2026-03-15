@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { Anxiety, MemoryOrb, AlarmBubble } from './Characters';
 import { EMOTION_COLORS, recordWin } from './insideOutData';
 import { playAlarmChime, playPhaseTransition } from './insideOutSounds';
@@ -104,6 +105,7 @@ function DomeBackground({ intensity }) {
 export default function AlarmAvalanche() {
   const navigate = useNavigate();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const { shake, ShakeWrapper } = useScreenShake();
   const { combo, addCombo, resetCombo, ComboDisplay } = useCombo();
   const { say, DialogueBubble } = useDialogue();
@@ -186,12 +188,12 @@ export default function AlarmAvalanche() {
     if (phase !== 'playing') return;
     const t = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) { setPhase('success'); playSuccess(); playPhaseTransition(); return 0; }
+        if (prev <= 1) { setPhase('success'); playSuccess(); playPhaseTransition(); peek('excited'); return 0; }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [phase]);
+  }, [phase, peek]);
 
   // Power-up spawns
   useEffect(() => {
@@ -254,6 +256,7 @@ export default function AlarmAvalanche() {
       const bonus = popChainRef.current * 5;
       setChainBonus({ count: popChainRef.current, key: now });
       setScore(s => s + bonus);
+      peek('happy');
       setTimeout(() => setChainBonus(null), 1200);
     }
 
@@ -282,7 +285,7 @@ export default function AlarmAvalanche() {
         return a;
       })
     );
-  }, [phase, burst, pop, combo, addCombo]);
+  }, [phase, burst, pop, combo, addCombo, peek]);
 
   const handleWinDone = () => {
     const stars = score >= 250 ? 3 : score >= 150 ? 2 : 1;
@@ -324,6 +327,7 @@ export default function AlarmAvalanche() {
 
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
       <ComboDisplay />
       <DialogueBubble />
       <NumberLayer />

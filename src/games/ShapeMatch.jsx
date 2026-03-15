@@ -703,7 +703,7 @@ export default function ShapeMatch() {
       {/* score popup */}
       {scorePopup && (
         <div className="absolute top-16 right-6 z-40 text-2xl font-heading text-green-600 drop-shadow-lg animate-bounce-in">
-          +{scorePopup}
+          {scorePopup}
         </div>
       )}
 

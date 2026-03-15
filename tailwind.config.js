@@ -48,7 +48,7 @@ export default {
         'sparkle-particle': 'sparkleFly 0.6s ease-out forwards',
         // Build-a-Scene animations
         'scene-walk': 'sceneWalk 3s ease-in-out infinite',
-        'scene-swim': 'sceneSwin 4s ease-in-out infinite',
+        'scene-swim': 'sceneSwim 4s ease-in-out infinite',
         'scene-fly': 'sceneFly 5s ease-in-out infinite',
         'scene-bounce': 'sceneBounce 1.5s ease-in-out infinite',
         'scene-scuttle': 'sceneScuttle 0.8s ease-in-out infinite',
@@ -194,7 +194,7 @@ export default {
           '0%, 100%': { transform: 'translateX(0) translateY(0)' },
           '50%': { transform: 'translateX(30px) translateY(-5px)' },
         },
-        sceneSwin: {
+        sceneSwim: {
           '0%, 100%': { transform: 'translateX(0) rotate(0deg)' },
           '50%': { transform: 'translateX(20px) rotate(3deg)' },
         },

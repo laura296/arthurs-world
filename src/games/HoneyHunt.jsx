@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BackButton from '../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 const HONEY_COLORS = ['#fbbf24', '#f59e0b', '#d97706', '#b45309'];
 const POOH_QUOTES = [
@@ -295,6 +296,7 @@ export default function HoneyHunt() {
   const [reaction, setReaction] = useState(null); // 'catch' | 'sting' | null
   const [quote, setQuote] = useState(null);
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const lastQuoteMilestone = useRef(0);
 
   // Keep scoreRef in sync
@@ -406,6 +408,7 @@ export default function HoneyHunt() {
       setReaction('catch');
       setScore((s) => s + 5);
       setLives((l) => Math.min(l + 1, 5));
+      peek('excited');
       if (rect) burst(e.clientX - rect.left, e.clientY - rect.top, { colors: ['#f9a8c9', '#f472b6', '#ec4899'] });
     } else {
       const points = drop.type === 'golden-honey' ? 3 : 1;
@@ -418,6 +421,7 @@ export default function HoneyHunt() {
         if (milestone > lastQuoteMilestone.current) {
           lastQuoteMilestone.current = milestone;
           playSuccess();
+          peek('happy');
           setQuote(POOH_QUOTES[milestone % POOH_QUOTES.length]);
         }
         return newScore;
@@ -426,7 +430,7 @@ export default function HoneyHunt() {
     }
 
     setDrops((prev) => prev.filter((d) => d.id !== drop.id));
-  }, [burst]);
+  }, [burst, peek]);
 
   const handleStart = useCallback(() => {
     setPhase('countdown');
@@ -464,6 +468,7 @@ export default function HoneyHunt() {
     >
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
 
       {/* Soft clouds */}
       <div className="absolute top-[8%] left-[10%] w-20 h-8 bg-white/30 rounded-full blur-sm" />

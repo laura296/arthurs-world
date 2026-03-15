@@ -5,6 +5,7 @@ import {
   playTone, playCelebrate, playNavigate,
 } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 import PuppyImage from './puppy-wash/PuppyImage';
 
 const HEART_COLORS = ['#f472b6', '#ec4899', '#f9a8d4', '#fda4af', '#fb7185'];
@@ -703,10 +704,14 @@ export default function PuppyWash() {
   const [step, setStep] = useState('select');
   const [puppy, setPuppy] = useState(null);
   const [accessory, setAccessory] = useState(null);
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   const advanceTo = useCallback((next) => {
     setStep(next);
-  }, []);
+    // Peek at activity milestones
+    if (next === 'dress' || next === 'belly-rub') peek('happy');
+    if (next === 'celebrate') peek('excited');
+  }, [peek]);
 
   const handlePuppySelect = useCallback((p) => {
     setPuppy(p);
@@ -865,6 +870,7 @@ export default function PuppyWash() {
           100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
+      <ArthurPeekLayer />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { Joy, MemoryOrb } from './Characters';
 import { EMOTION_COLORS, recordWin } from './insideOutData';
 import { playConsoleBeep, playPhaseTransition, playComboHit, playCountdownTick } from './insideOutSounds';
@@ -283,6 +284,7 @@ const MILESTONES = {
 export default function ControlPanelMeltdown() {
   const navigate = useNavigate();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const { shake, ShakeWrapper } = useScreenShake();
   const { combo: juiceCombo, addCombo, resetCombo, ComboDisplay } = useCombo();
   const { say, DialogueBubble } = useDialogue();
@@ -485,6 +487,7 @@ export default function ControlPanelMeltdown() {
           setTimeout(() => {
             setPhase('success');
             playSuccess();
+            peek('excited');
           }, 300);
         } else {
           // Round transition
@@ -492,6 +495,7 @@ export default function ControlPanelMeltdown() {
             const nextRound = round + 1;
             setSubPhase('round-transition');
             setRound(nextRound);
+            peek('happy');
 
             // Milestone dialogue for round transition
             const m = milestonesRef.current;
@@ -502,7 +506,7 @@ export default function ControlPanelMeltdown() {
       }
       return next;
     });
-  }, [phase, subPhase, localCombo, round, burst, addCombo, pop, say, activePower]);
+  }, [phase, subPhase, localCombo, round, burst, addCombo, pop, say, activePower, peek]);
 
   const handleRoundTransitionDone = useCallback(() => {
     setButtons(makeGrid(4 + round * 2));
@@ -619,6 +623,7 @@ export default function ControlPanelMeltdown() {
 
         <BackButton />
         <ParticleLayer />
+        <ArthurPeekLayer />
         <NumberLayer />
         <ComboDisplay />
         <DialogueBubble />

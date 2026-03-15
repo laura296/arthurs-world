@@ -71,6 +71,9 @@ const MadHatterTeaParty = lazy(() => import('./games/alice/MadHatterTeaParty'));
 const TortoiseHareRace = lazy(() => import('./games/TortoiseHareRace'));
 const CountingGarden = lazy(() => import('./games/CountingGarden'));
 const ColourSort = lazy(() => import('./games/ColourSort'));
+const MorningRoutine = lazy(() => import('./games/MorningRoutine'));
+const SparkleTeeth = lazy(() => import('./games/SparkleTeeth'));
+const ArthursLunchbox = lazy(() => import('./games/ArthursLunchbox'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -246,6 +249,11 @@ function AppRoutes() {
 
         {/* Alice in Wonderland */}
         <Route path="/games/:mode/:section/mad-hatter-tea-party" element={<G><MadHatterTeaParty /></G>} />
+
+        {/* Self-Care */}
+        <Route path="/games/:mode/:section/morning-routine" element={<G><MorningRoutine /></G>} />
+        <Route path="/games/:mode/:section/sparkle-teeth" element={<G><SparkleTeeth /></G>} />
+        <Route path="/games/:mode/:section/arthurs-lunchbox" element={<G><ArthursLunchbox /></G>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -2,6 +2,9 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import videos from '../data/videoData';
 import BackButton from '../components/BackButton';
+import { playCelebrate } from '../hooks/useSound';
+import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 /**
  * Toddler-friendly video player with big touch controls.
@@ -14,6 +17,8 @@ export default function VideoPlayer() {
   const [playing, setPlaying] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const hideTimer = useRef(null);
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   const video = videos.find(v => v.id === videoId);
 
@@ -50,7 +55,13 @@ export default function VideoPlayer() {
   const handleEnded = useCallback(() => {
     setPlaying(false);
     setShowControls(true);
-  }, []);
+    playCelebrate();
+    peek('excited');
+    // Celebration burst from centre of screen
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    burst(w / 2, h / 2, { count: 20, spread: 100, colors: ['#facc15', '#ec4899', '#38bdf8', '#22c55e'], shapes: ['star', 'heart'] });
+  }, [peek, burst]);
 
   if (!video) {
     return (
@@ -119,6 +130,9 @@ export default function VideoPlayer() {
           {video.title}
         </span>
       </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
     </div>
   );
 }
