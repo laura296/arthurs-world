@@ -1,10 +1,19 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import BackButton from '../components/BackButton';
-import { playTap, playPop, playPoof, playWhoosh, playSparkle } from '../hooks/useSound';
+import { playTap, playPop, playPoof, playWhoosh, playSparkle, playCelebrate } from '../hooks/useSound';
+import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 const PALETTE = [
   '#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8',
-  '#8b5cf6', '#ec4899', '#ffffff', '#1e293b',
+  '#8b5cf6', '#ec4899', '#92400e', '#fdba74', '#f5f5f4', '#1e293b',
+];
+
+const BACKGROUNDS = [
+  { id: 'white', bg: '#ffffff', label: '⬜' },
+  { id: 'cream', bg: '#FDF5E6', label: '📜' },
+  { id: 'sky',   bg: 'linear-gradient(180deg, #87CEEB 0%, #98FB98 100%)', label: '🌤️' },
+  { id: 'night', bg: 'linear-gradient(180deg, #1a1a3e 0%, #2d1b69 100%)', label: '🌙' },
 ];
 
 const MAX_UNDO = 20;
@@ -35,22 +44,18 @@ function drawCircleStamp(ctx, cx, cy, r, color) {
 }
 
 function drawSmiley(ctx, cx, cy, r, color) {
-  // face
   ctx.fillStyle = color;
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fill();
-  // eyes
   const ey = cy - r * 0.25, gap = r * 0.3, er = r * 0.12;
   ctx.fillStyle = '#fff';
   ctx.beginPath(); ctx.arc(cx - gap, ey, er, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(cx + gap, ey, er, 0, Math.PI * 2); ctx.fill();
-  // pupils
   ctx.fillStyle = '#1e293b';
   const pr = er * 0.55;
   ctx.beginPath(); ctx.arc(cx - gap, ey, pr, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(cx + gap, ey, pr, 0, Math.PI * 2); ctx.fill();
-  // smile
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = r * 0.08;
   ctx.lineCap = 'round';
@@ -71,6 +76,27 @@ function placeStamp(canvas, stamp, x, y, size, color) {
   ctx.restore();
 }
 
+/* ── Art studio background ── */
+function ArtStudioBg() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(160deg, #e8d5c4 0%, #d4bfae 25%, #c4a898 50%, #b89888 75%, #a88878 100%)' }} />
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="absolute left-0 right-0 h-px"
+          style={{
+            top: `${15 + i * 14}%`,
+            background: `linear-gradient(90deg, transparent 0%, rgba(140,90,50,0.1) ${25 + i * 4}%, rgba(140,90,50,0.06) ${55 + i * 3}%, transparent 100%)`,
+          }} />
+      ))}
+      <div className="absolute top-4 right-24 w-14 h-2.5 rounded-full bg-pink-400/20 rotate-[20deg]" />
+      <div className="absolute bottom-5 left-24 w-16 h-3 rounded-full bg-yellow-400/20 rotate-[-12deg]" />
+      <div className="absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(100,60,20,0.25) 100%)' }} />
+    </div>
+  );
+}
+
 /* ── main component (Free Art — blank canvas with drawing tools) ── */
 
 export default function Colouring() {
@@ -79,11 +105,16 @@ export default function Colouring() {
   const lastPos = useRef(null);
   const hueRef = useRef(0);
   const historyRef = useRef([]);
+  const strokeCountRef = useRef(0);
 
   const [color, setColor] = useState(PALETTE[0]);
-  const [brushSize, setBrushSize] = useState(12);
+  const [brushSize, setBrushSize] = useState(16);
   const [tool, setTool] = useState('brush');
   const [canUndo, setCanUndo] = useState(false);
+  const [bgIdx, setBgIdx] = useState(0);
+
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   const isStamp = tool === 'star' || tool === 'circle' || tool === 'smiley';
 
@@ -95,9 +126,10 @@ export default function Colouring() {
       const dpr = window.devicePixelRatio || 1;
       const w = c.parentElement.clientWidth;
       const h = c.parentElement.clientHeight;
+      if (!w || !h) return;
       const tmp = document.createElement('canvas');
-      tmp.width = c.width;
-      tmp.height = c.height;
+      tmp.width = c.width || 1;
+      tmp.height = c.height || 1;
       tmp.getContext('2d').drawImage(c, 0, 0);
       c.width = w * dpr;
       c.height = h * dpr;
@@ -136,12 +168,27 @@ export default function Colouring() {
     if (isStamp) {
       placeStamp(canvasRef.current, tool, pos.x, pos.y, brushSize * 2, color);
       playPop();
+
+      // Particle burst on stamp placement
+      if (e?.clientX != null) {
+        const t = e.touches ? e.touches[0] : e;
+        burst(t.clientX, t.clientY, {
+          count: 5, spread: 25,
+          colors: [color, '#facc15', '#fff'],
+          shapes: ['star', 'circle'],
+        });
+      }
       return;
     }
 
     drawing.current = true;
     lastPos.current = pos;
-  }, [getPos, pushHistory, isStamp, tool, brushSize, color]);
+    strokeCountRef.current++;
+
+    const count = strokeCountRef.current;
+    if (count === 15) peek('happy');
+    if (count === 40) peek('excited');
+  }, [getPos, pushHistory, isStamp, tool, brushSize, color, burst, peek]);
 
   const draw = useCallback((e) => {
     e.preventDefault();
@@ -206,7 +253,7 @@ export default function Colouring() {
     playWhoosh();
   }, [pushHistory]);
 
-  const save = useCallback(() => {
+  const save = useCallback((e) => {
     const c = canvasRef.current;
     const tmp = document.createElement('canvas');
     tmp.width = c.width;
@@ -223,133 +270,175 @@ export default function Colouring() {
       a.click();
       URL.revokeObjectURL(a.href);
     }, 'image/png');
-    playSparkle();
-  }, []);
+
+    // Celebration on save!
+    playCelebrate();
+    peek('excited');
+    if (e?.clientX) {
+      burst(e.clientX, e.clientY, {
+        count: 14,
+        spread: 50,
+        colors: ['#facc15', '#22c55e', '#38bdf8', '#ec4899', '#8b5cf6'],
+        shapes: ['star', 'circle', 'diamond'],
+      });
+    }
+  }, [burst, peek]);
+
+  const TB = 'w-12 h-12';
 
   return (
-    <div className="relative w-full h-full bg-white overflow-hidden flex flex-col">
+    <div className="relative w-full h-full overflow-hidden flex">
+      <ArtStudioBg />
       <BackButton />
 
-      {/* Canvas area */}
-      <div className="flex-1 relative">
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0"
-          style={{ touchAction: 'none' }}
-          onPointerDown={startDraw}
-          onPointerMove={draw}
-          onPointerUp={stopDraw}
-          onPointerLeave={stopDraw}
-          onTouchStart={startDraw}
-          onTouchMove={draw}
-          onTouchEnd={stopDraw}
-        />
-      </div>
-
-      {/* ── Toolbar ── */}
-      <div className="bg-gray-100 border-t border-gray-200">
-        {/* Row 1: Colour palette + rainbow */}
-        <div className="flex items-center gap-1.5 px-3 pt-2 pb-1 overflow-x-auto no-scrollbar">
+      {/* ── Left sidebar: colour palette ── */}
+      <div className="relative flex flex-col items-center justify-center pt-16 pb-1 px-1 z-10
+                      bg-amber-900/25 backdrop-blur-sm rounded-r-2xl border-r border-amber-700/15">
+        <div className="grid grid-cols-2 gap-1">
           {PALETTE.map(c => (
             <button
               key={c}
-              onClick={() => { setColor(c); setTool('brush'); playTap(); }}
-              className={`w-10 h-10 rounded-full flex-shrink-0 border-4 transition-transform
+              onClick={() => { setColor(c); if (tool === 'eraser' || tool === 'rainbow') setTool('brush'); playTap(); }}
+              className={`w-9 h-9 rounded-full border-[3px] transition-all shadow-md
                 ${color === c && tool === 'brush'
-                  ? 'border-gray-800 scale-110'
-                  : c === '#ffffff' ? 'border-gray-300' : 'border-transparent'}`}
+                  ? 'border-gray-800 scale-125 shadow-lg ring-2 ring-white z-10'
+                  : c === '#f5f5f4' ? 'border-gray-300' : 'border-white/60'}`}
               style={{ backgroundColor: c }}
             />
           ))}
           {/* Rainbow brush */}
           <button
-            onClick={() => { setTool('rainbow'); playTap(); }}
-            className={`w-10 h-10 rounded-full flex-shrink-0 border-4 transition-transform
-              ${tool === 'rainbow' ? 'border-gray-800 scale-110' : 'border-transparent'}`}
+            onClick={() => { setTool('rainbow'); playSparkle(); }}
+            className={`w-9 h-9 col-span-2 rounded-full border-[3px] transition-all shadow-md
+              ${tool === 'rainbow'
+                ? 'border-gray-800 scale-110 shadow-lg ring-2 ring-white z-10'
+                : 'border-white/60'}`}
             style={{
               background: 'conic-gradient(#ef4444,#f97316,#facc15,#22c55e,#38bdf8,#8b5cf6,#ec4899,#ef4444)',
             }}
           />
         </div>
+      </div>
 
-        {/* Row 2: Tools */}
-        <div className="flex items-center gap-1.5 px-3 pt-1 pb-2 overflow-x-auto no-scrollbar">
-          {/* Brush sizes */}
-          {[8, 16, 28].map(s => (
-            <button
-              key={s}
-              onClick={() => { setBrushSize(s); playTap(); }}
-              className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-                bg-gray-200 border-4 transition-transform
-                ${brushSize === s ? 'border-gray-800 scale-110' : 'border-transparent'}`}
-            >
-              <div className="rounded-full bg-gray-800" style={{ width: s, height: s }} />
-            </button>
-          ))}
-
-          <div className="w-px h-8 bg-gray-300 mx-0.5 flex-shrink-0" />
-
-          {/* Eraser */}
-          <button
-            onClick={() => { setTool('eraser'); playTap(); }}
-            className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-              text-xl transition-transform border-4
-              ${tool === 'eraser' ? 'border-gray-800 scale-110 bg-pink-100' : 'border-transparent bg-gray-200'}`}
-          >
-            🧹
-          </button>
-
-          <div className="w-px h-8 bg-gray-300 mx-0.5 flex-shrink-0" />
-
-          {/* Stamps */}
-          {[
-            { id: 'star', label: '⭐' },
-            { id: 'circle', label: '🔵' },
-            { id: 'smiley', label: '😊' },
-          ].map(s => (
-            <button
-              key={s.id}
-              onClick={() => { setTool(s.id); playTap(); }}
-              className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-                text-xl transition-transform border-4
-                ${tool === s.id ? 'border-gray-800 scale-110 bg-yellow-100' : 'border-transparent bg-gray-200'}`}
-            >
-              {s.label}
-            </button>
-          ))}
-
-          <div className="w-px h-8 bg-gray-300 mx-0.5 flex-shrink-0" />
-
-          {/* Undo */}
-          <button
-            onClick={undo}
-            disabled={!canUndo}
-            className={`w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center
-              text-xl transition-transform bg-gray-200
-              ${canUndo ? 'active:scale-90' : 'opacity-30'}`}
-          >
-            ↩️
-          </button>
-
-          {/* Save */}
-          <button
-            onClick={save}
-            className="w-11 h-11 rounded-2xl flex-shrink-0 bg-green-100 flex items-center justify-center
-              text-xl active:scale-90 transition-transform"
-          >
-            💾
-          </button>
-
-          {/* Clear */}
-          <button
-            onClick={clear}
-            className="w-11 h-11 rounded-2xl flex-shrink-0 bg-red-100 flex items-center justify-center
-              text-xl active:scale-90 transition-transform"
-          >
-            🗑️
-          </button>
+      {/* ── Centre: canvas ── */}
+      <div className="relative flex-1 flex items-center justify-center p-2 z-10">
+        <div className="relative w-full h-full rounded-2xl shadow-2xl overflow-hidden ring-2 ring-amber-700/20"
+             style={{ background: BACKGROUNDS[bgIdx].bg }}>
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0"
+            style={{ touchAction: 'none' }}
+            onPointerDown={startDraw}
+            onPointerMove={draw}
+            onPointerUp={stopDraw}
+            onPointerLeave={stopDraw}
+            onTouchStart={startDraw}
+            onTouchMove={draw}
+            onTouchEnd={stopDraw}
+          />
         </div>
       </div>
+
+      {/* ── Right sidebar: tools ── */}
+      <div className="relative flex flex-col items-center justify-center gap-1 py-2 px-1.5 overflow-y-auto no-scrollbar z-10
+                      bg-amber-900/25 backdrop-blur-sm rounded-l-2xl border-l border-amber-700/15">
+        {/* Brush sizes */}
+        {[8, 16, 28].map(s => (
+          <button
+            key={s}
+            onClick={() => { setBrushSize(s); if (isStamp || tool === 'eraser') setTool('brush'); playTap(); }}
+            className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+              bg-white/90 border-4 transition-all shadow-md
+              ${brushSize === s && !isStamp && tool !== 'eraser' && tool !== 'rainbow'
+                ? 'border-gray-800 scale-115 shadow-lg' : 'border-white/60'}`}
+          >
+            <div className="rounded-full"
+                 style={{
+                   width: s * 0.8,
+                   height: s * 0.8,
+                   backgroundColor: tool === 'rainbow' ? undefined : color,
+                   background: tool === 'rainbow'
+                     ? 'conic-gradient(#ef4444,#f97316,#facc15,#22c55e,#38bdf8,#8b5cf6,#ec4899,#ef4444)'
+                     : undefined,
+                 }} />
+          </button>
+        ))}
+
+        <div className="w-8 h-px bg-amber-300/40 flex-shrink-0" />
+
+        {/* Stamps */}
+        {[
+          { id: 'star', label: '⭐' },
+          { id: 'circle', label: '🔵' },
+          { id: 'smiley', label: '😊' },
+        ].map(s => (
+          <button
+            key={s.id}
+            onClick={() => { setTool(s.id); playTap(); }}
+            className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+              text-lg transition-all shadow-md border-4
+              ${tool === s.id ? 'border-gray-800 scale-115 bg-amber-100 shadow-lg' : 'border-white/60 bg-white/90'}`}
+          >
+            {s.label}
+          </button>
+        ))}
+
+        <div className="w-8 h-px bg-amber-300/40 flex-shrink-0" />
+
+        {/* Eraser */}
+        <button
+          onClick={() => { setTool(tool === 'eraser' ? 'brush' : 'eraser'); playTap(); }}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-lg transition-all shadow-md border-4
+            ${tool === 'eraser' ? 'border-gray-800 scale-115 bg-pink-200 shadow-lg' : 'border-white/60 bg-white/90'}`}
+        >
+          🧹
+        </button>
+
+        {/* Background */}
+        <button
+          onClick={() => { setBgIdx(i => (i + 1) % BACKGROUNDS.length); playTap(); }}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-lg transition-all shadow-md border-4 border-white/60`}
+          style={{ background: BACKGROUNDS[bgIdx].bg }}
+        >
+          {BACKGROUNDS[(bgIdx + 1) % BACKGROUNDS.length].label}
+        </button>
+
+        <div className="w-8 h-px bg-amber-300/40 flex-shrink-0" />
+
+        {/* Undo */}
+        <button
+          onClick={undo}
+          disabled={!canUndo}
+          className={`${TB} rounded-2xl flex-shrink-0 flex items-center justify-center
+            text-lg transition-all bg-white/90 shadow-md border-4 border-white/60
+            ${canUndo ? 'active:scale-90' : 'opacity-30'}`}
+        >
+          ↩️
+        </button>
+
+        {/* Save */}
+        <button
+          onClick={save}
+          className={`${TB} rounded-2xl flex-shrink-0 bg-green-200/90 flex items-center justify-center
+            text-lg active:scale-90 transition-all shadow-md border-4 border-white/60`}
+        >
+          💾
+        </button>
+
+        {/* Clear */}
+        <button
+          onClick={clear}
+          className={`${TB} rounded-2xl flex-shrink-0 bg-red-200/90 flex items-center justify-center
+            text-lg active:scale-90 transition-all shadow-md border-4 border-white/60`}
+        >
+          🗑️
+        </button>
+      </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
     </div>
   );
 }

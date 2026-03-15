@@ -1,6 +1,8 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import BackButton from '../components/BackButton';
-import { playTap, playPop, playPoof, playWhoosh, playSparkle } from '../hooks/useSound';
+import { playTap, playPop, playPoof, playWhoosh, playSparkle, playCelebrate } from '../hooks/useSound';
+import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 /* ── Coloring pages ── */
 const IMG = '/arthurs-world/images/colouring';
@@ -14,35 +16,73 @@ const PAGES = [
 
 const PALETTE = [
   '#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8',
-  '#8b5cf6', '#ec4899', '#f5f5f4', '#1e293b',
+  '#8b5cf6', '#ec4899', '#92400e', '#fdba74', '#f5f5f4', '#1e293b',
 ];
 
 const MAX_UNDO = 20;
 
+/* ── Art studio background ── */
+function ArtStudioBg() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Warm wooden desk gradient */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(160deg, #d4a574 0%, #c4956a 25%, #b8845c 50%, #a87448 75%, #986840 100%)' }} />
+      {/* Wood grain lines */}
+      {Array.from({ length: 8 }, (_, i) => (
+        <div key={i} className="absolute left-0 right-0 h-px"
+          style={{
+            top: `${12 + i * 12}%`,
+            background: `linear-gradient(90deg, transparent 0%, rgba(120,70,30,0.15) ${20 + i * 5}%, rgba(120,70,30,0.08) ${60 + i * 3}%, transparent 100%)`,
+            transform: `rotate(${(i % 2 === 0 ? -0.3 : 0.2)}deg)`,
+          }} />
+      ))}
+      {/* Scattered crayon decorations (top corners) */}
+      <div className="absolute top-3 right-20 w-16 h-3 rounded-full bg-red-400/30 rotate-[25deg]" />
+      <div className="absolute top-8 right-16 w-14 h-2.5 rounded-full bg-blue-400/25 rotate-[-15deg]" />
+      <div className="absolute bottom-4 left-20 w-12 h-2.5 rounded-full bg-green-400/20 rotate-[10deg]" />
+      {/* Warm vignette */}
+      <div className="absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 50%, rgba(80,40,10,0.3) 100%)' }} />
+    </div>
+  );
+}
+
 /* ── Page picker ── */
 function PagePicker({ onSelect }) {
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center"
-         style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%)' }}>
-      <h2 className="text-2xl sm:text-3xl font-heading text-amber-900 mb-3">Colouring Book</h2>
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4 overflow-hidden">
+      <ArtStudioBg />
 
-      {/* Horizontal scroll of large cards */}
-      <div className="flex gap-5 px-6 overflow-x-auto no-scrollbar snap-x snap-mandatory w-full"
-           style={{ maxHeight: '75vh' }}>
-        {PAGES.map(page => (
-          <button
-            key={page.id}
-            onClick={() => { playPop(); onSelect(page); }}
-            className="snap-center flex-shrink-0 bg-white rounded-3xl p-3 shadow-xl border-2 border-amber-200/50
-                       hover:scale-[1.03] active:scale-95 transition-all flex flex-col items-center gap-2 cursor-pointer"
-            style={{ width: 'min(45vw, 280px)' }}
-          >
-            <div className="w-full flex-1 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
-              <img src={page.src} alt={page.name} className="w-full h-full object-contain" draggable={false} />
-            </div>
-            <span className="font-heading text-amber-800 text-base">{page.emoji} {page.name}</span>
-          </button>
-        ))}
+      <div className="relative z-10 flex flex-col items-center">
+        <h2 className="text-2xl sm:text-3xl font-heading text-white mb-4 drop-shadow-lg"
+            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}>
+          🎨 Colouring Book 🖍️
+        </h2>
+
+        {/* 2×2 grid */}
+        <div className="grid grid-cols-2 gap-4 w-full max-w-2xl"
+             style={{ maxHeight: '78vh' }}>
+          {PAGES.map((page, i) => (
+            <button
+              key={page.id}
+              onClick={() => { playPop(); onSelect(page); }}
+              className="bg-white rounded-3xl p-2.5 shadow-xl border-2 border-amber-200/50
+                         hover:scale-[1.03] active:scale-95 transition-all flex flex-col items-center gap-1.5 cursor-pointer"
+              style={{
+                animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both',
+                animationDelay: `${i * 120}ms`,
+              }}
+            >
+              <div className="w-full flex-1 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 min-h-0">
+                <img src={page.src} alt={page.name}
+                     className="w-full h-full object-contain"
+                     draggable={false} />
+              </div>
+              <span className="font-heading text-amber-800 text-sm sm:text-base">{page.emoji} {page.name}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -62,6 +102,10 @@ export default function ColouringBook() {
   const [canUndo, setCanUndo] = useState(false);
   const [imgSize, setImgSize] = useState(null);
   const containerRef = useRef(null);
+  const strokeCountRef = useRef(0);
+
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   /* ── Load image dimensions ── */
   useEffect(() => {
@@ -80,7 +124,7 @@ export default function ColouringBook() {
       const dpr = window.devicePixelRatio || 1;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      if (!w || !h) return;  // container not laid out yet
+      if (!w || !h) return;
       const tmp = document.createElement('canvas');
       tmp.width = c.width || 1;
       tmp.height = c.height || 1;
@@ -120,7 +164,13 @@ export default function ColouringBook() {
     pushHistory();
     drawing.current = true;
     lastPos.current = getPos(e);
-  }, [getPos, pushHistory]);
+    strokeCountRef.current++;
+
+    // Milestone celebrations while colouring
+    const count = strokeCountRef.current;
+    if (count === 15) peek('happy');
+    if (count === 40) peek('excited');
+  }, [getPos, pushHistory, peek]);
 
   const draw = useCallback((e) => {
     e.preventDefault();
@@ -142,6 +192,7 @@ export default function ColouringBook() {
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.7;
       ctx.lineWidth = brushSize;
     }
 
@@ -182,7 +233,7 @@ export default function ColouringBook() {
     playWhoosh();
   }, [pushHistory]);
 
-  const save = useCallback(() => {
+  const save = useCallback((e) => {
     const c = canvasRef.current;
     /* Composite: white bg → coloring page image → user drawing */
     const tmp = document.createElement('canvas');
@@ -191,7 +242,6 @@ export default function ColouringBook() {
     const tctx = tmp.getContext('2d');
     tctx.fillStyle = '#fff';
     tctx.fillRect(0, 0, tmp.width, tmp.height);
-    /* Draw the background page image — container matches aspect ratio, just fill */
     if (page) {
       const bgImg = document.getElementById('colouring-bg-img');
       if (bgImg) tctx.drawImage(bgImg, 0, 0, tmp.width, tmp.height);
@@ -205,13 +255,25 @@ export default function ColouringBook() {
       a.click();
       URL.revokeObjectURL(a.href);
     }, 'image/png');
-    playSparkle();
-  }, [page]);
+
+    // Celebration on save!
+    playCelebrate();
+    peek('excited');
+    if (e?.clientX) {
+      burst(e.clientX, e.clientY, {
+        count: 14,
+        spread: 50,
+        colors: ['#facc15', '#22c55e', '#38bdf8', '#ec4899', '#8b5cf6'],
+        shapes: ['star', 'circle', 'diamond'],
+      });
+    }
+  }, [page, burst, peek]);
 
   const goBack = useCallback(() => {
     setPage(null);
     historyRef.current = [];
     setCanUndo(false);
+    strokeCountRef.current = 0;
   }, []);
 
   /* ── No page selected → show picker ── */
@@ -225,33 +287,37 @@ export default function ColouringBook() {
   }
 
   /* ── Colouring mode ── */
-  const TB = 'w-13 h-13';  // 52px touch targets
+  const TB = 'w-13 h-13';
 
   return (
-    <div className="relative w-full h-full overflow-hidden flex"
-         style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fbcfe8 50%, #ddd6fe 100%)' }}>
+    <div className="relative w-full h-full overflow-hidden flex">
+      <ArtStudioBg />
       <BackButton />
 
       {/* ── Left sidebar: colour palette ── */}
-      <div className="flex flex-col items-center justify-center gap-1 py-2 px-1 overflow-y-auto no-scrollbar z-10">
-        {PALETTE.map(c => (
-          <button
-            key={c}
-            onClick={() => { setColor(c); setIsEraser(false); playTap(); }}
-            className={`${TB} rounded-full flex-shrink-0 border-[5px] transition-all shadow-md
-              ${color === c && !isEraser
-                ? 'border-gray-800 scale-115 shadow-lg'
-                : c === '#f5f5f4' ? 'border-gray-300' : 'border-white/60'}`}
-            style={{ backgroundColor: c }}
-          />
-        ))}
+      <div className="relative flex flex-col items-center justify-center pt-16 pb-1 px-1 z-10
+                      bg-amber-900/30 backdrop-blur-sm rounded-r-2xl border-r border-amber-700/20">
+        <div className="grid grid-cols-2 gap-1">
+          {PALETTE.map(c => (
+            <button
+              key={c}
+              onClick={() => { setColor(c); setIsEraser(false); playTap(); }}
+              className={`w-9 h-9 rounded-full border-[3px] transition-all shadow-md
+                ${color === c && !isEraser
+                  ? 'border-gray-800 scale-125 shadow-lg ring-2 ring-white z-10'
+                  : c === '#f5f5f4' ? 'border-gray-300' : 'border-white/60'}`}
+              style={{ backgroundColor: c }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ── Centre: image + canvas ── */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="relative flex-1 flex items-center justify-center z-10">
         <div
           ref={containerRef}
-          className="relative max-w-full shadow-2xl rounded-xl overflow-hidden bg-white"
+          className="relative max-w-full shadow-2xl rounded-xl overflow-hidden bg-white
+                     ring-2 ring-amber-700/20"
           style={imgSize
             ? { aspectRatio: `${imgSize.w} / ${imgSize.h}`, height: 'calc(100% - 16px)' }
             : { width: '100%', height: 'calc(100% - 16px)' }}
@@ -279,8 +345,9 @@ export default function ColouringBook() {
       </div>
 
       {/* ── Right sidebar: tools ── */}
-      <div className="flex flex-col items-center justify-center gap-1 py-2 px-1 overflow-y-auto no-scrollbar z-10">
-        {/* Brush sizes — show selected colour on the dot */}
+      <div className="relative flex flex-col items-center justify-center gap-1.5 py-2 px-1.5 overflow-y-auto no-scrollbar z-10
+                      bg-amber-900/30 backdrop-blur-sm rounded-l-2xl border-l border-amber-700/20">
+        {/* Brush sizes */}
         {[6, 14, 26].map(s => (
           <button
             key={s}
@@ -346,6 +413,9 @@ export default function ColouringBook() {
           🗑️
         </button>
       </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
     </div>
   );
 }
