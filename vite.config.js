@@ -23,8 +23,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Precache only the app shell — JS, CSS, HTML, SVG icons
+        // Precache only the app shell — JS, CSS, HTML, SVG icons, small JSON
         globPatterns: ['**/*.{js,css,html,svg,ico,json}'],
+        globIgnores: ['asset-manifest.json'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         // Offline: serve index.html for all navigation requests
         navigateFallback: 'index.html',
@@ -97,13 +98,27 @@ export default defineConfig({
             },
           },
           {
-            // Video thumbnails
-            urlPattern: /\/videos\/.*\.webp$/i,
+            // Videos (MP4) — cache for offline playback
+            urlPattern: /\.mp4$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'aw-video-thumbs',
+              cacheName: 'aw-videos',
               expiration: {
-                maxEntries: 100,
+                maxEntries: 30,
+                maxAgeSeconds: 365 * 24 * 60 * 60,
+              },
+              cacheableResponse: { statuses: [0, 200] },
+              matchOptions: { ignoreVary: true },
+            },
+          },
+          {
+            // Asset manifest — update when online, serve cached when offline
+            urlPattern: /asset-manifest\.json/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'aw-manifest',
+              expiration: {
+                maxEntries: 1,
                 maxAgeSeconds: 365 * 24 * 60 * 60,
               },
               cacheableResponse: { statuses: [0, 200] },

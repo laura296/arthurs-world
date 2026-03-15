@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-asset-manifest.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"

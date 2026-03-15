@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useRef, useContext } from 'react';
+import { useRef, useContext, useState, lazy, Suspense } from 'react';
 import { playNavigate } from '../hooks/useSound';
 import GoldenHourScene from '../components/scenes/GoldenHourScene';
 import ArthurBear from '../components/ArthurBear';
 import { SessionTimerContext } from '../App';
+
+const OfflineDownloader = lazy(() => import('../components/OfflineDownloader'));
 
 const modes = [
   { id: 'quiet', emoji: '🌙', label: 'Quiet', bg: 'from-indigo-400/80 to-blue-800/80', to: '/games/quiet' },
@@ -15,6 +17,7 @@ export default function ModePicker() {
   const navigate = useNavigate();
   const sessionTimer = useContext(SessionTimerContext);
   const longPressRef = useRef(null);
+  const [showDownloader, setShowDownloader] = useState(false);
 
   // Long-press ArthurBear (3s) opens parent timer picker
   const handleBearDown = () => {
@@ -29,6 +32,30 @@ export default function ModePicker() {
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6 bg-aw-warm">
       <GoldenHourScene />
+
+      {/* Download for offline button — top right, for parents */}
+      <button
+        onClick={() => setShowDownloader(true)}
+        className="absolute top-4 right-4 z-20 w-12 h-12 rounded-full
+                   bg-white/20 backdrop-blur-sm border border-white/30
+                   flex items-center justify-center shadow-aw
+                   active:scale-90 transition-transform"
+        aria-label="Download for offline"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="#92400e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </button>
+
+      {/* Offline download overlay */}
+      {showDownloader && (
+        <Suspense fallback={null}>
+          <OfflineDownloader onClose={() => setShowDownloader(false)} />
+        </Suspense>
+      )}
 
       <div className="relative z-10 flex flex-col items-center gap-2 animate-spring-in">
         <div onPointerDown={handleBearDown} onPointerUp={handleBearUp} onPointerCancel={handleBearUp}>
