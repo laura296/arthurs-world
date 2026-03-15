@@ -72,9 +72,9 @@ const MadHatterTeaParty = lazy(() => import('./games/alice/MadHatterTeaParty'));
 const TortoiseHareRace = lazy(() => import('./games/TortoiseHareRace'));
 const CountingGarden = lazy(() => import('./games/CountingGarden'));
 const ColourSort = lazy(() => import('./games/ColourSort'));
-const MorningRoutine = lazy(() => import('./games/MorningRoutine'));
-const SparkleTeeth = lazy(() => import('./games/SparkleTeeth'));
-const ArthursLunchbox = lazy(() => import('./games/ArthursLunchbox'));
+const MorningRoutine = lazy(() => import('./games/morning-routine/MorningRoutine'));
+const SparkleTeeth = lazy(() => import('./games/sparkle-teeth/SparkleTeeth'));
+const ArthursLunchbox = lazy(() => import('./games/lunchbox/ArthursLunchbox'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [

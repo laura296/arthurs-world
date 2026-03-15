@@ -560,6 +560,81 @@ export function playCelebrate() {
   }, 750);
 }
 
+/** Scrub — soft brushing noise for tooth brushing game */
+export function playScrub() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const bufferSize = ctx.sampleRate * 0.1;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize) * 0.6;
+  }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 3000;
+  filter.Q.value = 0.8;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.12, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+  noise.connect(filter).connect(gain).connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + 0.12);
+}
+
+/** Tummy rumble — low wobbling sine for hungry ArthurBear */
+export function playTummyRumble() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 80;
+  lfo.type = 'sine';
+  lfo.frequency.value = 8;
+  lfoGain.gain.value = 30;
+  lfo.connect(lfoGain).connect(osc.frequency);
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  lfo.start();
+  osc.stop(ctx.currentTime + 0.45);
+  lfo.stop(ctx.currentTime + 0.45);
+}
+
+/** Lid snap — crisp closure sound for lunchbox */
+export function playLidSnap() {
+  if (globalMuted) return;
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(1500, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.04);
+  gain.gain.setValueAtTime(0.25, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.08);
+  // Second thud
+  setTimeout(() => {
+    const osc2 = ctx.createOscillator();
+    const g2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.value = 200;
+    g2.gain.setValueAtTime(0.2, ctx.currentTime);
+    g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc2.connect(g2).connect(ctx.destination);
+    osc2.start();
+    osc2.stop(ctx.currentTime + 0.1);
+  }, 40);
+}
+
 /** Gentle error — descending two-note (non-punishing) */
 export function playError() {
   if (globalMuted) return;
