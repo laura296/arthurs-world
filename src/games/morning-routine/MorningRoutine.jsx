@@ -18,12 +18,69 @@ const CLOTHES = [
   { id: 'shoes',     color: '#ef4444', order: 5 },
 ];
 
-/* ── Round configs (progressive difficulty) ── */
-const ROUNDS = [
-  { items: [0, 2, 5] },          // 3 items: underwear, tshirt, shoes
-  { items: [0, 1, 2, 3, 5] },    // 5 items
-  { items: [0, 1, 2, 3, 4, 5] }, // all 6
+/* ── Weather & festive clothing ── */
+const BEACH_CLOTHES = [
+  { id: 'swimsuit',   color: '#0ea5e9', order: 0 },
+  { id: 'sunhat',     color: '#fde68a', order: 1 },
+  { id: 'sunglasses', color: '#334155', order: 2 },
+  { id: 'flipflops',  color: '#f59e0b', order: 3 },
 ];
+
+const SNOW_CLOTHES = [
+  { id: 'socks',       color: '#f97316', order: 0 },
+  { id: 'trousers',    color: '#3b82f6', order: 1 },
+  { id: 'wintercoat',  color: '#dc2626', order: 2 },
+  { id: 'scarf',       color: '#22c55e', order: 3 },
+  { id: 'woollyhat',   color: '#3b82f6', order: 4 },
+  { id: 'winterboots', color: '#78350f', order: 5 },
+];
+
+const FESTIVE_EASTER = [
+  { id: 'tshirt',    color: '#22c55e', order: 0 },
+  { id: 'trousers',  color: '#3b82f6', order: 1 },
+  { id: 'bunnyears', color: '#f472b6', order: 2 },
+  { id: 'shoes',     color: '#ef4444', order: 3 },
+];
+
+const FESTIVE_HALLOWEEN = [
+  { id: 'tshirt',        color: '#22c55e', order: 0 },
+  { id: 'trousers',      color: '#3b82f6', order: 1 },
+  { id: 'halloweencape', color: '#581c87', order: 2 },
+  { id: 'shoes',         color: '#ef4444', order: 3 },
+];
+
+const FESTIVE_CHRISTMAS = [
+  { id: 'socks',           color: '#f97316', order: 0 },
+  { id: 'trousers',        color: '#3b82f6', order: 1 },
+  { id: 'christmasjumper', color: '#dc2626', order: 2 },
+  { id: 'woollyhat',       color: '#3b82f6', order: 3 },
+  { id: 'shoes',           color: '#ef4444', order: 4 },
+];
+
+/* ── Scene types ── */
+const SCENE_BEDROOM = 'bedroom';
+const SCENE_BEACH = 'beach';
+const SCENE_SNOW = 'snow';
+const SCENE_EASTER = 'easter';
+const SCENE_HALLOWEEN = 'halloween';
+const SCENE_CHRISTMAS = 'christmas';
+
+/* ── Round configs (progressive difficulty then themed) ── */
+const ROUNDS = [
+  { clothesList: null, items: [0, 2, 5], scene: SCENE_BEDROOM },
+  { clothesList: null, items: [0, 1, 2, 3, 5], scene: SCENE_BEDROOM },
+  { clothesList: null, items: [0, 1, 2, 3, 4, 5], scene: SCENE_BEDROOM },
+  { clothesList: BEACH_CLOTHES, items: [0, 1, 2, 3], scene: SCENE_BEACH },
+  { clothesList: SNOW_CLOTHES, items: [0, 1, 2, 3, 4, 5], scene: SCENE_SNOW },
+  { clothesList: FESTIVE_EASTER, items: [0, 1, 2, 3], scene: SCENE_EASTER },
+  { clothesList: FESTIVE_HALLOWEEN, items: [0, 1, 2, 3], scene: SCENE_HALLOWEEN },
+  { clothesList: FESTIVE_CHRISTMAS, items: [0, 1, 2, 3, 4], scene: SCENE_CHRISTMAS },
+];
+
+function getRoundClothes(roundCfg) {
+  const source = roundCfg.clothesList || CLOTHES;
+  return roundCfg.items.map(i => source[i]);
+}
 
 function shuffle(arr) {
   const a = [...arr];
@@ -75,20 +132,265 @@ function BedroomScene() {
   );
 }
 
+/* ── Beach background ── */
+function BeachScene() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Sky */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, #38bdf8 0%, #7dd3fc 40%, #fde68a 85%, #fbbf24 100%)' }} />
+      {/* Sun */}
+      <div className="absolute top-[8%] right-[12%] w-20 h-20 rounded-full bg-yellow-300"
+        style={{ boxShadow: '0 0 40px #facc15, 0 0 80px rgba(250,204,21,0.3)' }} />
+      {/* Sea */}
+      <div className="absolute bottom-[28%] left-0 right-0 h-[20%]"
+        style={{ background: 'linear-gradient(180deg, #0ea5e9 0%, #38bdf8 50%, #7dd3fc 100%)' }} />
+      {/* Waves */}
+      {[0,1,2].map(i => (
+        <div key={i} className="absolute left-0 right-0 h-3"
+          style={{ bottom: `${28 + i * 2}%`, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                   animation: `float ${4 + i}s ease-in-out ${i * 0.5}s infinite` }} />
+      ))}
+      {/* Sand */}
+      <div className="absolute bottom-0 left-0 right-0 h-[30%]"
+        style={{ background: 'linear-gradient(180deg, #fde68a 0%, #fbbf24 100%)' }} />
+      {/* Sand texture dots */}
+      {[0,1,2,3,4].map(i => (
+        <div key={i} className="absolute w-1 h-1 rounded-full bg-amber-600/15"
+          style={{ left: `${10 + i * 18}%`, bottom: `${8 + (i % 3) * 6}%` }} />
+      ))}
+      {/* Seashell */}
+      <div className="absolute bottom-[10%] left-[15%] w-4 h-3 rounded-t-full bg-pink-200 border border-pink-300/50" />
+      {/* Palm tree */}
+      <div className="absolute bottom-[28%] left-[75%]">
+        <div className="w-3 h-28 bg-amber-700 rounded-sm" style={{ transform: 'rotate(3deg)' }} />
+        {[-30, -10, 15, 35].map((rot, i) => (
+          <div key={i} className="absolute -top-2 left-1/2 w-16 h-3 bg-green-500 rounded-full origin-left"
+            style={{ transform: `translateX(-2px) rotate(${rot}deg)`, opacity: 0.7 + i * 0.08 }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Snow background ── */
+function SnowScene() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Sky */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, #94a3b8 0%, #cbd5e1 40%, #e2e8f0 80%, #f1f5f9 100%)' }} />
+      {/* Distant hills */}
+      <div className="absolute bottom-[30%] left-0 right-0 h-[20%]"
+        style={{ background: 'radial-gradient(ellipse at 30% 100%, #e2e8f0 0%, transparent 70%), radial-gradient(ellipse at 70% 100%, #dbeafe 0%, transparent 60%)' }} />
+      {/* Snow ground */}
+      <div className="absolute bottom-0 left-0 right-0 h-[35%]"
+        style={{ background: 'linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%)' }} />
+      {/* Snow mounds */}
+      <div className="absolute bottom-[30%] left-[5%] w-32 h-12 rounded-full bg-white/60" />
+      <div className="absolute bottom-[28%] right-[10%] w-24 h-10 rounded-full bg-white/50" />
+      {/* Snowman */}
+      <div className="absolute bottom-[32%] right-[20%]">
+        <div className="w-10 h-10 rounded-full bg-white border border-gray-200" style={{ boxShadow: 'inset 0 -3px 6px rgba(0,0,0,0.05)' }}>
+          <div className="absolute top-2 left-2.5 w-1 h-1 rounded-full bg-gray-700" />
+          <div className="absolute top-2 right-2.5 w-1 h-1 rounded-full bg-gray-700" />
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-2 h-1.5 rounded-full bg-orange-400" />
+        </div>
+        <div className="w-14 h-14 rounded-full bg-white border border-gray-200 -mt-2 -ml-2" style={{ boxShadow: 'inset 0 -4px 8px rgba(0,0,0,0.05)' }} />
+      </div>
+      {/* Bare tree */}
+      <div className="absolute bottom-[32%] left-[12%]">
+        <div className="w-2 h-20 bg-amber-800 rounded-sm" />
+        <div className="absolute top-0 left-1 w-8 h-0.5 bg-amber-800 origin-left" style={{ transform: 'rotate(-30deg)' }} />
+        <div className="absolute top-4 left-1 w-6 h-0.5 bg-amber-800 origin-left" style={{ transform: 'rotate(25deg)' }} />
+      </div>
+      {/* Falling snowflakes */}
+      {[0,1,2,3,4,5,6].map(i => (
+        <div key={i} className="absolute w-2 h-2 rounded-full bg-white"
+          style={{ left: `${8 + i * 13}%`, top: `${5 + (i * 17) % 40}%`, opacity: 0.6 + (i % 3) * 0.15,
+                   animation: `float ${3 + i % 3}s ease-in-out ${i * 0.4}s infinite` }} />
+      ))}
+    </div>
+  );
+}
+
+/* ── Easter background ── */
+function EasterScene() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Springtime sky */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, #93c5fd 0%, #bfdbfe 40%, #dbeafe 70%, #ecfdf5 100%)' }} />
+      {/* Sun */}
+      <div className="absolute top-[8%] right-[15%] w-16 h-16 rounded-full bg-yellow-200"
+        style={{ boxShadow: '0 0 30px #fde68a' }} />
+      {/* Rolling green hills */}
+      <div className="absolute bottom-[20%] left-0 right-0 h-[30%]"
+        style={{ background: 'radial-gradient(ellipse at 25% 100%, #86efac 0%, transparent 60%), radial-gradient(ellipse at 75% 100%, #4ade80 0%, transparent 50%)' }} />
+      {/* Grass */}
+      <div className="absolute bottom-0 left-0 right-0 h-[25%]"
+        style={{ background: 'linear-gradient(180deg, #4ade80 0%, #22c55e 100%)' }} />
+      {/* Flowers */}
+      {[0,1,2,3,4].map(i => (
+        <div key={i} className="absolute" style={{ left: `${10 + i * 20}%`, bottom: `${22 + (i % 2) * 4}%` }}>
+          <div className="w-3 h-6 bg-green-600 rounded-sm" />
+          <div className="w-4 h-4 rounded-full -mt-2 -ml-0.5"
+            style={{ background: ['#f472b6', '#facc15', '#a78bfa', '#fb923c', '#f472b6'][i] }} />
+        </div>
+      ))}
+      {/* Easter eggs in grass */}
+      {[0,1,2].map(i => (
+        <div key={i} className="absolute w-4 h-5 rounded-full"
+          style={{ left: `${20 + i * 25}%`, bottom: `${18 + i}%`,
+                   background: ['linear-gradient(135deg, #f472b6, #ec4899)', 'linear-gradient(135deg, #a78bfa, #8b5cf6)', 'linear-gradient(135deg, #fbbf24, #f59e0b)'][i],
+                   border: '1px solid rgba(255,255,255,0.3)' }} />
+      ))}
+      {/* Butterfly */}
+      <div className="absolute top-[25%] left-[30%]" style={{ animation: 'float 4s ease-in-out infinite' }}>
+        <div className="w-3 h-2 rounded-full bg-yellow-300 border border-yellow-400" style={{ transform: 'rotate(-20deg)' }} />
+        <div className="w-3 h-2 rounded-full bg-yellow-300 border border-yellow-400 -mt-1 ml-1" style={{ transform: 'rotate(20deg)' }} />
+      </div>
+    </div>
+  );
+}
+
+/* ── Halloween background ── */
+function HalloweenScene() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Twilight sky */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, #1e1b4b 0%, #312e81 30%, #4c1d95 50%, #f97316 85%, #ea580c 100%)' }} />
+      {/* Moon */}
+      <div className="absolute top-[8%] right-[15%] w-18 h-18 rounded-full bg-amber-100"
+        style={{ boxShadow: '0 0 30px rgba(251,191,36,0.4)' }}>
+        <div className="absolute top-2 left-3 w-3 h-3 rounded-full bg-amber-200/30" />
+        <div className="absolute bottom-3 right-2 w-2 h-2 rounded-full bg-amber-200/20" />
+      </div>
+      {/* Stars */}
+      {[0,1,2,3,4].map(i => (
+        <div key={i} className="absolute w-1 h-1 rounded-full bg-white"
+          style={{ left: `${10 + i * 18}%`, top: `${8 + (i * 13) % 25}%`, opacity: 0.4 + (i % 3) * 0.2,
+                   animation: `pulse ${2 + i % 2}s ease-in-out ${i * 0.3}s infinite` }} />
+      ))}
+      {/* Ground */}
+      <div className="absolute bottom-0 left-0 right-0 h-[18%]"
+        style={{ background: 'linear-gradient(180deg, #1c1917 0%, #0c0a09 100%)' }} />
+      {/* Pumpkin */}
+      <div className="absolute bottom-[16%] left-[20%]">
+        <div className="w-10 h-8 rounded-full bg-orange-500 border border-orange-600">
+          <div className="absolute top-1.5 left-2 w-1.5 h-1.5 bg-yellow-300" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
+          <div className="absolute top-1.5 right-2 w-1.5 h-1.5 bg-yellow-300" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
+          <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-1.5 bg-yellow-300 rounded-b-full" />
+        </div>
+        <div className="w-1.5 h-3 bg-green-700 rounded-t-full mx-auto -mt-1" />
+      </div>
+      {/* Bats */}
+      {[0,1].map(i => (
+        <div key={i} className="absolute text-gray-900 text-lg"
+          style={{ left: `${40 + i * 25}%`, top: `${15 + i * 8}%`, animation: `float ${3 + i}s ease-in-out ${i}s infinite` }}>
+          🦇
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Christmas background ── */
+function ChristmasScene() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Night sky */}
+      <div className="absolute inset-0"
+        style={{ background: 'linear-gradient(180deg, #1e3a5f 0%, #2d4a7a 40%, #3b5998 70%, #e2e8f0 100%)' }} />
+      {/* Stars */}
+      {[0,1,2,3,4,5].map(i => (
+        <div key={i} className="absolute w-1 h-1 rounded-full bg-white"
+          style={{ left: `${5 + i * 16}%`, top: `${5 + (i * 11) % 30}%`, opacity: 0.5 + (i % 3) * 0.2 }} />
+      ))}
+      {/* Snow ground */}
+      <div className="absolute bottom-0 left-0 right-0 h-[30%]"
+        style={{ background: 'linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%)' }} />
+      {/* Snow mound */}
+      <div className="absolute bottom-[26%] left-[10%] w-40 h-10 rounded-full bg-white/50" />
+      {/* Christmas tree */}
+      <div className="absolute bottom-[28%] right-[15%]">
+        <div className="w-0 h-0 border-l-[16px] border-r-[16px] border-b-[20px] border-transparent border-b-green-700 -mb-2" />
+        <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-b-[24px] border-transparent border-b-green-600 -ml-1 -mb-2" />
+        <div className="w-0 h-0 border-l-[24px] border-r-[24px] border-b-[28px] border-transparent border-b-green-500 -ml-2" />
+        <div className="w-4 h-6 bg-amber-800 mx-auto" />
+        {/* Star topper */}
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-3 h-3 bg-yellow-300 rounded-sm"
+          style={{ transform: 'translateX(-50%) rotate(45deg)', boxShadow: '0 0 8px #facc15' }} />
+        {/* Baubles */}
+        <div className="absolute top-5 left-2 w-2 h-2 rounded-full bg-red-500" />
+        <div className="absolute top-9 right-3 w-2 h-2 rounded-full bg-blue-400" />
+        <div className="absolute top-7 left-5 w-2 h-2 rounded-full bg-yellow-400" />
+      </div>
+      {/* Snowflakes falling */}
+      {[0,1,2,3,4,5].map(i => (
+        <div key={i} className="absolute w-2 h-2 rounded-full bg-white"
+          style={{ left: `${5 + i * 15}%`, top: `${5 + (i * 19) % 45}%`, opacity: 0.5 + (i % 3) * 0.15,
+                   animation: `float ${3 + i % 3}s ease-in-out ${i * 0.3}s infinite` }} />
+      ))}
+      {/* Presents */}
+      <div className="absolute bottom-[28%] left-[25%]">
+        <div className="w-6 h-5 bg-red-500 rounded-sm border border-red-600" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full bg-yellow-300" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-yellow-300 mt-2" />
+      </div>
+    </div>
+  );
+}
+
+/* ── Scene picker ── */
+const SCENE_COMPONENTS = {
+  bedroom: BedroomScene,
+  beach: BeachScene,
+  snow: SnowScene,
+  easter: EasterScene,
+  halloween: HalloweenScene,
+  christmas: ChristmasScene,
+};
+
+/* ── Scene emoji icons for intro ── */
+const SCENE_ICONS = {
+  bedroom: '🏠',
+  beach: '🏖️',
+  snow: '⛄',
+  easter: '🐰',
+  halloween: '🎃',
+  christmas: '🎄',
+};
+
 /* ── Intro overlay ── */
-function IntroOverlay({ items, onDone }) {
+function IntroOverlay({ items, scene, onDone }) {
   useEffect(() => {
-    const t = setTimeout(onDone, 2500);
+    const t = setTimeout(onDone, 2800);
     return () => clearTimeout(t);
   }, [onDone]);
+
+  const icon = SCENE_ICONS[scene];
+  const isThemed = scene !== 'bedroom';
 
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm"
     >
+      {/* Scene icon for themed rounds */}
+      {isThemed && (
+        <motion.div
+          initial={{ scale: 0, y: -20 }}
+          animate={{ scale: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+          className="text-5xl mb-2"
+        >
+          {icon}
+        </motion.div>
+      )}
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 15 }}>
+        transition={{ type: 'spring', stiffness: 300, damping: 15, delay: isThemed ? 0.15 : 0 }}>
         <ArthurBear expression="curious" size={100} />
       </motion.div>
       <div className="flex gap-2 mt-4">
@@ -98,7 +400,7 @@ function IntroOverlay({ items, onDone }) {
             <motion.div key={item.id} className="w-10 h-10"
               initial={{ scale: 0, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.3 + i * 0.1 }}>
+              transition={{ type: 'spring', stiffness: 400, damping: 15, delay: (isThemed ? 0.4 : 0.3) + i * 0.1 }}>
               <SVG />
             </motion.div>
           );
@@ -221,8 +523,7 @@ export default function MorningRoutine() {
   const [showIntro, setShowIntro] = useState(true);
   const [round, setRound] = useState(0);
   const roundCfg = ROUNDS[Math.min(round, ROUNDS.length - 1)];
-  const [roundItems] = useState(() => roundCfg.items.map(i => CLOTHES[i]));
-  const [shuffledItems, setShuffledItems] = useState(() => shuffle(roundCfg.items.map(i => CLOTHES[i])));
+  const [shuffledItems, setShuffledItems] = useState(() => shuffle(getRoundClothes(roundCfg)));
   const [dressedItems, setDressedItems] = useState([]);
   const [wrongItem, setWrongItem] = useState(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);
@@ -231,18 +532,22 @@ export default function MorningRoutine() {
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
-  const currentItems = roundCfg.items.map(i => CLOTHES[i]);
+  const currentItems = getRoundClothes(roundCfg);
+  const currentScene = roundCfg.scene;
   const nextOrder = dressedItems.length;
   const nextItem = currentItems[nextOrder];
   const isComplete = dressedItems.length === currentItems.length;
 
+  const SceneComponent = SCENE_COMPONENTS[currentScene] || BedroomScene;
+
   // Reset when round changes
   useEffect(() => {
-    const items = ROUNDS[Math.min(round, ROUNDS.length - 1)].items.map(i => CLOTHES[i]);
-    setShuffledItems(shuffle(items));
+    const cfg = ROUNDS[Math.min(round, ROUNDS.length - 1)];
+    setShuffledItems(shuffle(getRoundClothes(cfg)));
     setDressedItems([]);
     setWrongItem(null);
     setWrongAttempts(0);
+    setShowIntro(true);
   }, [round]);
 
   const playDressTone = useCallback((count) => {
@@ -304,11 +609,11 @@ export default function MorningRoutine() {
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <BedroomScene />
+      <SceneComponent />
       <BackButton />
 
       <AnimatePresence>
-        {showIntro && <IntroOverlay items={currentItems} onDone={() => setShowIntro(false)} />}
+        {showIntro && <IntroOverlay items={currentItems} scene={currentScene} onDone={() => setShowIntro(false)} />}
       </AnimatePresence>
 
       <div className="relative z-10 flex flex-col items-center justify-between h-full py-14 px-4">
@@ -331,12 +636,13 @@ export default function MorningRoutine() {
           </div>
         )}
 
-        {/* Round indicator */}
-        <div className="flex gap-1">
+        {/* Round indicator — scene icon + dots */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm opacity-70">{SCENE_ICONS[currentScene]}</span>
           {ROUNDS.map((_, i) => (
             <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300
-              ${i <= round ? 'bg-sun scale-110' : 'bg-amber-200/30'}`}
-              style={i <= round ? { boxShadow: '0 0 4px #facc15' } : {}} />
+              ${i === round ? 'bg-sun scale-125' : i < round ? 'bg-sun/60 scale-100' : 'bg-amber-200/30'}`}
+              style={i <= round ? { boxShadow: '0 0 4px rgba(250,204,21,0.4)' } : {}} />
           ))}
         </div>
 
