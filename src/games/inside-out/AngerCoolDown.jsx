@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { Anger, MemoryOrb, Pipe } from './Characters';
 import { EMOTION_COLORS, recordWin } from './insideOutData';
 import { playSteamHiss, playPhaseTransition, playComboHit } from './insideOutSounds';
@@ -17,11 +18,11 @@ import {
 } from './useGameJuice';
 
 const PIPE_COUNT = 5;
-const GAME_DURATION = 40;
+const GAME_DURATION = 60;
 const OVERHEAT_LIMIT = 100;
 
 function makePipe(id) {
-  return { id, heat: 20 + Math.random() * 30, heatRate: 0.3 + Math.random() * 0.4 };
+  return { id, heat: 15 + Math.random() * 20, heatRate: 0.2 + Math.random() * 0.25 };
 }
 
 // ─── Reactor Room SVG Background ───────────────────────
@@ -65,28 +66,18 @@ function ReactorBackground({ angerLevel }) {
         </g>
       ))}
 
-      {/* Hazard stripes — top */}
-      <g opacity="0.4">
+      {/* Decorative trim — top (soft amber instead of hazard stripes) */}
+      <g opacity="0.2">
         {Array.from({ length: 20 }).map((_, i) => (
-          <rect key={`h-${i}`} x={i * 40 - 10} y="0" width="20" height="8" fill="#facc15" transform={`skewX(-20)`} />
+          <rect key={`h-${i}`} x={i * 40 - 10} y="0" width="20" height="4" fill="#818cf8" rx="2" transform={`skewX(-20)`} />
         ))}
       </g>
 
-      {/* Hazard stripes — bottom */}
-      <g opacity="0.3">
+      {/* Decorative trim — bottom */}
+      <g opacity="0.15">
         {Array.from({ length: 20 }).map((_, i) => (
-          <rect key={`hb-${i}`} x={i * 40 - 10} y="692" width="20" height="8" fill="#facc15" transform={`skewX(-20)`} />
+          <rect key={`hb-${i}`} x={i * 40 - 10} y="694" width="20" height="4" fill="#818cf8" rx="2" transform={`skewX(-20)`} />
         ))}
-      </g>
-
-      {/* Warning signs */}
-      <g transform="translate(340, 120)" opacity="0.5">
-        <polygon points="0,-16 14,10 -14,10" fill="none" stroke="#facc15" strokeWidth="1.5" />
-        <text x="0" y="6" textAnchor="middle" fontSize="12" fill="#facc15" fontWeight="bold">!</text>
-      </g>
-      <g transform="translate(60, 620)" opacity="0.4">
-        <polygon points="0,-14 12,8 -12,8" fill="none" stroke="#f97316" strokeWidth="1.5" />
-        <text x="0" y="5" textAnchor="middle" fontSize="10" fill="#f97316" fontWeight="bold">!</text>
       </g>
 
       {/* Industrial pipes decoration */}
@@ -123,18 +114,18 @@ function ReactorBackground({ angerLevel }) {
 
 // ─── Anger dialogue lines ──────────────────────────────
 const ANGER_QUIPS = {
-  intro: "Nobody touches MY reactor without permission!",
-  coolGood: ["Not bad, kid.", "Fine. That'll do.", "Hmph. Lucky shot."],
-  heatWarn: ["IT'S TOO HOT!", "DO SOMETHING!", "I'm gonna BLOW!", "This is YOUR fault!"],
-  combo: ["Now we're COOKING!", "YEAH! Keep going!", "That's what I call COOL!"],
-  powerUp: ["Ooh, gimme that!", "NOW we're talking!", "Ice ice baby!"],
-  win: ["Fine. You did okay.", "About time someone fixed this.", "FINALLY!"],
-  fail: ["I TOLD you! I TOLD YOU!", "Everything is RUINED!", "AAAAARGH!"],
+  intro: "Help me cool down the reactor!",
+  coolGood: ["Nice job!", "That feels better!", "Ahh, much cooler!"],
+  heatWarn: ["Getting warm!", "A bit toasty!", "Keep tapping!", "Almost too warm!"],
+  combo: ["Great teamwork!", "YEAH! Keep going!", "That's what I call COOL!"],
+  powerUp: ["Ooh, ice power!", "That's refreshing!", "Ice ice baby!"],
+  win: ["We did it together!", "You're a great helper!", "High five!"],
 };
 
 export default function AngerCoolDown() {
   const navigate = useNavigate();
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const { shake, ShakeWrapper, shakeStyle } = useScreenShake();
   const { combo, addCombo, resetCombo, ComboDisplay } = useCombo();
   const { say, DialogueBubble } = useDialogue();
@@ -174,10 +165,10 @@ export default function AngerCoolDown() {
       return;
     }
     shakeIntervalRef.current = setInterval(() => {
-      if (angerLevel > 70) {
-        shake(angerLevel > 85 ? 'medium' : 'light');
+      if (angerLevel > 80) {
+        shake('light');
       }
-    }, 500);
+    }, 1000);
     return () => clearInterval(shakeIntervalRef.current);
   }, [phase, angerLevel, shake]);
 
@@ -191,27 +182,24 @@ export default function AngerCoolDown() {
       const dt = (now - lastTickRef.current) / 1000;
       lastTickRef.current = now;
       setPipes((prev) => {
-        let anyOverheat = false;
         const next = prev.map((p) => {
           const rateMultiplier = iceBlastActive ? 0 : 1;
-          const newHeat = Math.min(OVERHEAT_LIMIT, p.heat + p.heatRate * dt * 60 * rateMultiplier);
-          if (newHeat >= OVERHEAT_LIMIT) anyOverheat = true;
+          let newHeat = p.heat + p.heatRate * dt * 60 * rateMultiplier;
+          // Soft cap: if heat reaches max, it bounces back a little instead of failing
+          if (newHeat >= OVERHEAT_LIMIT) {
+            newHeat = OVERHEAT_LIMIT - 5;
+          }
           return { ...p, heat: newHeat };
         });
         const avg = next.reduce((sum, p) => sum + p.heat, 0) / next.length;
         setAngerLevel(avg);
 
-        // Contextual dialogue based on heat
-        if (avg > 80 && now - lastDialogueRef.current > 6000) {
+        // Contextual dialogue based on heat — gentle nudge
+        if (avg > 75 && now - lastDialogueRef.current > 8000) {
           lastDialogueRef.current = now;
           say('anger', 'warn');
         }
 
-        if (anyOverheat) {
-          setPhase('fail');
-          playBuzz();
-          shake('heavy');
-        }
         return next;
       });
       frameRef.current = requestAnimationFrame(tick);
@@ -229,13 +217,14 @@ export default function AngerCoolDown() {
         if (prev <= 1) {
           setPhase('success');
           playSuccess();
+          peek('excited');
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(t);
-  }, [phase]);
+  }, [phase, peek]);
 
   // ─── Power-up spawning ───────────────────────────────
   useEffect(() => {
@@ -313,13 +302,14 @@ export default function AngerCoolDown() {
       // Combo dialogue
       if (combo > 0 && combo % 5 === 0) {
         say('anger', 'encourage');
+        peek('happy');
       }
 
       return next;
     });
 
     shake('light');
-  }, [phase, burst, combo, addCombo, resetCombo, pop, shake, say]);
+  }, [phase, burst, combo, addCombo, resetCombo, pop, shake, say, peek]);
 
   // ─── Win/Fail handlers ───────────────────────────────
   const handleWinDone = () => {
@@ -421,6 +411,7 @@ export default function AngerCoolDown() {
 
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
       <NumberLayer />
       <ComboDisplay />
       <DialogueBubble />
@@ -441,7 +432,7 @@ export default function AngerCoolDown() {
             </div>
             <div>
               <h2 className="text-white font-heading text-base leading-tight">Cool Down!</h2>
-              <p className="text-white/30 text-[10px]">Keep the reactor stable</p>
+              <p className="text-white/30 text-[10px]">Tap the pipes to help!</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -539,9 +530,9 @@ export default function AngerCoolDown() {
 
             <p className="text-white/50 text-sm"
                style={{ animation: 'win-bounce 0.6s ease-out 0.4s both' }}>
-              {score >= 200 ? '"Fine. That was... impressive." - Anger'
-                : score >= 120 ? '"Not bad, kid." - Anger'
-                : '"About time someone fixed this." - Anger'}
+              {score >= 200 ? '"You\'re amazing!" - Anger'
+                : score >= 120 ? '"Great teamwork!" - Anger'
+                : '"We did it together!" - Anger'}
             </p>
 
             {/* Stars with spin animation */}
@@ -576,36 +567,32 @@ export default function AngerCoolDown() {
           </div>
         )}
 
-        {/* ─── Fail screen ─────────────────────────────── */}
+        {/* ─── Fail screen — softened to "good try" ───── */}
         {phase === 'fail' && (
           <div className="flex flex-col items-center justify-center gap-4 mt-6">
-            {/* Anger having a meltdown */}
-            <div style={{ animation: 'fail-shake 0.6s ease-in-out' }}>
-              <div style={{ animation: 'flame-flicker 0.2s ease-in-out infinite' }}>
-                <Anger size={90} expression="angry" flameOn />
-              </div>
+            <div style={{ animation: 'win-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}>
+              <Anger size={90} expression="cool" flameOn={false} />
             </div>
 
-            <h2 className="text-xl font-heading text-red-400"
-                style={{ animation: 'fail-shake 0.5s ease-in-out 0.3s both' }}>
-              MELTDOWN!
+            <h2 className="text-xl font-heading text-orange-300"
+                style={{ animation: 'win-bounce 0.6s ease-out 0.2s both' }}>
+              Good Try!
             </h2>
 
             <p className="text-white/50 text-sm text-center">
-              {ANGER_QUIPS.fail[Math.floor(Math.random() * ANGER_QUIPS.fail.length)]}
+              The reactor got a bit warm — let's try again!
             </p>
 
-            {/* Stats */}
             <div className="bg-white/5 rounded-xl px-4 py-2 text-center">
               <p className="text-white/30 text-[10px]">
-                You scored {score} points with {taps} taps before meltdown
+                You scored {score} points with {taps} taps
               </p>
             </div>
 
             <div className="flex gap-3 mt-2">
               <button onClick={handleRetry}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-heading active:scale-95 transition-transform shadow-lg shadow-red-500/25">
-                Try Again
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 text-white font-heading active:scale-95 transition-transform shadow-lg shadow-orange-500/25">
+                Play Again!
               </button>
               <button onClick={() => navigate(-1)}
                 className="px-6 py-3 rounded-full bg-white/10 text-white font-heading active:scale-95 transition-transform">

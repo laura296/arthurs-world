@@ -107,7 +107,7 @@ export default function Xylophone() {
 
   return (
     <div className="relative w-full h-full overflow-hidden flex flex-col items-center justify-center"
-         style={{ background: 'linear-gradient(180deg, #1a1035 0%, #2d1b69 40%, #0f0a1f 100%)' }}>
+         style={{ background: 'linear-gradient(180deg, #312e81 0%, #4338ca 40%, #3730a3 100%)' }}>
       <BackButton />
 
       {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}

@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { useRef, useContext } from 'react';
 import { playNavigate } from '../hooks/useSound';
 import GoldenHourScene from '../components/scenes/GoldenHourScene';
 import ArthurBear from '../components/ArthurBear';
+import { SessionTimerContext } from '../App';
 
 const modes = [
   { id: 'quiet', emoji: '🌙', label: 'Quiet', bg: 'from-indigo-400/80 to-blue-800/80', to: '/games/quiet' },
@@ -11,13 +13,27 @@ const modes = [
 
 export default function ModePicker() {
   const navigate = useNavigate();
+  const sessionTimer = useContext(SessionTimerContext);
+  const longPressRef = useRef(null);
+
+  // Long-press ArthurBear (3s) opens parent timer picker
+  const handleBearDown = () => {
+    longPressRef.current = setTimeout(() => {
+      sessionTimer?.openPicker();
+    }, 3000);
+  };
+  const handleBearUp = () => {
+    if (longPressRef.current) clearTimeout(longPressRef.current);
+  };
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6 bg-aw-warm">
       <GoldenHourScene />
 
       <div className="relative z-10 flex flex-col items-center gap-2 animate-spring-in">
-        <ArthurBear expression="excited" size={80} />
+        <div onPointerDown={handleBearDown} onPointerUp={handleBearUp} onPointerCancel={handleBearUp}>
+          <ArthurBear expression="excited" size={80} />
+        </div>
         <h1 className="text-5xl font-heading text-amber-900 drop-shadow-lg animate-float"
             style={{ textShadow: '0 2px 8px rgba(245, 176, 65, 0.4)' }}>
           Arthur's World

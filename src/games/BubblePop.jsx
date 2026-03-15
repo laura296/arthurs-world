@@ -3,7 +3,7 @@ import BackButton from '../components/BackButton';
 import UnderwaterScene from '../components/scenes/UnderwaterScene';
 import Shark from '../components/animals/Shark';
 import SeaCreature, { FISH_VARIANT_NAMES, VARIANT_COLORS } from '../components/animals/SeaCreatures';
-import { playPop, playSuccess, playBoing, playTone, playBuzz, playChomp } from '../hooks/useSound';
+import { playPop, playSuccess, playBoing, playTone, playChomp } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 
@@ -15,16 +15,15 @@ function makeBubble(id, w, h) {
   const rand = Math.random();
   let type = 'normal';
   if (rand > 0.92) type = 'rainbow';
-  else if (rand > 0.82) type = 'golden';
-  else if (rand > 0.70) type = 'spiky';
+  else if (rand > 0.80) type = 'golden';
 
   return {
     id,
     kind: 'bubble',
     x: size / 2 + Math.random() * (w - size),
     y: h + size,
-    size: type === 'spiky' ? 45 + Math.random() * 35 : size,
-    speed: type === 'spiky' ? 0.3 + Math.random() * 1.0 : 0.5 + Math.random() * 1.5,
+    size,
+    speed: 0.5 + Math.random() * 1.5,
     color: type === 'normal' ? COLORS[Math.floor(Math.random() * COLORS.length)] : null,
     wobblePhase: Math.random() * Math.PI * 2,
     type,
@@ -68,37 +67,6 @@ function makeShark(w, h) {
 }
 
 function BubbleElement({ b, onPop }) {
-  if (b.type === 'spiky') {
-    const wobble = Math.sin(Date.now() * 0.005 + b.wobblePhase) * 5;
-    return (
-      <div
-        onPointerDown={(e) => onPop(e, b)}
-        className="absolute cursor-pointer active:scale-0 transition-transform duration-100"
-        style={{
-          left: b.x - b.size / 2,
-          top: b.y - b.size / 2,
-          width: b.size,
-          height: b.size,
-        }}
-      >
-        <div
-          className="w-full h-full"
-          style={{
-            background: 'radial-gradient(circle at 40% 40%, #9333ea, #581c87)',
-            clipPath: 'polygon(50% 0%, 63% 18%, 82% 8%, 78% 30%, 100% 35%, 85% 50%, 98% 68%, 78% 70%, 82% 92%, 63% 80%, 50% 100%, 37% 80%, 18% 92%, 22% 70%, 2% 68%, 15% 50%, 0% 35%, 22% 30%, 18% 8%, 37% 18%)',
-            boxShadow: `0 0 ${b.size / 3}px #7c3aed80`,
-            transform: `rotate(${wobble}deg)`,
-          }}
-        >
-          <span className="absolute inset-0 flex items-center justify-center text-white/80 drop-shadow"
-                style={{ fontSize: b.size * 0.35 }}>
-            &#10007;
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   if (b.type === 'rainbow') {
     const hue = (Date.now() * 0.15 + b.id * 60) % 360;
     return (
@@ -385,15 +353,12 @@ function WinScreen({ score, onPlayAgain, burst }) {
 
 // Score popup that floats up
 function ScorePopup({ x, y, points }) {
-  const isNegative = points < 0;
   return (
     <div
-      className={`absolute pointer-events-none z-50 font-heading text-2xl drop-shadow-lg animate-bounce ${
-        isNegative ? 'text-red-400' : 'text-sun'
-      }`}
+      className="absolute pointer-events-none z-50 font-heading text-2xl drop-shadow-lg animate-bounce text-sun"
       style={{ left: x, top: y - 20 }}
     >
-      {isNegative ? points : `+${points}`}
+      +{points}
     </div>
   );
 }
@@ -518,7 +483,6 @@ export default function BubblePop() {
       let ate = false;
       const remaining = prev.filter(b => {
         if (ate) return true;
-        if (b.type === 'spiky') return true;
         const dx = b.x - shark.x;
         const dy = b.y - shark.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -553,7 +517,6 @@ export default function BubblePop() {
     e.preventDefault();
     const points = bubble.type === 'rainbow' ? 3
       : bubble.type === 'golden' ? 2
-      : bubble.type === 'spiky' ? -1
       : 1;
 
     if (bubble.type === 'rainbow') {
@@ -570,8 +533,6 @@ export default function BubblePop() {
         colors: ['#fbbf24', '#fef3c7', '#f59e0b'],
         shapes: ['star', 'circle'],
       });
-    } else if (bubble.type === 'spiky') {
-      playBuzz();
     } else {
       playPop();
     }
@@ -581,7 +542,7 @@ export default function BubblePop() {
       id: effectId,
       x: bubble.x,
       y: bubble.y,
-      color: bubble.type === 'spiky' ? '#7c3aed' : bubble.color,
+      color: bubble.color,
       type: bubble.type,
     }]);
     setPopups(prev => [...prev, { id: effectId, x: bubble.x, y: bubble.y - 30, points }]);

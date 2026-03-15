@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import BackButton from '../components/BackButton';
 import { playSparkle, playSuccess, playBuzz, playBoing, playPop, playPoof } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 const IMG = '/arthurs-world/images/disney/ursula';
 const POTION_COLORS = ['#a78bfa', '#7c3aed', '#6d28d9', '#4c1d95'];
@@ -33,17 +34,17 @@ const ING_IMG = {
 const ING_LABELS = {
   shell: 'Magic Shell', wave: 'Ocean Wave', music: 'Song Note', mushroom: 'Sea Shroom',
   squid: 'Baby Squid', star: 'Sea Star', bubble: 'Enchanted Bubble', seaweed: 'Glow Weed',
-  crystal: 'Dark Crystal', lightning: 'Storm Bolt', wind: 'Wind Spirit', moon: 'Moon Charm',
+  crystal: 'Sea Crystal', lightning: 'Storm Bolt', wind: 'Wind Spirit', moon: 'Moon Charm',
   crab: 'Tiny Crab', rose: 'Sea Rose',
 };
 
 const RECIPES = [
   {
-    name: 'Voice Stealer',
-    desc: 'Steal a beautiful singing voice!',
+    name: 'Singing Splash',
+    desc: 'Make a magical singing potion!',
     ingredients: ['shell', 'wave', 'music'],
     pool: ['shell', 'wave', 'music', 'mushroom', 'squid', 'star'],
-    successMsg: 'The potion glows purple! A beautiful voice floats into the bottle!',
+    successMsg: 'The potion sings! A beautiful melody fills the room! 🎵',
     sillyResults: [
       { msg: 'Oops! The potion makes frog noises! 🐸' },
       { msg: 'The cauldron starts singing opera! 🎶' },
@@ -213,6 +214,7 @@ export default function UrsulaPotions() {
   const [totalBrewed, setTotalBrewed] = useState(0);
   const [shakeScreen, setShakeScreen] = useState(false);
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
   // Dragging state
   const [dragging, setDragging] = useState(null); // { key, x, y }
@@ -268,12 +270,14 @@ export default function UrsulaPotions() {
       if (correct) {
         playSuccess();
         playSparkle();
+        peek('excited');
         const rect = containerRef.current?.getBoundingClientRect();
         if (rect) burst(rect.width / 2, rect.height * 0.35, { colors: POTION_COLORS, count: 30, spread: 100 });
         setScore(s => s + 1);
         setResult({ success: true, msg: recipe.successMsg });
       } else {
         playBoing();
+        peek('happy');
         setShakeScreen(true);
         setTimeout(() => setShakeScreen(false), 600);
         const silly = recipe.sillyResults[Math.floor(Math.random() * recipe.sillyResults.length)];
@@ -284,7 +288,7 @@ export default function UrsulaPotions() {
       setPhase('result');
       setTotalBrewed(t => t + 1);
     }, 2000);
-  }, [recipe, burst]);
+  }, [recipe, burst, peek]);
 
   const handleNext = useCallback(() => {
     setAdded([]);
@@ -347,6 +351,7 @@ export default function UrsulaPotions() {
 
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
 
       {/* Score */}
       <div className="absolute top-4 right-4 z-20 bg-purple-900/70 backdrop-blur rounded-2xl px-4 py-2 flex items-center gap-2 border border-purple-500/30">

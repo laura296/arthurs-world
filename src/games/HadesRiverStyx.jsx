@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import BackButton from '../components/BackButton';
 import { playPop, playSuccess, playBoing, playBuzz, playSparkle } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
+import { useArthurPeek } from '../components/ArthurPeek';
 
 const IMG = '/arthurs-world/images/disney/hades';
 const GHOST_COLORS = ['#a78bfa', '#818cf8', '#6366f1', '#c084fc'];
@@ -13,7 +14,6 @@ const CREATURES = [
   { type: 'skeleton', img: `${IMG}/skeleton.png`, points: 2, speed: [0.6, 1.2], size: [50, 65], drift: 12, glow: '#94a3b8' },
   { type: 'bat',      img: `${IMG}/bat.png`,      points: 1, speed: [1.2, 2.0], size: [45, 60], drift: 35, glow: '#7c3aed' },
   { type: 'flame',    img: `${IMG}/flame.png`,     points: 3, speed: [0.5, 1.0], size: [55, 75], drift: 8,  glow: '#60a5fa' },
-  { type: 'cerberus', img: `${IMG}/cerberus.png`, points: -1, speed: [1.0, 1.5], size: [60, 75], drift: 10, glow: '#ef4444' },
 ];
 
 let nextId = 0;
@@ -77,8 +77,9 @@ export default function HadesRiverStyx() {
   const [gameOver, setGameOver] = useState(false);
   const [showLevelUp, setShowLevelUp] = useState(false);
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
 
-  const MAX_MISSED = 8;
+  const MAX_MISSED = 12;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -119,7 +120,7 @@ export default function HadesRiverStyx() {
           const newX = c.x + c.vx;
           const newY = c.y + c.vy;
           if (newX < -100 || newX > dims.w + 100 || newY > dims.h + 100 || newY < -100) {
-            if (c.type !== 'cerberus') lostCount++;
+            lostCount++;
           } else {
             updated.push({ ...c, x: newX, y: newY });
           }
@@ -145,6 +146,7 @@ export default function HadesRiverStyx() {
       setLevel(newLevel);
       setShowLevelUp(true);
       playSuccess();
+      peek('excited');
       setTimeout(() => setShowLevelUp(false), 1800);
     }
   }, [caught, level]);
@@ -155,19 +157,13 @@ export default function HadesRiverStyx() {
     const cx = rect ? e.clientX - rect.left : 0;
     const cy = rect ? e.clientY - rect.top : 0;
 
-    if (creature.type === 'cerberus') {
-      playBuzz();
-      setMissed(m => { const nm = m + 2; if (nm >= MAX_MISSED) setGameOver(true); return nm; });
-      if (rect) burst(cx, cy, { colors: ['#ef4444', '#b91c1c'], count: 8 });
-    } else {
-      setScore(s => s + creature.points);
-      setCaught(c => c + 1);
-      playPop();
-      if (creature.type === 'flame') playSparkle();
-      const colors = creature.type === 'ghost' ? GHOST_COLORS
-        : creature.type === 'flame' ? FLAME_COLORS : SKULL_COLORS;
-      if (rect) burst(cx, cy, { colors, count: 10 });
-    }
+    setScore(s => s + creature.points);
+    setCaught(c => c + 1);
+    playPop();
+    if (creature.type === 'flame') playSparkle();
+    const colors = creature.type === 'ghost' ? GHOST_COLORS
+      : creature.type === 'flame' ? FLAME_COLORS : SKULL_COLORS;
+    if (rect) burst(cx, cy, { colors, count: 10 });
     setCreatures(prev => prev.map(c => c.id === creature.id ? { ...c, caught: true } : c));
   }, [burst]);
 
@@ -220,6 +216,7 @@ export default function HadesRiverStyx() {
 
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
 
       {/* HUD */}
       <div className="absolute top-4 right-4 z-20 flex gap-2">
@@ -249,14 +246,14 @@ export default function HadesRiverStyx() {
                }} />
         </div>
         <div className="text-center mt-1">
-          <span className="text-xs font-heading text-purple-400/60">{missed}/{MAX_MISSED} escaped</span>
+          <span className="text-xs font-heading text-purple-400/60">{missed}/{MAX_MISSED} floated away</span>
         </div>
       </div>
 
       {score === 0 && !gameOver && (
         <div className="absolute bottom-24 left-0 right-0 z-20 text-center animate-pulse">
           <span className="text-purple-300/60 text-sm font-heading">
-            Catch the ghosts & skeletons! Avoid Cerberus!
+            Catch the glowing spirits! ✨
           </span>
         </div>
       )}
@@ -278,11 +275,11 @@ export default function HadesRiverStyx() {
           <div className="bg-gradient-to-b from-purple-900 to-indigo-950 rounded-3xl p-8 text-center shadow-2xl max-w-xs mx-4 animate-spring-in border border-purple-500/30">
             <img src={`${IMG}/hades-character.png`} alt="" className="w-20 h-20 mx-auto mb-3 object-contain" />
             <h2 className="text-2xl font-heading text-purple-200 mb-2" style={{ textShadow: '0 0 15px #a78bfa' }}>
-              The Dead Rise!
+              Great Catching!
             </h2>
-            <p className="text-purple-300/80 mb-1">Souls captured</p>
+            <p className="text-purple-300/80 mb-1">Spirits caught</p>
             <p className="text-4xl font-heading text-purple-300 mb-1">{score}</p>
-            <p className="text-sm text-purple-400/60 mb-4">Level {level} reached</p>
+            <p className="text-sm text-purple-400/60 mb-4">Level {level} reached ⭐</p>
             <button onClick={handleRestart}
               className="bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-heading text-lg
                          px-8 py-3 rounded-full shadow-lg transition-all border border-purple-400/30"

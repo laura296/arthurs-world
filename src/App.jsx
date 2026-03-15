@@ -1,10 +1,13 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, createContext, useContext } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { setGlobalMute } from './hooks/useSound';
 import { SectionProvider } from './contexts/SectionContext';
 import ArthurBear from './components/ArthurBear';
 import GameErrorBoundary from './components/GameErrorBoundary';
 import PageTransition from './components/PageTransition';
+import { useSessionTimer } from './components/SessionTimer';
+
+export const SessionTimerContext = createContext(null);
 
 // Lazy load all routes
 const ModePicker = lazy(() => import('./pages/ModePicker'));
@@ -15,7 +18,12 @@ const FeedAnimals = lazy(() => import('./games/FeedAnimals'));
 const PopCritters = lazy(() => import('./games/PopCritters'));
 const Colouring = lazy(() => import('./games/Colouring'));
 const ColouringBook = lazy(() => import('./games/ColouringBook'));
+const DotArt = lazy(() => import('./games/DotArt'));
+const StampArt = lazy(() => import('./games/StampArt'));
 const MusicPad = lazy(() => import('./games/MusicPad'));
+const Xylophone = lazy(() => import('./games/Xylophone'));
+const DrumPad = lazy(() => import('./games/DrumPad'));
+const AnimalSounds = lazy(() => import('./games/AnimalSounds'));
 const MemoryMatch = lazy(() => import('./games/MemoryMatch'));
 const FarmBook = lazy(() => import('./games/FarmBook'));
 const ThreeLittlePigs = lazy(() => import('./stories/ThreeLittlePigs'));
@@ -61,6 +69,8 @@ const AlarmAvalanche = lazy(() => import('./games/inside-out/AlarmAvalanche'));
 const ChainReactionCrisis = lazy(() => import('./games/inside-out/ChainReactionCrisis'));
 const MadHatterTeaParty = lazy(() => import('./games/alice/MadHatterTeaParty'));
 const TortoiseHareRace = lazy(() => import('./games/TortoiseHareRace'));
+const CountingGarden = lazy(() => import('./games/CountingGarden'));
+const ColourSort = lazy(() => import('./games/ColourSort'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -175,7 +185,12 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/pop-critters" element={<G><PopCritters /></G>} />
         <Route path="/games/:mode/:section/colouring-book" element={<G><ColouringBook /></G>} />
         <Route path="/games/:mode/:section/free-art" element={<G><Colouring /></G>} />
+        <Route path="/games/:mode/:section/dot-art" element={<G><DotArt /></G>} />
+        <Route path="/games/:mode/:section/stamp-art" element={<G><StampArt /></G>} />
         <Route path="/games/:mode/:section/music-pad" element={<G><MusicPad /></G>} />
+        <Route path="/games/:mode/:section/xylophone" element={<G><Xylophone /></G>} />
+        <Route path="/games/:mode/:section/drum-pad" element={<G><DrumPad /></G>} />
+        <Route path="/games/:mode/:section/animal-sounds" element={<G><AnimalSounds /></G>} />
         <Route path="/games/:mode/:section/memory-match" element={<G><MemoryMatch /></G>} />
         <Route path="/games/:mode/:section/farm-book" element={<G><FarmBook /></G>} />
         <Route path="/games/:mode/:section/three-pigs" element={<G><ThreeLittlePigs /></G>} />
@@ -222,6 +237,10 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/chain-reaction-crisis" element={<G><ChainReactionCrisis /></G>} />
         <Route path="/games/:mode/:section/puppy-wash" element={<G><PuppyWash /></G>} />
 
+        {/* Educational games */}
+        <Route path="/games/:mode/:section/counting-garden" element={<G><CountingGarden /></G>} />
+        <Route path="/games/:mode/:section/colour-sort" element={<G><ColourSort /></G>} />
+
         {/* Aesop's Fables — Games */}
         <Route path="/games/:mode/:section/tortoise-hare-race" element={<G><TortoiseHareRace /></G>} />
 
@@ -234,9 +253,14 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const sessionTimer = useSessionTimer();
+
   return (
-    <Suspense fallback={<Loading />}>
-      <AppRoutes />
-    </Suspense>
+    <SessionTimerContext.Provider value={sessionTimer}>
+      <Suspense fallback={<Loading />}>
+        <AppRoutes />
+      </Suspense>
+      <sessionTimer.SessionTimerUI />
+    </SessionTimerContext.Provider>
   );
 }

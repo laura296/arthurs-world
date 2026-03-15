@@ -90,7 +90,7 @@ export default function DrumPad() {
 
   return (
     <div className="relative w-full h-full overflow-hidden flex flex-col items-center justify-center"
-         style={{ background: 'linear-gradient(180deg, #1f0a0a 0%, #3d1515 40%, #100505 100%)' }}>
+         style={{ background: 'linear-gradient(180deg, #7f1d1d 0%, #991b1b 40%, #7f1d1d 100%)' }}>
       <BackButton />
 
       {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}
