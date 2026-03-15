@@ -627,6 +627,7 @@ export default function StoryBook({ story, onComplete }) {
   const [turning, setTurning] = useState(false);
   const [turnDir, setTurnDir] = useState(1); // 1 = forward, -1 = back
   const [autoRead, setAutoRead] = useState(true);
+  const [imgFailed, setImgFailed] = useState(false);
   const touchStart = useRef(null);
   const containerRef = useRef(null);
   const celebratedRef = useRef(false);
@@ -668,6 +669,7 @@ export default function StoryBook({ story, onComplete }) {
   // Reset page state on page turn
   useEffect(() => {
     setPageState({});
+    setImgFailed(false);
   }, [page]);
 
   const turnPage = useCallback((dir) => {
@@ -710,21 +712,22 @@ export default function StoryBook({ story, onComplete }) {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Background — priority: image > scene > gradient */}
-      {current.image && (
+      {/* Background — priority: image (if loads) > scene > gradient */}
+      {current.image && !imgFailed && (
         <img
           src={current.image}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           draggable={false}
+          onError={() => setImgFailed(true)}
         />
       )}
-      {current.scene && !current.image && (
+      {current.scene && (!current.image || imgFailed) && (
         typeof current.scene.type === 'function'
           ? cloneElement(current.scene, { transforms: pageState._sceneTransform || {} })
           : current.scene
       )}
-      {current.bg && !current.scene && !current.image && (
+      {current.bg && !current.scene && (!current.image || imgFailed) && (
         <div className={`absolute inset-0 bg-gradient-to-b ${current.bg}`} />
       )}
 
