@@ -6,6 +6,9 @@
  * trigger sparkle celebrations. Tower grows, background shifts
  * from warm amber through sunset to starry night.
  *
+ * Performance: moving block uses ref-based DOM updates (no React
+ * re-renders at 60fps). State only syncs on drop.
+ *
  * @component
  * @route /games/:mode/:section/stack-bricks
  */
@@ -40,6 +43,22 @@ function getBlockColor(index) {
   return BLOCK_COLORS[index % BLOCK_COLORS.length];
 }
 
+function darkenColor(hex, amount) {
+  const num = parseInt(hex.slice(1), 16);
+  const r = Math.max(0, (num >> 16) - amount);
+  const g = Math.max(0, ((num >> 8) & 0xFF) - amount);
+  const b = Math.max(0, (num & 0xFF) - amount);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
+function lightenColor(hex, amount) {
+  const num = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, (num >> 16) + amount);
+  const g = Math.min(255, ((num >> 8) & 0xFF) + amount);
+  const b = Math.min(255, (num & 0xFF) + amount);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
 /** Background gradient that shifts as tower grows */
 function getBgGradient(height) {
   if (height < 5) {
@@ -66,6 +85,8 @@ function Stars({ count }) {
       top: `${3 + Math.random() * 30}%`,
       size: 1.5 + Math.random() * 2.5,
       delay: Math.random() * 3,
+      twinkleDur: 2 + Math.random() * 2,
+      opacity: 0.6 + Math.random() * 0.4,
     })),
   [count]);
 
@@ -80,8 +101,8 @@ function Stars({ count }) {
             top: s.top,
             width: s.size,
             height: s.size,
-            opacity: 0.6 + Math.random() * 0.4,
-            animation: `twinkle ${2 + Math.random() * 2}s ease-in-out ${s.delay}s infinite alternate`,
+            opacity: s.opacity,
+            animation: `sb-twinkle ${s.twinkleDur}s ease-in-out ${s.delay}s infinite alternate`,
           }}
         />
       ))}
@@ -101,30 +122,119 @@ function FallingPiece({ piece }) {
         height: BLOCK_HEIGHT,
         background: `linear-gradient(180deg, ${piece.color} 0%, ${piece.colorDark} 100%)`,
         borderRadius: 8,
-        animation: `fallOff 0.8s ease-in forwards`,
+        animation: `sb-fallOff-${piece.rotDir} 0.8s ease-in forwards`,
         transformOrigin: piece.side === 'right' ? 'left bottom' : 'right bottom',
-        boxShadow: `0 4px 12px rgba(80, 40, 20, 0.25)`,
+        boxShadow: '0 4px 12px rgba(80, 40, 20, 0.25)',
       }}
     />
   );
 }
 
-/* ── Perfect text animation ── */
-function PerfectText({ show }) {
+/** Perfect sparkle burst — emoji-only, no text */
+function PerfectBurst({ show }) {
   if (!show) return null;
   return (
     <div
       className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
-      style={{ animation: 'perfectPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
+      style={{ animation: 'sb-perfectPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
     >
-      <span
-        className="font-heading text-5xl text-white drop-shadow-lg"
-        style={{
-          textShadow: '0 0 20px rgba(245,176,65,0.8), 0 2px 8px rgba(0,0,0,0.3)',
-        }}
+      <span className="text-7xl drop-shadow-lg">✨</span>
+    </div>
+  );
+}
+
+/** Block highlight stripe — reused on tower blocks and moving block */
+function BlockHighlight() {
+  return (
+    <div
+      className="absolute rounded-full"
+      style={{
+        top: 6,
+        left: '10%',
+        width: '40%',
+        height: 4,
+        background: 'rgba(255,255,255,0.35)',
+        borderRadius: 2,
+      }}
+    />
+  );
+}
+
+/** Game-over overlay — visual score with mini tower + best badge */
+function GameOverOverlay({ score, bestScore, isNewBest, onReplay }) {
+  const towerBlocks = useMemo(() =>
+    Array.from({ length: Math.min(score, 12) }, (_, i) => ({
+      color: getBlockColor(i),
+      colorDark: darkenColor(getBlockColor(i), 25),
+    })),
+  [score]);
+
+  return (
+    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+      {/* Mini tower visual */}
+      <div
+        className="relative z-10 flex flex-col-reverse items-center mb-4"
+        style={{ animation: 'sb-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
       >
-        Perfect!
-      </span>
+        {towerBlocks.map((b, i) => (
+          <div
+            key={i}
+            className="rounded-lg"
+            style={{
+              width: 60 - i * 2,
+              height: 14,
+              marginBottom: 2,
+              background: `linear-gradient(180deg, ${b.color} 0%, ${b.colorDark} 100%)`,
+              boxShadow: 'inset 0 2px 3px rgba(255,255,255,0.3), inset 0 -2px 3px rgba(0,0,0,0.15)',
+              animation: `sb-popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 80}ms both`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Score as big number with star */}
+      <div
+        className="relative z-10 flex items-center gap-3 mb-3"
+        style={{ animation: 'sb-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both' }}
+      >
+        <span className="text-5xl">⭐</span>
+        <span className="text-7xl font-heading text-white drop-shadow-lg">{score}</span>
+      </div>
+
+      {/* New best badge */}
+      {isNewBest && (
+        <div
+          className="relative z-10 flex items-center gap-2 bg-amber-400/80 rounded-full px-6 py-2 border-2 border-amber-300/60 shadow-lg mb-4"
+          style={{ animation: 'sb-popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s both' }}
+        >
+          <span className="text-3xl">🏆</span>
+          <span className="text-3xl">✨</span>
+        </div>
+      )}
+
+      {/* Best score (when not new best) */}
+      {!isNewBest && bestScore > 0 && (
+        <div
+          className="relative z-10 flex items-center gap-2 bg-white/20 rounded-full px-5 py-2 mb-4"
+          style={{ animation: 'sb-popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s both' }}
+        >
+          <span className="text-2xl">🏆</span>
+          <span className="text-2xl font-heading text-white/70">{bestScore}</span>
+        </div>
+      )}
+
+      {/* Replay button */}
+      <button
+        onClick={onReplay}
+        className="relative z-10 w-28 h-28 rounded-full bg-amber-400 shadow-xl shadow-amber-500/40
+                   flex items-center justify-center active:scale-90 transition-transform
+                   border-4 border-amber-300/60"
+        style={{ animation: 'sb-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
+      >
+        <span className="text-5xl">🔄</span>
+      </button>
     </div>
   );
 }
@@ -132,24 +242,26 @@ function PerfectText({ show }) {
 /* ── Main Component ── */
 export default function StackBricks() {
   const containerRef = useRef(null);
+  const movingBlockRef = useRef(null);
+  const dropGuideRef = useRef(null);
   const animFrameRef = useRef(null);
   const blockPosRef = useRef(0);
   const blockDirRef = useRef(1);
   const gameAreaRef = useRef({ w: 0, h: 0 });
 
   /* State */
-  const [phase, setPhase] = useState('ready'); // ready | playing | dropping | landed | celebrating
-  const [tower, setTower] = useState([]);       // Array of { x, width, color, colorDark, settled }
-  const [currentBlock, setCurrentBlock] = useState(null);
+  const [phase, setPhase] = useState('ready'); // ready | playing | dropping | landed | gameover
+  const [tower, setTower] = useState([]);
+  const [currentBlock, setCurrentBlock] = useState(null); // { width, color, colorDark } — no x (DOM-managed)
   const [fallingPieces, setFallingPieces] = useState([]);
   const [perfectShow, setPerfectShow] = useState(false);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(() => {
     try { return parseInt(localStorage.getItem(STORAGE_KEY)) || 0; } catch { return 0; }
   });
+  const [isNewBest, setIsNewBest] = useState(false);
   const [misses, setMisses] = useState(0);
-  const [landAnim, setLandAnim] = useState(null); // { index } for squish
-  const [showNewTower, setShowNewTower] = useState(false);
+  const [landAnim, setLandAnim] = useState(null);
 
   /* Hooks */
   const { burst, ParticleLayer } = useParticleBurst();
@@ -177,6 +289,7 @@ export default function StackBricks() {
   useEffect(() => {
     if (score > bestScore) {
       setBestScore(score);
+      setIsNewBest(true);
       try { localStorage.setItem(STORAGE_KEY, String(score)); } catch {}
     }
   }, [score, bestScore]);
@@ -192,28 +305,27 @@ export default function StackBricks() {
     const color = getBlockColor(tower.length);
     const colorDark = darkenColor(color, 25);
 
-    const newBlock = {
-      x: 0,
+    blockPosRef.current = 0;
+    blockDirRef.current = 1;
+    setCurrentBlock({
       width: Math.max(width, MIN_WIDTH),
       color,
       colorDark,
-    };
-
-    blockPosRef.current = 0;
-    blockDirRef.current = 1;
-    setCurrentBlock(newBlock);
+    });
     setPhase('playing');
   }, [tower.length]);
 
-  /* ── Animation loop for the moving block ── */
+  /* ── Animation loop — direct DOM updates, no React state ── */
   useEffect(() => {
     if (phase !== 'playing' || !currentBlock) return;
 
     const { w } = gameAreaRef.current;
     if (!w) return;
 
+    const blockWidth = currentBlock.width;
+
     function animate() {
-      const maxX = w - currentBlock.width;
+      const maxX = w - blockWidth;
       blockPosRef.current += blockDirRef.current * speed;
 
       if (blockPosRef.current >= maxX) {
@@ -224,7 +336,11 @@ export default function StackBricks() {
         blockDirRef.current = 1;
       }
 
-      setCurrentBlock(prev => prev ? { ...prev, x: blockPosRef.current } : null);
+      // Direct DOM update — no re-render
+      const pos = `${blockPosRef.current}px`;
+      if (movingBlockRef.current) movingBlockRef.current.style.left = pos;
+      if (dropGuideRef.current) dropGuideRef.current.style.left = pos;
+
       animFrameRef.current = requestAnimationFrame(animate);
     }
 
@@ -240,14 +356,11 @@ export default function StackBricks() {
 
     setPhase('dropping');
 
-    const { w } = gameAreaRef.current;
     const dropX = blockPosRef.current;
     const dropWidth = currentBlock.width;
-    const color = currentBlock.color;
-    const colorDark = currentBlock.colorDark;
+    const { color, colorDark } = currentBlock;
 
     if (tower.length === 0) {
-      // First block always lands perfectly
       const newBlock = { x: dropX, width: dropWidth, color, colorDark, settled: true };
       setTower([newBlock]);
       setScore(1);
@@ -262,7 +375,6 @@ export default function StackBricks() {
       return;
     }
 
-    // Compare with top of tower
     const topBlock = tower[tower.length - 1];
     const overlapStart = Math.max(dropX, topBlock.x);
     const overlapEnd = Math.min(dropX + dropWidth, topBlock.x + topBlock.width);
@@ -271,12 +383,7 @@ export default function StackBricks() {
     if (overlapWidth <= 0) {
       // Complete miss
       playError();
-      setMisses(prev => {
-        const next = prev + 1;
-        if (next >= 3) setShowNewTower(true);
-        return next;
-      });
-      // Drop the block off screen
+      const rotDir = Math.random() > 0.5 ? 'cw' : 'ccw';
       setFallingPieces(prev => [...prev, {
         id: Date.now(),
         x: dropX,
@@ -285,11 +392,22 @@ export default function StackBricks() {
         color,
         colorDark,
         side: dropX > topBlock.x ? 'right' : 'left',
+        rotDir,
       }]);
-      setTimeout(() => {
-        setPhase('landed');
-        spawnBlock(topBlock);
-      }, 400);
+      setMisses(prev => {
+        const next = prev + 1;
+        if (next >= 3) {
+          // Game over — show score screen
+          setTimeout(() => setPhase('gameover'), 500);
+        }
+        return next;
+      });
+      if (misses + 1 < 3) {
+        setTimeout(() => {
+          setPhase('landed');
+          spawnBlock(topBlock);
+        }, 400);
+      }
       return;
     }
 
@@ -297,7 +415,6 @@ export default function StackBricks() {
     let newX, newWidth;
 
     if (isPerfect) {
-      // Snap to perfect alignment
       newX = topBlock.x;
       newWidth = topBlock.width;
     } else {
@@ -314,7 +431,6 @@ export default function StackBricks() {
     setLandAnim({ index: newHeight - 1 });
     playThud();
 
-    // Burst particles at landing
     burstAtBlock(newX, newWidth, newHeight - 1, color);
 
     // Handle excess falling off
@@ -323,6 +439,7 @@ export default function StackBricks() {
       const excessWidth = dropWidth - newWidth;
       if (excessWidth > 3) {
         const excessX = excessLeft ? dropX : newX + newWidth;
+        const rotDir = excessLeft ? 'ccw' : 'cw';
         setFallingPieces(prev => [...prev, {
           id: Date.now() + 1,
           x: excessX,
@@ -331,6 +448,7 @@ export default function StackBricks() {
           color,
           colorDark,
           side: excessLeft ? 'left' : 'right',
+          rotDir,
         }]);
         setTimeout(() => playPop(), 150);
       }
@@ -341,7 +459,6 @@ export default function StackBricks() {
       playSparkle();
       setPerfectShow(true);
       setTimeout(() => setPerfectShow(false), 700);
-      // Extra sparkle burst
       const { h } = gameAreaRef.current;
       burst(newX + newWidth / 2, h - (newHeight * BLOCK_HEIGHT) - BLOCK_HEIGHT, {
         count: 12,
@@ -355,18 +472,18 @@ export default function StackBricks() {
       setTimeout(() => peek('excited'), 200);
     }
 
-    // Milestone celebrations
+    // Milestone celebrations (emoji-only messages)
     if (newHeight === 5) {
       setTimeout(() => { playSuccess(); peek('happy'); }, 300);
     } else if (newHeight === 10) {
       setTimeout(() => {
-        celebrate({ message: 'Amazing!' });
+        celebrate({ message: '🎉🌟🎉' });
       }, 400);
     } else if (newHeight === 15) {
       setTimeout(() => { playSuccess(); peek('excited'); }, 300);
     } else if (newHeight === 20) {
       setTimeout(() => {
-        celebrate({ message: 'Incredible!' });
+        celebrate({ message: '🏆✨🏆' });
       }, 400);
     }
 
@@ -375,7 +492,7 @@ export default function StackBricks() {
       setPhase('landed');
       spawnNext(newBlock);
     }, 250);
-  }, [phase, currentBlock, tower, burst, peek, celebrate, spawnBlock]);
+  }, [phase, currentBlock, tower, misses, burst, peek, celebrate, spawnBlock]);
 
   /* Helper: burst particles at block position */
   function burstAtBlock(x, width, index, color) {
@@ -398,12 +515,11 @@ export default function StackBricks() {
     setTower([]);
     setScore(0);
     setMisses(0);
+    setIsNewBest(false);
     setFallingPieces([]);
-    setShowNewTower(false);
     setPerfectShow(false);
     setLandAnim(null);
     playBoing();
-    // Small delay then spawn first block
     setTimeout(() => {
       spawnBlock(null);
     }, 300);
@@ -429,8 +545,8 @@ export default function StackBricks() {
 
   /* ── Tower rendering ── */
   const { h: areaH } = gameAreaRef.current;
-  const towerBaseY = areaH ? areaH - 60 : 0; // 60px padding from bottom
   const viewOffset = Math.max(0, (height * BLOCK_HEIGHT) - (areaH ? areaH * 0.6 : 300));
+  const movingBlockTop = Math.max(30, areaH ? areaH - 60 - ((height + 1) * BLOCK_HEIGHT) + viewOffset : 80);
 
   return (
     <div
@@ -455,7 +571,6 @@ export default function StackBricks() {
           borderTop: '3px solid #A0886A',
         }}
       >
-        {/* Grass tufts */}
         <div className="absolute -top-2 left-0 right-0 h-4" style={{
           background: 'repeating-linear-gradient(90deg, transparent, transparent 20px, #6B8E5A 20px, #6B8E5A 24px, transparent 24px, transparent 40px)',
           opacity: 0.6,
@@ -464,7 +579,7 @@ export default function StackBricks() {
         }} />
       </div>
 
-      {/* Tower container — outer handles scroll, inner handles sway */}
+      {/* Tower container */}
       <div
         className="absolute left-0 right-0"
         style={{
@@ -475,7 +590,7 @@ export default function StackBricks() {
       >
       <div
         style={{
-          animation: height > 3 ? `towerSway ${3 + height * 0.1}s ease-in-out infinite` : 'none',
+          animation: height > 3 ? `sb-towerSway ${3 + height * 0.1}s ease-in-out infinite` : 'none',
         }}
       >
         {/* Settled tower blocks */}
@@ -505,18 +620,7 @@ export default function StackBricks() {
                 zIndex: i,
               }}
             >
-              {/* Highlight stripe */}
-              <div
-                className="absolute rounded-full"
-                style={{
-                  top: 6,
-                  left: '10%',
-                  width: '40%',
-                  height: 4,
-                  background: 'rgba(255,255,255,0.35)',
-                  borderRadius: 2,
-                }}
-              />
+              <BlockHighlight />
             </div>
           );
         })}
@@ -528,13 +632,14 @@ export default function StackBricks() {
       </div>
       </div>
 
-      {/* Moving block (above tower) */}
+      {/* Moving block — positioned via ref, not state */}
       {currentBlock && phase === 'playing' && (
         <div
+          ref={movingBlockRef}
           className="absolute"
           style={{
-            left: currentBlock.x,
-            top: Math.max(30, areaH ? areaH - 60 - ((height + 1) * BLOCK_HEIGHT) + viewOffset : 80),
+            left: 0,
+            top: movingBlockTop,
             width: currentBlock.width,
             height: BLOCK_HEIGHT,
             background: `linear-gradient(180deg, ${currentBlock.color} 0%, ${currentBlock.colorDark} 100%)`,
@@ -546,31 +651,21 @@ export default function StackBricks() {
               inset 0 -2px 4px rgba(0, 0, 0, 0.15)
             `,
             zIndex: 50,
-            animation: 'blockGlow 1.2s ease-in-out infinite alternate',
+            animation: 'sb-blockGlow 1.2s ease-in-out infinite alternate',
           }}
         >
-          {/* Highlight stripe */}
-          <div
-            className="absolute rounded-full"
-            style={{
-              top: 6,
-              left: '10%',
-              width: '40%',
-              height: 4,
-              background: 'rgba(255,255,255,0.4)',
-              borderRadius: 2,
-            }}
-          />
+          <BlockHighlight />
         </div>
       )}
 
       {/* Drop guide line */}
       {currentBlock && phase === 'playing' && height > 0 && (
         <div
+          ref={dropGuideRef}
           className="absolute pointer-events-none"
           style={{
-            left: currentBlock.x,
-            top: Math.max(30, areaH ? areaH - 60 - ((height + 1) * BLOCK_HEIGHT) + viewOffset : 80) + BLOCK_HEIGHT,
+            left: 0,
+            top: movingBlockTop + BLOCK_HEIGHT,
             width: currentBlock.width,
             height: areaH || 400,
             borderLeft: '1px dashed rgba(255,255,255,0.15)',
@@ -580,60 +675,36 @@ export default function StackBricks() {
         />
       )}
 
-      {/* Perfect text */}
-      <PerfectText show={perfectShow} />
+      {/* Perfect sparkle burst */}
+      <PerfectBurst show={perfectShow} />
 
-      {/* Ready state — tap to start */}
+      {/* Ready state — visual-only, no text */}
       {phase === 'ready' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-40">
           <div
             className="text-center"
-            style={{ animation: 'floatGentle 2s ease-in-out infinite' }}
+            style={{ animation: 'sb-floatGentle 2s ease-in-out infinite' }}
           >
-            <div className="text-7xl mb-6">🧱</div>
-            <div className="font-heading text-4xl text-white drop-shadow-lg mb-4"
-              style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
-            >
-              Stack It!
-            </div>
+            <div className="text-8xl mb-6">🧱</div>
             <div
-              className="bg-white/30 backdrop-blur-sm border border-white/30 rounded-2xl px-8 py-4 inline-block active:scale-95 transition-transform"
-              style={{ animation: 'pulseGlow 2s ease-in-out infinite' }}
+              className="w-28 h-28 rounded-full bg-white/30 backdrop-blur-sm border-2 border-white/30
+                         shadow-xl flex items-center justify-center active:scale-90 transition-transform"
+              style={{ animation: 'sb-pulseGlow 2s ease-in-out infinite' }}
             >
-              <span className="font-heading text-2xl text-white drop-shadow">
-                Tap to play!
-              </span>
+              <span className="text-5xl">▶️</span>
             </div>
           </div>
           {bestScore > 0 && (
-            <div className="mt-6 bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-2">
-              <span className="font-body text-lg text-white/80">
-                Best: {bestScore}
-              </span>
+            <div className="mt-6 bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-2 flex items-center gap-2">
+              <span className="text-xl">🏆</span>
+              <span className="font-heading text-2xl text-white/80">{bestScore}</span>
             </div>
           )}
         </div>
       )}
 
-      {/* New Tower button after 3 misses */}
-      {showNewTower && phase !== 'ready' && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40">
-          <button
-            className="bg-white/30 backdrop-blur-sm border border-white/30 rounded-2xl px-8 py-4 active:scale-95 transition-transform"
-            onClick={(e) => {
-              e.stopPropagation();
-              startGame();
-            }}
-          >
-            <span className="font-heading text-xl text-white drop-shadow">
-              New Tower 🏗️
-            </span>
-          </button>
-        </div>
-      )}
-
-      {/* Score badge */}
-      {phase !== 'ready' && (
+      {/* Score badge — number + star icon, no words */}
+      {phase !== 'ready' && phase !== 'gameover' && (
         <div className="absolute top-4 right-4 z-50 bg-white/30 backdrop-blur-sm border border-white/30 rounded-2xl px-5 py-2.5 flex items-center gap-2">
           <span className="text-xl">⭐</span>
           <span className="font-heading text-2xl text-white drop-shadow">
@@ -643,12 +714,42 @@ export default function StackBricks() {
       )}
 
       {/* Best score badge (when playing and have a previous best) */}
-      {phase !== 'ready' && bestScore > score && (
-        <div className="absolute top-16 right-4 z-50 bg-white/15 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-1.5">
-          <span className="font-body text-sm text-white/60">
-            Best: {bestScore}
+      {phase !== 'ready' && phase !== 'gameover' && bestScore > score && (
+        <div className="absolute top-16 right-4 z-50 bg-white/15 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-1.5 flex items-center gap-1.5">
+          <span className="text-sm">🏆</span>
+          <span className="font-heading text-lg text-white/60">
+            {bestScore}
           </span>
         </div>
+      )}
+
+      {/* Misses indicator — gentle visual pips */}
+      {phase !== 'ready' && phase !== 'gameover' && misses > 0 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex gap-2">
+          {Array.from({ length: 3 }, (_, i) => (
+            <div
+              key={i}
+              className={`w-5 h-5 rounded-full transition-all duration-300 ${
+                i < misses
+                  ? 'bg-red-400/60 scale-110'
+                  : 'bg-white/20 border border-white/20'
+              }`}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Game Over overlay */}
+      {phase === 'gameover' && (
+        <GameOverOverlay
+          score={score}
+          bestScore={bestScore}
+          isNewBest={isNewBest}
+          onReplay={(e) => {
+            e.stopPropagation();
+            startGame();
+          }}
+        />
       )}
 
       {/* Back button */}
@@ -659,58 +760,50 @@ export default function StackBricks() {
       <ArthurPeekLayer />
       <CelebrationLayer />
 
-      {/* Inline keyframes */}
+      {/* Scoped keyframes — prefixed to avoid collisions */}
       <style>{`
-        @keyframes fallOff {
+        @keyframes sb-fallOff-cw {
           0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
-          100% { opacity: 0; transform: translateY(300px) rotate(${Math.random() > 0.5 ? '' : '-'}45deg); }
+          100% { opacity: 0; transform: translateY(300px) rotate(45deg); }
         }
-        @keyframes towerSway {
+        @keyframes sb-fallOff-ccw {
+          0%   { opacity: 1; transform: translateY(0) rotate(0deg); }
+          100% { opacity: 0; transform: translateY(300px) rotate(-45deg); }
+        }
+        @keyframes sb-towerSway {
           0%, 100% { transform: translateX(0); }
           25%  { transform: translateX(${SWAY_AMOUNT}px); }
           75%  { transform: translateX(-${SWAY_AMOUNT}px); }
         }
-        @keyframes blockGlow {
+        @keyframes sb-blockGlow {
           0%   { filter: brightness(1); }
           100% { filter: brightness(1.15); }
         }
-        @keyframes perfectPop {
+        @keyframes sb-perfectPop {
           0%   { opacity: 0; transform: scale(0.3) translateY(20px); }
-          50%  { opacity: 1; transform: scale(1.2) translateY(-10px); }
+          50%  { opacity: 1; transform: scale(1.3) translateY(-10px); }
           70%  { transform: scale(0.95) translateY(0); }
           85%  { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.1) translateY(-30px); }
+          100% { opacity: 0; transform: scale(1.2) translateY(-40px); }
         }
-        @keyframes floatGentle {
+        @keyframes sb-floatGentle {
           0%, 100% { transform: translateY(0); }
           50%      { transform: translateY(-8px); }
         }
-        @keyframes pulseGlow {
+        @keyframes sb-pulseGlow {
           0%, 100% { box-shadow: 0 0 10px rgba(245,176,65,0.3); }
           50%      { box-shadow: 0 0 25px rgba(245,176,65,0.6); }
         }
-        @keyframes twinkle {
+        @keyframes sb-twinkle {
           0%   { opacity: 0.3; transform: scale(0.8); }
           100% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes sb-popIn {
+          0%   { opacity: 0; transform: scale(0); }
+          60%  { transform: scale(1.15); }
+          100% { opacity: 1; transform: scale(1); }
         }
       `}</style>
     </div>
   );
-}
-
-/* ── Color utilities ── */
-function darkenColor(hex, amount) {
-  const num = parseInt(hex.slice(1), 16);
-  const r = Math.max(0, (num >> 16) - amount);
-  const g = Math.max(0, ((num >> 8) & 0xFF) - amount);
-  const b = Math.max(0, (num & 0xFF) - amount);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-}
-
-function lightenColor(hex, amount) {
-  const num = parseInt(hex.slice(1), 16);
-  const r = Math.min(255, (num >> 16) + amount);
-  const g = Math.min(255, ((num >> 8) & 0xFF) + amount);
-  const b = Math.min(255, (num & 0xFF) + amount);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }

@@ -44,16 +44,16 @@ const MEDIUM_ROUNDS = [
 ];
 
 const HARD_ROUNDS = [
-  { items: ['🦅', '🦜', '🐦', '🐧'], oddIndex: 3, hint: 'fly' },
   { items: ['🐘', '🦛', '🦏', '🐁'], oddIndex: 3, hint: 'big' },
   { items: ['🐢', '🐍', '🦎', '🐰'], oddIndex: 3, hint: 'reptiles' },
-  { items: ['🍎', '🍓', '🌹', '🍊'], oddIndex: 3, hint: 'red' },
   { items: ['🐋', '🐬', '🐠', '🐕'], oddIndex: 3, hint: 'water' },
   { items: ['🦁', '🐯', '🐆', '🐄'], oddIndex: 3, hint: 'wild cats' },
   { items: ['🚂', '🚌', '🚗', '⛵'], oddIndex: 3, hint: 'wheels' },
-  { items: ['🍕', '🍔', '🌮', '🍰'], oddIndex: 3, hint: 'savoury' },
   { items: ['🌺', '🌸', '🌻', '🍄'], oddIndex: 3, hint: 'flowers' },
-  { items: ['⚽', '🏀', '🏐', '🏈'], oddIndex: 3, hint: 'round' },
+  { items: ['🧸', '🎲', '🪀', '🌳'], oddIndex: 3, hint: 'toys' },
+  { items: ['👒', '🧢', '🎩', '👟'], oddIndex: 3, hint: 'hats' },
+  { items: ['🎸', '🥁', '🎺', '🎨'], oddIndex: 3, hint: 'instruments' },
+  { items: ['🍕', '🍔', '🌮', '🧃'], oddIndex: 3, hint: 'food' },
 ];
 
 const TOTAL_ROUNDS = 10;
@@ -133,7 +133,7 @@ function ProgressBar({ current, results }) {
               }
             `}
             style={done ? {
-              animation: 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+              animation: 'oop-popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
               animationDelay: '0ms',
             } : undefined}
           >
@@ -158,7 +158,7 @@ function StreakBadge({ streak }) {
       className="fixed top-4 right-4 z-50 flex items-center gap-1 bg-orange-600/60 backdrop-blur-sm
                  rounded-full px-4 py-1.5 border-2 border-orange-400/40 shadow-lg
                  transition-all duration-300"
-      style={{ transform: `scale(${scale})`, animation: 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+      style={{ transform: `scale(${scale})`, animation: 'oop-popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
     >
       <span className="text-xl animate-bounce" style={{ animationDuration: '0.5s' }}>🔥</span>
       <span className="text-lg font-heading text-orange-100">{streak}x</span>
@@ -214,7 +214,7 @@ function ItemCard({ emoji, index, state, onTap, hinting, entranceDelay }) {
       `}
       style={{
         animation: state === 'idle' || state === 'wrong'
-          ? `cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${entranceDelay}ms both`
+          ? `oop-cardEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${entranceDelay}ms both`
           : undefined,
         ...stateStyle,
       }}
@@ -230,38 +230,50 @@ function ItemCard({ emoji, index, state, onTap, hinting, entranceDelay }) {
       {state === 'correct' && (
         <div
           className="absolute inset-0 rounded-3xl border-4 border-amber-400/80"
-          style={{ animation: 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+          style={{ animation: 'oop-popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
         />
       )}
     </button>
   );
 }
 
-/** Intro overlay — large emoji + bounce-in */
+/** Intro overlay — large emoji + bounce-in, no text */
 function IntroOverlay({ onStart }) {
   return (
     <div
-      className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6"
+      className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-8"
       onClick={onStart}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-amber-200/90 to-orange-100/90 backdrop-blur-sm" />
       <div
-        className="relative z-10 text-8xl"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+        className="relative z-10 text-9xl"
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
       >
         🔍
       </div>
+      {/* Example cards preview — shows the concept visually */}
       <div
-        className="relative z-10 text-6xl font-heading text-amber-700 drop-shadow-md"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both' }}
+        className="relative z-10 grid grid-cols-2 gap-2"
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both' }}
       >
-        Picks!
+        {['🐶', '🐱', '🐰', '🍎'].map((e, i) => (
+          <div
+            key={i}
+            className={`w-14 h-14 rounded-xl flex items-center justify-center ${
+              i === 3
+                ? 'bg-amber-300/80 border-2 border-amber-400 shadow-md shadow-amber-400/30'
+                : 'bg-white/60 border border-white/40'
+            }`}
+          >
+            <span className="text-2xl">{e}</span>
+          </div>
+        ))}
       </div>
       <div
-        className="relative z-10 mt-8 w-28 h-28 rounded-full bg-amber-400 shadow-xl shadow-amber-500/40
+        className="relative z-10 mt-4 w-28 h-28 rounded-full bg-amber-400 shadow-xl shadow-amber-500/40
                    flex items-center justify-center active:scale-90 transition-transform
                    border-4 border-amber-300/60"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both' }}
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both' }}
       >
         <span className="text-5xl">▶️</span>
       </div>
@@ -269,26 +281,28 @@ function IntroOverlay({ onStart }) {
   );
 }
 
-/** End-of-game score card overlay */
+/** End-of-game score card overlay — visual only, no text */
 function ScoreOverlay({ perfectCount, bestScore, onReplay }) {
   const isNewBest = perfectCount > bestScore;
   return (
     <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-4">
       <div className="absolute inset-0 bg-gradient-to-b from-amber-200/95 to-orange-100/95 backdrop-blur-md" />
 
-      {/* Stars row */}
+      {/* Stars row — each star pops in sequentially */}
       <div
-        className="relative z-10 flex gap-2"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+        className="relative z-10 flex flex-wrap justify-center gap-2 px-6"
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
       >
-        {Array.from({ length: Math.min(perfectCount, 10) }, (_, i) => (
+        {Array.from({ length: TOTAL_ROUNDS }, (_, i) => (
           <span
             key={i}
             className="text-4xl"
             style={{
-              animation: 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              animation: 'oop-popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
               animationDelay: `${300 + i * 120}ms`,
               animationFillMode: 'both',
+              opacity: i < perfectCount ? 1 : 0.25,
+              filter: i < perfectCount ? 'none' : 'grayscale(1)',
             }}
           >
             ⭐
@@ -296,24 +310,25 @@ function ScoreOverlay({ perfectCount, bestScore, onReplay }) {
         ))}
       </div>
 
-      {/* Score number */}
+      {/* Big score number (digits are fine for 3.5yo) */}
       <div
-        className="relative z-10 mt-2"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both' }}
+        className="relative z-10 mt-2 flex items-center gap-3"
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both' }}
       >
+        <span className="text-5xl">🎯</span>
         <span className="text-8xl font-heading text-amber-600 drop-shadow-lg">
           {perfectCount}
         </span>
-        <span className="text-4xl font-heading text-amber-500 ml-1">/10</span>
       </div>
 
-      {/* New best badge */}
+      {/* New best badge — emoji only */}
       {isNewBest && (
         <div
-          className="relative z-10 bg-amber-400/80 rounded-full px-6 py-2 border-2 border-amber-300/60 shadow-lg"
-          style={{ animation: 'popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both' }}
+          className="relative z-10 flex items-center gap-2 bg-amber-400/80 rounded-full px-6 py-2 border-2 border-amber-300/60 shadow-lg"
+          style={{ animation: 'oop-popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both' }}
         >
-          <span className="text-2xl font-heading text-white drop-shadow">✨ New Best! ✨</span>
+          <span className="text-3xl">🏆</span>
+          <span className="text-3xl">✨</span>
         </div>
       )}
 
@@ -323,7 +338,7 @@ function ScoreOverlay({ perfectCount, bestScore, onReplay }) {
         className="relative z-10 mt-6 w-28 h-28 rounded-full bg-amber-400 shadow-xl shadow-amber-500/40
                    flex items-center justify-center active:scale-90 transition-transform
                    border-4 border-amber-300/60"
-        style={{ animation: 'popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
+        style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
       >
         <span className="text-5xl">🔄</span>
       </button>
@@ -474,7 +489,7 @@ export default function OddOnePicks() {
      ═══════════════════════════════════════════════════════════════ */
 
   return (
-    <div className="fixed inset-0 overflow-hidden">
+    <div className="fixed inset-0 overflow-hidden" style={{ touchAction: 'manipulation' }}>
       {/* Warm gradient background */}
       <div
         className="absolute inset-0"
@@ -514,18 +529,6 @@ export default function OddOnePicks() {
         </div>
       )}
 
-      {/* Round counter badge */}
-      {(phase === 'playing' || phase === 'correct') && (
-        <div
-          className="fixed top-16 left-1/2 -translate-x-1/2 z-40
-                     bg-amber-500/70 backdrop-blur-sm rounded-full px-5 py-1
-                     border border-amber-400/40 shadow-md"
-        >
-          <span className="text-lg font-heading text-white drop-shadow">
-            {roundIndex + 1} / {TOTAL_ROUNDS}
-          </span>
-        </div>
-      )}
 
       {/* ── Main 2×2 Grid ── */}
       {(phase === 'playing' || phase === 'correct') && (
@@ -566,9 +569,9 @@ export default function OddOnePicks() {
       <ArthurPeekLayer />
       <CelebrationLayer />
 
-      {/* ── Inline keyframes for card entrance ── */}
+      {/* Scoped keyframes — prefixed to avoid collisions */}
       <style>{`
-        @keyframes cardEntrance {
+        @keyframes oop-cardEntrance {
           0% {
             opacity: 0;
             transform: scale(0.3) rotate(-8deg);
@@ -582,7 +585,7 @@ export default function OddOnePicks() {
             transform: scale(1) rotate(0deg);
           }
         }
-        @keyframes popIn {
+        @keyframes oop-popIn {
           0% {
             opacity: 0;
             transform: scale(0);
