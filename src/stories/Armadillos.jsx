@@ -9,7 +9,7 @@ const storyData = {
     {
       bg: 'from-green-400 to-lime-600',
       image: '/arthurs-world/images/armadillos/page-1.png',
-      text: 'Once upon a time, there was a prickly hedgehog and a slow tortoise. They were best friends!',
+      text: 'This is Hedgehog — all prickly! And this is Tortoise — all shelly! They were the BEST of friends.',
       elements: [
         {
           id: 'hedgehog',
@@ -59,16 +59,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'hedgehog-wiggle',
-          type: 'tap-wiggle',
+          id: 'hedgehog-speak',
+          type: 'character-speak',
           targetId: 'hedgehog',
-          data: {},
+          data: { say: 'I am prickly prickly prickly!' },
         },
         {
-          id: 'tortoise-wiggle',
-          type: 'tap-wiggle',
+          id: 'tortoise-speak',
+          type: 'character-speak',
           targetId: 'tortoise',
-          data: {},
+          data: { say: 'And I am hard hard hard!' },
         },
         {
           id: 'heart-grow',
@@ -95,7 +95,7 @@ const storyData = {
     {
       bg: 'from-lime-500 to-green-700',
       image: '/arthurs-world/images/armadillos/page-2.png',
-      text: 'A hungry jaguar came along! He wanted to eat them for dinner!',
+      text: 'Along came a big spotty Jaguar. GRROWL! His tummy was so rumbly! He wanted to gobble them up!',
       elements: [
         {
           id: 'jaguar',
@@ -154,21 +154,21 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'jaguar-sound',
-          type: 'tap-sound',
+          id: 'jaguar-speak',
+          type: 'character-speak',
           targetId: 'jaguar',
-          data: { say: 'I am SO hungry!' },
+          data: { say: 'GRROWL! I am SO hungry! I want my dinner!' },
         },
         {
-          id: 'jaguar-shake',
-          type: 'tap-shake',
-          targetId: 'jaguar',
+          id: 'hedgehog-peek',
+          type: 'peek-a-boo',
+          targetId: 'scared-hedgehog',
           data: {},
         },
         {
-          id: 'hedgehog-scared-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'scared-hedgehog',
+          id: 'tortoise-peek',
+          type: 'peek-a-boo',
+          targetId: 'scared-tortoise',
           data: {},
         },
         {
@@ -181,11 +181,11 @@ const storyData = {
           id: 'parrot-reveal',
           type: 'tap-reveal',
           targetId: 'hidden-parrot',
-          data: { content: 'Squawk!' },
+          data: { content: 'Uh oh!' },
         },
         {
-          id: 'bush-wiggle',
-          type: 'tap-wiggle',
+          id: 'bush-shake',
+          type: 'tap-shake',
           targetId: 'jungle-bush',
           data: {},
         },
@@ -196,7 +196,7 @@ const storyData = {
     {
       bg: 'from-green-500 to-emerald-700',
       image: '/arthurs-world/images/armadillos/page-3.png',
-      text: 'The hedgehog curled into a prickly ball! "Ouch!" said the jaguar. "Too prickly!"',
+      text: 'Hedgehog curled up into a prickly ball! Jaguar tried to bite and — OUCH! Too prickly!',
       elements: [
         {
           id: 'curled-hedgehog',
@@ -246,16 +246,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'hedgehog-grow-ball',
-          type: 'tap-grow',
+          id: 'hedgehog-curly',
+          type: 'tap-animate',
           targetId: 'curled-hedgehog',
-          data: {},
+          data: { animation: 'animate-bounce', duration: 600 },
         },
         {
-          id: 'jaguar-ouch-sound',
-          type: 'tap-sound',
+          id: 'jaguar-ouch-speak',
+          type: 'character-speak',
           targetId: 'ouch-jaguar',
-          data: { say: 'Ouch! Too prickly!' },
+          data: { say: 'OUCH! Ow ow ow! Too prickly!' },
         },
         {
           id: 'ouch-sparkle',
@@ -264,16 +264,16 @@ const storyData = {
           data: {},
         },
         {
-          id: 'prickle-spin',
-          type: 'tap-spin',
+          id: 'prickle-count',
+          type: 'tap-count',
           targetId: 'prickle-stars',
-          data: {},
+          data: { max: 5 },
         },
         {
-          id: 'tortoise-wiggle-watch',
-          type: 'tap-wiggle',
+          id: 'tortoise-speak-watch',
+          type: 'character-speak',
           targetId: 'watching-tortoise',
-          data: {},
+          data: { say: 'Hee hee! Good one, Hedgehog!' },
         },
       ],
     },
@@ -282,7 +282,7 @@ const storyData = {
     {
       bg: 'from-emerald-400 to-green-700',
       image: '/arthurs-world/images/armadillos/page-4.png',
-      text: 'The tortoise hid inside her hard shell! "I can\'t bite through that!" said the jaguar.',
+      text: 'Tortoise pulled into her hard hard shell! Jaguar tried to bite and — CRUNCH! Too hard!',
       elements: [
         {
           id: 'shelled-tortoise',
@@ -338,10 +338,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'jaguar-bite-sound',
-          type: 'tap-sound',
+          id: 'jaguar-crunch-speak',
+          type: 'character-speak',
           targetId: 'biting-jaguar',
-          data: { say: 'I cannot bite through that!' },
+          data: { say: 'CRUNCH! Ow! My poor teeth! Too hard!' },
         },
         {
           id: 'shield-sparkle',
@@ -356,10 +356,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'hedgehog-count-cheers',
-          type: 'tap-count',
+          id: 'hedgehog-speak-cheer',
+          type: 'character-speak',
           targetId: 'watching-hedgehog',
-          data: { max: 5 },
+          data: { say: 'Hooray! Good one, Tortoise!' },
         },
       ],
     },
@@ -368,7 +368,7 @@ const storyData = {
     {
       bg: 'from-yellow-600 to-amber-800',
       image: '/arthurs-world/images/armadillos/page-5.png',
-      text: 'The jaguar\'s mother said "If it curls up, it\'s a hedgehog. If it has a shell, it\'s a tortoise."',
+      text: 'Jaguar ran home to his mummy. She said: "Curly one is Hedgehog. Shelly one is Tortoise. Easy peasy!"',
       elements: [
         {
           id: 'mama-jaguar',
@@ -427,34 +427,34 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'mama-advice-sound',
-          type: 'tap-sound',
+          id: 'mama-speak',
+          type: 'character-speak',
           targetId: 'mama-jaguar',
-          data: { say: 'If it curls up, it is a hedgehog. If it has a shell, it is a tortoise.' },
+          data: { say: 'Curly one is Hedgehog. Shelly one is Tortoise. Now go get your dinner!' },
         },
         {
-          id: 'mama-grow',
-          type: 'tap-grow',
-          targetId: 'mama-jaguar',
-          data: {},
-        },
-        {
-          id: 'baby-animate-nod',
-          type: 'tap-animate',
+          id: 'baby-speak',
+          type: 'character-speak',
           targetId: 'baby-jaguar',
-          data: { animation: 'animate-bounce', duration: 800 },
+          data: { say: 'OK Mummy! Curly is Hedgehog, shelly is Tortoise!' },
         },
         {
-          id: 'bubble-spin',
-          type: 'tap-spin',
+          id: 'bubble-tap',
+          type: 'tap-grow',
           targetId: 'speech-bubble',
           data: {},
         },
         {
-          id: 'monkey-reveal',
-          type: 'tap-reveal',
+          id: 'thinking-spin',
+          type: 'tap-spin',
+          targetId: 'thinking-face',
+          data: {},
+        },
+        {
+          id: 'monkey-peek',
+          type: 'peek-a-boo',
           targetId: 'hidden-monkey',
-          data: { content: 'Hee hee!' },
+          data: {},
         },
         {
           id: 'moon-color',
@@ -469,7 +469,7 @@ const storyData = {
     {
       bg: 'from-lime-400 to-green-600',
       image: '/arthurs-world/images/armadillos/page-6.png',
-      text: 'But clever hedgehog learned to swim like tortoise! And tortoise learned to curl up like hedgehog!',
+      text: 'But Hedgehog and Tortoise had a clever plan! Swappity swap! Hedgehog learned to swim! Tortoise learned to curl!',
       elements: [
         {
           id: 'swimming-hedgehog',
@@ -519,16 +519,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'hedgehog-swap-tortoise',
-          type: 'tap-swap',
+          id: 'hedgehog-speak-swim',
+          type: 'character-speak',
           targetId: 'swimming-hedgehog',
-          data: { altContent: 'Tortoise' },
+          data: { say: 'SPLASHY SPLASH! Look at me swim!' },
         },
         {
-          id: 'tortoise-swap-hedgehog',
-          type: 'tap-swap',
+          id: 'tortoise-speak-curl',
+          type: 'character-speak',
           targetId: 'curling-tortoise',
-          data: { altContent: 'Hedgehog' },
+          data: { say: 'Curly wurly! Look at me curl up!' },
         },
         {
           id: 'splash-sparkle',
@@ -537,10 +537,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'arrows-spin',
-          type: 'tap-spin',
+          id: 'arrows-swap',
+          type: 'tap-swap',
           targetId: 'swap-arrows',
-          data: {},
+          data: { altContent: 'Swappity swap!' },
         },
         {
           id: 'lightbulb-color',
@@ -555,7 +555,7 @@ const storyData = {
     {
       bg: 'from-green-500 to-lime-700',
       image: '/arthurs-world/images/armadillos/page-7.png',
-      text: 'The jaguar was SO confused! "Which one is which? I can\'t tell!"',
+      text: 'Jaguar came back but — oh no! Which one is which?! They both look the same! Poor silly Jaguar!',
       elements: [
         {
           id: 'confused-jaguar',
@@ -614,28 +614,22 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'jaguar-confused-sound',
-          type: 'tap-sound',
+          id: 'jaguar-confused-speak',
+          type: 'character-speak',
           targetId: 'confused-jaguar',
-          data: { say: 'Which one is which? I cannot tell!' },
+          data: { say: 'Wait wait wait! Which one is Hedgehog? Which one is Tortoise?! I am all mixed up!' },
         },
         {
-          id: 'jaguar-confused-shake',
-          type: 'tap-shake',
-          targetId: 'confused-jaguar',
-          data: {},
-        },
-        {
-          id: 'left-animal-swap',
-          type: 'tap-swap',
+          id: 'left-animal-flap',
+          type: 'flap-reveal',
           targetId: 'tricky-animal-left',
-          data: { altContent: 'Tortoise' },
+          data: { content: 'Tee hee!' },
         },
         {
-          id: 'right-animal-swap',
-          type: 'tap-swap',
+          id: 'right-animal-flap',
+          type: 'flap-reveal',
           targetId: 'tricky-animal-right',
-          data: { altContent: 'Hedgehog' },
+          data: { content: 'Ha ha!' },
         },
         {
           id: 'dizzy-spin',
@@ -644,10 +638,16 @@ const storyData = {
           data: {},
         },
         {
-          id: 'snake-reveal',
-          type: 'tap-reveal',
+          id: 'questions-count',
+          type: 'tap-count',
+          targetId: 'question-marks',
+          data: { max: 5 },
+        },
+        {
+          id: 'snake-peek',
+          type: 'peek-a-boo',
           targetId: 'hidden-snake',
-          data: { content: 'Hissss!' },
+          data: {},
         },
       ],
     },
@@ -656,7 +656,7 @@ const storyData = {
     {
       bg: 'from-amber-400 to-yellow-600',
       image: '/arthurs-world/images/armadillos/page-8.png',
-      text: 'They mixed up so much that they turned into something NEW \u2014 an armadillo!',
+      text: 'They practised and practised until — WHOOOOSH! Drag Hedgehog to Tortoise and make something NEW!',
       elements: [
         {
           id: 'draggable-hedgehog',
@@ -709,13 +709,13 @@ const storyData = {
           id: 'hedgehog-drag-to-tortoise',
           type: 'drag-to-target',
           targetId: 'draggable-hedgehog',
-          data: { dropZone: { x: 72, y: 40, radius: 50 }, onDrop: 'snap' },
+          data: { dropZone: { x: 72, y: 40, radius: 60 }, onDrop: 'snap' },
         },
         {
-          id: 'tortoise-swap-armadillo',
-          type: 'tap-swap',
+          id: 'transformation-scene',
+          type: 'scene-transform',
           targetId: 'target-tortoise',
-          data: { altContent: 'Armadillo!' },
+          data: {},
         },
         {
           id: 'magic-sparkle-burst',
@@ -730,10 +730,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'armadillo-reveal-new',
+          id: 'armadillo-reveal',
           type: 'tap-reveal',
           targetId: 'new-armadillo',
-          data: { content: 'NEW ANIMAL!' },
+          data: { content: 'ARMADILLO!' },
         },
       ],
     },
@@ -742,7 +742,7 @@ const storyData = {
     {
       bg: 'from-lime-500 to-emerald-700',
       image: '/arthurs-world/images/armadillos/page-9.png',
-      text: 'The armadillo had a hard shell AND could curl into a ball! The jaguar couldn\'t catch him at all!',
+      text: 'A brand new animal! Hard shell AND curly ball! Jaguar tried to bite — CRUNCH! Tried to grab — OUCH! He ran away!',
       elements: [
         {
           id: 'armadillo-hero',
@@ -801,33 +801,33 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'armadillo-grow-strong',
-          type: 'tap-grow',
+          id: 'armadillo-speak',
+          type: 'character-speak',
           targetId: 'armadillo-hero',
-          data: {},
+          data: { say: 'You can not catch me! I am too prickly AND too hard! Nah nah nah!' },
         },
         {
-          id: 'armadillo-sound',
-          type: 'tap-sound',
-          targetId: 'armadillo-hero',
-          data: { say: 'You cannot catch me!' },
-        },
-        {
-          id: 'jaguar-hide-run',
+          id: 'jaguar-run-away',
           type: 'tap-hide',
           targetId: 'running-jaguar',
           data: {},
         },
         {
-          id: 'shell-shake',
-          type: 'tap-shake',
+          id: 'shell-collect',
+          type: 'collect',
           targetId: 'shell-icon',
           data: {},
         },
         {
-          id: 'ball-spin',
-          type: 'tap-spin',
+          id: 'ball-collect',
+          type: 'collect',
           targetId: 'ball-icon',
+          data: {},
+        },
+        {
+          id: 'victory-sparkle',
+          type: 'tap-sparkle',
+          targetId: 'victory-star',
           data: {},
         },
         {
@@ -843,7 +843,7 @@ const storyData = {
     {
       bg: 'from-green-300 to-lime-500',
       image: '/arthurs-world/images/armadillos/page-10.png',
-      text: 'And that is how armadillos began! They\'re part hedgehog and part tortoise! The end!',
+      text: 'And THAT is how armadillos began! A bit prickly, a bit shelly, and very VERY clever! The end!',
       elements: [
         {
           id: 'final-armadillo',
@@ -902,32 +902,26 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'armadillo-end-sparkle',
-          type: 'tap-sparkle',
+          id: 'armadillo-end-speak',
+          type: 'character-speak',
           targetId: 'final-armadillo',
+          data: { say: 'I am an armadillo! Part prickly, part shelly, ALL clever!' },
+        },
+        {
+          id: 'hedgehog-jump',
+          type: 'tap-jump',
+          targetId: 'mini-hedgehog',
           data: {},
         },
         {
-          id: 'armadillo-end-sound',
-          type: 'tap-sound',
-          targetId: 'final-armadillo',
-          data: { say: 'The end!' },
-        },
-        {
-          id: 'hedgehog-dance',
-          type: 'tap-animate',
-          targetId: 'mini-hedgehog',
-          data: { animation: 'animate-dance', duration: 1000 },
-        },
-        {
-          id: 'tortoise-dance',
-          type: 'tap-animate',
+          id: 'tortoise-jump',
+          type: 'tap-jump',
           targetId: 'mini-tortoise',
-          data: { animation: 'animate-dance', duration: 1000 },
+          data: {},
         },
         {
-          id: 'popper-spin',
-          type: 'tap-spin',
+          id: 'popper-sparkle',
+          type: 'tap-sparkle',
           targetId: 'party-popper',
           data: {},
         },
@@ -936,6 +930,12 @@ const storyData = {
           type: 'tap-color',
           targetId: 'celebration-star',
           data: { colors: ['#FBBF24', '#EF4444', '#8B5CF6', '#3B82F6', '#10B981', '#EC4899'] },
+        },
+        {
+          id: 'rainbow-grow',
+          type: 'tap-grow',
+          targetId: 'rainbow',
+          data: {},
         },
       ],
     },

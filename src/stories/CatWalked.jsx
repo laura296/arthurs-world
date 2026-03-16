@@ -9,7 +9,7 @@ const storyData = {
     {
       bg: 'from-slate-500 to-indigo-700',
       image: '/arthurs-world/images/cat-walked/page-1.png',
-      text: 'Once upon a time, all the animals were wild. The wildest of all was the Cat, who walked by himself.',
+      text: 'Long long ago, all the animals were WILD. Dog was wild. Horse was wild. Cow was wild. But the wildest of all? The Cat!',
       elements: [
         { id: 'wild-cat', x: 50, y: 35, hotspot: true, w: 140, h: 130, z: 3 },
         { id: 'wild-dog', x: 18, y: 45, hotspot: true, w: 100, h: 90, z: 2 },
@@ -20,28 +20,28 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'cat-walk-wiggle',
-          type: 'tap-wiggle',
+          id: 'cat-speak',
+          type: 'character-speak',
           targetId: 'wild-cat',
-          data: {},
+          data: { say: 'I walk by MYSELF!' },
         },
         {
-          id: 'cat-meow-sound',
-          type: 'tap-sound',
-          targetId: 'wild-cat',
-          data: { say: 'I walk by myself!' },
-        },
-        {
-          id: 'dog-shake',
-          type: 'tap-shake',
+          id: 'dog-speak',
+          type: 'character-speak',
           targetId: 'wild-dog',
-          data: {},
+          data: { say: 'Woof woof!' },
         },
         {
-          id: 'horse-grow',
-          type: 'tap-grow',
+          id: 'horse-speak',
+          type: 'character-speak',
           targetId: 'wild-horse',
-          data: {},
+          data: { say: 'Neeeigh!' },
+        },
+        {
+          id: 'cow-speak',
+          type: 'character-speak',
+          targetId: 'wild-cow',
+          data: { say: 'Mooooo!' },
         },
         {
           id: 'moon-sparkle',
@@ -56,7 +56,7 @@ const storyData = {
     {
       bg: 'from-amber-700 to-slate-600',
       image: '/arthurs-world/images/cat-walked/page-2.png',
-      text: 'The Woman made a warm cave home. She said to the Dog \u2014 "Come be my friend!"',
+      text: 'A kind Woman made a warm cave. She lit a big fire. Crackle crackle! "Who wants to come in?" she called.',
       elements: [
         { id: 'woman', x: 35, y: 38, hotspot: true, w: 120, h: 120, z: 3 },
         { id: 'cave-fire', x: 55, y: 52, hotspot: true, w: 100, h: 90, z: 2 },
@@ -66,34 +66,34 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'woman-invite-sound',
-          type: 'tap-sound',
+          id: 'woman-speak',
+          type: 'character-speak',
           targetId: 'woman',
-          data: { say: 'Come be my friend!' },
+          data: { say: 'Come in! Come in where it is warm!' },
         },
         {
-          id: 'fire-sparkle',
-          type: 'tap-sparkle',
+          id: 'fire-color',
+          type: 'tap-color',
           targetId: 'cave-fire',
-          data: {},
+          data: { colors: ['#ef4444', '#f97316', '#eab308', '#dc2626', '#f59e0b'] },
         },
         {
-          id: 'dog-wiggle-excited',
-          type: 'tap-wiggle',
+          id: 'dog-peek',
+          type: 'peek-a-boo',
           targetId: 'waiting-dog',
-          data: {},
+          data: { say: 'Woof? Can I come in?' },
+        },
+        {
+          id: 'cave-scene',
+          type: 'scene-transform',
+          targetId: 'cave-entrance',
+          data: { to: 'warm-glow' },
         },
         {
           id: 'bone-reveal',
           type: 'tap-reveal',
           targetId: 'hidden-bone',
-          data: { content: 'A bone!' },
-        },
-        {
-          id: 'cave-color',
-          type: 'tap-color',
-          targetId: 'cave-entrance',
-          data: { colors: ['#78716c', '#a8a29e', '#d6d3d1', '#57534e', '#44403c'] },
+          data: { content: 'A yummy bone!' },
         },
       ],
     },
@@ -102,7 +102,7 @@ const storyData = {
     {
       bg: 'from-amber-600 to-stone-700',
       image: '/arthurs-world/images/cat-walked/page-3.png',
-      text: 'The Dog said "Yes! I\'ll guard the cave!" So the Dog became tame and got warm food.',
+      text: 'Dog ran right in! "Woof woof! I will guard you! I will keep you safe!" Good Dog! Have some dinner!',
       elements: [
         { id: 'happy-dog', x: 45, y: 38, hotspot: true, w: 130, h: 120, z: 3 },
         { id: 'dog-bowl', x: 60, y: 58, hotspot: true, w: 80, h: 70, z: 2 },
@@ -112,22 +112,22 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'dog-bark-sound',
-          type: 'tap-sound',
+          id: 'dog-speak',
+          type: 'character-speak',
           targetId: 'happy-dog',
-          data: { say: 'Woof woof! I\'ll guard you!' },
-        },
-        {
-          id: 'dog-happy-spin',
-          type: 'tap-spin',
-          targetId: 'happy-dog',
-          data: {},
+          data: { say: 'Woof woof! I am a GOOD dog!' },
         },
         {
           id: 'bowl-count',
           type: 'tap-count',
           targetId: 'dog-bowl',
-          data: { max: 3 },
+          data: { max: 3, label: 'yummy bites' },
+        },
+        {
+          id: 'dog-collect-bones',
+          type: 'collect',
+          targetId: 'guard-shield',
+          data: { item: 'bone', total: 3 },
         },
         {
           id: 'heart-grow',
@@ -136,8 +136,8 @@ const storyData = {
           data: {},
         },
         {
-          id: 'fire-wiggle',
-          type: 'tap-wiggle',
+          id: 'fire-sparkle',
+          type: 'tap-sparkle',
           targetId: 'warm-fire-3',
           data: {},
         },
@@ -148,7 +148,7 @@ const storyData = {
     {
       bg: 'from-stone-500 to-amber-700',
       image: '/arthurs-world/images/cat-walked/page-4.png',
-      text: 'The Horse came too! "I\'ll carry things for you!" The Horse became tame and got sweet hay.',
+      text: 'Then Horse clip-clopped in! "Neeeigh! I will carry things for you!" Good Horse! Have some sweet hay!',
       elements: [
         { id: 'tame-horse', x: 50, y: 35, hotspot: true, w: 140, h: 130, z: 3 },
         { id: 'hay-bale', x: 75, y: 55, hotspot: true, w: 90, h: 80, z: 2 },
@@ -158,34 +158,34 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'horse-neigh-sound',
-          type: 'tap-sound',
+          id: 'horse-speak',
+          type: 'character-speak',
           targetId: 'tame-horse',
-          data: { say: 'Neigh! I\'ll help you!', sfx: 'horse' },
+          data: { say: 'Neeeigh! Clip clop clip clop!' },
         },
         {
-          id: 'horse-shake',
-          type: 'tap-shake',
-          targetId: 'tame-horse',
-          data: {},
-        },
-        {
-          id: 'hay-sparkle',
-          type: 'tap-sparkle',
+          id: 'hay-count',
+          type: 'tap-count',
           targetId: 'hay-bale',
-          data: {},
+          data: { max: 4, label: 'bundles of hay' },
         },
         {
-          id: 'horseshoe-spin',
-          type: 'tap-spin',
+          id: 'woman-speak',
+          type: 'character-speak',
+          targetId: 'woman-happy',
+          data: { say: 'Good Horse! Eat up!' },
+        },
+        {
+          id: 'horseshoe-collect',
+          type: 'collect',
           targetId: 'horseshoe',
-          data: {},
+          data: { item: 'horseshoe', total: 4 },
         },
         {
-          id: 'star-reveal',
-          type: 'tap-reveal',
+          id: 'star-sparkle',
+          type: 'tap-sparkle',
           targetId: 'sparkle-star',
-          data: { content: 'Good horse!' },
+          data: {},
         },
       ],
     },
@@ -194,7 +194,7 @@ const storyData = {
     {
       bg: 'from-slate-400 to-stone-600',
       image: '/arthurs-world/images/cat-walked/page-5.png',
-      text: 'The Cow came next! "I\'ll give you milk!" The Cow became tame and got a cosy barn.',
+      text: 'And Cow came too! "Moo moo MOO! I will give you milk every day!" Good Cow! Have a cosy barn!',
       elements: [
         { id: 'tame-cow', x: 48, y: 38, hotspot: true, w: 130, h: 120, z: 3 },
         { id: 'milk-glass', x: 72, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
@@ -204,34 +204,34 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'cow-moo-sound',
-          type: 'tap-sound',
+          id: 'cow-speak',
+          type: 'character-speak',
           targetId: 'tame-cow',
-          data: { say: 'Moo! Here\'s some milk!', sfx: 'cow' },
-        },
-        {
-          id: 'cow-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'tame-cow',
-          data: {},
+          data: { say: 'Moo moo MOO! Here is your milk!' },
         },
         {
           id: 'milk-count',
           type: 'tap-count',
           targetId: 'milk-glass',
-          data: { max: 4 },
+          data: { max: 5, label: 'cups of milk' },
         },
         {
-          id: 'bell-shake',
-          type: 'tap-shake',
+          id: 'bell-sound',
+          type: 'tap-sound',
           targetId: 'bell',
-          data: {},
+          data: { say: 'Ding dong! Ding dong!' },
+        },
+        {
+          id: 'barn-peek',
+          type: 'peek-a-boo',
+          targetId: 'cosy-barn',
+          data: { say: 'A cosy barn for Cow!' },
         },
         {
           id: 'flower-reveal',
           type: 'tap-reveal',
           targetId: 'hidden-flower',
-          data: { content: 'Pretty!' },
+          data: { content: 'A pretty flower!' },
         },
       ],
     },
@@ -240,7 +240,7 @@ const storyData = {
     {
       bg: 'from-indigo-600 to-slate-800',
       image: '/arthurs-world/images/cat-walked/page-6.png',
-      text: 'But the Cat said "I am the Cat who walks by himself! I don\'t need anyone!"',
+      text: 'But NOT the Cat. Oh no no no! "I am the Cat who walks by himself! All places are the same to me!" And off he went. Swish swish swish went his tail.',
       elements: [
         { id: 'proud-cat', x: 50, y: 32, hotspot: true, w: 150, h: 140, z: 3 },
         { id: 'nose-up', x: 60, y: 18, hotspot: true, w: 60, h: 60, z: 2 },
@@ -251,22 +251,22 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'cat-proud-sound',
-          type: 'tap-sound',
+          id: 'cat-proud-speak',
+          type: 'character-speak',
           targetId: 'proud-cat',
-          data: { say: 'I walk by myself!' },
+          data: { say: 'I walk by MYSELF! Hmph!' },
         },
         {
-          id: 'cat-spin-away',
-          type: 'tap-spin',
+          id: 'cat-tail-swish',
+          type: 'tap-animate',
           targetId: 'proud-cat',
-          data: {},
+          data: { animation: 'animate-wiggle', duration: 800 },
         },
         {
-          id: 'huff-hide',
-          type: 'tap-hide',
+          id: 'nose-flap',
+          type: 'flap-reveal',
           targetId: 'nose-up',
-          data: {},
+          data: { say: 'Hmph! Hmph! HMPH!' },
         },
         {
           id: 'star-1-sparkle',
@@ -293,7 +293,7 @@ const storyData = {
     {
       bg: 'from-indigo-500 to-amber-600',
       image: '/arthurs-world/images/cat-walked/page-7.png',
-      text: 'Then the Cat heard the Baby crying. He crept in and purred and purred. The Baby smiled!',
+      text: 'But then... Cat heard a little Baby crying. Waaah waaah! Cat crept in, soft soft soft. And he purred. Purr purr PURRRR! The Baby stopped crying and smiled!',
       elements: [
         { id: 'purring-cat', x: 40, y: 42, hotspot: true, w: 120, h: 110, z: 3 },
         { id: 'baby', x: 60, y: 40, hotspot: true, w: 110, h: 110, z: 3 },
@@ -304,44 +304,38 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'cat-purr-sound',
-          type: 'tap-sound',
+          id: 'cat-purr-speak',
+          type: 'character-speak',
           targetId: 'purring-cat',
-          data: { say: 'Purrrr purrrr purrrr' },
+          data: { say: 'Purr purr PURRRR!' },
         },
         {
-          id: 'cat-purr-animate',
-          type: 'tap-animate',
-          targetId: 'purring-cat',
-          data: { animation: 'animate-wiggle', duration: 800 },
-        },
-        {
-          id: 'baby-swap-smile',
-          type: 'tap-swap',
+          id: 'baby-peek',
+          type: 'peek-a-boo',
           targetId: 'baby',
-          data: { altContent: 'Happy!' },
+          data: { say: 'Peek-a-boo Baby!' },
         },
         {
-          id: 'hearts-sparkle',
-          type: 'tap-sparkle',
+          id: 'hearts-collect',
+          type: 'collect',
           targetId: 'purr-hearts',
-          data: {},
+          data: { item: 'heart', total: 5 },
         },
         {
-          id: 'hearts-grow',
-          type: 'tap-grow',
-          targetId: 'purr-hearts',
-          data: {},
+          id: 'cradle-sound',
+          type: 'tap-sound',
+          targetId: 'cradle',
+          data: { say: 'Rock rock rock...' },
         },
         {
-          id: 'mouse-reveal',
-          type: 'tap-reveal',
+          id: 'mouse-peek',
+          type: 'peek-a-boo',
           targetId: 'hidden-mouse',
-          data: { content: 'Squeak!' },
+          data: { say: 'Squeak squeak!' },
         },
         {
-          id: 'fire-wiggle',
-          type: 'tap-wiggle',
+          id: 'fire-sparkle',
+          type: 'tap-sparkle',
           targetId: 'warm-fire-7',
           data: {},
         },
@@ -352,7 +346,7 @@ const storyData = {
     {
       bg: 'from-amber-500 to-slate-600',
       image: '/arthurs-world/images/cat-walked/page-8.png',
-      text: 'The Woman said "You may come by the fire. But you must catch mice AND purr for the Baby."',
+      text: 'The Woman looked at Cat. "All right Cat. You can sit by the fire. You can have warm milk. BUT! You must catch mice. And you must purr for the Baby. Deal?"',
       elements: [
         { id: 'deal-woman', x: 30, y: 38, hotspot: true, w: 110, h: 110, z: 3 },
         { id: 'deal-cat', x: 65, y: 42, hotspot: true, w: 110, h: 100, z: 3 },
@@ -362,16 +356,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'woman-deal-sound',
-          type: 'tap-sound',
+          id: 'woman-deal-speak',
+          type: 'character-speak',
           targetId: 'deal-woman',
-          data: { say: 'You must catch mice and purr for the Baby!' },
+          data: { say: 'Catch mice AND purr for Baby. Deal?' },
         },
         {
-          id: 'cat-thinking-animate',
-          type: 'tap-animate',
+          id: 'cat-deal-speak',
+          type: 'character-speak',
           targetId: 'deal-cat',
-          data: { animation: 'animate-bounce', duration: 800 },
+          data: { say: 'Hmm... Deal!' },
         },
         {
           id: 'fire-color',
@@ -380,10 +374,10 @@ const storyData = {
           data: { colors: ['#ef4444', '#f97316', '#eab308', '#dc2626', '#f59e0b'] },
         },
         {
-          id: 'mouse-wiggle',
-          type: 'tap-wiggle',
+          id: 'mouse-collect',
+          type: 'collect',
           targetId: 'mouse-catch',
-          data: {},
+          data: { item: 'mouse', total: 3 },
         },
         {
           id: 'handshake-sparkle',
@@ -398,7 +392,7 @@ const storyData = {
     {
       bg: 'from-slate-400 to-indigo-600',
       image: '/arthurs-world/images/cat-walked/page-9.png',
-      text: 'The Cat agreed! But he STILL walks by himself whenever he wants. That\'s just how cats are!',
+      text: 'So Cat came inside. He sat by the warm fire. Purr purr purr. He drank warm milk. Lap lap lap. But when the moon came up? Off he went! Out into the night!',
       elements: [
         { id: 'free-cat', x: 22, y: 35, hotspot: true, w: 110, h: 110, z: 3 },
         { id: 'outdoor-path', x: 50, y: 55, hotspot: true, w: 80, h: 70, z: 1 },
@@ -415,10 +409,16 @@ const storyData = {
           data: { dropZone: { x: 78, y: 50, radius: 45 }, onDrop: 'snap' },
         },
         {
+          id: 'cat-speak',
+          type: 'character-speak',
+          targetId: 'free-cat',
+          data: { say: 'Purr purr... time to go OUT!' },
+        },
+        {
           id: 'paw-count',
           type: 'tap-count',
           targetId: 'paw-prints',
-          data: { max: 5 },
+          data: { max: 5, label: 'paw prints' },
         },
         {
           id: 'stars-sparkle',
@@ -432,12 +432,6 @@ const storyData = {
           targetId: 'free-moon',
           data: {},
         },
-        {
-          id: 'path-shake',
-          type: 'tap-shake',
-          targetId: 'outdoor-path',
-          data: {},
-        },
       ],
     },
 
@@ -445,7 +439,7 @@ const storyData = {
     {
       bg: 'from-indigo-400 to-amber-500',
       image: '/arthurs-world/images/cat-walked/page-10.png',
-      text: 'And that is why cats sit by the fire but still go out alone! The end!',
+      text: 'And that is why! Dog says "Woof!" by the door. Horse says "Neigh!" in the field. Cow says "Moo!" in the barn. But Cat? Cat sits by the fire and purrs... then walks off by himself! Because he is the Cat who walks by himself. The end!',
       elements: [
         { id: 'fireside-cat', x: 45, y: 40, hotspot: true, w: 130, h: 120, z: 3 },
         { id: 'cosy-fire-end', x: 62, y: 52, hotspot: true, w: 100, h: 90, z: 2 },
@@ -456,16 +450,10 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'cat-end-sound',
-          type: 'tap-sound',
+          id: 'cat-end-speak',
+          type: 'character-speak',
           targetId: 'fireside-cat',
-          data: { say: 'Purr... but I still walk by myself!' },
-        },
-        {
-          id: 'cat-end-animate',
-          type: 'tap-animate',
-          targetId: 'fireside-cat',
-          data: { animation: 'animate-dance', duration: 1000 },
+          data: { say: 'Purr purr... but I STILL walk by myself!' },
         },
         {
           id: 'fire-end-sparkle',
@@ -474,22 +462,22 @@ const storyData = {
           data: {},
         },
         {
-          id: 'dog-end-wiggle',
-          type: 'tap-wiggle',
+          id: 'dog-end-speak',
+          type: 'character-speak',
           targetId: 'happy-dog-end',
-          data: {},
+          data: { say: 'Woof woof! Good boy!' },
         },
         {
-          id: 'horse-end-swap',
-          type: 'tap-swap',
+          id: 'horse-end-speak',
+          type: 'character-speak',
           targetId: 'happy-horse-end',
-          data: { altContent: 'Happy!' },
+          data: { say: 'Neeeigh! Clip clop!' },
         },
         {
-          id: 'cow-end-shake',
-          type: 'tap-shake',
+          id: 'cow-end-speak',
+          type: 'character-speak',
           targetId: 'happy-cow-end',
-          data: {},
+          data: { say: 'Moo moo MOO!' },
         },
         {
           id: 'star-end-spin',

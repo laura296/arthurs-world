@@ -9,7 +9,7 @@ const storyData = {
     {
       bg: 'from-amber-300 to-yellow-500',
       image: '/arthurs-world/images/leopard-spots/page-1.png',
-      text: 'In the beginning, the leopard was all sandy-yellow, just like the sandy desert where he lived.',
+      text: 'Once upon a time, Leopard was all sandy-yellow. Sandy sandy sandy — just like the desert!',
       elements: [
         { id: 'leopard', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'sun', x: 80, y: 14, hotspot: true, w: 120, h: 100, z: 1 },
@@ -19,10 +19,10 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'leopard-color',
-          type: 'tap-color',
+          id: 'leopard-speak',
+          type: 'character-speak',
           targetId: 'leopard',
-          data: { colors: ['#facc15', '#fbbf24', '#f59e0b', '#eab308', '#fde047'] },
+          data: { say: 'I am SO yellow!' },
         },
         {
           id: 'sun-spin',
@@ -37,25 +37,25 @@ const storyData = {
           data: {},
         },
         {
-          id: 'desert-wiggle',
-          type: 'tap-wiggle',
+          id: 'desert-color',
+          type: 'tap-color',
           targetId: 'desert-sand',
-          data: {},
+          data: { colors: ['#facc15', '#fbbf24', '#f59e0b', '#eab308', '#fde047'] },
         },
         {
-          id: 'mouse-reveal',
-          type: 'tap-reveal',
+          id: 'mouse-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'hidden-mouse',
-          data: { content: 'Squeak!' },
+          data: { content: 'Squeak squeak!' },
         },
       ],
     },
 
-    // ── Page 2: The Leopard and Ethiopian ──
+    // ── Page 2: Leopard and His Best Friend ──
     {
       bg: 'from-orange-300 to-amber-500',
       image: '/arthurs-world/images/leopard-spots/page-2.png',
-      text: 'The leopard had a friend called Ethiopian. They hunted together every day.',
+      text: 'Leopard had a best friend called Ethiopian. They went looking for dinner together every single day!',
       elements: [
         { id: 'leopard-friend', x: 32, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'ethiopian', x: 65, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -65,16 +65,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'leopard-sound',
-          type: 'tap-sound',
+          id: 'leopard-speak',
+          type: 'character-speak',
           targetId: 'leopard-friend',
-          data: { say: 'Rawr! Let us hunt!' },
+          data: { say: 'Come on! I am hungry!' },
         },
         {
-          id: 'ethiopian-wiggle',
-          type: 'tap-wiggle',
+          id: 'ethiopian-speak',
+          type: 'character-speak',
           targetId: 'ethiopian',
-          data: {},
+          data: { say: 'Me too! Let us go!' },
         },
         {
           id: 'spear-shake',
@@ -90,9 +90,9 @@ const storyData = {
         },
         {
           id: 'ant-reveal',
-          type: 'tap-reveal',
+          type: 'peek-a-boo',
           targetId: 'hidden-ant',
-          data: { content: 'An ant!' },
+          data: { content: 'Hello tiny ant!' },
         },
       ],
     },
@@ -101,7 +101,7 @@ const storyData = {
     {
       bg: 'from-green-500 to-emerald-700',
       image: '/arthurs-world/images/leopard-spots/page-3.png',
-      text: 'All the animals ran away to a big, dark forest full of stripy, spotty shadows.',
+      text: 'But all the animals ran away! They hid in a big dark forest full of stripy, spotty, splotchy shadows.',
       elements: [
         { id: 'giraffe', x: 25, y: 35, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'zebra', x: 60, y: 42, hotspot: true, w: 120, h: 100, z: 3 },
@@ -136,18 +136,18 @@ const storyData = {
         },
         {
           id: 'shadow-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'shadow-patch',
-          data: { say: 'Shhhh! Hiding!' },
+          data: { say: 'Shhhh! Hiding hiding hiding!' },
         },
       ],
     },
 
-    // ── Page 4: The Confused Leopard ──
+    // ── Page 4: Where Did Everybody Go? ──
     {
       bg: 'from-amber-200 to-orange-400',
       image: '/arthurs-world/images/leopard-spots/page-4.png',
-      text: "The leopard couldn't find ANY animals in the forest! They were hidden in the shadows.",
+      text: 'Leopard looked and looked. Where did everybody go? He could not see ANY of them!',
       elements: [
         { id: 'confused-leopard', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'question-mark', x: 45, y: 16, hotspot: true, w: 120, h: 100, z: 2 },
@@ -157,16 +157,10 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'leopard-confused-sound',
-          type: 'tap-sound',
+          id: 'leopard-speak',
+          type: 'character-speak',
           targetId: 'confused-leopard',
-          data: { say: 'Where are all the animals?' },
-        },
-        {
-          id: 'leopard-confused-shake',
-          type: 'tap-shake',
-          targetId: 'confused-leopard',
-          data: {},
+          data: { say: 'Where is everybody?!' },
         },
         {
           id: 'question-spin',
@@ -175,16 +169,22 @@ const storyData = {
           data: {},
         },
         {
+          id: 'forest-flap',
+          type: 'flap-reveal',
+          targetId: 'dark-forest',
+          data: { content: 'Nobody here!' },
+        },
+        {
           id: 'tumbleweed-animate',
           type: 'tap-animate',
           targetId: 'tumbleweed',
           data: { animation: 'animate-spin360', duration: 1200 },
         },
         {
-          id: 'beetle-reveal',
-          type: 'tap-reveal',
+          id: 'beetle-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'hidden-beetle',
-          data: { content: 'A beetle!' },
+          data: { content: 'Bzzz! A beetle!' },
         },
       ],
     },
@@ -193,7 +193,7 @@ const storyData = {
     {
       bg: 'from-emerald-400 to-green-600',
       image: '/arthurs-world/images/leopard-spots/page-5.png',
-      text: "A wise baboon said \"Try going different!\" So Ethiopian changed his skin to beautiful dark brown.",
+      text: 'A wise old baboon said "You need to look different!" So Ethiopian made his skin a lovely dark brown.',
       elements: [
         { id: 'baboon', x: 30, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'ethiopian-changing', x: 68, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -203,16 +203,10 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'baboon-sound',
-          type: 'tap-sound',
+          id: 'baboon-speak',
+          type: 'character-speak',
           targetId: 'baboon',
-          data: { say: 'Try going different!' },
-        },
-        {
-          id: 'baboon-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'baboon',
-          data: {},
+          data: { say: 'You need to match the shadows!' },
         },
         {
           id: 'ethiopian-color-change',
@@ -227,19 +221,25 @@ const storyData = {
           data: {},
         },
         {
-          id: 'snail-reveal',
-          type: 'tap-reveal',
+          id: 'forest-scene',
+          type: 'scene-transform',
+          targetId: 'forest-ahead',
+          data: {},
+        },
+        {
+          id: 'snail-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'hidden-snail',
-          data: { content: 'A snail!' },
+          data: { content: 'A slow slow snail!' },
         },
       ],
     },
 
-    // ── Page 6: Now YOU Need Spots! ──
+    // ── Page 6: But What About Leopard? ──
     {
       bg: 'from-green-400 to-yellow-600',
       image: '/arthurs-world/images/leopard-spots/page-6.png',
-      text: 'The Ethiopian said "Now YOU need spots to match the forest shadows!"',
+      text: 'Ethiopian looked at Leopard. "But what about YOU? You are still all yellow! You need SPOTS!"',
       elements: [
         { id: 'ethiopian-speaking', x: 30, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'plain-leopard', x: 68, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -249,16 +249,16 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'ethiopian-spots-sound',
-          type: 'tap-sound',
+          id: 'ethiopian-speak',
+          type: 'character-speak',
           targetId: 'ethiopian-speaking',
-          data: { say: 'Now you need spots!' },
+          data: { say: 'You need spotty spots!' },
         },
         {
-          id: 'leopard-swap-worried',
-          type: 'tap-swap',
+          id: 'leopard-speak',
+          type: 'character-speak',
           targetId: 'plain-leopard',
-          data: { altContent: 'Surprise!' },
+          data: { say: 'Spots? For me?' },
         },
         {
           id: 'speech-grow',
@@ -267,10 +267,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'shadow-left-grow',
-          type: 'tap-grow',
+          id: 'shadow-left-flap',
+          type: 'flap-reveal',
           targetId: 'shadow-left',
-          data: {},
+          data: { content: 'Spotty shadows!' },
         },
         {
           id: 'shadow-right-shake',
@@ -281,31 +281,51 @@ const storyData = {
       ],
     },
 
-    // ── Page 7: Press, Press, Press! (Key Interactive Page) ──
+    // ── Page 7: Press Press PRESS! (Key Interactive Page) ──
     {
       bg: 'from-amber-400 to-orange-500',
       image: '/arthurs-world/images/leopard-spots/page-7.png',
-      text: 'He dipped his fingers in dark paint and pressed them all over the leopard \u2014 press, press, press!',
+      text: 'Ethiopian dipped his fingers in dark paint and went — press, press, PRESS! SPLODGE! Spotty spotty spotty!',
       elements: [
-        { id: 'leopard-getting-spots', x: 60, y: 42, hotspot: true, w: 120, h: 100, z: 2 },
-        { id: 'drag-paint', x: 18, y: 56, hotspot: true, w: 120, h: 100, z: 4 },
-        { id: 'hand-pressing', x: 22, y: 30, hotspot: true, w: 120, h: 100, z: 3 },
-        { id: 'spot-counter', x: 85, y: 58, hotspot: true, w: 120, h: 100, z: 2 },
-        { id: 'paint-pot', x: 14, y: 68, hotspot: true, w: 120, h: 100, z: 2 },
-        { id: 'magic-dust', x: 42, y: 16, hotspot: true, w: 120, h: 100, z: 2 },
+        { id: 'leopard-getting-spots', x: 55, y: 40, hotspot: true, w: 140, h: 120, z: 2 },
+        { id: 'paint-blob-1', x: 10, y: 55, hotspot: true, w: 80, h: 80, z: 4 },
+        { id: 'paint-blob-2', x: 10, y: 35, hotspot: true, w: 80, h: 80, z: 4 },
+        { id: 'paint-blob-3', x: 10, y: 15, hotspot: true, w: 80, h: 80, z: 4 },
+        { id: 'spot-counter', x: 85, y: 12, hotspot: true, w: 120, h: 100, z: 2 },
+        { id: 'paint-pot', x: 8, y: 72, hotspot: true, w: 100, h: 80, z: 3 },
+        { id: 'hand-pressing', x: 35, y: 28, hotspot: true, w: 120, h: 100, z: 3 },
+        { id: 'magic-dust', x: 55, y: 12, hotspot: true, w: 120, h: 100, z: 2 },
       ],
       interactions: [
         {
-          id: 'paint-drag-to-leopard',
+          id: 'drag-paint-1',
           type: 'drag-to-target',
-          targetId: 'drag-paint',
-          data: { dropZone: { x: 60, y: 42, radius: 40 }, onDrop: 'snap' },
+          targetId: 'paint-blob-1',
+          data: { dropZone: { x: 55, y: 40, radius: 45 }, onDrop: 'snap' },
+        },
+        {
+          id: 'drag-paint-2',
+          type: 'drag-to-target',
+          targetId: 'paint-blob-2',
+          data: { dropZone: { x: 55, y: 40, radius: 45 }, onDrop: 'snap' },
+        },
+        {
+          id: 'drag-paint-3',
+          type: 'drag-to-target',
+          targetId: 'paint-blob-3',
+          data: { dropZone: { x: 55, y: 40, radius: 45 }, onDrop: 'snap' },
         },
         {
           id: 'spot-count-tap',
           type: 'tap-count',
           targetId: 'spot-counter',
-          data: { max: 5 },
+          data: { max: 10 },
+        },
+        {
+          id: 'leopard-tap-spots',
+          type: 'tap-color',
+          targetId: 'leopard-getting-spots',
+          data: { colors: ['#facc15', '#d97706', '#92400e', '#78350f', '#451a03'] },
         },
         {
           id: 'hand-wiggle',
@@ -314,25 +334,25 @@ const storyData = {
           data: {},
         },
         {
+          id: 'paint-pot-shake',
+          type: 'tap-shake',
+          targetId: 'paint-pot',
+          data: {},
+        },
+        {
           id: 'magic-sparkle-tap',
           type: 'tap-sparkle',
           targetId: 'magic-dust',
           data: {},
         },
-        {
-          id: 'paint-pot-spin',
-          type: 'tap-spin',
-          targetId: 'paint-pot',
-          data: {},
-        },
       ],
     },
 
-    // ── Page 8: WOW! Beautiful Spots! ──
+    // ── Page 8: SPLODGE! Beautiful Spots! ──
     {
       bg: 'from-yellow-300 to-amber-500',
       image: '/arthurs-world/images/leopard-spots/page-8.png',
-      text: 'Now the leopard had beautiful spots all over! He looked at himself and said "WOW!"',
+      text: 'SPLODGE SPLODGE SPLODGE! Now Leopard had big round beautiful spots all over! "WOW!" he said. "I am SPOTTY!"',
       elements: [
         { id: 'spotty-leopard', x: 45, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'sparkle-left', x: 20, y: 24, hotspot: true, w: 120, h: 100, z: 2 },
@@ -342,20 +362,20 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'spotty-leopard-sparkle',
+          id: 'leopard-speak',
+          type: 'character-speak',
+          targetId: 'spotty-leopard',
+          data: { say: 'I am SPOTTY! Spotty spotty spotty!' },
+        },
+        {
+          id: 'spotty-leopard-jump',
+          type: 'tap-jump',
+          targetId: 'spotty-leopard',
+          data: {},
+        },
+        {
+          id: 'sparkle-left-sparkle',
           type: 'tap-sparkle',
-          targetId: 'spotty-leopard',
-          data: {},
-        },
-        {
-          id: 'spotty-leopard-grow',
-          type: 'tap-grow',
-          targetId: 'spotty-leopard',
-          data: {},
-        },
-        {
-          id: 'sparkle-left-spin',
-          type: 'tap-spin',
           targetId: 'sparkle-left',
           data: {},
         },
@@ -366,19 +386,19 @@ const storyData = {
           data: { colors: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'] },
         },
         {
-          id: 'ladybird-reveal',
-          type: 'tap-reveal',
+          id: 'ladybird-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'hidden-ladybird',
-          data: { content: 'A ladybird!' },
+          data: { content: 'A spotty ladybird!' },
         },
       ],
     },
 
-    // ── Page 9: Sneaking Through Shadows ──
+    // ── Page 9: Sneaky Spotty Leopard ──
     {
       bg: 'from-green-500 to-emerald-700',
       image: '/arthurs-world/images/leopard-spots/page-9.png',
-      text: "With his new spotty coat, the leopard could sneak through the forest shadows. The animals couldn't see him!",
+      text: 'Now Leopard could creep through the spotty shadows. Creep creep creep! Nobody could see him!',
       elements: [
         { id: 'camo-leopard', x: 45, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'tree-left', x: 15, y: 30, hotspot: true, w: 120, h: 100, z: 2 },
@@ -388,10 +408,10 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'camo-leopard-swap',
-          type: 'tap-swap',
+          id: 'leopard-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'camo-leopard',
-          data: { altContent: 'Hidden!' },
+          data: { content: 'BOO! Here I am!' },
         },
         {
           id: 'tree-left-shake',
@@ -400,10 +420,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'shadow-sneak-sound',
-          type: 'tap-sound',
+          id: 'leopard-speak',
+          type: 'character-speak',
           targetId: 'shadow-spots',
-          data: { say: 'You cannot see me!' },
+          data: { say: 'Shhh! Creepy creepy creep!' },
         },
         {
           id: 'tree-right-wiggle',
@@ -412,10 +432,10 @@ const storyData = {
           data: {},
         },
         {
-          id: 'frog-reveal',
-          type: 'tap-reveal',
+          id: 'frog-collect',
+          type: 'collect',
           targetId: 'hidden-frog',
-          data: { content: 'Ribbit!' },
+          data: { content: 'Ribbit ribbit!' },
         },
       ],
     },
@@ -424,7 +444,7 @@ const storyData = {
     {
       bg: 'from-amber-300 to-green-400',
       image: '/arthurs-world/images/leopard-spots/page-10.png',
-      text: 'And that is how the leopard got his beautiful spots! The end!',
+      text: 'And THAT is how Leopard got his beautiful spots! Spotty spotty spotty. The end!',
       elements: [
         { id: 'proud-leopard', x: 45, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
         { id: 'giraffe-friend', x: 18, y: 30, hotspot: true, w: 120, h: 100, z: 2 },
@@ -434,22 +454,22 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'leopard-end-sparkle',
+          id: 'leopard-speak',
+          type: 'character-speak',
+          targetId: 'proud-leopard',
+          data: { say: 'Look at my spots! I love them!' },
+        },
+        {
+          id: 'leopard-sparkle',
           type: 'tap-sparkle',
           targetId: 'proud-leopard',
           data: {},
         },
         {
-          id: 'leopard-end-sound',
-          type: 'tap-sound',
-          targetId: 'proud-leopard',
-          data: { say: 'Look at my beautiful spots! The end!' },
-        },
-        {
-          id: 'giraffe-animate',
-          type: 'tap-animate',
+          id: 'giraffe-jump',
+          type: 'tap-jump',
           targetId: 'giraffe-friend',
-          data: { animation: 'animate-bounce', duration: 900 },
+          data: {},
         },
         {
           id: 'hearts-color',
@@ -458,8 +478,8 @@ const storyData = {
           data: { colors: ['#ef4444', '#ec4899', '#f59e0b', '#8b5cf6', '#10b981'] },
         },
         {
-          id: 'butterfly-reveal',
-          type: 'tap-reveal',
+          id: 'butterfly-collect',
+          type: 'collect',
           targetId: 'hidden-butterfly',
           data: { content: 'A butterfly!' },
         },

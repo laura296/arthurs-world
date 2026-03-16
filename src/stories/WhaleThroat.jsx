@@ -5,11 +5,11 @@ const storyData = {
   title: 'How the Whale Got His Throat',
   audioDir: '/arthurs-world/audio/whale-throat',
   pages: [
-    // ── Page 1: Introduction ──
+    // ── Page 1: Meet the Whale ──
     {
       bg: 'from-blue-400 to-blue-700',
       image: '/arthurs-world/images/whale-throat/page-1.png',
-      text: 'Once upon a time, there was a very big whale who lived in the deep blue sea.',
+      text: 'Once upon a time, in the big blue sea, there was a whale. A BIG whale. A VERY big whale!',
       elements: [
         { id: 'whale', x: 50, y: 40, hotspot: true, w: 160, h: 140, z: 3 },
         { id: 'wave-left', x: 15, y: 20, hotspot: true, w: 80, h: 70, z: 1 },
@@ -19,43 +19,43 @@ const storyData = {
       ],
       interactions: [
         {
+          id: 'whale-speak',
+          type: 'character-speak',
+          targetId: 'whale',
+          data: { say: "Hello! I'm a whale! A BIIIIG whale!" },
+        },
+        {
           id: 'whale-grow',
           type: 'tap-grow',
           targetId: 'whale',
           data: {},
         },
         {
-          id: 'whale-sound',
-          type: 'tap-sound',
-          targetId: 'whale',
-          data: { say: "I'm so hungry!" },
+          id: 'fish-peekaboo',
+          type: 'peek-a-boo',
+          targetId: 'fish-bg',
+          data: { content: 'Peekaboo!' },
         },
         {
-          id: 'wave-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'wave-left',
-          data: {},
-        },
-        {
-          id: 'bubbles-sparkle',
-          type: 'tap-sparkle',
+          id: 'bubbles-tap',
+          type: 'tap-count',
           targetId: 'bubbles',
-          data: {},
+          data: { max: 5 },
         },
         {
-          id: 'wave-right-wiggle',
-          type: 'tap-wiggle',
+          id: 'wave-sparkle',
+          type: 'tap-sparkle',
           targetId: 'wave-right',
           data: {},
         },
       ],
     },
 
-    // ── Page 2: Gobble Gobble ──
+    // ── Page 2: The Hungry Whale ──
     {
       bg: 'from-blue-500 to-blue-800',
       image: '/arthurs-world/images/whale-throat/page-2.png',
-      text: 'The whale was SO hungry. He ate all the fish he could find! Gobble gobble!',
+      text: 'And this whale was HUNGRY. So hungry! His tummy went rumble rumble rumble. "I want FISH!" said the whale.',
       elements: [
         { id: 'hungry-whale', x: 25, y: 38, hotspot: true, w: 160, h: 140, z: 3 },
         { id: 'fish-1', x: 55, y: 35, hotspot: true, w: 90, h: 80, z: 2 },
@@ -66,40 +66,34 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'whale-eating-shake',
-          type: 'tap-shake',
+          id: 'whale-hungry-speak',
+          type: 'character-speak',
           targetId: 'hungry-whale',
-          data: {},
+          data: { say: 'GOBBLE GOBBLE GOBBLE!' },
         },
         {
-          id: 'fish-1-hide',
-          type: 'tap-hide',
+          id: 'fish-1-collect',
+          type: 'collect',
           targetId: 'fish-1',
           data: {},
         },
         {
-          id: 'fish-2-hide',
-          type: 'tap-hide',
+          id: 'fish-2-collect',
+          type: 'collect',
           targetId: 'fish-2',
           data: {},
         },
         {
-          id: 'fish-3-hide',
-          type: 'tap-hide',
+          id: 'fish-3-collect',
+          type: 'collect',
           targetId: 'fish-3',
           data: {},
         },
         {
-          id: 'fish-4-hide',
-          type: 'tap-hide',
+          id: 'fish-4-collect',
+          type: 'collect',
           targetId: 'fish-4',
           data: {},
-        },
-        {
-          id: 'whale-yum-sound',
-          type: 'tap-sound',
-          targetId: 'hungry-whale',
-          data: { say: 'Yum yum!' },
         },
         {
           id: 'chomp-count',
@@ -110,11 +104,11 @@ const storyData = {
       ],
     },
 
-    // ── Page 3: One Fish Left ──
+    // ── Page 3: One Little Fish ──
     {
       bg: 'from-blue-300 to-blue-600',
       image: '/arthurs-world/images/whale-throat/page-3.png',
-      text: 'Soon there was only one tiny clever fish left in the whole sea.',
+      text: 'He ate ALL the fish. Every one! But wait... one little fish was hiding. One teeny tiny clever fish.',
       elements: [
         { id: 'clever-fish', x: 70, y: 45, hotspot: true, w: 80, h: 70, z: 3 },
         { id: 'sad-whale', x: 28, y: 40, hotspot: true, w: 160, h: 140, z: 2 },
@@ -123,43 +117,37 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'fish-idea-sound',
-          type: 'tap-sound',
+          id: 'fish-speak',
+          type: 'character-speak',
           targetId: 'clever-fish',
-          data: { say: 'I have an idea!' },
+          data: { say: "You can't catch ME!" },
         },
         {
-          id: 'fish-wiggle',
-          type: 'tap-wiggle',
+          id: 'fish-peekaboo',
+          type: 'peek-a-boo',
           targetId: 'clever-fish',
-          data: {},
+          data: { content: 'Still here!' },
         },
         {
-          id: 'whale-grow',
-          type: 'tap-grow',
+          id: 'whale-speak',
+          type: 'character-speak',
           targetId: 'sad-whale',
-          data: {},
+          data: { say: 'Where did all the fish go?' },
         },
         {
-          id: 'starfish-reveal',
-          type: 'tap-reveal',
+          id: 'starfish-flap',
+          type: 'flap-reveal',
           targetId: 'hidden-starfish',
-          data: { content: 'Hello!' },
-        },
-        {
-          id: 'water-sparkle',
-          type: 'tap-sparkle',
-          targetId: 'empty-water',
-          data: {},
+          data: { content: 'Shhh! Hiding!' },
         },
       ],
     },
 
-    // ── Page 4: The Clever Plan ──
+    // ── Page 4: The Clever Fish Has a Plan ──
     {
       bg: 'from-cyan-400 to-blue-600',
       image: '/arthurs-world/images/whale-throat/page-4.png',
-      text: "The clever fish said: 'Why don't you eat the man on the raft?'",
+      text: 'The little fish had an idea! "Mr Whale! Mr Whale! See that man on the raft? I bet he is YUMMY!"',
       elements: [
         { id: 'plan-fish', x: 25, y: 50, hotspot: true, w: 80, h: 70, z: 3 },
         { id: 'man-raft', x: 65, y: 28, hotspot: true, w: 100, h: 100, z: 2 },
@@ -169,26 +157,26 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'fish-try-sound',
-          type: 'tap-sound',
+          id: 'fish-speak',
+          type: 'character-speak',
           targetId: 'plan-fish',
-          data: { say: 'Try that!' },
+          data: { say: 'Over there! Go on! Eat HIM!' },
         },
         {
-          id: 'raft-wiggle',
-          type: 'tap-wiggle',
+          id: 'man-peekaboo',
+          type: 'peek-a-boo',
+          targetId: 'man-raft',
+          data: { content: 'Uh oh!' },
+        },
+        {
+          id: 'raft-jump',
+          type: 'tap-jump',
           targetId: 'raft',
           data: {},
         },
         {
-          id: 'man-spin',
-          type: 'tap-spin',
-          targetId: 'man-raft',
-          data: {},
-        },
-        {
-          id: 'crab-reveal',
-          type: 'tap-reveal',
+          id: 'crab-flap',
+          type: 'flap-reveal',
           targetId: 'hidden-crab',
           data: { content: 'Snip snip!' },
         },
@@ -201,11 +189,11 @@ const storyData = {
       ],
     },
 
-    // ── Page 5: Whale Swims ──
+    // ── Page 5: Splish Splash! ──
     {
       bg: 'from-blue-400 to-indigo-700',
       image: '/arthurs-world/images/whale-throat/page-5.png',
-      text: 'The whale swam and swam to find the man. SPLASH!',
+      text: 'So off went the whale! Splish splash splosh! His tail went WHACK and the waves went WHOOSH!',
       elements: [
         { id: 'swimming-whale', x: 35, y: 42, hotspot: true, w: 160, h: 140, z: 3 },
         { id: 'splash', x: 70, y: 30, hotspot: true, w: 90, h: 80, z: 2 },
@@ -214,43 +202,37 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'whale-swim-animate',
+          id: 'whale-swim',
           type: 'tap-animate',
           targetId: 'swimming-whale',
           data: { animation: 'animate-fly', duration: 1200 },
         },
         {
-          id: 'splash-sparkle',
-          type: 'tap-sparkle',
-          targetId: 'splash',
-          data: {},
-        },
-        {
-          id: 'wave-1-shake',
-          type: 'tap-shake',
-          targetId: 'wave-1',
-          data: {},
-        },
-        {
-          id: 'whale-here-sound',
-          type: 'tap-sound',
+          id: 'whale-speak',
+          type: 'character-speak',
           targetId: 'swimming-whale',
-          data: { say: 'Here I come!', sfx: 'splash' },
+          data: { say: 'SPLISH SPLASH! Here I come!' },
         },
         {
-          id: 'wave-2-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'wave-2',
+          id: 'splash-sound',
+          type: 'tap-sound',
+          targetId: 'splash',
+          data: { say: 'WHOOOOSH!', sfx: 'splash' },
+        },
+        {
+          id: 'wave-1-scene',
+          type: 'scene-transform',
+          targetId: 'wave-1',
           data: {},
         },
       ],
     },
 
-    // ── Page 6: Swallowed Whole ──
+    // ── Page 6: GULP! ──
     {
       bg: 'from-blue-600 to-blue-900',
       image: '/arthurs-world/images/whale-throat/page-6.png',
-      text: 'The big whale opened his ENORMOUS mouth and swallowed the man whole!',
+      text: 'The whale opened his mouth wide wide WIDE. And he swallowed that man right up! GULP!',
       elements: [
         { id: 'big-whale-mouth', x: 40, y: 38, hotspot: true, w: 180, h: 160, z: 3 },
         { id: 'swallowed-man', x: 62, y: 42, hotspot: true, w: 100, h: 90, z: 2 },
@@ -265,37 +247,31 @@ const storyData = {
           data: {},
         },
         {
-          id: 'whale-gulp-shake',
-          type: 'tap-shake',
-          targetId: 'big-whale-mouth',
-          data: {},
-        },
-        {
-          id: 'man-hide',
-          type: 'tap-hide',
+          id: 'man-drag-to-mouth',
+          type: 'drag-to-target',
           targetId: 'swallowed-man',
-          data: {},
+          data: { dropZone: { x: 40, y: 38, radius: 45 }, onDrop: 'snap' },
         },
         {
           id: 'gulp-sound',
           type: 'tap-sound',
           targetId: 'gulp-effect',
-          data: { say: 'GULP!', sfx: 'splash' },
+          data: { say: 'GUUUULP!', sfx: 'splash' },
         },
         {
-          id: 'fish-wiggle',
-          type: 'tap-wiggle',
+          id: 'fish-speak',
+          type: 'character-speak',
           targetId: 'surprised-fish',
-          data: {},
+          data: { say: 'Hee hee hee!' },
         },
       ],
     },
 
-    // ── Page 7: Building the Grating ──
+    // ── Page 7: Bang Bang Bang! ──
     {
       bg: 'from-amber-800 to-rose-900',
       image: '/arthurs-world/images/whale-throat/page-7.png',
-      text: 'But the clever man had a plan! He built a grating inside the whale!',
+      text: 'But that man was clever! Inside the whale he went BANG BANG BANG! He built a scratchy poky grate to stick in the whale\'s throat!',
       elements: [
         { id: 'inside-man', x: 35, y: 45, hotspot: true, w: 100, h: 100, z: 3 },
         { id: 'grating', x: 72, y: 30, hotspot: true, w: 100, h: 90, z: 2 },
@@ -319,22 +295,22 @@ const storyData = {
           id: 'hammer-sound',
           type: 'tap-sound',
           targetId: 'hammer',
-          data: { say: 'Tap tap tap!' },
+          data: { say: 'BANG BANG BANG!' },
         },
         {
-          id: 'man-wiggle',
-          type: 'tap-wiggle',
+          id: 'man-speak',
+          type: 'character-speak',
           targetId: 'inside-man',
-          data: {},
+          data: { say: "That'll teach you, Mr Whale!" },
         },
       ],
     },
 
-    // ── Page 8: Stuck in His Throat ──
+    // ── Page 8: Aaaaa-CHOO! ──
     {
       bg: 'from-blue-500 to-purple-700',
       image: '/arthurs-world/images/whale-throat/page-8.png',
-      text: 'The whale coughed and spluttered! The grating was stuck in his throat!',
+      text: 'The grate got stuck in the whale\'s throat! "AAAAA-CHOO!" went the whale. He coughed and he spluttered and he wibbled and he wobbled!',
       elements: [
         { id: 'coughing-whale', x: 45, y: 40, hotspot: true, w: 160, h: 140, z: 3 },
         { id: 'stuck-grating', x: 45, y: 55, hotspot: true, w: 90, h: 80, z: 2 },
@@ -344,7 +320,13 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'whale-cough-shake',
+          id: 'whale-speak',
+          type: 'character-speak',
+          targetId: 'coughing-whale',
+          data: { say: 'AAAAA-CHOO! It tickles! Get it OUT!' },
+        },
+        {
+          id: 'whale-shake',
           type: 'tap-shake',
           targetId: 'coughing-whale',
           data: {},
@@ -362,25 +344,19 @@ const storyData = {
           data: {},
         },
         {
-          id: 'whale-achoo-sound',
-          type: 'tap-sound',
-          targetId: 'coughing-whale',
-          data: { say: 'Achoo!' },
-        },
-        {
-          id: 'dizzy-sparkle',
-          type: 'tap-sparkle',
+          id: 'dizzy-scene',
+          type: 'scene-transform',
           targetId: 'dizzy',
           data: {},
         },
       ],
     },
 
-    // ── Page 9: Man Escapes ──
+    // ── Page 9: Out He Pops! ──
     {
       bg: 'from-cyan-300 to-blue-500',
       image: '/arthurs-world/images/whale-throat/page-9.png',
-      text: 'The man jumped out and sailed away on his raft. Hooray!',
+      text: 'POP! Out jumped the man! He landed on his raft and sailed far far away. "Bye bye, silly whale!"',
       elements: [
         { id: 'escaping-man', x: 70, y: 30, hotspot: true, w: 100, h: 100, z: 3 },
         { id: 'escape-raft', x: 70, y: 40, hotspot: true, w: 100, h: 90, z: 2 },
@@ -389,43 +365,37 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'man-escape-animate',
-          type: 'tap-animate',
+          id: 'man-jump',
+          type: 'tap-jump',
           targetId: 'escaping-man',
-          data: { animation: 'animate-dance', duration: 1000 },
-        },
-        {
-          id: 'man-goodbye-sound',
-          type: 'tap-sound',
-          targetId: 'escaping-man',
-          data: { say: 'Goodbye whale!' },
-        },
-        {
-          id: 'waves-wiggle',
-          type: 'tap-wiggle',
-          targetId: 'escape-waves',
           data: {},
         },
         {
-          id: 'whale-swap-sad',
-          type: 'tap-swap',
+          id: 'man-speak',
+          type: 'character-speak',
+          targetId: 'escaping-man',
+          data: { say: 'Bye bye, Mr Whale!' },
+        },
+        {
+          id: 'whale-speak',
+          type: 'character-speak',
           targetId: 'sad-whale-end',
-          data: { altContent: 'So sad!' },
+          data: { say: 'Owww! My throat hurts!' },
         },
         {
-          id: 'raft-shake',
-          type: 'tap-shake',
+          id: 'raft-animate',
+          type: 'tap-animate',
           targetId: 'escape-raft',
-          data: {},
+          data: { animation: 'animate-dance', duration: 1000 },
         },
       ],
     },
 
-    // ── Page 10: The End ──
+    // ── Page 10: Only Teeny Tiny Fish ──
     {
       bg: 'from-blue-300 to-cyan-500',
       image: '/arthurs-world/images/whale-throat/page-10.png',
-      text: 'And from that day, the whale could only eat tiny tiny fish. The end!',
+      text: 'And from that day on, the whale could only eat teeny weeny tiny little fish. No more gobbling! The end!',
       elements: [
         { id: 'gentle-whale', x: 40, y: 35, hotspot: true, w: 160, h: 140, z: 2 },
         { id: 'tiny-fish', x: 65, y: 42, hotspot: true, w: 50, h: 50, z: 3 },
@@ -436,32 +406,26 @@ const storyData = {
       ],
       interactions: [
         {
-          id: 'whale-sparkle',
-          type: 'tap-sparkle',
+          id: 'whale-speak',
+          type: 'character-speak',
           targetId: 'gentle-whale',
+          data: { say: 'Only teeny tiny fish for me now!' },
+        },
+        {
+          id: 'tiny-fish-collect',
+          type: 'collect',
+          targetId: 'tiny-fish',
           data: {},
         },
         {
-          id: 'fish-dance-animate',
-          type: 'tap-animate',
-          targetId: 'tiny-fish',
-          data: { animation: 'animate-dance', duration: 1000 },
-        },
-        {
-          id: 'whale-tiny-sound',
-          type: 'tap-sound',
-          targetId: 'gentle-whale',
-          data: { say: 'Only little fish now!' },
-        },
-        {
-          id: 'creatures-color',
+          id: 'crab-color',
           type: 'tap-color',
           targetId: 'happy-crab',
           data: { colors: ['#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#10B981'] },
         },
         {
-          id: 'pearl-reveal',
-          type: 'tap-reveal',
+          id: 'pearl-flap',
+          type: 'flap-reveal',
           targetId: 'hidden-pearl',
           data: { content: 'A shiny pearl!' },
         },
@@ -472,8 +436,8 @@ const storyData = {
           data: { animation: 'animate-dance', duration: 1000 },
         },
         {
-          id: 'happy-fish-wiggle',
-          type: 'tap-wiggle',
+          id: 'happy-fish-jump',
+          type: 'tap-jump',
           targetId: 'happy-fish',
           data: {},
         },
