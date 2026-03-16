@@ -20,7 +20,7 @@ const storyData = {
       interactions: [
         {
           id: 'int-1a',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl-1',
           data: { say: 'What a lovely day!' },
         },
@@ -72,7 +72,7 @@ const storyData = {
         },
         {
           id: 'int-2b',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl-2',
           data: { say: 'I wonder who lives here?' },
         },
@@ -118,7 +118,7 @@ const storyData = {
         },
         {
           id: 'int-3a2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bowl-big',
           data: { say: 'Too hot!' },
         },
@@ -130,7 +130,7 @@ const storyData = {
         },
         {
           id: 'int-3b2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bowl-medium',
           data: { say: 'Too cold!' },
         },
@@ -142,7 +142,7 @@ const storyData = {
         },
         {
           id: 'int-3c2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bowl-small',
           data: { say: 'Just right!' },
         },
@@ -181,7 +181,7 @@ const storyData = {
         },
         {
           id: 'int-4b',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl-4',
           data: { say: 'Yummy!' },
         },
@@ -226,7 +226,7 @@ const storyData = {
         },
         {
           id: 'int-5a2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'chair-big',
           data: { say: 'Too hard!' },
         },
@@ -238,13 +238,13 @@ const storyData = {
         },
         {
           id: 'int-5b2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'chair-medium',
           data: { say: 'Too soft!' },
         },
         {
           id: 'int-5c',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'chair-small',
           data: { say: 'Just right!' },
         },
@@ -284,7 +284,7 @@ const storyData = {
         },
         {
           id: 'int-6b',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl-6',
           data: { say: 'Oopsie!' },
         },
@@ -330,7 +330,7 @@ const storyData = {
         },
         {
           id: 'int-7a2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bed-big',
           data: { say: 'Too hard!' },
         },
@@ -342,13 +342,13 @@ const storyData = {
         },
         {
           id: 'int-7b2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bed-medium',
           data: { say: 'Too soft!' },
         },
         {
           id: 'int-7c',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bed-small',
           data: { say: 'Just right!' },
         },
@@ -440,7 +440,7 @@ const storyData = {
         },
         {
           id: 'int-9a2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'papa-bear',
           data: { say: "Who's been eating MY porridge?" },
         },
@@ -452,13 +452,13 @@ const storyData = {
         },
         {
           id: 'int-9b2',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'mama-bear',
           data: { say: "Who's been sitting in MY chair?" },
         },
         {
           id: 'int-9c',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'baby-bear',
           data: { say: "Who's sleeping in MY bed?" },
         },
@@ -504,7 +504,7 @@ const storyData = {
         },
         {
           id: 'int-10b',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bears-10',
           data: { say: 'Bye bye!' },
         },

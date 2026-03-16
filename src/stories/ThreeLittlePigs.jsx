@@ -410,7 +410,7 @@ const storyData = {
         },
         {
           id: 'wolf-arrive-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf-arrive',
           data: { say: "I'll huff and I'll puff!" },
         },
@@ -487,7 +487,7 @@ const storyData = {
         },
         {
           id: 'wolf-straw-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf-straw',
           data: { say: "I'll huff and I'll puff!" },
         },
@@ -505,7 +505,7 @@ const storyData = {
         },
         {
           id: 'pig-run-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'pig-run',
           data: { say: 'Oh no! Run!' },
         },
@@ -573,7 +573,7 @@ const storyData = {
         },
         {
           id: 'wolf-sticks-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf-sticks',
           data: { say: "I'll HUFF and I'll PUFF!" },
         },
@@ -677,7 +677,7 @@ const storyData = {
         },
         {
           id: 'wolf-outside-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf-outside',
           data: { say: 'Let me in!' },
         },
@@ -736,7 +736,7 @@ const storyData = {
         },
         {
           id: 'wolf-tired-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf-tired',
           data: { say: 'Huff... puff... oh no!' },
         },
@@ -870,7 +870,7 @@ const storyData = {
         },
         {
           id: 'pigs-hooray',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'heart',
           data: { say: 'Hooray!' },
         },

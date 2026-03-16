@@ -124,7 +124,7 @@ const storyData = {
       interactions: [
         { id: 'i1', targetId: 'snap-fx', type: 'tap-shake', data: {} },
         { id: 'i2', targetId: 'splash', type: 'scene-transform', data: { transformId: 'splash', value: true } },
-        { id: 'i3', targetId: 'baby-snap', type: 'character-speak', data: { say: 'Let GO! You are hurting be!' } },
+        { id: 'i3', targetId: 'baby-snap', type: 'character-speak', data: { say: 'Let GO! You are hurting me!' } },
         { id: 'i4', targetId: 'croc-bite', type: 'character-speak', data: { say: 'I think today I will have elephant for dinner!' } },
         { id: 'i5', targetId: 'worried-bird', type: 'tap-jump', data: {} },
       ],
