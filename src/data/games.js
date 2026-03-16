@@ -11,6 +11,8 @@ const games = [
   { id: 'feed-animals',  emoji: '🐄', title: 'Feed Animals',  path: 'feed-animals',  category: 'games', group: '🎮 Games', bg: 'from-leaf to-green-700',         cover: '/arthurs-world/images/cards/feed-animals.png' },
   { id: 'pop-critters',  emoji: '🐹', title: 'Pop Critters',  path: 'pop-critters',  category: 'games', group: '🎮 Games', bg: 'from-amber-400 to-orange-500',   cover: '/arthurs-world/images/cards/pop-critters.png' },
   { id: 'build-a-scene', emoji: '🎭', title: 'Build a Scene', path: 'build-a-scene', category: 'games', group: '🎮 Games', bg: 'from-amber-400 to-orange-600',   cover: '/arthurs-world/images/cards/build-a-scene.png' },
+  { id: 'stack-bricks',  emoji: '🧱', title: 'Bricks',        path: 'stack-bricks',  category: 'games', group: '🎮 Games', bg: 'from-orange-400 to-red-500' },
+  { id: 'odd-one-picks', emoji: '🔍', title: 'Picks',         path: 'odd-one-picks', category: 'games', group: '🧩 Puzzles', bg: 'from-violet-400 to-fuchsia-500' },
 
   // ── Videos ──
   { id: 'baby-shark',        emoji: '🦈', title: 'Baby Shark',         path: 'video/baby-shark',        category: 'videos', bg: 'from-yellow-400 to-orange-500',  cover: '/arthurs-world/videos/baby-shark.webp' },
