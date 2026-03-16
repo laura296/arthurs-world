@@ -526,6 +526,7 @@ export default function StackBricks() {
           <FallingPiece key={piece.id} piece={piece} />
         ))}
       </div>
+      </div>
 
       {/* Moving block (above tower) */}
       {currentBlock && phase === 'playing' && (
@@ -665,9 +666,9 @@ export default function StackBricks() {
           100% { opacity: 0; transform: translateY(300px) rotate(${Math.random() > 0.5 ? '' : '-'}45deg); }
         }
         @keyframes towerSway {
-          0%, 100% { transform: translateX(0) translateY(var(--view-offset, 0px)); }
-          25%  { transform: translateX(${SWAY_AMOUNT}px) translateY(var(--view-offset, 0px)); }
-          75%  { transform: translateX(-${SWAY_AMOUNT}px) translateY(var(--view-offset, 0px)); }
+          0%, 100% { transform: translateX(0); }
+          25%  { transform: translateX(${SWAY_AMOUNT}px); }
+          75%  { transform: translateX(-${SWAY_AMOUNT}px); }
         }
         @keyframes blockGlow {
           0%   { filter: brightness(1); }
