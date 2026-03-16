@@ -32,6 +32,8 @@ const games = [
   { id: 'shape-match',     emoji: '🔷', title: 'Shape Match',   path: 'shape-match',     category: 'games', group: '🧩 Puzzles', bg: 'from-cyan-400 to-teal-600' },
   { id: 'counting-garden', emoji: '🌸', title: 'Counting',      path: 'counting-garden', category: 'games', group: '🧩 Puzzles', bg: 'from-green-300 to-emerald-500' },
   { id: 'colour-sort',     emoji: '🎨', title: 'Colour Sort',   path: 'colour-sort',     category: 'games', group: '🧩 Puzzles', bg: 'from-pink-300 to-amber-400' },
+  { id: 'abc-adventure',   emoji: '🔤', title: 'ABC Adventure', path: 'abc-adventure',   category: 'games', group: '🧩 Puzzles', bg: 'from-amber-300 to-yellow-500' },
+  { id: 'number-line',     emoji: '🔢', title: 'Number Line',   path: 'number-line',     category: 'games', group: '🧩 Puzzles', bg: 'from-blue-300 to-indigo-500' },
 
   // ── Art ──
   { id: 'colouring-book', emoji: '🖍️', title: 'Colour In',     path: 'colouring-book', category: 'art', bg: 'from-amber-300 to-pink-500' },

@@ -74,6 +74,8 @@ const ColourSort = lazy(() => import('./games/ColourSort'));
 const MorningRoutine = lazy(() => import('./games/MorningRoutine'));
 const SparkleTeeth = lazy(() => import('./games/SparkleTeeth'));
 const ArthursLunchbox = lazy(() => import('./games/ArthursLunchbox'));
+const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
+const NumberLine = lazy(() => import('./games/NumberLine'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -243,6 +245,8 @@ function AppRoutes() {
         {/* Educational games */}
         <Route path="/games/:mode/:section/counting-garden" element={<G><CountingGarden /></G>} />
         <Route path="/games/:mode/:section/colour-sort" element={<G><ColourSort /></G>} />
+        <Route path="/games/:mode/:section/abc-adventure" element={<G><ABCAdventure /></G>} />
+        <Route path="/games/:mode/:section/number-line" element={<G><NumberLine /></G>} />
 
         {/* Aesop's Fables — Games */}
         <Route path="/games/:mode/:section/tortoise-hare-race" element={<G><TortoiseHareRace /></G>} />

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import BackButton from '../components/BackButton';
 import LevelSelect from '../components/LevelSelect';
-import { playPop, playSuccess, playBoing, playSparkle, playFanfare, playCollectPing } from '../hooks/useSound';
+import { playPop, playSuccess, playBoing, playSparkle, playFanfare, playCollectPing, playTone } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
@@ -25,16 +25,25 @@ const OBJECT_SETS = [
   { emoji: '🍄', name: 'mushrooms',    bg: '#fce7f3' },
 ];
 
-/* ── Level definitions — 8 levels with progressive difficulty ── */
+/* ── Level definitions — 12 levels with progressive difficulty ── */
 const LEVELS = [
-  { id: 1, label: '1️⃣',  maxCount: 3,  options: 3, questions: 4, title: 'Count to 3' },
-  { id: 2, label: '2️⃣',  maxCount: 4,  options: 3, questions: 5, title: 'Count to 4' },
-  { id: 3, label: '3️⃣',  maxCount: 5,  options: 4, questions: 5, title: 'Count to 5' },
-  { id: 4, label: '4️⃣',  maxCount: 6,  options: 4, questions: 6, title: 'Count to 6' },
-  { id: 5, label: '5️⃣',  maxCount: 7,  options: 5, questions: 6, title: 'Count to 7' },
-  { id: 6, label: '6️⃣',  maxCount: 8,  options: 5, questions: 7, title: 'Count to 8' },
-  { id: 7, label: '7️⃣',  maxCount: 9,  options: 5, questions: 7, title: 'Count to 9' },
-  { id: 8, label: '🏆',  maxCount: 10, options: 6, questions: 8, title: 'Count to 10!' },
+  // Touch-to-count: tap each object one-by-one to learn counting
+  { id: 1,  label: '👆', mode: 'touch', maxCount: 3, questions: 3, title: 'Tap to Count' },
+  { id: 2,  label: '👆', mode: 'touch', maxCount: 5, questions: 4, title: 'Tap to Count' },
+  // Pick the right number
+  { id: 3,  label: '1️⃣', mode: 'pick', maxCount: 3, options: 3, questions: 4, title: 'Count to 3' },
+  { id: 4,  label: '2️⃣', mode: 'pick', maxCount: 4, options: 3, questions: 5, title: 'Count to 4' },
+  { id: 5,  label: '3️⃣', mode: 'pick', maxCount: 5, options: 4, questions: 5, title: 'Count to 5' },
+  // More or less comparison
+  { id: 6,  label: '⚖️', mode: 'compare', maxCount: 5, questions: 5, title: 'More or Less?' },
+  // Pick the right number — harder
+  { id: 7,  label: '4️⃣', mode: 'pick', maxCount: 6, options: 4, questions: 6, title: 'Count to 6' },
+  { id: 8,  label: '5️⃣', mode: 'pick', maxCount: 7, options: 5, questions: 6, title: 'Count to 7' },
+  // Number ordering
+  { id: 9,  label: '🔢', mode: 'order', maxCount: 5, questions: 4, title: 'Number Order' },
+  { id: 10, label: '6️⃣', mode: 'pick', maxCount: 8, options: 5, questions: 7, title: 'Count to 8' },
+  { id: 11, label: '⚖️', mode: 'compare', maxCount: 10, questions: 6, title: 'Big Numbers!' },
+  { id: 12, label: '🏆', mode: 'pick', maxCount: 10, options: 6, questions: 8, title: 'Count to 10!' },
 ];
 
 const LEVEL_LABELS = LEVELS.map(l => l.label);
@@ -305,7 +314,400 @@ function CountingBear({ mood }) {
   );
 }
 
-/* ── Single level component ── */
+/* ── Touch-to-count level: tap each object to count them ── */
+function TouchCountLevel({ levelConfig, onComplete, onBack }) {
+  const [questionNum, setQuestionNum] = useState(0);
+  const [question, setQuestion] = useState(() => generateQuestion(0, levelConfig));
+  const [questionKey, setQuestionKey] = useState(0);
+  const [tappedCount, setTappedCount] = useState(0);
+  const [tappedSet, setTappedSet] = useState(new Set());
+  const [phase, setPhase] = useState('tapping'); // tapping | correct | won
+  const [mistakes, setMistakes] = useState(0);
+
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
+  const { celebrate, CelebrationLayer } = useCelebration();
+
+  const tapObject = useCallback((idx, e) => {
+    if (phase !== 'tapping' || tappedSet.has(idx)) return;
+    playPop();
+    playTone(220 + tappedCount * 80, 0.15);
+
+    const next = new Set(tappedSet);
+    next.add(idx);
+    setTappedSet(next);
+    setTappedCount(next.size);
+
+    if (e?.clientX) {
+      burst(e.clientX, e.clientY, {
+        count: 4, spread: 25, colors: ['#facc15', '#22c55e'], shapes: ['star'],
+      });
+    }
+
+    if (next.size === question.correctCount) {
+      // All counted!
+      playSuccess();
+      setPhase('correct');
+      peek('happy');
+
+      setTimeout(() => {
+        const nextQ = questionNum + 1;
+        if (nextQ >= levelConfig.questions) {
+          setPhase('won');
+          playFanfare();
+          const starsEarned = mistakes === 0 ? 3 : 2;
+          celebrate({ duration: 3000 });
+          peek('excited');
+          setTimeout(() => onComplete(starsEarned), 3200);
+        } else {
+          setQuestionNum(nextQ);
+          setQuestion(generateQuestion(0, levelConfig));
+          setQuestionKey(k => k + 1);
+          setTappedCount(0);
+          setTappedSet(new Set());
+          setPhase('tapping');
+        }
+      }, 1200);
+    }
+  }, [phase, tappedSet, tappedCount, question, questionNum, levelConfig, mistakes, burst, peek, celebrate, onComplete]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <GardenScene />
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      {/* Big count display */}
+      <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-3xl px-6 py-3
+                      shadow-lg border-4 border-amber-200/60">
+        <span className="text-4xl font-heading text-amber-800"
+          style={{ animation: tappedCount > 0 ? 'pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both' : 'none' }}
+          key={tappedCount}>
+          {tappedCount}
+        </span>
+      </div>
+
+      <div className="absolute top-4 left-20 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2
+                      shadow-lg border-2 border-white/50">
+        <span className="text-lg font-heading text-amber-800">👆 Tap each one!</span>
+      </div>
+
+      <CountingBear mood={tappedCount > 0 ? 'happy' : 'curious'} />
+
+      {/* Tappable objects */}
+      <div className="absolute top-20 left-4 right-4 z-10" style={{ height: '55%' }}>
+        <div className="relative w-full h-full">
+          <div className="absolute inset-4 rounded-3xl border-4 border-white/30"
+            style={{ background: `${question.objectSet.bg}90`, backdropFilter: 'blur(4px)' }} />
+          {question.positions.map((pos, i) => (
+            <button
+              key={`${questionKey}-${i}`}
+              onPointerDown={(e) => tapObject(i, e)}
+              className={`absolute select-none transition-all duration-200 ${
+                tappedSet.has(i) ? 'scale-125 opacity-60' : 'cursor-pointer active:scale-90'
+              }`}
+              style={{
+                left: `${pos.x}%`, top: `${pos.y}%`,
+                transform: `translate(-50%, -50%) rotate(${pos.rotation}deg) scale(${tappedSet.has(i) ? 1.2 : pos.scale})`,
+                fontSize: '3.2rem',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+                animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${pos.delay}s both`,
+                touchAction: 'none',
+              }}>
+              {question.objectSet.emoji}
+              {tappedSet.has(i) && (
+                <span className="absolute -top-2 -right-2 bg-amber-400 text-white rounded-full w-6 h-6
+                                 text-xs font-heading flex items-center justify-center shadow"
+                  style={{ animation: 'pop-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
+                  {Array.from(tappedSet).indexOf(i) + 1}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress dots */}
+      <div className="absolute bottom-6 left-0 right-0 flex gap-2 justify-center z-20">
+        {Array.from({ length: levelConfig.questions }, (_, i) => (
+          <div key={i} className={`w-3 h-3 rounded-full transition-all ${
+            i < questionNum ? 'bg-amber-400' : i === questionNum ? 'bg-white scale-125 border-2 border-amber-300' : 'bg-amber-900/20'
+          }`} />
+        ))}
+      </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
+      <CelebrationLayer />
+    </div>
+  );
+}
+
+/* ── Compare level: which group has more/less? ── */
+function CompareLevel({ levelConfig, onComplete, onBack }) {
+  const [questionNum, setQuestionNum] = useState(0);
+  const [phase, setPhase] = useState('playing');
+  const [score, setScore] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
+  const [selectedSide, setSelectedSide] = useState(null);
+
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
+  const { celebrate, CelebrationLayer } = useCelebration();
+
+  // Generate a comparison question
+  const [questions] = useState(() => {
+    return Array.from({ length: levelConfig.questions }, () => {
+      const obj1 = OBJECT_SETS[Math.floor(Math.random() * OBJECT_SETS.length)];
+      let obj2 = OBJECT_SETS[Math.floor(Math.random() * OBJECT_SETS.length)];
+      while (obj2.emoji === obj1.emoji) obj2 = OBJECT_SETS[Math.floor(Math.random() * OBJECT_SETS.length)];
+      const count1 = 1 + Math.floor(Math.random() * levelConfig.maxCount);
+      let count2 = 1 + Math.floor(Math.random() * levelConfig.maxCount);
+      while (count2 === count1) count2 = 1 + Math.floor(Math.random() * levelConfig.maxCount);
+      const askMore = Math.random() > 0.5;
+      return { obj1, obj2, count1, count2, askMore };
+    });
+  });
+
+  const q = questions[questionNum];
+  const correctSide = q.askMore
+    ? (q.count1 > q.count2 ? 'left' : 'right')
+    : (q.count1 < q.count2 ? 'left' : 'right');
+
+  const tapSide = useCallback((side) => {
+    if (phase !== 'playing') return;
+    setSelectedSide(side);
+
+    if (side === correctSide) {
+      playPop();
+      playSuccess();
+      setPhase('correct');
+      setScore(s => s + 10);
+      burst(window.innerWidth / 2, window.innerHeight / 2, {
+        count: 10, spread: 50, colors: ['#facc15', '#22c55e'], shapes: ['star'],
+      });
+      peek('happy');
+
+      setTimeout(() => {
+        setSelectedSide(null);
+        if (questionNum + 1 >= levelConfig.questions) {
+          const starsEarned = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
+          celebrate({ duration: 3000 });
+          peek('excited');
+          setTimeout(() => onComplete(starsEarned), 3200);
+        } else {
+          setQuestionNum(n => n + 1);
+          setPhase('playing');
+        }
+      }, 1000);
+    } else {
+      playBoing();
+      setPhase('wrong');
+      setMistakes(m => m + 1);
+      setTimeout(() => { setSelectedSide(null); setPhase('playing'); }, 600);
+    }
+  }, [phase, correctSide, questionNum, levelConfig.questions, mistakes, burst, peek, celebrate, onComplete]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <GardenScene />
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div className="absolute top-4 right-4 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-white/50">
+        <span className="text-lg font-heading text-amber-800">⭐ {score}</span>
+      </div>
+
+      {/* Question prompt */}
+      <div className="absolute top-16 left-0 right-0 flex justify-center z-20">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-2 shadow-lg border-2 border-amber-200/60">
+          <span className="text-xl font-heading text-amber-800">
+            Which has {q.askMore ? '✨ MORE' : '🤏 LESS'}?
+          </span>
+        </div>
+      </div>
+
+      {/* Two groups side by side */}
+      <div className="absolute top-28 left-0 right-0 bottom-20 z-10 flex gap-4 px-4 items-center">
+        {['left', 'right'].map((side) => {
+          const count = side === 'left' ? q.count1 : q.count2;
+          const obj = side === 'left' ? q.obj1 : q.obj2;
+          const isSelected = selectedSide === side;
+          let borderColor = 'white';
+          if (isSelected && phase === 'correct') borderColor = '#22c55e';
+          if (isSelected && phase === 'wrong') borderColor = '#ef4444';
+
+          return (
+            <button key={side} onPointerDown={() => tapSide(side)}
+              className={`flex-1 rounded-3xl p-4 border-4 transition-all cursor-pointer
+                ${isSelected && phase === 'wrong' ? 'animate-wiggle' : ''}
+                ${isSelected && phase === 'correct' ? 'scale-105' : 'active:scale-95'}`}
+              style={{
+                backgroundColor: `${obj.bg}cc`, borderColor,
+                boxShadow: isSelected ? `0 0 20px ${borderColor}60` : '0 4px 12px rgba(0,0,0,0.1)',
+                height: '70%', touchAction: 'none',
+              }}>
+              <div className="flex flex-wrap gap-1 justify-center items-center h-full">
+                {Array.from({ length: count }, (_, i) => (
+                  <span key={i} className="text-3xl" style={{
+                    animation: `pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
+                  }}>{obj.emoji}</span>
+                ))}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Progress dots */}
+      <div className="absolute bottom-6 left-0 right-0 flex gap-2 justify-center z-20">
+        {questions.map((_, i) => (
+          <div key={i} className={`w-3 h-3 rounded-full transition-all ${
+            i < questionNum ? 'bg-amber-400' : i === questionNum ? 'bg-white scale-125 border-2 border-amber-300' : 'bg-amber-900/20'
+          }`} />
+        ))}
+      </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
+      <CelebrationLayer />
+    </div>
+  );
+}
+
+/* ── Order level: tap numbers in order (1, 2, 3...) ── */
+function NumberOrderLevel({ levelConfig, onComplete, onBack }) {
+  const targetCount = levelConfig.maxCount;
+  const numbers = Array.from({ length: targetCount }, (_, i) => i + 1);
+  const [shuffled] = useState(() => {
+    const a = [...numbers];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  });
+  const [nextExpected, setNextExpected] = useState(1);
+  const [completed, setCompleted] = useState([]);
+  const [wrongNum, setWrongNum] = useState(null);
+  const [mistakes, setMistakes] = useState(0);
+
+  const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
+  const { celebrate, CelebrationLayer } = useCelebration();
+
+  const tapNumber = useCallback((num) => {
+    if (num === nextExpected) {
+      playPop();
+      playTone(220 + num * 40, 0.15);
+      setCompleted(prev => [...prev, num]);
+      setNextExpected(n => n + 1);
+
+      burst(window.innerWidth / 2, window.innerHeight * 0.3, {
+        count: 6, spread: 30, colors: ['#facc15', '#22c55e'], shapes: ['star'],
+      });
+
+      if (num === targetCount) {
+        playFanfare();
+        const starsEarned = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
+        celebrate({ duration: 3000 });
+        peek('excited');
+        setTimeout(() => onComplete(starsEarned), 3200);
+      } else {
+        peek('happy');
+      }
+    } else {
+      playBoing();
+      setWrongNum(num);
+      setMistakes(m => m + 1);
+      setTimeout(() => setWrongNum(null), 400);
+    }
+  }, [nextExpected, targetCount, mistakes, burst, peek, celebrate, onComplete]);
+
+  const colors = ['#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e', '#6366f1'];
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <GardenScene />
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div className="relative z-10 pt-16 pb-2 text-center">
+        <h2 className="font-heading text-amber-900 text-xl">🔢 Tap 1, 2, 3...</h2>
+      </div>
+
+      {/* Completed sequence display */}
+      <div className="relative z-10 flex justify-center gap-1 px-4 mb-4">
+        {numbers.map((n) => (
+          <div key={n}
+            className={`w-10 h-10 rounded-xl flex items-center justify-center font-heading text-lg border-2 transition-all ${
+              completed.includes(n)
+                ? 'bg-green-100 border-green-400 text-green-700'
+                : n === nextExpected
+                  ? 'bg-amber-50 border-amber-400 text-amber-400 animate-pulse'
+                  : 'bg-white/50 border-gray-200 text-gray-300'
+            }`}>
+            {completed.includes(n) ? n : '?'}
+          </div>
+        ))}
+      </div>
+
+      {/* Shuffled number buttons */}
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-8">
+        <div className="flex gap-3 flex-wrap justify-center max-w-lg">
+          {shuffled.map((num, i) => {
+            const isDone = completed.includes(num);
+            const isWrong = wrongNum === num;
+            const color = colors[(num - 1) % colors.length];
+
+            return (
+              <button key={num} onPointerDown={() => !isDone && tapNumber(num)}
+                className={`rounded-3xl flex items-center justify-center border-4 transition-all
+                  ${isDone ? 'opacity-30 scale-90' : 'active:scale-90 cursor-pointer'}
+                  ${isWrong ? 'animate-wiggle' : ''}`}
+                style={{
+                  width: 72, height: 72,
+                  background: isDone ? '#e5e7eb' : `linear-gradient(135deg, ${color}dd, ${color})`,
+                  borderColor: isDone ? '#d1d5db' : isWrong ? '#ef4444' : 'rgba(255,255,255,0.6)',
+                  boxShadow: isDone ? 'none' : `0 4px 12px ${color}40`,
+                  touchAction: 'none',
+                  animation: `pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.06}s both`,
+                }}>
+                <span className="text-3xl font-heading" style={{ color: isDone ? '#9ca3af' : 'white' }}>
+                  {num}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <ParticleLayer />
+      <ArthurPeekLayer />
+      <CelebrationLayer />
+    </div>
+  );
+}
+
+/* ── Pick-the-number level (original counting mode) ── */
 function CountingLevel({ levelConfig, onComplete, onBack }) {
   const [questionNum, setQuestionNum] = useState(0);
   const [questionKey, setQuestionKey] = useState(0);
@@ -509,12 +911,16 @@ export default function CountingGarden() {
   }
 
   const levelConfig = LEVELS[currentLevel - 1];
-  return (
-    <CountingLevel
-      key={currentLevel}
-      levelConfig={levelConfig}
-      onComplete={handleComplete}
-      onBack={backToLevels}
-    />
-  );
+  const mode = levelConfig.mode || 'pick';
+
+  if (mode === 'touch') {
+    return <TouchCountLevel key={currentLevel} levelConfig={levelConfig} onComplete={handleComplete} onBack={backToLevels} />;
+  }
+  if (mode === 'compare') {
+    return <CompareLevel key={currentLevel} levelConfig={levelConfig} onComplete={handleComplete} onBack={backToLevels} />;
+  }
+  if (mode === 'order') {
+    return <NumberOrderLevel key={currentLevel} levelConfig={levelConfig} onComplete={handleComplete} onBack={backToLevels} />;
+  }
+  return <CountingLevel key={currentLevel} levelConfig={levelConfig} onComplete={handleComplete} onBack={backToLevels} />;
 }
