@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import BackButton from '../components/BackButton';
+import LevelSelect from '../components/LevelSelect';
 import { playPop, playSuccess, playBoing, playSparkle, playFanfare, playCollectPing } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
+import { useLevelProgression } from '../hooks/useLevelProgression';
 
 /* ── Object sets that appear for counting ── */
 const OBJECT_SETS = [
@@ -17,15 +19,28 @@ const OBJECT_SETS = [
   { emoji: '🎈', name: 'balloons',     bg: '#fff1f2' },
   { emoji: '🐣', name: 'chicks',       bg: '#fefce8' },
   { emoji: '🍓', name: 'strawberries', bg: '#fef2f2' },
+  { emoji: '🐝', name: 'bees',         bg: '#fef3c7' },
+  { emoji: '🌻', name: 'sunflowers',   bg: '#fefce8' },
+  { emoji: '🐛', name: 'caterpillars', bg: '#d1fae5' },
+  { emoji: '🍄', name: 'mushrooms',    bg: '#fce7f3' },
 ];
 
-/* ── Difficulty rounds ── */
-const ROUNDS = [
-  { maxCount: 3, options: 3, questions: 4 },   // Round 1: count 1-3
-  { maxCount: 4, options: 4, questions: 5 },   // Round 2: count 1-4
-  { maxCount: 5, options: 4, questions: 5 },   // Round 3: count 1-5
-  { maxCount: 6, options: 5, questions: 6 },   // Round 4: count 1-6
+/* ── Level definitions — 8 levels with progressive difficulty ── */
+const LEVELS = [
+  { id: 1, label: '1️⃣',  maxCount: 3,  options: 3, questions: 4, title: 'Count to 3' },
+  { id: 2, label: '2️⃣',  maxCount: 4,  options: 3, questions: 5, title: 'Count to 4' },
+  { id: 3, label: '3️⃣',  maxCount: 5,  options: 4, questions: 5, title: 'Count to 5' },
+  { id: 4, label: '4️⃣',  maxCount: 6,  options: 4, questions: 6, title: 'Count to 6' },
+  { id: 5, label: '5️⃣',  maxCount: 7,  options: 5, questions: 6, title: 'Count to 7' },
+  { id: 6, label: '6️⃣',  maxCount: 8,  options: 5, questions: 7, title: 'Count to 8' },
+  { id: 7, label: '7️⃣',  maxCount: 9,  options: 5, questions: 7, title: 'Count to 9' },
+  { id: 8, label: '🏆',  maxCount: 10, options: 6, questions: 8, title: 'Count to 10!' },
 ];
+
+const LEVEL_LABELS = LEVELS.map(l => l.label);
+
+/* ── kept for internal compatibility ── */
+const ROUNDS = LEVELS;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -36,8 +51,8 @@ function shuffle(arr) {
   return a;
 }
 
-function generateQuestion(round) {
-  const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
+function generateQuestion(round, levelOverride) {
+  const config = levelOverride || ROUNDS[Math.min(round, ROUNDS.length - 1)];
   const correctCount = 1 + Math.floor(Math.random() * config.maxCount);
   const objectSet = OBJECT_SETS[Math.floor(Math.random() * OBJECT_SETS.length)];
 
@@ -290,15 +305,15 @@ function CountingBear({ mood }) {
   );
 }
 
-/* ── Main component ── */
-export default function CountingGarden() {
-  const [round, setRound] = useState(0);
+/* ── Single level component ── */
+function CountingLevel({ levelConfig, onComplete, onBack }) {
   const [questionNum, setQuestionNum] = useState(0);
   const [questionKey, setQuestionKey] = useState(0);
-  const [question, setQuestion] = useState(() => generateQuestion(0));
-  const [phase, setPhase] = useState('counting'); // counting | correct | wrong | round-end | won
+  const [question, setQuestion] = useState(() => generateQuestion(0, levelConfig));
+  const [phase, setPhase] = useState('counting');
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
   const [wrongNumber, setWrongNumber] = useState(null);
   const [correctNumber, setCorrectNumber] = useState(null);
   const [bearMood, setBearMood] = useState('curious');
@@ -307,9 +322,6 @@ export default function CountingGarden() {
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
-  const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
-
-  // Update bear mood based on streak
   useEffect(() => {
     if (streak >= 5) setBearMood('ecstatic');
     else if (streak >= 2) setBearMood('happy');
@@ -319,39 +331,26 @@ export default function CountingGarden() {
   const nextQuestion = useCallback(() => {
     const nextQ = questionNum + 1;
 
-    if (nextQ >= config.questions) {
-      // Round complete
-      setPhase('round-end');
+    if (nextQ >= levelConfig.questions) {
+      // Level complete!
+      setPhase('won');
       playFanfare();
-      celebrate({ duration: 3000 });
+      const starsEarned = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
+      celebrate({ duration: 3500 });
       peek('excited');
-
-      setTimeout(() => {
-        const nextRound = round + 1;
-        if (nextRound >= ROUNDS.length) {
-          setPhase('won');
-          celebrate({ duration: 5000 });
-          return;
-        }
-        setRound(nextRound);
-        setQuestionNum(0);
-        setQuestion(generateQuestion(nextRound));
-        setQuestionKey(k => k + 1);
-        setPhase('counting');
-      }, 3200);
+      setTimeout(() => onComplete(starsEarned), 3700);
     } else {
       setQuestionNum(nextQ);
-      setQuestion(generateQuestion(round));
+      setQuestion(generateQuestion(0, levelConfig));
       setQuestionKey(k => k + 1);
       setPhase('counting');
     }
-  }, [questionNum, round, config.questions, celebrate, peek]);
+  }, [questionNum, levelConfig, mistakes, celebrate, peek, onComplete]);
 
   const tapNumber = useCallback((number) => {
     if (phase !== 'counting') return;
 
     if (number === question.correctCount) {
-      // Correct!
       playPop();
       setCorrectNumber(number);
       setPhase('correct');
@@ -359,15 +358,11 @@ export default function CountingGarden() {
       const newStreak = streak + 1;
       setStreak(newStreak);
       const bonus = newStreak >= 3 ? 5 : 0;
-      const gained = 10 + bonus;
-      setScore(s => s + gained);
+      setScore(s => s + 10 + bonus);
       if (bonus > 0) playCollectPing();
 
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      burst(cx, cy, {
-        count: 12 + number * 2,
-        spread: 70,
+      burst(window.innerWidth / 2, window.innerHeight / 2, {
+        count: 12 + number * 2, spread: 70,
         colors: ['#facc15', '#22c55e', '#38bdf8', '#ec4899'],
         shapes: ['star', 'circle', 'heart'],
       });
@@ -382,10 +377,10 @@ export default function CountingGarden() {
         nextQuestion();
       }, 1200);
     } else {
-      // Wrong
       playBoing();
       setWrongNumber(number);
       setStreak(0);
+      setMistakes(m => m + 1);
       setPhase('wrong');
 
       setTimeout(() => {
@@ -395,50 +390,42 @@ export default function CountingGarden() {
     }
   }, [phase, question, streak, nextQuestion, burst, peek]);
 
-  const resetGame = useCallback(() => {
-    setRound(0);
-    setQuestionNum(0);
-    setScore(0);
-    setStreak(0);
-    setPhase('counting');
-    setQuestion(generateQuestion(0));
-    setQuestionKey(k => k + 1);
-    setBearMood('curious');
-  }, []);
-
   return (
     <div className="relative w-full h-full overflow-hidden">
       <GardenScene />
-      <BackButton />
+
+      {/* Back to levels */}
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
 
       {/* Score badge */}
       <div className="absolute top-4 right-4 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2
                       shadow-lg border-2 border-white/50 flex items-center gap-2">
         <span className="text-lg font-heading text-amber-800">⭐ {score}</span>
-        {streak >= 3 && (
-          <span className="text-lg animate-bounce">🔥{streak}</span>
-        )}
+        {streak >= 3 && <span className="text-lg animate-bounce">🔥{streak}</span>}
       </div>
 
-      {/* Round badge */}
-      <div className="absolute top-4 left-16 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2
+      {/* Level badge */}
+      <div className="absolute top-4 left-20 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2
                       shadow-lg border-2 border-white/50">
         <span className="text-lg font-heading text-amber-800">
-          Round {round + 1}
+          {levelConfig.label} {levelConfig.title}
         </span>
       </div>
 
-      {/* Bear mascot */}
       <CountingBear mood={bearMood} />
 
-      {/* Counting area — centre of screen */}
       <div className="absolute top-20 left-4 right-4 z-10" style={{ height: '50%' }}>
         <CountingArea question={question} questionKey={questionKey} />
       </div>
 
-      {/* "How many?" prompt */}
-      <div className="absolute z-20 left-0 right-0 flex justify-center"
-        style={{ top: '68%' }}>
+      <div className="absolute z-20 left-0 right-0 flex justify-center" style={{ top: '68%' }}>
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-2 shadow-lg border-2 border-amber-200/60">
           <span className="text-xl font-heading text-amber-800">
             How many {question.objectSet.emoji}?
@@ -446,116 +433,40 @@ export default function CountingGarden() {
         </div>
       </div>
 
-      {/* Number buttons */}
       {(phase === 'counting' || phase === 'wrong' || phase === 'correct') && (
-        <div className="absolute bottom-20 left-0 right-0 z-20 flex gap-3 items-center justify-center px-4">
+        <div className="absolute bottom-20 left-0 right-0 z-20 flex gap-3 items-center justify-center px-4 flex-wrap">
           {question.options.map((num, i) => (
-            <NumberButton
-              key={`${questionKey}-${num}`}
-              number={num}
-              onTap={tapNumber}
-              state={
-                correctNumber === num ? 'correct'
-                : wrongNumber === num ? 'wrong'
-                : null
-              }
-              delay={i * 0.08}
-            />
+            <NumberButton key={`${questionKey}-${num}`} number={num} onTap={tapNumber}
+              state={correctNumber === num ? 'correct' : wrongNumber === num ? 'wrong' : null}
+              delay={i * 0.08} />
           ))}
         </div>
       )}
 
       {/* Progress dots */}
       <div className="absolute bottom-6 left-0 right-0 flex gap-2 justify-center z-20 px-8 flex-wrap">
-        {Array.from({ length: config.questions }, (_, i) => (
-          <div
-            key={i}
+        {Array.from({ length: levelConfig.questions }, (_, i) => (
+          <div key={i}
             className={`rounded-full transition-all duration-300 ${
-              i < questionNum
-                ? 'bg-amber-400 shadow-sm shadow-amber-400/50'
-                : i === questionNum
-                  ? 'bg-white scale-130 shadow-lg shadow-white/60 border-2 border-amber-300'
-                  : 'bg-amber-900/20'
+              i < questionNum ? 'bg-amber-400 shadow-sm shadow-amber-400/50'
+                : i === questionNum ? 'bg-white scale-130 shadow-lg shadow-white/60 border-2 border-amber-300'
+                : 'bg-amber-900/20'
             }`}
-            style={{ width: 14, height: 14 }}
-          />
+            style={{ width: 14, height: 14 }} />
         ))}
       </div>
 
-      {/* Round complete overlay */}
-      {phase === 'round-end' && (
+      {/* Won overlay */}
+      {phase === 'won' && (
         <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
           <div className="flex gap-3">
             {[0, 1, 2].map(i => (
               <svg key={i} width={52} height={52} viewBox="0 0 22 22"
-                style={{ animationDelay: `${i * 150}ms` }}
-                className="animate-spin-slow drop-shadow-lg"
-              >
-                <polygon
-                  points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                  fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                />
+                style={{ animationDelay: `${i * 150}ms` }} className="animate-spin-slow drop-shadow-lg">
+                <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
+                  fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
               </svg>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Win screen */}
-      {phase === 'won' && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center
-                        bg-gradient-to-b from-amber-200/90 to-green-300/90 backdrop-blur-sm">
-          <div className="bg-white/95 rounded-3xl px-10 py-8 shadow-2xl border-4 border-amber-200/60
-                          flex flex-col items-center gap-5 max-w-sm"
-            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}
-          >
-            {/* Number parade */}
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((n, i) => (
-                <div key={n} className="w-10 h-10 rounded-xl flex items-center justify-center font-heading text-white text-lg"
-                  style={{
-                    background: ['#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8'][i],
-                    animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
-                  }}
-                >
-                  {n}
-                </div>
-              ))}
-            </div>
-
-            {/* Stars */}
-            <div className="flex gap-2">
-              {[0, 1, 2].map(i => (
-                <svg key={i} width={44} height={44} viewBox="0 0 22 22"
-                  style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.5 + i * 0.15}s both` }}
-                >
-                  <polygon
-                    points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                    fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                  />
-                </svg>
-              ))}
-            </div>
-
-            {/* Score */}
-            <div className="flex items-center gap-2"
-              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both' }}
-            >
-              <span className="text-xl">⭐</span>
-              <span className="text-3xl font-heading text-amber-800">{score}</span>
-            </div>
-
-            {/* Play again */}
-            <button
-              onClick={resetGame}
-              className="bg-amber-400 text-white font-heading text-xl px-10 py-4 rounded-2xl shadow-lg
-                         active:scale-95 transition-transform flex items-center gap-2 border-2 border-amber-500/30"
-              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
-            >
-              <svg width={26} height={26} viewBox="0 0 24 24" fill="none">
-                <path d="M12 4V1L8 5l4 4V6a6 6 0 110 12 6 6 0 01-6-6H4a8 8 0 108-8z" fill="white" />
-              </svg>
-            </button>
           </div>
         </div>
       )}
@@ -564,5 +475,46 @@ export default function CountingGarden() {
       <ArthurPeekLayer />
       <CelebrationLayer />
     </div>
+  );
+}
+
+/* ── Main export with level selection ── */
+export default function CountingGarden() {
+  const {
+    currentLevel, stars, highestUnlocked, totalLevels,
+    setLevel, completeLevel, backToLevels,
+  } = useLevelProgression('counting-garden', LEVELS.length);
+
+  const handleComplete = useCallback((starsEarned) => {
+    completeLevel(currentLevel, starsEarned);
+    if (currentLevel < totalLevels) {
+      setLevel(currentLevel + 1);
+    } else {
+      backToLevels();
+    }
+  }, [currentLevel, totalLevels, completeLevel, setLevel, backToLevels]);
+
+  if (currentLevel === null) {
+    return (
+      <LevelSelect
+        title="🌸 Counting Garden"
+        totalLevels={totalLevels}
+        highestUnlocked={highestUnlocked}
+        stars={stars}
+        onSelect={setLevel}
+        bg="linear-gradient(180deg, #87CEEB 0%, #4ade80 60%, #22c55e 100%)"
+        levelLabels={LEVEL_LABELS}
+      />
+    );
+  }
+
+  const levelConfig = LEVELS[currentLevel - 1];
+  return (
+    <CountingLevel
+      key={currentLevel}
+      levelConfig={levelConfig}
+      onComplete={handleComplete}
+      onBack={backToLevels}
+    />
   );
 }

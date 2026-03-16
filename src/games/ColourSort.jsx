@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import BackButton from '../components/BackButton';
+import LevelSelect from '../components/LevelSelect';
 import { playPop, playSuccess, playBoing, playSparkle, playFanfare, playCollectPing } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
+import { useLevelProgression } from '../hooks/useLevelProgression';
 
 /* ── Colour definitions ── */
 const COLOURS = [
@@ -16,15 +18,24 @@ const COLOURS = [
 ];
 
 /* ── Items to sort ── */
-const ITEM_SHAPES = ['⭐', '❤️', '🔶', '🌸', '🎈', '🍎', '🦋', '🐟', '🍓', '🌺'];
+const ITEM_SHAPES = ['⭐', '❤️', '🔶', '🌸', '🎈', '🍎', '🦋', '🐟', '🍓', '🌺', '🌻', '🍄'];
 
-/* ── Difficulty levels ── */
-const ROUNDS = [
-  { colours: 3, items: 8,  speed: 'slow' },
-  { colours: 3, items: 10, speed: 'slow' },
-  { colours: 4, items: 12, speed: 'medium' },
-  { colours: 5, items: 14, speed: 'medium' },
+/* ── Level definitions — 8 levels ── */
+const LEVELS = [
+  { id: 1, label: '🔴', colours: 2, items: 6,  title: '2 Colours' },
+  { id: 2, label: '🟢', colours: 3, items: 8,  title: '3 Colours' },
+  { id: 3, label: '🔵', colours: 3, items: 10, title: 'More Items' },
+  { id: 4, label: '🟡', colours: 4, items: 10, title: '4 Colours' },
+  { id: 5, label: '🟣', colours: 4, items: 12, title: 'Getting Harder' },
+  { id: 6, label: '🟠', colours: 5, items: 14, title: '5 Colours' },
+  { id: 7, label: '⭐', colours: 5, items: 16, title: 'Speed Sort' },
+  { id: 8, label: '🏆', colours: 6, items: 18, title: 'All Colours!' },
 ];
+
+const LEVEL_LABELS = LEVELS.map(l => l.label);
+
+/* ── backward compat ── */
+const ROUNDS = LEVELS;
 
 let uidCounter = 0;
 
@@ -37,8 +48,8 @@ function shuffle(arr) {
   return a;
 }
 
-function generateItems(roundIdx) {
-  const config = ROUNDS[Math.min(roundIdx, ROUNDS.length - 1)];
+function generateItems(roundIdx, levelOverride) {
+  const config = levelOverride || ROUNDS[Math.min(roundIdx, ROUNDS.length - 1)];
   const roundColours = COLOURS.slice(0, config.colours);
   const items = [];
   // Ensure at least 2 of each colour
@@ -210,49 +221,35 @@ function SortItem({ item, isSelected, onTap, isLeaving }) {
   );
 }
 
-/* ── Main component ── */
-export default function ColourSort() {
-  const [round, setRound] = useState(0);
-  const [items, setItems] = useState(() => generateItems(0));
+/* ── Single level component ── */
+function ColourSortLevel({ levelConfig, onComplete, onBack }) {
+  const [items, setItems] = useState(() => generateItems(0, levelConfig));
   const [selectedId, setSelectedId] = useState(null);
   const [leavingId, setLeavingId] = useState(null);
-  const [phase, setPhase] = useState('playing'); // playing | round-end | won
+  const [phase, setPhase] = useState('playing');
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
   const [sortedCounts, setSortedCounts] = useState({});
 
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
-  const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
-  const roundColours = COLOURS.slice(0, config.colours);
+  const roundColours = COLOURS.slice(0, levelConfig.colours);
   const unsortedItems = items.filter(i => !i.sorted);
   const selectedItem = items.find(i => i.id === selectedId);
 
-  // Check round completion
+  // Check level completion
   useEffect(() => {
     if (phase !== 'playing') return;
     if (items.length > 0 && unsortedItems.length === 0) {
-      // Round complete!
-      setPhase('round-end');
+      setPhase('won');
       playFanfare();
+      const starsEarned = mistakes === 0 ? 3 : mistakes <= 3 ? 2 : 1;
       celebrate({ duration: 3000 });
       peek('excited');
-
-      setTimeout(() => {
-        const nextRound = round + 1;
-        if (nextRound >= ROUNDS.length) {
-          setPhase('won');
-          celebrate({ duration: 5000 });
-          return;
-        }
-        setRound(nextRound);
-        setItems(generateItems(nextRound));
-        setSelectedId(null);
-        setSortedCounts({});
-        setPhase('playing');
-      }, 3200);
+      setTimeout(() => onComplete(starsEarned), 3200);
     }
   }, [unsortedItems.length, items.length, phase]);
 
@@ -266,7 +263,6 @@ export default function ColourSort() {
     if (phase !== 'playing' || !selectedItem) return;
 
     if (selectedItem.colour.id === colourId) {
-      // Correct sort!
       playSuccess();
       const newStreak = streak + 1;
       setStreak(newStreak);
@@ -274,19 +270,11 @@ export default function ColourSort() {
       setScore(s => s + 10 + bonus);
       if (bonus > 0) playCollectPing();
 
-      // Animate item leaving
       setLeavingId(selectedItem.id);
-      setSortedCounts(prev => ({
-        ...prev,
-        [colourId]: (prev[colourId] || 0) + 1,
-      }));
+      setSortedCounts(prev => ({ ...prev, [colourId]: (prev[colourId] || 0) + 1 }));
 
-      // Particle burst
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight * 0.75;
-      burst(cx, cy, {
-        count: 10,
-        spread: 50,
+      burst(window.innerWidth / 2, window.innerHeight * 0.75, {
+        count: 10, spread: 50,
         colors: [selectedItem.colour.fill, selectedItem.colour.light, '#facc15'],
         shapes: ['star', 'circle'],
       });
@@ -300,9 +288,9 @@ export default function ColourSort() {
         setLeavingId(null);
       }, 300);
     } else {
-      // Wrong bucket
       playBoing();
       setStreak(0);
+      setMistakes(m => m + 1);
       setItems(prev => prev.map(i => i.id === selectedItem.id ? { ...i, wrong: true } : i));
       setTimeout(() => {
         setItems(prev => prev.map(i => i.id === selectedItem.id ? { ...i, wrong: false } : i));
@@ -310,38 +298,30 @@ export default function ColourSort() {
     }
   }, [phase, selectedItem, streak, burst, peek]);
 
-  const resetGame = useCallback(() => {
-    setRound(0);
-    setItems(generateItems(0));
-    setSelectedId(null);
-    setLeavingId(null);
-    setSortedCounts({});
-    setScore(0);
-    setStreak(0);
-    setPhase('playing');
-  }, []);
-
   return (
     <div className="relative w-full h-full overflow-hidden">
       <SortingRoomScene />
-      <BackButton />
 
-      {/* Score badge */}
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
       <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2
                       shadow-lg border-2 border-amber-200/60 flex items-center gap-2">
         <span className="text-lg font-heading text-amber-800">⭐ {score}</span>
-        {streak >= 3 && (
-          <span className="text-lg animate-bounce">🔥{streak}</span>
-        )}
+        {streak >= 3 && <span className="text-lg animate-bounce">🔥{streak}</span>}
       </div>
 
-      {/* Round badge */}
-      <div className="absolute top-4 left-16 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2
+      <div className="absolute top-4 left-20 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2
                       shadow-lg border-2 border-amber-200/60">
-        <span className="text-lg font-heading text-amber-800">Round {round + 1}</span>
+        <span className="text-lg font-heading text-amber-800">{levelConfig.label} {levelConfig.title}</span>
       </div>
 
-      {/* Instruction hint */}
       {!selectedId && unsortedItems.length > 0 && (
         <div className="absolute top-16 left-0 right-0 flex justify-center z-20">
           <div className="bg-white/70 backdrop-blur-sm rounded-xl px-4 py-1 shadow border border-amber-200/40">
@@ -350,117 +330,43 @@ export default function ColourSort() {
         </div>
       )}
 
-      {/* Items grid — centre area */}
       <div className="absolute top-24 left-0 right-0 z-10 flex flex-wrap gap-2 justify-center px-4"
         style={{ maxHeight: '45%', overflowY: 'auto' }}>
-        {unsortedItems.map((item, i) => (
-          <SortItem
-            key={item.id}
-            item={item}
+        {unsortedItems.map((item) => (
+          <SortItem key={item.id} item={item}
             isSelected={selectedId === item.id}
             isLeaving={leavingId === item.id}
-            onTap={tapItem}
-          />
+            onTap={tapItem} />
         ))}
       </div>
 
-      {/* Remaining count */}
       {unsortedItems.length > 0 && (
-        <div className="absolute z-20 left-0 right-0 flex justify-center"
-          style={{ bottom: '32%' }}>
+        <div className="absolute z-20 left-0 right-0 flex justify-center" style={{ bottom: '32%' }}>
           <div className="bg-white/60 backdrop-blur-sm rounded-full px-3 py-1 shadow">
-            <span className="text-sm font-heading text-amber-700">
-              {unsortedItems.length} left
-            </span>
+            <span className="text-sm font-heading text-amber-700">{unsortedItems.length} left</span>
           </div>
         </div>
       )}
 
-      {/* Buckets — bottom */}
       <div className="absolute bottom-8 left-0 right-0 z-20 flex gap-3 items-end justify-center px-4">
         {roundColours.map(colour => (
-          <Bucket
-            key={colour.id}
-            colour={colour}
+          <Bucket key={colour.id} colour={colour}
             isTarget={selectedItem?.colour.id === colour.id}
             onTap={tapBucket}
-            sortedCount={sortedCounts[colour.id] || 0}
-          />
+            sortedCount={sortedCounts[colour.id] || 0} />
         ))}
       </div>
 
-      {/* Round complete overlay */}
-      {phase === 'round-end' && (
+      {phase === 'won' && (
         <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
           <div className="flex gap-3">
             {[0, 1, 2].map(i => (
               <svg key={i} width={52} height={52} viewBox="0 0 22 22"
-                style={{ animationDelay: `${i * 150}ms` }}
-                className="animate-spin-slow drop-shadow-lg"
-              >
-                <polygon
-                  points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                  fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                />
+                style={{ animationDelay: `${i * 150}ms` }} className="animate-spin-slow drop-shadow-lg">
+                <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
+                  fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
               </svg>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Win screen */}
-      {phase === 'won' && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center
-                        bg-gradient-to-b from-amber-200/90 to-pink-200/90 backdrop-blur-sm">
-          <div className="bg-white/95 rounded-3xl px-10 py-8 shadow-2xl border-4 border-amber-200/60
-                          flex flex-col items-center gap-5 max-w-sm"
-            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}
-          >
-            {/* Colour dots parade */}
-            <div className="flex gap-2">
-              {COLOURS.slice(0, 5).map((c, i) => (
-                <div key={c.id} className="w-10 h-10 rounded-full border-2 border-white shadow-md"
-                  style={{
-                    background: c.fill,
-                    animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Stars */}
-            <div className="flex gap-2">
-              {[0, 1, 2].map(i => (
-                <svg key={i} width={44} height={44} viewBox="0 0 22 22"
-                  style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.5 + i * 0.15}s both` }}
-                >
-                  <polygon
-                    points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                    fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                  />
-                </svg>
-              ))}
-            </div>
-
-            {/* Score */}
-            <div className="flex items-center gap-2"
-              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both' }}
-            >
-              <span className="text-xl">⭐</span>
-              <span className="text-3xl font-heading text-amber-800">{score}</span>
-            </div>
-
-            {/* Play again */}
-            <button
-              onClick={resetGame}
-              className="bg-amber-400 text-white font-heading text-xl px-10 py-4 rounded-2xl shadow-lg
-                         active:scale-95 transition-transform flex items-center gap-2 border-2 border-amber-500/30"
-              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
-            >
-              <svg width={26} height={26} viewBox="0 0 24 24" fill="none">
-                <path d="M12 4V1L8 5l4 4V6a6 6 0 110 12 6 6 0 01-6-6H4a8 8 0 108-8z" fill="white" />
-              </svg>
-            </button>
           </div>
         </div>
       )}
@@ -469,5 +375,46 @@ export default function ColourSort() {
       <ArthurPeekLayer />
       <CelebrationLayer />
     </div>
+  );
+}
+
+/* ── Main export with level selection ── */
+export default function ColourSort() {
+  const {
+    currentLevel, stars, highestUnlocked, totalLevels,
+    setLevel, completeLevel, backToLevels,
+  } = useLevelProgression('colour-sort', LEVELS.length);
+
+  const handleComplete = useCallback((starsEarned) => {
+    completeLevel(currentLevel, starsEarned);
+    if (currentLevel < totalLevels) {
+      setLevel(currentLevel + 1);
+    } else {
+      backToLevels();
+    }
+  }, [currentLevel, totalLevels, completeLevel, setLevel, backToLevels]);
+
+  if (currentLevel === null) {
+    return (
+      <LevelSelect
+        title="🎨 Colour Sort"
+        totalLevels={totalLevels}
+        highestUnlocked={highestUnlocked}
+        stars={stars}
+        onSelect={setLevel}
+        bg="linear-gradient(180deg, #FFF8F0 0%, #E8D5B8 100%)"
+        levelLabels={LEVEL_LABELS}
+      />
+    );
+  }
+
+  const levelConfig = LEVELS[currentLevel - 1];
+  return (
+    <ColourSortLevel
+      key={currentLevel}
+      levelConfig={levelConfig}
+      onComplete={handleComplete}
+      onBack={backToLevels}
+    />
   );
 }
