@@ -45,6 +45,10 @@ const BuildAScene = lazy(() => import('./games/BuildAScene'));
 const ShapeMatch = lazy(() => import('./games/ShapeMatch'));
 const EllieStorybook = lazy(() => import('./stories/ellie/EllieStorybook'));
 const VideoPlayer = lazy(() => import('./games/VideoPlayer'));
+// Feelings Books
+const FeelingsMonster = lazy(() => import('./stories/feelings/FeelingsMonster'));
+const WhenIFeelBig = lazy(() => import('./stories/feelings/WhenIFeelBig'));
+const MyFeelingsFriends = lazy(() => import('./stories/feelings/MyFeelingsFriends'));
 // Aesop's Fables
 const TortoiseAndHare = lazy(() => import('./stories/aesop/TortoiseAndHare'));
 const LionAndMouse = lazy(() => import('./stories/aesop/LionAndMouse'));
@@ -217,6 +221,11 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/shape-match" element={<G><ShapeMatch /></G>} />
         <Route path="/games/:mode/:section/ellie-tiny-folk" element={<G><EllieStorybook /></G>} />
         <Route path="/games/:mode/:section/video/:videoId" element={<G><VideoPlayer /></G>} />
+
+        {/* Feelings Books */}
+        <Route path="/games/:mode/:section/feelings-monster" element={<G><FeelingsMonster /></G>} />
+        <Route path="/games/:mode/:section/when-i-feel-big" element={<G><WhenIFeelBig /></G>} />
+        <Route path="/games/:mode/:section/feelings-friends" element={<G><MyFeelingsFriends /></G>} />
 
         {/* Aesop's Fables */}
         <Route path="/games/:mode/:section/tortoise-hare" element={<G><TortoiseAndHare /></G>} />

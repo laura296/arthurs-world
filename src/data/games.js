@@ -47,6 +47,11 @@ const games = [
   { id: 'drum-pad',      emoji: '🥁', title: 'Drum Pad',      path: 'drum-pad',      category: 'music', bg: 'from-red-500 to-rose-700' },
   { id: 'animal-sounds', emoji: '🐄', title: 'Animal Sounds', path: 'animal-sounds', category: 'music', bg: 'from-green-400 to-emerald-600' },
 
+  // ── Books: Feelings ──
+  { id: 'feelings-monster',   emoji: '🎨', title: 'Feelings Monster',   path: 'feelings-monster',   category: 'books', group: '💛 Feelings', bg: 'from-purple-300 to-pink-400' },
+  { id: 'when-i-feel-big',    emoji: '🐻', title: 'When I Feel Big',    path: 'when-i-feel-big',    category: 'books', group: '💛 Feelings', bg: 'from-amber-300 to-orange-400' },
+  { id: 'feelings-friends',   emoji: '🐰', title: 'Feelings Friends',   path: 'feelings-friends',   category: 'books', group: '💛 Feelings', bg: 'from-sky-200 to-amber-200' },
+
   // ── Books: Fairy Tales ──
   { id: 'ellie-tiny-folk', emoji: '🐘', title: "Ellie's Story", path: 'ellie-tiny-folk', category: 'books', group: '🏰 Fairy Tales', bg: 'from-purple-300 to-pink-400', cover: '/arthurs-world/images/ellie/character-sheet.png' },
   { id: 'farm-book',     emoji: '🌙', title: 'Goodnight Farm', path: 'farm-book',     category: 'books', group: '🏰 Fairy Tales', bg: 'from-indigo-400 to-purple-600', cover: '/arthurs-world/images/farm-book/page-1.png' },
