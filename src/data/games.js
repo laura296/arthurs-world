@@ -11,6 +11,8 @@ const games = [
   { id: 'feed-animals',  emoji: '🐄', title: 'Feed Animals',  path: 'feed-animals',  category: 'games', group: '🎮 Games', bg: 'from-leaf to-green-700',         cover: '/arthurs-world/images/cards/feed-animals.png' },
   { id: 'pop-critters',  emoji: '🐹', title: 'Pop Critters',  path: 'pop-critters',  category: 'games', group: '🎮 Games', bg: 'from-amber-400 to-orange-500',   cover: '/arthurs-world/images/cards/pop-critters.png' },
   { id: 'build-a-scene', emoji: '🎭', title: 'Build a Scene', path: 'build-a-scene', category: 'games', group: '🎮 Games', bg: 'from-amber-400 to-orange-600',   cover: '/arthurs-world/images/cards/build-a-scene.png' },
+  { id: 'stack-bricks',  emoji: '🧱', title: 'Bricks',        path: 'stack-bricks',  category: 'games', group: '🎮 Games', bg: 'from-orange-400 to-red-500' },
+  { id: 'odd-one-picks', emoji: '🔍', title: 'Picks',         path: 'odd-one-picks', category: 'games', group: '🧩 Puzzles', bg: 'from-violet-400 to-fuchsia-500' },
 
   // ── Videos ──
   { id: 'baby-shark',        emoji: '🦈', title: 'Baby Shark',         path: 'video/baby-shark',        category: 'videos', bg: 'from-yellow-400 to-orange-500',  cover: '/arthurs-world/videos/baby-shark.webp' },
@@ -32,6 +34,8 @@ const games = [
   { id: 'shape-match',     emoji: '🔷', title: 'Shape Match',   path: 'shape-match',     category: 'games', group: '🧩 Puzzles', bg: 'from-cyan-400 to-teal-600' },
   { id: 'counting-garden', emoji: '🌸', title: 'Counting',      path: 'counting-garden', category: 'games', group: '🧩 Puzzles', bg: 'from-green-300 to-emerald-500' },
   { id: 'colour-sort',     emoji: '🎨', title: 'Colour Sort',   path: 'colour-sort',     category: 'games', group: '🧩 Puzzles', bg: 'from-pink-300 to-amber-400' },
+  { id: 'abc-adventure',   emoji: '🔤', title: 'ABC Adventure', path: 'abc-adventure',   category: 'games', group: '🧩 Puzzles', bg: 'from-amber-300 to-yellow-500' },
+  { id: 'number-line',     emoji: '🔢', title: 'Number Line',   path: 'number-line',     category: 'games', group: '🧩 Puzzles', bg: 'from-blue-300 to-indigo-500' },
 
   // ── Art ──
   { id: 'colouring-book', emoji: '🖍️', title: 'Colour In',     path: 'colouring-book', category: 'art', bg: 'from-amber-300 to-pink-500' },
@@ -44,6 +48,11 @@ const games = [
   { id: 'xylophone',     emoji: '🎶', title: 'Xylophone',     path: 'xylophone',     category: 'music', bg: 'from-sky-400 to-indigo-600' },
   { id: 'drum-pad',      emoji: '🥁', title: 'Drum Pad',      path: 'drum-pad',      category: 'music', bg: 'from-red-500 to-rose-700' },
   { id: 'animal-sounds', emoji: '🐄', title: 'Animal Sounds', path: 'animal-sounds', category: 'music', bg: 'from-green-400 to-emerald-600' },
+
+  // ── Books: Feelings ──
+  { id: 'feelings-monster',   emoji: '🎨', title: 'Feelings Monster',   path: 'feelings-monster',   category: 'books', group: '💛 Feelings', bg: 'from-purple-300 to-pink-400' },
+  { id: 'when-i-feel-big',    emoji: '🐻', title: 'When I Feel Big',    path: 'when-i-feel-big',    category: 'books', group: '💛 Feelings', bg: 'from-amber-300 to-orange-400' },
+  { id: 'feelings-friends',   emoji: '🐰', title: 'Feelings Friends',   path: 'feelings-friends',   category: 'books', group: '💛 Feelings', bg: 'from-sky-200 to-amber-200' },
 
   // ── Books: Fairy Tales ──
   { id: 'ellie-tiny-folk', emoji: '🐘', title: "Ellie's Story", path: 'ellie-tiny-folk', category: 'books', group: '🏰 Fairy Tales', bg: 'from-purple-300 to-pink-400', cover: '/arthurs-world/images/ellie/character-sheet.png' },

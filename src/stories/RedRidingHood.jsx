@@ -61,7 +61,7 @@ const storyData = {
         },
         {
           id: 'i-girl-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl',
           data: { say: "I'm Little Red Riding Hood!" },
         },
@@ -160,7 +160,7 @@ const storyData = {
         },
         {
           id: 'i-mummy-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'mummy',
           data: { say: "Be careful sweetheart! Don't talk to strangers!" },
         },
@@ -249,13 +249,13 @@ const storyData = {
         },
         {
           id: 'i-girl-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl',
           data: { say: 'La la la! What a lovely day!' },
         },
         {
           id: 'i-bird-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'bird',
           data: { say: 'Tweet tweet tweet!' },
         },
@@ -342,7 +342,7 @@ const storyData = {
       interactions: [
         {
           id: 'i-wolf-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf',
           data: { say: 'Hello little girl! Where are you going?' },
         },
@@ -354,7 +354,7 @@ const storyData = {
         },
         {
           id: 'i-girl-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl',
           data: { say: "To Grandma's house!" },
         },
@@ -435,7 +435,7 @@ const storyData = {
         },
         {
           id: 'i-wolf-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf',
           data: { say: "I'll get there first! Hee hee hee!" },
         },
@@ -520,13 +520,13 @@ const storyData = {
         },
         {
           id: 'i-grandma-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'grandma',
           data: { say: "Who's there?" },
         },
         {
           id: 'i-wolf-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf',
           data: { say: "It's me, your granddaughter!" },
         },
@@ -601,7 +601,7 @@ const storyData = {
         },
         {
           id: 'i-wolf-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf',
           data: { say: 'Do I look like Grandma? Hee hee!' },
         },
@@ -706,13 +706,13 @@ const storyData = {
         },
         {
           id: 'i-girl-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl',
           data: { say: 'What big eyes you have, Grandma!' },
         },
         {
           id: 'i-smile-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'smile',
           data: { say: 'All the better to see you with, my dear!' },
         },
@@ -781,7 +781,7 @@ const storyData = {
       interactions: [
         {
           id: 'i-woodcutter-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'woodcutter',
           data: { say: "Don't worry, I'll help!" },
         },
@@ -799,13 +799,13 @@ const storyData = {
         },
         {
           id: 'i-wolf-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'wolf',
           data: { say: 'Oh no! I better run away!' },
         },
         {
           id: 'i-girl-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'girl',
           data: { say: 'Hooray! The wolf ran away!' },
         },
@@ -894,7 +894,7 @@ const storyData = {
         },
         {
           id: 'i-grandma-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'grandma',
           data: { say: 'I love you so much!' },
         },

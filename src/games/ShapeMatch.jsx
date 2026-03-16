@@ -1,9 +1,11 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import BackButton from '../components/BackButton';
+import LevelSelect from '../components/LevelSelect';
 import { playSuccess, playBoing, playPop, playFanfare, playCollectPing } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
+import { useLevelProgression } from '../hooks/useLevelProgression';
 
 /* ── shape + colour data ── */
 
@@ -412,13 +414,22 @@ function GoldenShapeSVG({ shape, size = 80 }) {
 /* ── visual-only modes (no reading required) ── */
 const MODES = ['match-shape', 'match-colour', 'match-both'];
 
-/* ── difficulty progression ── */
-const ROUNDS = [
-  { shapes: 4, colours: 4, options: 3, questionsPerRound: 5 },
-  { shapes: 5, colours: 5, options: 3, questionsPerRound: 6 },
-  { shapes: 6, colours: 6, options: 4, questionsPerRound: 7 },
-  { shapes: 8, colours: 8, options: 4, questionsPerRound: 8 },
+/* ── Level definitions — 8 levels with progressive difficulty ── */
+const LEVELS = [
+  { id: 1, label: '🔵', shapes: 3, colours: 3, options: 2, questionsPerRound: 4, mode: 'match-shape', title: 'Easy Shapes' },
+  { id: 2, label: '🔴', shapes: 4, colours: 4, options: 3, questionsPerRound: 5, mode: 'match-colour', title: 'Easy Colours' },
+  { id: 3, label: '⭐', shapes: 4, colours: 4, options: 3, questionsPerRound: 5, mode: 'match-shape', title: 'More Shapes' },
+  { id: 4, label: '🎨', shapes: 5, colours: 5, options: 3, questionsPerRound: 6, mode: 'match-colour', title: 'More Colours' },
+  { id: 5, label: '💎', shapes: 5, colours: 5, options: 3, questionsPerRound: 6, mode: 'match-both', title: 'Shape + Colour' },
+  { id: 6, label: '🔷', shapes: 6, colours: 6, options: 4, questionsPerRound: 7, mode: 'mixed', title: 'Mixed Match' },
+  { id: 7, label: '⬟', shapes: 7, colours: 7, options: 4, questionsPerRound: 7, mode: 'mixed', title: 'All Shapes' },
+  { id: 8, label: '🏆', shapes: 8, colours: 8, options: 4, questionsPerRound: 8, mode: 'mixed', title: 'Champion!' },
 ];
+
+const LEVEL_LABELS = LEVELS.map(l => l.label);
+
+/* ── backward compat ── */
+const ROUNDS = LEVELS;
 
 /* ── helpers ── */
 
@@ -435,8 +446,8 @@ function pickRandom(arr, count) {
   return shuffle(arr).slice(0, count);
 }
 
-function generateQuestion(round, mode) {
-  const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
+function generateQuestion(round, mode, levelOverride) {
+  const config = levelOverride || ROUNDS[Math.min(round, ROUNDS.length - 1)];
   const availShapes = SHAPES.slice(0, config.shapes);
   const availColours = COLORS.slice(0, config.colours);
 
@@ -487,14 +498,13 @@ function generateQuestion(round, mode) {
   return { correctShape, correctColour, mode, options };
 }
 
-/* ── main component ── */
-
-export default function ShapeMatch() {
-  const [round, setRound] = useState(0);
+/* ── Single level component ── */
+function ShapeMatchLevel({ levelConfig, onComplete, onBack }) {
   const [questionNum, setQuestionNum] = useState(0);
   const [phase, setPhase] = useState('intro');
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
   const [scorePopup, setScorePopup] = useState(null);
   const [wrongId, setWrongId] = useState(null);
   const [correctId, setCorrectId] = useState(null);
@@ -511,28 +521,29 @@ export default function ShapeMatch() {
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
-  const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
+  // Resolve the mode for this level
+  const resolveMode = useCallback(() => {
+    if (levelConfig.mode === 'mixed') {
+      modeIdx.current = (modeIdx.current + 1) % MODES.length;
+      return MODES[modeIdx.current];
+    }
+    return levelConfig.mode;
+  }, [levelConfig.mode]);
 
   const [question, setQuestion] = useState(() =>
-    generateQuestion(0, MODES[0])
+    generateQuestion(0, levelConfig.mode === 'mixed' ? MODES[0] : levelConfig.mode, levelConfig)
   );
 
   // intro auto-dismiss
   useEffect(() => {
     if (phase !== 'intro') return;
-    const t = setTimeout(() => {
-      setPhase('playing');
-      setGuideState('idle');
-    }, 2200);
+    const t = setTimeout(() => { setPhase('playing'); setGuideState('idle'); }, 2200);
     return () => clearTimeout(t);
   }, [phase]);
 
   // hint sparkle
   useEffect(() => {
-    if (phase !== 'playing') {
-      setHintIdx(-1);
-      return;
-    }
+    if (phase !== 'playing') { setHintIdx(-1); return; }
     setHintIdx(-1);
     hintTimer.current = setTimeout(() => {
       const correctI = question.options.findIndex(o => o.isCorrect);
@@ -543,42 +554,25 @@ export default function ShapeMatch() {
 
   const nextQuestion = useCallback(() => {
     const nextQ = questionNum + 1;
-
-    if (nextQ >= config.questionsPerRound) {
-      setPhase('round-end');
+    if (nextQ >= levelConfig.questionsPerRound) {
+      // Level complete!
+      setPhase('won');
       setGuideState('dancing');
       playFanfare();
+      const starsEarned = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;
       celebrate({ duration: 3000 });
       peek('excited');
-
-      setTimeout(() => {
-        const nextRound = round + 1;
-        if (nextRound >= ROUNDS.length) {
-          setPhase('won');
-          setGuideState('dancing');
-          celebrate({ duration: 5000 });
-          return;
-        }
-        modeIdx.current = (modeIdx.current + 1) % MODES.length;
-        setRound(nextRound);
-        setQuestionNum(0);
-        setQuestion(generateQuestion(nextRound, MODES[modeIdx.current]));
-        setQuestionKey(k => k + 1);
-        setPhase('playing');
-        setGuideState('idle');
-        setIsGolden(false);
-      }, 3200);
+      setTimeout(() => onComplete(starsEarned), 3200);
     } else {
-      modeIdx.current = (modeIdx.current + 1) % MODES.length;
+      const mode = resolveMode();
       setQuestionNum(nextQ);
-      setQuestion(generateQuestion(round, MODES[modeIdx.current]));
+      setQuestion(generateQuestion(0, mode, levelConfig));
       setQuestionKey(k => k + 1);
       setPhase('playing');
       setGuideState('idle');
-      // ~15% chance of golden shape (surprise delight)
       setIsGolden(Math.random() < 0.15);
     }
-  }, [questionNum, round, config.questionsPerRound, celebrate, peek]);
+  }, [questionNum, levelConfig, mistakes, resolveMode, celebrate, peek, onComplete]);
 
   const pickOption = useCallback((option) => {
     if (phase !== 'playing') return;
@@ -598,12 +592,8 @@ export default function ShapeMatch() {
       const newScore = score + gained;
       setScore(newScore);
 
-      // Hazel dances on golden or streak milestones, otherwise just happy
-      if (isGolden || newStreak >= 5) {
-        setGuideState('dancing');
-      } else {
-        setGuideState('correct');
-      }
+      if (isGolden || newStreak >= 5) setGuideState('dancing');
+      else setGuideState('correct');
 
       setScorePopup(isGolden ? `+${gained} ✨` : `+${gained}`);
       setTimeout(() => setScorePopup(null), 1000);
@@ -613,117 +603,65 @@ export default function ShapeMatch() {
         setTimeout(() => peek('excited'), 400);
       }
 
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      burst(cx, cy, {
-        count: isGolden ? 24 : 14,
-        spread: isGolden ? 120 : 80,
+      burst(window.innerWidth / 2, window.innerHeight / 2, {
+        count: isGolden ? 24 : 14, spread: isGolden ? 120 : 80,
         colors: isGolden
           ? ['#fbbf24', '#fde68a', '#f59e0b', '#fff7cc', '#d97706']
           : [question.correctColour.fill, question.correctColour.glow || '#facc15', '#facc15', '#38bdf8'],
         shapes: isGolden ? ['star', 'diamond', 'star'] : ['star', 'circle', 'heart'],
       });
 
-      if (isGolden) {
-        playFanfare();
-      } else {
-        playSuccess();
-      }
+      if (isGolden) playFanfare(); else playSuccess();
 
       setTimeout(() => {
-        setCorrectId(null);
-        setWrongId(null);
-        setIsGolden(false);
+        setCorrectId(null); setWrongId(null); setIsGolden(false);
         nextQuestion();
       }, isGolden ? 1600 : 1200);
     } else {
       playBoing();
       setWrongId(option.id);
       setStreak(0);
+      setMistakes(m => m + 1);
       setPhase('wrong');
       setGuideState('wrong');
-
       setTargetPulse(true);
       setTimeout(() => setTargetPulse(false), 600);
-
-      setTimeout(() => {
-        setWrongId(null);
-        setPhase('playing');
-        setGuideState('idle');
-      }, 600);
+      setTimeout(() => { setWrongId(null); setPhase('playing'); setGuideState('idle'); }, 600);
     }
-  }, [phase, streak, score, question, nextQuestion, peek, burst]);
+  }, [phase, streak, score, question, nextQuestion, peek, burst, isGolden]);
 
-  const resetGame = useCallback(() => {
-    modeIdx.current = 0;
-    setRound(0);
-    setQuestionNum(0);
-    setScore(0);
-    setStreak(0);
-    setIsGolden(false);
-    setPhase('intro');
-    setGuideState('intro');
-    setQuestion(generateQuestion(0, MODES[0]));
-    setQuestionKey(k => k + 1);
-  }, []);
-
-  const totalQuestions = config.questionsPerRound;
+  const totalQuestions = levelConfig.questionsPerRound;
   const { correctShape, correctColour, options } = question;
-
-  // bigger option sizes
   const optSize = options.length <= 3 ? 110 : options.length === 4 ? 96 : 84;
   const svgSize = options.length <= 3 ? 80 : options.length === 4 ? 68 : 58;
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      {/* Themed playroom background */}
-      <PlayroomScene round={round} />
+      <PlayroomScene round={0} />
 
-      <BackButton />
+      <button onPointerDown={onBack}
+        className="fixed top-3 left-3 z-50 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md
+                   flex items-center justify-center border border-white/30 active:scale-90 transition-transform"
+        style={{ touchAction: 'none' }}>
+        <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
 
-      {/* Hazel the Hedgehog guide */}
       <HazelGuide state={guideState} score={score} />
 
-      {/* score */}
       <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-amber-200/60 flex items-center gap-1.5">
         <svg width={24} height={24} viewBox="0 0 22 22">
-          <polygon
-            points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-            fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-          />
+          <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8" fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
         </svg>
         <span className="text-xl font-heading text-amber-800">{score}</span>
-        {streak >= 3 && (
-          <span className="text-lg font-heading text-orange-500 animate-bounce">
-            x{streak}
-          </span>
-        )}
+        {streak >= 3 && <span className="text-lg font-heading text-orange-500 animate-bounce">x{streak}</span>}
       </div>
 
-      {/* score popup */}
       {scorePopup && (
-        <div className="absolute top-16 right-6 z-40 text-2xl font-heading text-green-600 drop-shadow-lg animate-bounce-in">
-          {scorePopup}
-        </div>
+        <div className="absolute top-16 right-6 z-40 text-2xl font-heading text-green-600 drop-shadow-lg animate-bounce-in">{scorePopup}</div>
       )}
 
-      {/* round transition overlay */}
-      {phase === 'round-end' && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
-          <div className="flex gap-3 animate-bounce-in">
-            {[0, 1, 2].map(i => (
-              <svg key={i} width={52} height={52} viewBox="0 0 22 22" style={{ animationDelay: `${i * 150}ms` }} className="animate-spin-slow drop-shadow-lg">
-                <polygon
-                  points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                  fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                />
-              </svg>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── intro overlay ── */}
       {phase === 'intro' && (
         <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
           <div className="bg-white/90 backdrop-blur-sm rounded-3xl px-8 py-6 shadow-2xl border-4 border-amber-200/60 flex flex-col items-center gap-3"
@@ -739,24 +677,19 @@ export default function ShapeMatch() {
         </div>
       )}
 
-      {/* ── target shape — centred with outline cutout on a "card" ── */}
       <div className="absolute top-[12%] left-0 right-0 flex flex-col items-center z-10 px-4">
-        <div
-          key={`target-${questionKey}`}
+        <div key={`target-${questionKey}`}
           className={`backdrop-blur-sm rounded-3xl px-10 py-6 shadow-2xl border-4 flex flex-col items-center gap-1 transition-all duration-300 ${
-            isGolden
-              ? 'bg-amber-50/95 border-amber-400'
-              : targetPulse
-                ? 'bg-white/90 border-orange-400 scale-110'
-                : 'bg-white/90 border-amber-200/60 scale-100'
+            isGolden ? 'bg-amber-50/95 border-amber-400'
+              : targetPulse ? 'bg-white/90 border-orange-400 scale-110'
+              : 'bg-white/90 border-amber-200/60 scale-100'
           }`}
           style={{
             animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
             boxShadow: isGolden
               ? '0 0 30px rgba(251,191,36,0.4), 0 8px 32px rgba(251,191,36,0.2), 0 4px 12px rgba(0,0,0,0.08)'
               : `0 8px 32px ${correctColour.fill}20, 0 4px 12px rgba(0,0,0,0.08)`,
-          }}
-        >
+          }}>
           {isGolden ? (
             <div style={{ animation: 'hint-glow 1.5s ease-in-out infinite' }}>
               <GoldenShapeSVG shape={correctShape} size={130} />
@@ -765,8 +698,6 @@ export default function ShapeMatch() {
             <ShapeSVG shape={correctShape} color={correctColour} size={130} />
           )}
         </div>
-
-        {/* bouncing arrow */}
         <div className="mt-3 animate-bounce text-amber-400 text-3xl leading-none select-none" aria-hidden>
           <svg width={36} height={24} viewBox="0 0 32 20" fill="none">
             <path d="M4 4 L16 16 L28 4" stroke="currentColor" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
@@ -774,10 +705,8 @@ export default function ShapeMatch() {
         </div>
       </div>
 
-      {/* ── answer options — on a wooden "tray" ── */}
       {(phase === 'playing' || phase === 'wrong' || phase === 'correct') && (
         <div className="absolute bottom-20 left-0 right-0 z-20 px-4">
-          {/* Wooden tray */}
           <div className="relative max-w-lg mx-auto">
             <div className="absolute -inset-4 -bottom-3 rounded-3xl" style={{
               background: 'linear-gradient(180deg, #D4A865 0%, #C4A265 50%, #B89255 100%)',
@@ -788,36 +717,25 @@ export default function ShapeMatch() {
                 const isWrong = wrongId === opt.id;
                 const isRight = correctId === opt.id;
                 const isHinted = hintIdx === i;
-
                 return (
-                  <button
-                    key={`${opt.id}-${i}-${questionKey}`}
-                    onClick={() => pickOption(opt)}
-                    className={`rounded-3xl shadow-lg flex items-center justify-center
-                      transition-all duration-200 border-4
-                      ${isWrong
-                        ? 'animate-wiggle bg-red-100 border-red-400 scale-90'
-                        : isRight
-                          ? 'bg-green-100 border-green-400 scale-115'
-                          : isHinted
-                            ? 'bg-white border-amber-300 shadow-amber-200/50 shadow-xl'
-                            : 'bg-white/95 border-white/70 active:scale-90 hover:bg-white hover:shadow-xl'
-                      }`}
+                  <button key={`${opt.id}-${i}-${questionKey}`} onClick={() => pickOption(opt)}
+                    className={`rounded-3xl shadow-lg flex items-center justify-center transition-all duration-200 border-4
+                      ${isWrong ? 'animate-wiggle bg-red-100 border-red-400 scale-90'
+                        : isRight ? 'bg-green-100 border-green-400 scale-115'
+                        : isHinted ? 'bg-white border-amber-300 shadow-amber-200/50 shadow-xl'
+                        : 'bg-white/95 border-white/70 active:scale-90 hover:bg-white hover:shadow-xl'}`}
                     style={{
-                      width: optSize,
-                      height: optSize,
+                      width: optSize, height: optSize,
                       animation: `pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both`,
                       ...(isHinted && !isWrong && !isRight ? {
                         animation: `pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both, hint-glow 1.2s ease-in-out infinite`,
                       } : {}),
-                    }}
-                  >
+                    }}>
                     {isWrong
                       ? <svg width={svgSize * 0.6} height={svgSize * 0.6} viewBox="0 0 24 24">
                           <path d="M6 6L18 18M18 6L6 18" stroke="#ef4444" strokeWidth={4} strokeLinecap="round" />
                         </svg>
-                      : <ShapeSVG shape={opt.shape} color={opt.colour} size={svgSize} />
-                    }
+                      : <ShapeSVG shape={opt.shape} color={opt.colour} size={svgSize} />}
                   </button>
                 );
               })}
@@ -826,66 +744,28 @@ export default function ShapeMatch() {
         </div>
       )}
 
-      {/* progress dots */}
       <div className="absolute bottom-4 left-0 right-0 flex gap-2 justify-center z-20 px-8 flex-wrap">
         {Array.from({ length: totalQuestions }, (_, i) => (
-          <div
-            key={i}
+          <div key={i}
             className={`rounded-full transition-all duration-300 ${
-              i < questionNum
-                ? 'bg-amber-400 shadow-sm shadow-amber-400/50'
-                : i === questionNum
-                  ? 'bg-white scale-130 shadow-lg shadow-white/60 border-2 border-amber-300'
-                  : 'bg-amber-900/20'
+              i < questionNum ? 'bg-amber-400 shadow-sm shadow-amber-400/50'
+                : i === questionNum ? 'bg-white scale-130 shadow-lg shadow-white/60 border-2 border-amber-300'
+                : 'bg-amber-900/20'
             }`}
-            style={{ width: 14, height: 14 }}
-          />
+            style={{ width: 14, height: 14 }} />
         ))}
       </div>
 
-      {/* win screen */}
       {phase === 'won' && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-amber-200/90 to-orange-300/90 backdrop-blur-sm">
-          <div className="bg-white/95 rounded-3xl px-10 py-8 shadow-2xl border-4 border-amber-200/60 flex flex-col items-center gap-5 max-w-sm"
-            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}
-          >
-            {/* shapes parade */}
-            <div className="flex gap-2">
-              {SHAPES.slice(0, 6).map((s, i) => (
-                <div key={s.name} style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.1}s both` }}>
-                  <ShapeSVG shape={s} color={COLORS[i]} size={40} />
-                </div>
-              ))}
-            </div>
-            {/* stars */}
-            <div className="flex gap-2">
-              {[0,1,2].map(i => (
-                <svg key={i} width={44} height={44} viewBox="0 0 22 22"
-                  style={{ animation: `pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.5 + i * 0.15}s both` }}
-                >
-                  <polygon
-                    points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
-                    fill="#eab308" stroke="#ca8a04" strokeWidth={1}
-                  />
-                </svg>
-              ))}
-            </div>
-            {/* score */}
-            <div className="flex items-center gap-2" style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both' }}>
-              <svg width={28} height={28} viewBox="0 0 22 22">
-                <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8" fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
+        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+          <div className="flex gap-3">
+            {[0, 1, 2].map(i => (
+              <svg key={i} width={52} height={52} viewBox="0 0 22 22"
+                style={{ animationDelay: `${i * 150}ms` }} className="animate-spin-slow drop-shadow-lg">
+                <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
+                  fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
               </svg>
-              <span className="text-3xl font-heading text-amber-800">{score}</span>
-            </div>
-            <button
-              onClick={resetGame}
-              className="bg-amber-400 text-white font-heading text-xl px-10 py-4 rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center gap-2 border-2 border-amber-500/30"
-              style={{ animation: 'pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both' }}
-            >
-              <svg width={26} height={26} viewBox="0 0 24 24" fill="none">
-                <path d="M12 4V1L8 5l4 4V6a6 6 0 110 12 6 6 0 01-6-6H4a8 8 0 108-8z" fill="white" />
-              </svg>
-            </button>
+            ))}
           </div>
         </div>
       )}
@@ -894,5 +774,46 @@ export default function ShapeMatch() {
       <ArthurPeekLayer />
       <CelebrationLayer />
     </div>
+  );
+}
+
+/* ── Main export with level selection ── */
+export default function ShapeMatch() {
+  const {
+    currentLevel, stars, highestUnlocked, totalLevels,
+    setLevel, completeLevel, backToLevels,
+  } = useLevelProgression('shape-match', LEVELS.length);
+
+  const handleComplete = useCallback((starsEarned) => {
+    completeLevel(currentLevel, starsEarned);
+    if (currentLevel < totalLevels) {
+      setLevel(currentLevel + 1);
+    } else {
+      backToLevels();
+    }
+  }, [currentLevel, totalLevels, completeLevel, setLevel, backToLevels]);
+
+  if (currentLevel === null) {
+    return (
+      <LevelSelect
+        title="🔷 Shape Match"
+        totalLevels={totalLevels}
+        highestUnlocked={highestUnlocked}
+        stars={stars}
+        onSelect={setLevel}
+        bg="linear-gradient(180deg, #FFF5E6 0%, #EDE9FE 50%, #FFF5E6 100%)"
+        levelLabels={LEVEL_LABELS}
+      />
+    );
+  }
+
+  const levelConfig = LEVELS[currentLevel - 1];
+  return (
+    <ShapeMatchLevel
+      key={currentLevel}
+      levelConfig={levelConfig}
+      onComplete={handleComplete}
+      onBack={backToLevels}
+    />
   );
 }
