@@ -28,8 +28,24 @@ const SURPRISES = ['🐥', '🐰', '⭐', '🌸', '🍫', '🎀'];
 const EGG_POSITIONS = [
   { x: 8, y: 55 }, { x: 25, y: 62 }, { x: 45, y: 50 },
   { x: 65, y: 58 }, { x: 82, y: 52 }, { x: 15, y: 72 },
-  { x: 55, y: 70 }, { x: 75, y: 68 },
+  { x: 55, y: 70 }, { x: 75, y: 68 }, { x: 35, y: 45 },
+  { x: 90, y: 65 }, { x: 5, y: 65 }, { x: 50, y: 78 },
 ];
+
+// Difficulty tiers unlock as score grows
+const DIFFICULTY = [
+  { minScore: 0, eggCount: 6, bobSpeed: 2.5, eggSize: 70, hiddenChance: 0 },
+  { minScore: 10, eggCount: 8, bobSpeed: 2.0, eggSize: 65, hiddenChance: 0.15 },
+  { minScore: 25, eggCount: 10, bobSpeed: 1.6, eggSize: 58, hiddenChance: 0.25 },
+  { minScore: 50, eggCount: 12, bobSpeed: 1.3, eggSize: 50, hiddenChance: 0.35 },
+];
+
+function getDifficulty(score) {
+  for (let i = DIFFICULTY.length - 1; i >= 0; i--) {
+    if (score >= DIFFICULTY[i].minScore) return DIFFICULTY[i];
+  }
+  return DIFFICULTY[0];
+}
 
 let eggIdCounter = 0;
 
@@ -37,10 +53,11 @@ function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function makeEgg(posIndex) {
+function makeEgg(posIndex, diff) {
   const pos = EGG_POSITIONS[posIndex];
   const jitterX = (Math.random() - 0.5) * 6;
   const jitterY = (Math.random() - 0.5) * 4;
+  const hidden = diff ? Math.random() < diff.hiddenChance : false;
   return {
     id: ++eggIdCounter,
     posIndex,
@@ -50,12 +67,16 @@ function makeEgg(posIndex) {
     pattern: randomItem(PATTERNS),
     surprise: randomItem(SURPRISES),
     bobDelay: Math.random() * 2,
+    size: diff ? diff.eggSize : 70,
+    bobSpeed: diff ? diff.bobSpeed : 2.5,
+    hidden, // partially hidden behind grass
     state: 'idle', // idle | wobble | crack | gone
   };
 }
 
-function makeInitialEggs() {
-  return EGG_POSITIONS.map((_, i) => makeEgg(i));
+function makeInitialEggs(diff) {
+  const count = diff ? diff.eggCount : 6;
+  return EGG_POSITIONS.slice(0, count).map((_, i) => makeEgg(i, diff));
 }
 
 /** Inline SVG egg with pattern overlay */
@@ -121,9 +142,10 @@ function CrackedEgg({ colour }) {
 }
 
 export default function EasterEggHunt() {
-  const [eggs, setEggs] = useState(makeInitialEggs);
+  const [eggs, setEggs] = useState(() => makeInitialEggs(DIFFICULTY[0]));
   const [score, setScore] = useState(0);
   const [reveals, setReveals] = useState([]);
+  const [level, setLevel] = useState(0);
   const scoreRef = useRef(0);
 
   const { burst, ParticleLayer } = useParticleBurst();
@@ -150,9 +172,10 @@ export default function EasterEggHunt() {
       playPop();
       playSparkle();
       burst(cx, cy, {
-        colors: [egg.colour.fill, egg.colour.stroke, '#facc15', '#fff'],
-        shapes: ['star', 'circle'],
-        count: 12,
+        colors: [egg.colour.fill, egg.colour.stroke, '#facc15', '#fff', '#fde68a'],
+        shapes: ['star', 'circle', 'heart'],
+        count: 18,
+        spread: 55,
       });
 
       setEggs(prev => prev.map(eg =>
@@ -179,8 +202,26 @@ export default function EasterEggHunt() {
       setScore(newScore);
       playCollectPing();
 
+      // Check for difficulty level up
+      const newDiff = getDifficulty(newScore);
+      const newLevel = DIFFICULTY.indexOf(newDiff);
+      if (newLevel > level) {
+        setLevel(newLevel);
+        // Level up burst
+        setTimeout(() => {
+          peek('excited');
+          playSuccess();
+          burst(window.innerWidth / 2, window.innerHeight / 2, {
+            colors: ['#facc15', '#f9a8d4', '#86efac', '#c4b5fd', '#93c5fd'],
+            shapes: ['star', 'heart'],
+            count: 24,
+            spread: 80,
+          });
+        }, 300);
+      }
+
       // Arthur peek every 5
-      if (newScore % 5 === 0 && newScore % 10 !== 0) {
+      if (newScore % 5 === 0 && newScore % 10 !== 0 && newLevel === level) {
         peek('excited');
         playSuccess();
       }
@@ -193,23 +234,66 @@ export default function EasterEggHunt() {
         }, 400);
       }
 
-      // Remove egg and respawn
+      // Remove egg and respawn with current difficulty
       setTimeout(() => {
+        const diff = getDifficulty(scoreRef.current);
         setEggs(prev => {
           const without = prev.filter(eg => eg.id !== egg.id);
-          return [...without, makeEgg(egg.posIndex)];
+          // Maybe add an extra egg if difficulty says we should have more
+          if (without.length < diff.eggCount - 1) {
+            const usedPositions = new Set(without.map(eg => eg.posIndex));
+            const freePos = EGG_POSITIONS.map((_, i) => i).filter(i => !usedPositions.has(i));
+            if (freePos.length > 0) {
+              const extraIdx = freePos[Math.floor(Math.random() * freePos.length)];
+              return [...without, makeEgg(egg.posIndex, diff), makeEgg(extraIdx, diff)];
+            }
+          }
+          return [...without, makeEgg(egg.posIndex, diff)];
         });
       }, 800);
     }, 500);
-  }, [burst, peek, celebrate]);
+  }, [burst, peek, celebrate, level]);
 
   return (
     <div className="fixed inset-0 overflow-hidden select-none" style={{ touchAction: 'manipulation' }}>
       {/* Background */}
       <GardenScene />
 
-      {/* Semi-transparent spring overlay for lighter feel */}
+      {/* Spring overlays — Easter-specific touches */}
       <div className="absolute inset-0 bg-gradient-to-b from-yellow-100/20 via-transparent to-green-200/20 pointer-events-none" />
+
+      {/* Floating Easter eggs in background */}
+      <div className="absolute inset-0 pointer-events-none z-[1] overflow-hidden">
+        {[
+          { x: '5%', delay: 0, size: 16, color: '#f9a8d480' },
+          { x: '25%', delay: 3, size: 12, color: '#c4b5fd60' },
+          { x: '70%', delay: 1.5, size: 14, color: '#86efac60' },
+          { x: '90%', delay: 4, size: 10, color: '#fde68a60' },
+        ].map((p, i) => (
+          <div
+            key={i}
+            className="absolute"
+            style={{
+              left: p.x,
+              width: p.size,
+              height: p.size * 1.3,
+              backgroundColor: p.color,
+              borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+              animation: `petal-drift ${12 + i * 3}s ${p.delay}s ease-in-out infinite`,
+              top: '-20px',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Level indicator */}
+      {level > 0 && (
+        <div className="absolute top-16 right-4 z-30 flex items-center gap-1 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1">
+          {DIFFICULTY.slice(1, level + 1).map((_, i) => (
+            <span key={i} className="text-lg">⭐</span>
+          ))}
+        </div>
+      )}
 
       {/* Back button */}
       <BackButton />
@@ -240,9 +324,13 @@ export default function EasterEggHunt() {
             {egg.state === 'idle' && (
               <div
                 className="animate-bounce-gentle"
-                style={{ animationDelay: `${egg.bobDelay}s` }}
+                style={{
+                  animationDelay: `${egg.bobDelay}s`,
+                  animationDuration: `${egg.bobSpeed}s`,
+                  opacity: egg.hidden ? 0.7 : 1,
+                }}
               >
-                <EggShape colour={egg.colour} pattern={egg.pattern} />
+                <EggShape colour={egg.colour} pattern={egg.pattern} size={egg.size} />
               </div>
             )}
 
@@ -328,6 +416,11 @@ export default function EasterEggHunt() {
         }
         .animate-bounce-gentle {
           animation: bounce-gentle 2.5s ease-in-out infinite;
+        }
+        @keyframes petal-drift {
+          0% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+          50% { opacity: 0.6; }
+          100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
         }
       `}</style>
     </div>

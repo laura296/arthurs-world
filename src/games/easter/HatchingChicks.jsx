@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { useParticleBurst } from '../../components/ParticleBurst';
 import { useArthurPeek } from '../../components/ArthurPeek';
 import { useCelebration } from '../../components/CelebrationOverlay';
-import { playPop, playSuccess, playBoing, playSparkle, playCelebrate } from '../../hooks/useSound';
+import { playPop, playSuccess, playBoing, playSparkle, playCelebrate, playCollectPing } from '../../hooks/useSound';
 
 const EGG_COLORS = ['#fde68a', '#f9a8d4', '#93c5fd', '#86efac', '#c4b5fd'];
 
@@ -93,6 +94,35 @@ function NestSVG() {
   );
 }
 
+/** Floating spring petals */
+function FloatingPetals() {
+  const petals = ['🌸', '🌼', '🌷', '✿', '🌻', '💐', '🌸', '🌼'];
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {petals.map((emoji, i) => (
+        <motion.div
+          key={i}
+          className="absolute text-2xl opacity-50"
+          style={{ left: `${8 + i * 12}%`, top: -30 }}
+          animate={{
+            y: ['0vh', '105vh'],
+            x: [0, Math.sin(i * 1.3) * 30, 0],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 10 + i * 2,
+            delay: i * 1.2,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        >
+          {emoji}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export default function HatchingChicks() {
   const [eggs, setEggs] = useState(() =>
     SLOT_POSITIONS.map((_, i) => makeEgg(i))
@@ -117,10 +147,10 @@ export default function HatchingChicks() {
       if (newTaps < 3) {
         playBoing();
         burst(cx, cy, {
-          count: 4,
-          spread: 25,
-          colors: [egg.color, '#fef3c7'],
-          shapes: ['circle'],
+          count: 6 + newTaps * 2,
+          spread: 25 + newTaps * 10,
+          colors: [egg.color, '#fef3c7', '#fde68a'],
+          shapes: ['circle', 'star'],
         });
         return { ...egg, taps: newTaps };
       }
@@ -128,10 +158,11 @@ export default function HatchingChicks() {
       // Hatch!
       playPop();
       playSparkle();
+      playCollectPing();
       burst(cx, cy, {
-        count: 16,
-        spread: 60,
-        colors: ['#fde68a', '#fcd34d', '#fef3c7', egg.color],
+        count: 20,
+        spread: 65,
+        colors: ['#fde68a', '#fcd34d', '#fef3c7', egg.color, '#facc15'],
         shapes: ['star', 'circle', 'heart'],
       });
 
@@ -145,7 +176,7 @@ export default function HatchingChicks() {
       }
       if (next % 6 === 0) {
         setTimeout(() => {
-          celebrate({ message: 'Hooray!', colors: ['#fde68a', '#86efac', '#f9a8d4'] });
+          celebrate({ message: 'Hooray!', colors: ['#fde68a', '#86efac', '#f9a8d4', '#c4b5fd'] });
           playCelebrate();
         }, 500);
       }
@@ -168,35 +199,61 @@ export default function HatchingChicks() {
 
   return (
     <div className="relative w-full h-full overflow-hidden"
-         style={{ background: 'linear-gradient(180deg, #fef3c7 0%, #fffbeb 40%, #e0f2fe 100%)' }}>
+         style={{ background: 'linear-gradient(180deg, #e0f2fe 0%, #fef3c7 35%, #fffbeb 60%, #d9f99d 100%)' }}>
       <BackButton />
 
-      {/* Floating petals */}
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className="absolute text-2xl pointer-events-none opacity-60"
-             style={{
-               left: `${10 + i * 16}%`,
-               animation: `petal-fall ${6 + i * 1.5}s ${i * 0.8}s ease-in-out infinite`,
-               top: '-30px',
-             }}>
-          {['🌸', '🌼', '🌷', '✿', '🌻', '💐'][i]}
-        </div>
-      ))}
+      {/* Background scene — rolling hills + sun */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice">
+        {/* Sun */}
+        <circle cx="650" cy="80" r="100" fill="#ffe066" opacity="0.15" />
+        <circle cx="650" cy="80" r="45" fill="#ffe066" opacity="0.4">
+          <animate attributeName="r" values="45;48;45" dur="4s" repeatCount="indefinite" />
+        </circle>
+        {/* Far hills */}
+        <path d="M0,380 Q100,340 200,370 Q350,310 500,360 Q650,320 800,370 L800,600 L0,600 Z"
+              fill="#86efac" opacity="0.5" />
+        <path d="M0,420 Q150,380 300,410 Q500,370 700,400 Q750,395 800,420 L800,600 L0,600 Z"
+              fill="#4ade80" opacity="0.4" />
+        {/* Grass texture */}
+        <g fill="#22c55e" opacity="0.4">
+          {[50, 150, 280, 400, 520, 650, 750].map((x, i) => (
+            <g key={i}>
+              <path d={`M${x},${430 + (i % 3) * 5} Q${x + 4},${410 + (i % 3) * 5} ${x + 8},${430 + (i % 3) * 5}`} />
+              <path d={`M${x + 6},${432 + (i % 3) * 5} Q${x + 11},${414 + (i % 3) * 5} ${x + 16},${432 + (i % 3) * 5}`} />
+            </g>
+          ))}
+        </g>
+      </svg>
+
+      <FloatingPetals />
 
       {/* Score badge */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-amber-100/80 backdrop-blur-sm
                       rounded-full px-5 py-2 border-2 border-amber-300/60 shadow-lg">
         <span className="text-2xl">🐥</span>
-        <span className="text-2xl font-heading text-amber-700">{chickCount}</span>
+        <motion.span
+          key={chickCount}
+          className="text-2xl font-heading text-amber-700"
+          initial={{ scale: 1.5 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300 }}
+        >
+          {chickCount}
+        </motion.span>
       </div>
 
       {/* Title */}
-      <div className="absolute top-20 left-0 right-0 text-center z-10">
-        <h2 className="text-3xl font-heading text-amber-700 drop-shadow animate-spring-in"
+      <motion.div
+        className="absolute top-20 left-0 right-0 text-center z-10"
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+      >
+        <h2 className="text-3xl font-heading text-amber-700 drop-shadow"
             style={{ textShadow: '0 2px 8px rgba(217, 119, 6, 0.2)' }}>
           🐣 Hatching Chicks
         </h2>
-      </div>
+      </motion.div>
 
       {/* Nest */}
       <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-lg z-10">
@@ -204,38 +261,55 @@ export default function HatchingChicks() {
       </div>
 
       {/* Eggs / Chicks */}
-      {eggs.map((egg) => {
-        const pos = SLOT_POSITIONS[egg.slot];
-        const wobbleClass = egg.taps === 1 ? 'animate-[wiggle_0.3s_ease-in-out]'
-          : egg.taps === 2 ? 'animate-[wiggle_0.2s_ease-in-out_2]' : '';
+      <AnimatePresence>
+        {eggs.map((egg) => {
+          const pos = SLOT_POSITIONS[egg.slot];
 
-        return (
-          <div
-            key={egg.id}
-            className={`absolute z-20 cursor-pointer transition-all duration-300 ${wobbleClass}`}
-            style={{
-              left: pos.x,
-              top: pos.y,
-              width: '18vw',
-              maxWidth: '80px',
-              height: '22vw',
-              maxHeight: '100px',
-              transform: `translate(-50%, -50%) ${egg.leaving ? 'translateX(120vw)' : ''}`,
-              transition: egg.leaving ? 'all 1s ease-in' : 'all 0.3s ease',
-              opacity: egg.leaving ? 0 : 1,
-            }}
-            onPointerDown={(e) => !egg.hatched && tapEgg(egg.id, e)}
-          >
-            {egg.chick ? (
-              <div style={{ animation: 'springIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-                <ChickSVG />
-              </div>
-            ) : (
-              <EggSVG color={egg.color} taps={egg.taps} />
-            )}
-          </div>
-        );
-      })}
+          return (
+            <motion.div
+              key={egg.id}
+              className="absolute z-20 cursor-pointer"
+              style={{
+                left: pos.x,
+                top: pos.y,
+                width: '18vw',
+                maxWidth: '80px',
+                height: '22vw',
+                maxHeight: '100px',
+                transform: 'translate(-50%, -50%)',
+              }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{
+                scale: egg.leaving ? 0.5 : 1,
+                opacity: egg.leaving ? 0 : 1,
+                x: egg.leaving ? 300 : 0,
+                y: egg.leaving ? -50 : 0,
+                rotate: egg.taps === 1 ? [0, -8, 8, -5, 5, 0] : egg.taps === 2 ? [0, -12, 12, -8, 8, -4, 0] : 0,
+              }}
+              transition={
+                egg.leaving
+                  ? { duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }
+                  : egg.taps > 0 && egg.taps < 3
+                    ? { rotate: { duration: 0.3, ease: 'easeInOut' }, scale: { type: 'spring', stiffness: 300, damping: 20 } }
+                    : { type: 'spring', stiffness: 300, damping: 20 }
+              }
+              onPointerDown={(e) => !egg.hatched && tapEgg(egg.id, e)}
+            >
+              {egg.chick ? (
+                <motion.div
+                  initial={{ scale: 0, rotate: -20 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                >
+                  <ChickSVG />
+                </motion.div>
+              ) : (
+                <EggSVG color={egg.color} taps={egg.taps} />
+              )}
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
 
       {/* Grass foreground */}
       <div className="absolute bottom-0 left-0 right-0 h-[12%] z-30 pointer-events-none"

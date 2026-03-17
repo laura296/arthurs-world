@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { useParticleBurst } from '../../components/ParticleBurst';
+import { useArthurPeek } from '../../components/ArthurPeek';
 import { useCelebration } from '../../components/CelebrationOverlay';
-import { playPop, playSuccess, playBoing, playSparkle, playCollectPing, playTone } from '../../hooks/useSound';
+import { playPop, playSuccess, playBoing, playSparkle, playCollectPing, playCelebrate, playTone } from '../../hooks/useSound';
 
 const COLORS = ['#f9a8d4', '#c4b5fd', '#86efac', '#fde68a', '#93c5fd', '#fdba74'];
 const PATTERNS = ['solid', 'spots', 'stripes', 'zigzag', 'stars'];
@@ -155,7 +156,9 @@ export default function PaintEasterEggs() {
   const [bands, setBands] = useState(INITIAL_BANDS);
   const [eggCount, setEggCount] = useState(0);
   const [eggKey, setEggKey] = useState(0);
+  const tapCount = useRef(0);
   const { burst, ParticleLayer } = useParticleBurst();
+  const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationOverlay } = useCelebration();
 
   const handleColorSelect = useCallback((color) => {
@@ -177,31 +180,52 @@ export default function PaintEasterEggs() {
     playCollectPing();
     const rect = e.currentTarget.getBoundingClientRect();
     burst(rect.left + rect.width / 2, rect.top + rect.height / 2, {
-      colors: [selectedColor, '#ffffff'],
-      count: 6,
+      colors: [selectedColor, '#ffffff', '#fde68a'],
+      count: 10,
+      shapes: ['star', 'circle'],
+      spread: 40,
     });
-  }, [selectedColor, burst]);
+
+    // Progressive feedback — Arthur peek every 4 band taps
+    tapCount.current++;
+    if (tapCount.current % 4 === 0) {
+      peek(tapCount.current % 8 === 0 ? 'excited' : 'happy');
+      playSparkle();
+    }
+  }, [selectedColor, burst, peek]);
 
   const handleFinish = useCallback(() => {
     playSuccess();
     playSparkle();
-    celebrate();
+    celebrate({ colors: ['#facc15', '#f9a8d4', '#86efac', '#c4b5fd'] });
+    playCelebrate();
     setEggCount((c) => c + 1);
+    setTimeout(() => {
+      peek('excited');
+    }, 600);
     setTimeout(() => {
       setBands(INITIAL_BANDS());
       setEggKey((k) => k + 1);
       playBoing();
     }, 1800);
-  }, [celebrate]);
+  }, [celebrate, peek]);
 
   const eggH = 260;
   const eggW = 180;
   const bandH = eggH / 3;
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-pink-100 via-yellow-50 to-green-100 overflow-hidden">
+    <div className="fixed inset-0 overflow-hidden" style={{ background: 'linear-gradient(180deg, #e0f2fe 0%, #fef3c7 30%, #fce7f3 60%, #d9f99d 100%)' }}>
+      {/* Spring meadow base */}
+      <div className="absolute inset-0 pointer-events-none">
+        <svg className="absolute bottom-0 left-0 w-full h-[40%]" viewBox="0 0 800 200" preserveAspectRatio="none">
+          <path d="M0,60 Q100,20 200,50 Q350,10 500,45 Q650,15 800,55 L800,200 L0,200 Z" fill="#86efac" opacity="0.4" />
+          <path d="M0,90 Q150,60 300,80 Q500,50 700,75 Q750,70 800,85 L800,200 L0,200 Z" fill="#4ade80" opacity="0.3" />
+        </svg>
+      </div>
       <BackButton />
       <ParticleLayer />
+      <ArthurPeekLayer />
       <CelebrationOverlay />
       <FloatingPetals />
 

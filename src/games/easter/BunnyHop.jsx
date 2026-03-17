@@ -136,7 +136,12 @@ export default function BunnyHop() {
         const rect = document.getElementById(`egg-${egg.id}`);
         if (rect) {
           const box = rect.getBoundingClientRect();
-          burst(box.left + box.width / 2, box.top + box.height / 2, egg.colour);
+          burst(box.left + box.width / 2, box.top + box.height / 2, {
+            colors: [egg.colour, '#facc15', '#fff', '#fde68a'],
+            count: 14,
+            spread: 50,
+            shapes: ['star', 'circle', 'heart'],
+          });
         }
         playCollectPing();
         return { ...egg, collected: true };
@@ -152,7 +157,7 @@ export default function BunnyHop() {
       if (newScore > 0 && newScore % 10 === 0) {
         setTimeout(() => {
           playCelebrate();
-          celebrate();
+          celebrate({ colors: ['#facc15', '#f9a8d4', '#86efac', '#c4b5fd'] });
         }, 300);
       } else if (newScore > 0 && newScore % 5 === 0) {
         setTimeout(() => {
@@ -216,8 +221,14 @@ export default function BunnyHop() {
   const handleCreatureTap = useCallback((e, creature) => {
     e.stopPropagation();
     playSparkle();
+    playCollectPing();
     const box = e.currentTarget.getBoundingClientRect();
-    burst(box.left + box.width / 2, box.top + box.height / 2, '#fde68a');
+    burst(box.left + box.width / 2, box.top + box.height / 2, {
+      colors: ['#fde68a', '#f9a8d4', '#86efac', '#facc15'],
+      count: 12,
+      spread: 45,
+      shapes: ['star', 'circle'],
+    });
     setCreatures(prev => prev.filter(c => c.id !== creature.id));
   }, [burst]);
 
@@ -225,6 +236,34 @@ export default function BunnyHop() {
     <div className="fixed inset-0 overflow-hidden" onClick={handleHop}>
       {/* Background */}
       <GardenScene />
+
+      {/* Easter spring overlay — warm golden tint + floating petals */}
+      <div className="absolute inset-0 pointer-events-none z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-b from-yellow-100/15 via-transparent to-pink-100/10" />
+        {/* Decorative spring flowers at ground level */}
+        <svg className="absolute bottom-[20%] left-0 w-full h-[10%] pointer-events-none" viewBox="0 0 800 60" preserveAspectRatio="none">
+          {[80, 200, 350, 500, 650, 760].map((x, i) => (
+            <g key={i}>
+              <line x1={x} y1={30} x2={x} y2={55} stroke="#4ade80" strokeWidth="2" />
+              {['#f9a8d4', '#c4b5fd', '#fde68a', '#86efac', '#93c5fd', '#fdba74'][i] && (
+                <>
+                  {[0, 72, 144, 216, 288].map(angle => (
+                    <ellipse
+                      key={angle}
+                      cx={x + Math.cos(angle * Math.PI / 180) * 5}
+                      cy={30 + Math.sin(angle * Math.PI / 180) * 5}
+                      rx="3" ry="2"
+                      fill={['#f9a8d4', '#c4b5fd', '#fde68a', '#86efac', '#93c5fd', '#fdba74'][i]}
+                      transform={`rotate(${angle},${x + Math.cos(angle * Math.PI / 180) * 5},${30 + Math.sin(angle * Math.PI / 180) * 5})`}
+                    />
+                  ))}
+                  <circle cx={x} cy={30} r="2.5" fill="#facc15" />
+                </>
+              )}
+            </g>
+          ))}
+        </svg>
+      </div>
 
       {/* Ground overlay — grassy strip */}
       <div
