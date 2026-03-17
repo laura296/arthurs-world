@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Tortoise and the Hare',
+  endMessage: 'Slow and steady wins the race! 🐢🏆',
   audioDir: '/arthurs-world/audio/tortoise-hare',
   pages: [
     // ── Page 1: Introduction ──
@@ -17,7 +18,7 @@ const storyData = {
         { id: 'flowers', x: 15, y: 72, hotspot: true, w: 80, h: 80, z: 1 },
       ],
       interactions: [
-        { id: 'hare-sound', type: 'tap-sound', targetId: 'hare', data: { say: 'I am the fastest!' } },
+        { id: 'hare-sound', type: 'character-speak', targetId: 'hare', data: { say: 'I am the fastest!', character: 'hare' } },
         { id: 'hare-jump', type: 'tap-jump', targetId: 'hare', data: {} },
         { id: 'tortoise-wiggle', type: 'tap-wiggle', targetId: 'tortoise', data: {} },
         { id: 'tree-shake', type: 'tap-shake', targetId: 'tree', data: {} },
@@ -37,7 +38,7 @@ const storyData = {
         { id: 'butterfly', x: 20, y: 25, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'tortoise-sound', type: 'tap-sound', targetId: 'tortoise-brave', data: { say: 'I can do it!' } },
+        { id: 'tortoise-sound', type: 'character-speak', targetId: 'tortoise-brave', data: { say: 'I can do it!', character: 'tortoise' } },
         { id: 'hare-laugh-shake', type: 'tap-shake', targetId: 'hare-laugh', data: {} },
         { id: 'signpost-wiggle', type: 'tap-wiggle', targetId: 'signpost', data: {} },
         { id: 'butterfly-spin', type: 'tap-spin', targetId: 'butterfly', data: {} },
@@ -75,7 +76,7 @@ const storyData = {
         { id: 'bird', x: 40, y: 15, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'hare-sleep-sound', type: 'tap-sound', targetId: 'hare-sleep', data: { say: 'Zzzzzzz' } },
+        { id: 'hare-sleep-sound', type: 'character-speak', targetId: 'hare-sleep', data: { say: 'Zzzzzzz', character: 'hare' } },
         { id: 'zzz-grow', type: 'tap-grow', targetId: 'zzz', data: {} },
         { id: 'tree-shake', type: 'tap-shake', targetId: 'shady-tree', data: {} },
         { id: 'bird-jump', type: 'tap-jump', targetId: 'bird', data: {} },
@@ -94,7 +95,7 @@ const storyData = {
         { id: 'cheer-bird', x: 20, y: 30, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'tortoise-sound', type: 'tap-sound', targetId: 'tortoise-steady', data: { say: 'Slow and steady!' } },
+        { id: 'tortoise-sound', type: 'character-speak', targetId: 'tortoise-steady', data: { say: 'Slow and steady!', character: 'tortoise' } },
         { id: 'tortoise-wiggle', type: 'tap-wiggle', targetId: 'tortoise-steady', data: {} },
         { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
         { id: 'sun-color', type: 'tap-color', targetId: 'sun', data: { colors: ['#fbbf24', '#f97316', '#facc15'] } },
@@ -115,7 +116,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'tortoise-sneak-wiggle', type: 'tap-wiggle', targetId: 'tortoise-sneak', data: {} },
-        { id: 'hare-sound', type: 'tap-sound', targetId: 'hare-still-asleep', data: { say: 'Zzzzz...' } },
+        { id: 'hare-sound', type: 'character-speak', targetId: 'hare-still-asleep', data: { say: 'Zzzzz...', character: 'hare' } },
         { id: 'shh-grow', type: 'tap-grow', targetId: 'shh', data: {} },
         { id: 'snail-reveal', type: 'tap-reveal', targetId: 'hidden-snail', data: { content: 'Go tortoise!' } },
       ],
@@ -134,7 +135,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'hare-panic-shake', type: 'tap-shake', targetId: 'hare-panic', data: {} },
-        { id: 'hare-sound', type: 'tap-sound', targetId: 'hare-panic', data: { say: 'Oh no! Wait!' } },
+        { id: 'hare-sound', type: 'character-speak', targetId: 'hare-panic', data: { say: 'Oh no! Wait!', character: 'hare' } },
         { id: 'tortoise-wiggle', type: 'tap-wiggle', targetId: 'tortoise-close', data: {} },
         { id: 'finish-sparkle', type: 'tap-sparkle', targetId: 'finish-line', data: {} },
       ],
@@ -158,7 +159,7 @@ const storyData = {
         { id: 'trophy-spin', type: 'tap-spin', targetId: 'trophy', data: {} },
         { id: 'trophy-sparkle', type: 'tap-sparkle', targetId: 'trophy', data: {} },
         { id: 'confetti-color', type: 'tap-color', targetId: 'confetti-left', data: { colors: ['#f43f5e', '#fbbf24', '#a78bfa', '#34d399'] } },
-        { id: 'hare-sound', type: 'tap-sound', targetId: 'hare-sad', data: { say: 'You beat me!' } },
+        { id: 'hare-sound', type: 'character-speak', targetId: 'hare-sad', data: { say: 'You beat me!', character: 'hare' } },
       ],
     },
   ],

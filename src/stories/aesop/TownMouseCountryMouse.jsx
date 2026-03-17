@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Town Mouse and Country Mouse',
+  endMessage: 'Home sweet home! 🐭🏡💛',
   audioDir: '/arthurs-world/audio/town-country-mouse',
   pages: [
     // ── Page 1: Country Mouse ──
@@ -18,7 +19,7 @@ const storyData = {
         { id: 'wheat', x: 15, y: 55, hotspot: true, w: 70, h: 90, z: 1 },
       ],
       interactions: [
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'country-mouse', data: { say: 'I love my little home!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'country-mouse', data: { say: 'I love my little home!', character: 'country-mouse' } },
         { id: 'mouse-wiggle', type: 'tap-wiggle', targetId: 'country-mouse', data: {} },
         { id: 'tree-shake', type: 'tap-shake', targetId: 'oak-tree', data: {} },
         { id: 'ladybird-jump', type: 'tap-jump', targetId: 'ladybird', data: {} },
@@ -38,8 +39,8 @@ const storyData = {
         { id: 'flower', x: 15, y: 60, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'town-sound', type: 'tap-sound', targetId: 'town-mouse', data: { say: 'Hello cousin! I am from the big city!' } },
-        { id: 'country-sound', type: 'tap-sound', targetId: 'country-mouse2', data: { say: 'Welcome! Come inside!' } },
+        { id: 'town-sound', type: 'character-speak', targetId: 'town-mouse', data: { say: 'Hello cousin! I am from the big city!', character: 'town-mouse' } },
+        { id: 'country-sound', type: 'character-speak', targetId: 'country-mouse2', data: { say: 'Welcome! Come inside!', character: 'country-mouse' } },
         { id: 'suitcase-wiggle', type: 'tap-wiggle', targetId: 'suitcase', data: {} },
         { id: 'flower-color', type: 'tap-color', targetId: 'flower', data: { colors: ['#f472b6', '#fbbf24', '#a78bfa'] } },
       ],
@@ -59,7 +60,7 @@ const storyData = {
       interactions: [
         { id: 'seeds-grow', type: 'tap-grow', targetId: 'seeds', data: {} },
         { id: 'berries-color', type: 'tap-color', targetId: 'berries', data: { colors: ['#ef4444', '#7c3aed', '#2563eb'] } },
-        { id: 'town-sound', type: 'tap-sound', targetId: 'town-mouse-frown', data: { say: 'Come to my house! The food is much better!' } },
+        { id: 'town-sound', type: 'character-speak', targetId: 'town-mouse-frown', data: { say: 'Come to my house! The food is much better!', character: 'town-mouse' } },
         { id: 'country-wiggle', type: 'tap-wiggle', targetId: 'country-mouse-proud', data: {} },
       ],
     },
@@ -77,7 +78,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'buildings-sparkle', type: 'tap-sparkle', targetId: 'buildings', data: {} },
-        { id: 'mice-sound', type: 'tap-sound', targetId: 'both-mice', data: { say: 'WOW! Everything is so big!' } },
+        { id: 'mice-sound', type: 'character-speak', targetId: 'both-mice', data: { say: 'WOW! Everything is so big!', character: 'country-mouse' } },
         { id: 'car-wiggle', type: 'tap-wiggle', targetId: 'car', data: {} },
         { id: 'light-color', type: 'tap-color', targetId: 'street-light', data: { colors: ['#fbbf24', '#ef4444', '#22c55e'] } },
       ],
@@ -98,7 +99,7 @@ const storyData = {
         { id: 'cheese-sparkle', type: 'tap-sparkle', targetId: 'cheese', data: {} },
         { id: 'cake-grow', type: 'tap-grow', targetId: 'cake', data: {} },
         { id: 'chocolate-color', type: 'tap-color', targetId: 'chocolate', data: { colors: ['#92400e', '#78350f', '#451a03'] } },
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'country-mouse-wow', data: { say: 'YUM! This is amazing!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'country-mouse-wow', data: { say: 'YUM! This is amazing!', character: 'country-mouse' } },
       ],
     },
 
@@ -114,7 +115,7 @@ const storyData = {
         { id: 'meow-text', x: 55, y: 15, hotspot: true, w: 90, h: 70, z: 2 },
       ],
       interactions: [
-        { id: 'cat-sound', type: 'tap-sound', targetId: 'cat', data: { say: 'MEOW!' } },
+        { id: 'cat-sound', type: 'character-speak', targetId: 'cat', data: { say: 'MEOW!', character: 'cat' } },
         { id: 'cat-shake', type: 'tap-shake', targetId: 'cat', data: {} },
         { id: 'mouse1-jump', type: 'tap-jump', targetId: 'mouse-run1', data: {} },
         { id: 'mouse2-jump', type: 'tap-jump', targetId: 'mouse-run2', data: {} },
@@ -134,7 +135,7 @@ const storyData = {
         { id: 'shaking-line', x: 35, y: 40, hotspot: true, w: 60, h: 60, z: 2 },
       ],
       interactions: [
-        { id: 'mice-sound', type: 'tap-sound', targetId: 'mice-hiding', data: { say: 'That was too scary!' } },
+        { id: 'mice-sound', type: 'character-speak', targetId: 'mice-hiding', data: { say: 'That was too scary!', character: 'country-mouse' } },
         { id: 'mice-shake', type: 'tap-shake', targetId: 'mice-hiding', data: {} },
         { id: 'shadow-wiggle', type: 'tap-wiggle', targetId: 'cat-shadow', data: {} },
         { id: 'shake-grow', type: 'tap-grow', targetId: 'shaking-line', data: {} },
@@ -154,7 +155,7 @@ const storyData = {
         { id: 'star', x: 80, y: 18, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'country-mouse-home', data: { say: 'Home sweet home!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'country-mouse-home', data: { say: 'Home sweet home!', character: 'country-mouse' } },
         { id: 'mouse-sparkle', type: 'tap-sparkle', targetId: 'country-mouse-home', data: {} },
         { id: 'hole-sparkle', type: 'tap-sparkle', targetId: 'cosy-hole', data: {} },
         { id: 'heart-color', type: 'tap-color', targetId: 'heart', data: { colors: ['#f43f5e', '#ec4899', '#f472b6'] } },

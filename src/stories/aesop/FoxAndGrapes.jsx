@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Fox and the Grapes',
+  endMessage: 'Don\'t pretend you never wanted it! 🦊🍇',
   audioDir: '/arthurs-world/audio/fox-grapes',
   pages: [
     // ── Page 1: Hungry Fox ──
@@ -17,7 +18,7 @@ const storyData = {
         { id: 'mushroom', x: 15, y: 70, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'fox-sound', type: 'tap-sound', targetId: 'fox', data: { say: 'I am SO hungry!' } },
+        { id: 'fox-sound', type: 'character-speak', targetId: 'fox', data: { say: 'I am SO hungry!', character: 'fox' } },
         { id: 'fox-wiggle', type: 'tap-wiggle', targetId: 'fox', data: {} },
         { id: 'bird-jump', type: 'tap-jump', targetId: 'bird', data: {} },
         { id: 'mushroom-color', type: 'tap-color', targetId: 'mushroom', data: { colors: ['#ef4444', '#fbbf24', '#8b5cf6'] } },
@@ -38,7 +39,7 @@ const storyData = {
       interactions: [
         { id: 'grapes-sparkle', type: 'tap-sparkle', targetId: 'grapes', data: {} },
         { id: 'grapes-color', type: 'tap-color', targetId: 'grapes', data: { colors: ['#7c3aed', '#a855f7', '#6d28d9'] } },
-        { id: 'fox-sound', type: 'tap-sound', targetId: 'fox-look', data: { say: 'Ooh! Those grapes look yummy!' } },
+        { id: 'fox-sound', type: 'character-speak', targetId: 'fox-look', data: { say: 'Ooh! Those grapes look yummy!', character: 'fox' } },
         { id: 'sparkle-spin', type: 'tap-spin', targetId: 'sparkle', data: {} },
       ],
     },
@@ -56,7 +57,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'fox-jump-action', type: 'tap-jump', targetId: 'fox-jump', data: {} },
-        { id: 'fox-sound', type: 'tap-sound', targetId: 'fox-jump', data: { say: 'Almost got them!' } },
+        { id: 'fox-sound', type: 'character-speak', targetId: 'fox-jump', data: { say: 'Almost got them!', character: 'fox' } },
         { id: 'grapes-wiggle', type: 'tap-wiggle', targetId: 'grapes-high', data: {} },
         { id: 'dust-spin', type: 'tap-spin', targetId: 'dust', data: {} },
       ],
@@ -94,7 +95,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'fox-jump3', type: 'tap-jump', targetId: 'fox-big-jump', data: {} },
-        { id: 'fox-sound', type: 'tap-sound', targetId: 'fox-big-jump', data: { say: 'So close!' } },
+        { id: 'fox-sound', type: 'character-speak', targetId: 'fox-big-jump', data: { say: 'So close!', character: 'fox' } },
         { id: 'grapes-shake', type: 'tap-shake', targetId: 'grapes-far', data: {} },
         { id: 'star-sparkle', type: 'tap-sparkle', targetId: 'impact-star', data: {} },
       ],
@@ -112,7 +113,7 @@ const storyData = {
         { id: 'snail', x: 80, y: 70, hotspot: true, w: 55, h: 55, z: 1 },
       ],
       interactions: [
-        { id: 'fox-sound', type: 'tap-sound', targetId: 'fox-grumpy', data: { say: 'Hmph! I bet they are sour!' } },
+        { id: 'fox-sound', type: 'character-speak', targetId: 'fox-grumpy', data: { say: 'Hmph! I bet they are sour!', character: 'fox' } },
         { id: 'fox-shake', type: 'tap-shake', targetId: 'fox-grumpy', data: {} },
         { id: 'hmph-grow', type: 'tap-grow', targetId: 'hmph', data: {} },
         { id: 'snail-wiggle', type: 'tap-wiggle', targetId: 'snail', data: {} },
@@ -132,7 +133,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'fox-wiggle', type: 'tap-wiggle', targetId: 'fox-walk', data: {} },
-        { id: 'bird-sound', type: 'tap-sound', targetId: 'bird-watch', data: { say: 'They are not sour at all!' } },
+        { id: 'bird-sound', type: 'character-speak', targetId: 'bird-watch', data: { say: 'They are not sour at all!', character: 'bird' } },
         { id: 'grapes-sparkle', type: 'tap-sparkle', targetId: 'grapes-vine', data: {} },
         { id: 'bird-jump', type: 'tap-jump', targetId: 'bird-watch', data: {} },
       ],

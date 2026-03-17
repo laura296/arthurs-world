@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Ant and the Grasshopper',
+  endMessage: 'Work hard AND have fun! 🐜🦗💛',
   audioDir: '/arthurs-world/audio/ant-grasshopper',
   pages: [
     // ── Page 1: Summer Day ──
@@ -18,7 +19,7 @@ const storyData = {
         { id: 'flower', x: 15, y: 55, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'ant-sound', type: 'tap-sound', targetId: 'ant', data: { say: 'Must keep working!' } },
+        { id: 'ant-sound', type: 'character-speak', targetId: 'ant', data: { say: 'Must keep working!', character: 'ant' } },
         { id: 'ant-wiggle', type: 'tap-wiggle', targetId: 'ant', data: {} },
         { id: 'food-grow', type: 'tap-grow', targetId: 'food-crumb', data: {} },
         { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
@@ -39,7 +40,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'grasshopper-dance', type: 'tap-animate', targetId: 'grasshopper', data: { animation: 'animate-dance', duration: 1200 } },
-        { id: 'grasshopper-sound', type: 'tap-sound', targetId: 'grasshopper', data: { say: 'La la la! What a lovely day!' } },
+        { id: 'grasshopper-sound', type: 'character-speak', targetId: 'grasshopper', data: { say: 'La la la! What a lovely day!', character: 'grasshopper' } },
         { id: 'note1-spin', type: 'tap-spin', targetId: 'music-note1', data: {} },
         { id: 'note2-spin', type: 'tap-spin', targetId: 'music-note2', data: {} },
       ],
@@ -57,8 +58,8 @@ const storyData = {
         { id: 'leaf', x: 15, y: 30, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'grasshopper-sound', type: 'tap-sound', targetId: 'grasshopper-ask', data: { say: 'Come play! It is summer!' } },
-        { id: 'ant-sound', type: 'tap-sound', targetId: 'ant-busy', data: { say: 'I must save food for winter!' } },
+        { id: 'grasshopper-sound', type: 'character-speak', targetId: 'grasshopper-ask', data: { say: 'Come play! It is summer!', character: 'grasshopper' } },
+        { id: 'ant-sound', type: 'character-speak', targetId: 'ant-busy', data: { say: 'I must save food for winter!', character: 'ant' } },
         { id: 'food-grow', type: 'tap-grow', targetId: 'food-pile', data: {} },
         { id: 'leaf-wiggle', type: 'tap-wiggle', targetId: 'leaf', data: {} },
       ],
@@ -116,7 +117,7 @@ const storyData = {
         { id: 'tear', x: 55, y: 42, hotspot: true, w: 50, h: 50, z: 3 },
       ],
       interactions: [
-        { id: 'grasshopper-sound', type: 'tap-sound', targetId: 'grasshopper-cold', data: { say: 'Brrrr! I am so cold and hungry!' } },
+        { id: 'grasshopper-sound', type: 'character-speak', targetId: 'grasshopper-cold', data: { say: 'Brrrr! I am so cold and hungry!', character: 'grasshopper' } },
         { id: 'grasshopper-shake', type: 'tap-shake', targetId: 'grasshopper-cold', data: {} },
         { id: 'tummy-wiggle', type: 'tap-wiggle', targetId: 'empty-tummy', data: {} },
         { id: 'tear-grow', type: 'tap-grow', targetId: 'tear', data: {} },
@@ -135,8 +136,8 @@ const storyData = {
         { id: 'food-spread', x: 45, y: 70, hotspot: true, w: 120, h: 80, z: 1 },
       ],
       interactions: [
-        { id: 'ant-sound', type: 'tap-sound', targetId: 'ant-kind', data: { say: 'Come in friend! Have some food!' } },
-        { id: 'grasshopper-sound', type: 'tap-sound', targetId: 'grasshopper-grateful', data: { say: 'Thank you! You are so kind!' } },
+        { id: 'ant-sound', type: 'character-speak', targetId: 'ant-kind', data: { say: 'Come in friend! Have some food!', character: 'ant' } },
+        { id: 'grasshopper-sound', type: 'character-speak', targetId: 'grasshopper-grateful', data: { say: 'Thank you! You are so kind!', character: 'grasshopper' } },
         { id: 'door-sparkle', type: 'tap-sparkle', targetId: 'door', data: {} },
         { id: 'food-sparkle', type: 'tap-sparkle', targetId: 'food-spread', data: {} },
       ],

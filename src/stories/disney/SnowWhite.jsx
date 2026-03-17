@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Snow White',
+  endMessage: 'And they lived happily ever after! 👸🍎✨',
   audioDir: '/arthurs-world/audio/snow-white',
   pages: [
     // ── Page 1: Introduction ──
@@ -18,7 +19,7 @@ const storyData = {
         { id: 'hidden-bunny', x: 85, y: 68, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'snow-white-sound', type: 'tap-sound', targetId: 'snow-white', data: { say: 'Good morning, little friends!' } },
+        { id: 'snow-white-sound', type: 'character-speak', targetId: 'snow-white', data: { say: 'Good morning, little friends!', character: 'snow-white' } },
         { id: 'bird-animate', type: 'tap-animate', targetId: 'bird', data: { animation: 'animate-fly', duration: 1000 } },
         { id: 'deer-sound', type: 'tap-sound', targetId: 'deer', data: { sfx: 'deer' } },
         { id: 'flowers-color', type: 'tap-color', targetId: 'flowers', data: { colors: ['#f43f5e', '#fbbf24', '#c084fc', '#60a5fa'] } },
@@ -38,7 +39,7 @@ const storyData = {
         { id: 'flame', x: 15, y: 45, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'queen-sound', type: 'tap-sound', targetId: 'queen', data: { say: 'Mirror mirror on the wall!' } },
+        { id: 'queen-sound', type: 'character-speak', targetId: 'queen', data: { say: 'Mirror mirror on the wall!', character: 'queen' } },
         { id: 'mirror-sparkle', type: 'tap-sparkle', targetId: 'mirror', data: {} },
         { id: 'mirror-swap', type: 'tap-swap', targetId: 'mirror', data: { altContent: 'Snow White!' } },
         { id: 'crown-spin', type: 'tap-spin', targetId: 'crown-queen', data: {} },
@@ -59,7 +60,7 @@ const storyData = {
         { id: 'hidden-eyes', x: 25, y: 42, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'snow-white-run-sound', type: 'tap-sound', targetId: 'snow-white-run', data: { say: 'Oh my, where am I?' } },
+        { id: 'snow-white-run-sound', type: 'character-speak', targetId: 'snow-white-run', data: { say: 'Oh my, where am I?', character: 'snow-white' } },
         { id: 'tree-left-shake', type: 'tap-shake', targetId: 'tree-left', data: {} },
         { id: 'tree-right-shake', type: 'tap-shake', targetId: 'tree-right', data: {} },
         { id: 'owl-sound', type: 'tap-sound', targetId: 'owl', data: { say: 'Hoo hoo!', sfx: 'owl' } },
@@ -80,7 +81,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'cottage-sparkle', type: 'tap-sparkle', targetId: 'cottage', data: {} },
-        { id: 'door-sound', type: 'tap-sound', targetId: 'door', data: { say: 'Knock knock! Anyone home?' } },
+        { id: 'door-sound', type: 'character-speak', targetId: 'door', data: { say: 'Knock knock! Anyone home?', character: 'snow-white' } },
         { id: 'chimney-wiggle', type: 'tap-wiggle', targetId: 'chimney', data: {} },
         { id: 'garden-color', type: 'tap-color', targetId: 'garden', data: { colors: ['#22c55e', '#f43f5e', '#fbbf24', '#c084fc'] } },
       ],
@@ -102,12 +103,12 @@ const storyData = {
       ],
       interactions: [
         { id: 'dwarf1-animate', type: 'tap-animate', targetId: 'dwarf1', data: { animation: 'animate-dance', duration: 800 } },
-        { id: 'dwarf2-sound', type: 'tap-sound', targetId: 'dwarf2', data: { say: 'Hi ho!' } },
+        { id: 'dwarf2-sound', type: 'character-speak', targetId: 'dwarf2', data: { say: 'Hi ho!', character: 'dwarf' } },
         { id: 'dwarf3-wiggle', type: 'tap-wiggle', targetId: 'dwarf3', data: {} },
         { id: 'dwarf4-count', type: 'tap-count', targetId: 'dwarf4', data: { max: 7 } },
         { id: 'dwarf5-spin', type: 'tap-spin', targetId: 'dwarf5', data: {} },
         { id: 'dwarf6-shake', type: 'tap-shake', targetId: 'dwarf6', data: {} },
-        { id: 'dwarf7-sound', type: 'tap-sound', targetId: 'dwarf7', data: { say: 'Off to work we go!' } },
+        { id: 'dwarf7-sound', type: 'character-speak', targetId: 'dwarf7', data: { say: 'Off to work we go!', character: 'dwarf' } },
       ],
     },
 
@@ -123,10 +124,10 @@ const storyData = {
         { id: 'hidden-skull', x: 15, y: 72, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'old-woman-sound', type: 'tap-sound', targetId: 'old-woman', data: { say: 'Try this delicious apple, dearie!' } },
+        { id: 'old-woman-sound', type: 'character-speak', targetId: 'old-woman', data: { say: 'Try this delicious apple, dearie!', character: 'queen' } },
         { id: 'apple-color', type: 'tap-color', targetId: 'apple', data: { colors: ['#ef4444', '#22c55e', '#a855f7'] } },
         { id: 'apple-grow', type: 'tap-grow', targetId: 'apple', data: {} },
-        { id: 'snow-white-apple-sound', type: 'tap-sound', targetId: 'snow-white-apple', data: { say: 'It looks so yummy!' } },
+        { id: 'snow-white-apple-sound', type: 'character-speak', targetId: 'snow-white-apple', data: { say: 'It looks so yummy!', character: 'snow-white' } },
         { id: 'skull-reveal', type: 'tap-reveal', targetId: 'hidden-skull', data: { content: 'Oh no! Don\'t eat it!' } },
       ],
     },
@@ -144,7 +145,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'snow-white-sleep-sparkle', type: 'tap-sparkle', targetId: 'snow-white-sleep', data: {} },
-        { id: 'dwarfs-sad-sound', type: 'tap-sound', targetId: 'dwarfs-sad', data: { say: 'Oh no! Wake up Snow White!' } },
+        { id: 'dwarfs-sad-sound', type: 'character-speak', targetId: 'dwarfs-sad', data: { say: 'Oh no! Wake up Snow White!', character: 'dwarf' } },
         { id: 'flowers-bed-color', type: 'tap-color', targetId: 'flowers-bed', data: { colors: ['#f43f5e', '#fbbf24', '#c084fc', '#60a5fa'] } },
         { id: 'candle-wiggle', type: 'tap-wiggle', targetId: 'candle', data: {} },
       ],
@@ -162,7 +163,7 @@ const storyData = {
         { id: 'hidden-bird', x: 80, y: 22, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'prince-sound', type: 'tap-sound', targetId: 'prince', data: { say: 'I will find her!' } },
+        { id: 'prince-sound', type: 'character-speak', targetId: 'prince', data: { say: 'I will find her!', character: 'prince' } },
         { id: 'horse-sound', type: 'tap-sound', targetId: 'horse', data: { sfx: 'horse' } },
         { id: 'horse-animate', type: 'tap-animate', targetId: 'horse', data: { animation: 'animate-dance', duration: 1000 } },
         { id: 'bird-reveal', type: 'tap-reveal', targetId: 'hidden-bird', data: { content: 'This way!' } },
@@ -183,7 +184,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'snow-white-wake-sparkle', type: 'tap-sparkle', targetId: 'snow-white-wake', data: {} },
-        { id: 'snow-white-wake-sound', type: 'tap-sound', targetId: 'snow-white-wake', data: { say: 'Where am I? Oh, thank you!' } },
+        { id: 'snow-white-wake-sound', type: 'character-speak', targetId: 'snow-white-wake', data: { say: 'Where am I? Oh, thank you!', character: 'snow-white' } },
         { id: 'sparkles-spin', type: 'tap-spin', targetId: 'sparkles', data: {} },
         { id: 'hearts-color', type: 'tap-color', targetId: 'hearts-love', data: { colors: ['#f43f5e', '#ec4899', '#f472b6'] } },
         { id: 'dwarfs-happy-animate', type: 'tap-animate', targetId: 'dwarfs-happy', data: { animation: 'animate-dance', duration: 1000 } },

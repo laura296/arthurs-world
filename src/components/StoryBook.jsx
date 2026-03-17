@@ -646,7 +646,7 @@ export default function StoryBook({ story, onComplete }) {
       const cy = window.innerHeight / 2 - 60;
       burst(cx, cy, { count: 16, spread: 90, colors: ['#facc15', '#ec4899', '#38bdf8', '#22c55e'], shapes: ['star', 'heart', 'circle'] });
       setTimeout(() => {
-        celebrate({ message: 'The End! 🎉' });
+        celebrate({ message: story.endMessage || 'The End! 🎉' });
         onComplete?.();
       }, 400);
     }

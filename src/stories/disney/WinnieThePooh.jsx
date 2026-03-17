@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Winnie the Pooh',
+  endMessage: 'Friends are the best! 🍯🐻💛',
   audioDir: '/arthurs-world/audio/winnie-the-pooh',
   pages: [
     // ── Page 1: The Hundred Acre Wood ──
@@ -18,7 +19,7 @@ const storyData = {
         { id: 'hidden-piglet', x: 15, y: 58, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'pooh-sound', type: 'tap-sound', targetId: 'pooh', data: { say: 'Oh bother! I need some honey!' } },
+        { id: 'pooh-sound', type: 'character-speak', targetId: 'pooh', data: { say: 'Oh bother! I need some honey!', character: 'pooh' } },
         { id: 'pooh-wiggle', type: 'tap-wiggle', targetId: 'pooh', data: {} },
         { id: 'tree-house-sparkle', type: 'tap-sparkle', targetId: 'tree-house', data: {} },
         { id: 'flowers-color', type: 'tap-color', targetId: 'flowers', data: { colors: ['#fbbf24', '#f43f5e', '#c084fc', '#60a5fa'] } },
@@ -39,7 +40,7 @@ const storyData = {
         { id: 'hidden-roo', x: 82, y: 65, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'pooh-sad-sound', type: 'tap-sound', targetId: 'pooh-sad', data: { say: 'Think think think...' } },
+        { id: 'pooh-sad-sound', type: 'character-speak', targetId: 'pooh-sad', data: { say: 'Think think think...', character: 'pooh' } },
         { id: 'honey-pot-shake', type: 'tap-shake', targetId: 'honey-pot', data: {} },
         { id: 'honey-pot-swap', type: 'tap-swap', targetId: 'honey-pot', data: { altContent: 'Empty!' } },
         { id: 'tummy-wiggle', type: 'tap-wiggle', targetId: 'tummy', data: {} },
@@ -60,8 +61,8 @@ const storyData = {
         { id: 'piglet-house', x: 80, y: 30, hotspot: true, w: 100, h: 100, z: 1 },
       ],
       interactions: [
-        { id: 'pooh-walk-sound', type: 'tap-sound', targetId: 'pooh-walk', data: { say: 'Hello Piglet! Do you have any honey?' } },
-        { id: 'piglet-sound', type: 'tap-sound', targetId: 'piglet', data: { say: 'Oh P-Pooh! Let me help you find some!' } },
+        { id: 'pooh-walk-sound', type: 'character-speak', targetId: 'pooh-walk', data: { say: 'Hello Piglet! Do you have any honey?', character: 'pooh' } },
+        { id: 'piglet-sound', type: 'character-speak', targetId: 'piglet', data: { say: 'Oh P-Pooh! Let me help you find some!', character: 'piglet' } },
         { id: 'piglet-animate', type: 'tap-animate', targetId: 'piglet', data: { animation: 'animate-dance', duration: 800 } },
         { id: 'acorn-count', type: 'tap-count', targetId: 'acorn', data: { max: 5 } },
         { id: 'butterfly-animate', type: 'tap-animate', targetId: 'butterfly', data: { animation: 'animate-fly', duration: 1000 } },
@@ -81,9 +82,9 @@ const storyData = {
       ],
       interactions: [
         { id: 'tigger-animate', type: 'tap-animate', targetId: 'tigger', data: { animation: 'animate-spring-in', duration: 800 } },
-        { id: 'tigger-sound', type: 'tap-sound', targetId: 'tigger', data: { say: 'Hoo hoo hoo hoo! The wonderful thing about Tiggers!' } },
+        { id: 'tigger-sound', type: 'character-speak', targetId: 'tigger', data: { say: 'Hoo hoo hoo hoo! The wonderful thing about Tiggers!', character: 'tigger' } },
         { id: 'pooh-tigger-shake', type: 'tap-shake', targetId: 'pooh-tigger', data: {} },
-        { id: 'piglet-tigger-sound', type: 'tap-sound', targetId: 'piglet-tigger', data: { say: 'Oh d-d-dear, Tigger!' } },
+        { id: 'piglet-tigger-sound', type: 'character-speak', targetId: 'piglet-tigger', data: { say: 'Oh d-d-dear, Tigger!', character: 'piglet' } },
         { id: 'bounce-trail-sparkle', type: 'tap-sparkle', targetId: 'bounce-trail', data: {} },
       ],
     },
@@ -101,7 +102,7 @@ const storyData = {
         { id: 'hidden-owl', x: 80, y: 25, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'pooh-climb-sound', type: 'tap-sound', targetId: 'pooh-climb', data: { say: 'Almost there! Just a little more honey!' } },
+        { id: 'pooh-climb-sound', type: 'character-speak', targetId: 'pooh-climb', data: { say: 'Almost there! Just a little more honey!', character: 'pooh' } },
         { id: 'pooh-climb-wiggle', type: 'tap-wiggle', targetId: 'pooh-climb', data: {} },
         { id: 'bees-animate', type: 'tap-animate', targetId: 'bees', data: { animation: 'animate-fly', duration: 800 } },
         { id: 'bees-sound', type: 'tap-sound', targetId: 'bees', data: { say: 'Buzz buzz buzz!' } },
@@ -123,10 +124,10 @@ const storyData = {
       ],
       interactions: [
         { id: 'pooh-mud-shake', type: 'tap-shake', targetId: 'pooh-mud', data: {} },
-        { id: 'pooh-mud-sound', type: 'tap-sound', targetId: 'pooh-mud', data: { say: 'Oh bother bother bother!' } },
+        { id: 'pooh-mud-sound', type: 'character-speak', targetId: 'pooh-mud', data: { say: 'Oh bother bother bother!', character: 'pooh' } },
         { id: 'bees-chase-animate', type: 'tap-animate', targetId: 'bees-chase', data: { animation: 'animate-fly', duration: 600 } },
         { id: 'mud-splash-sparkle', type: 'tap-sparkle', targetId: 'mud-splash', data: {} },
-        { id: 'piglet-worried-sound', type: 'tap-sound', targetId: 'piglet-worried', data: { say: 'Are you alright, Pooh?' } },
+        { id: 'piglet-worried-sound', type: 'character-speak', targetId: 'piglet-worried', data: { say: 'Are you alright, Pooh?', character: 'piglet' } },
       ],
     },
 
@@ -143,8 +144,8 @@ const storyData = {
         { id: 'rabbit-door', x: 50, y: 28, hotspot: true, w: 100, h: 100, z: 1 },
       ],
       interactions: [
-        { id: 'rabbit-sound', type: 'tap-sound', targetId: 'rabbit', data: { say: 'Come in, come in! But don\'t eat too much!' } },
-        { id: 'pooh-happy-sound', type: 'tap-sound', targetId: 'pooh-happy', data: { say: 'Oh thank you, Rabbit!' } },
+        { id: 'rabbit-sound', type: 'character-speak', targetId: 'rabbit', data: { say: 'Come in, come in! But don\'t eat too much!', character: 'rabbit' } },
+        { id: 'pooh-happy-sound', type: 'character-speak', targetId: 'pooh-happy', data: { say: 'Oh thank you, Rabbit!', character: 'pooh' } },
         { id: 'honey-jars-count', type: 'tap-count', targetId: 'honey-jars', data: { max: 5 } },
         { id: 'honey-jars-sparkle', type: 'tap-sparkle', targetId: 'honey-jars', data: {} },
         { id: 'carrots-wiggle', type: 'tap-wiggle', targetId: 'carrots', data: {} },
@@ -164,11 +165,11 @@ const storyData = {
       ],
       interactions: [
         { id: 'pooh-stuck-wiggle', type: 'tap-wiggle', targetId: 'pooh-stuck', data: {} },
-        { id: 'pooh-stuck-sound', type: 'tap-sound', targetId: 'pooh-stuck', data: { say: 'Oh bother! I\'m stuck!' } },
+        { id: 'pooh-stuck-sound', type: 'character-speak', targetId: 'pooh-stuck', data: { say: 'Oh bother! I\'m stuck!', character: 'pooh' } },
         { id: 'rabbit-push-shake', type: 'tap-shake', targetId: 'rabbit-push', data: {} },
-        { id: 'rabbit-push-sound', type: 'tap-sound', targetId: 'rabbit-push', data: { say: 'Push! Push!' } },
+        { id: 'rabbit-push-sound', type: 'character-speak', targetId: 'rabbit-push', data: { say: 'Push! Push!', character: 'rabbit' } },
         { id: 'piglet-pull-animate', type: 'tap-animate', targetId: 'piglet-pull', data: { animation: 'animate-dance', duration: 600 } },
-        { id: 'tigger-pull-sound', type: 'tap-sound', targetId: 'tigger-pull', data: { say: 'Hoo hoo! Pull!' } },
+        { id: 'tigger-pull-sound', type: 'character-speak', targetId: 'tigger-pull', data: { say: 'Hoo hoo! Pull!', character: 'tigger' } },
       ],
     },
 
@@ -185,7 +186,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'pooh-fly-animate', type: 'tap-animate', targetId: 'pooh-fly', data: { animation: 'animate-fly', duration: 1200 } },
-        { id: 'pooh-fly-sound', type: 'tap-sound', targetId: 'pooh-fly', data: { say: 'Whooooa!' } },
+        { id: 'pooh-fly-sound', type: 'character-speak', targetId: 'pooh-fly', data: { say: 'Whooooa!', character: 'pooh' } },
         { id: 'friends-fall-shake', type: 'tap-shake', targetId: 'friends-fall', data: {} },
         { id: 'pop-effect-sparkle', type: 'tap-sparkle', targetId: 'pop-effect', data: {} },
         { id: 'stars-spin', type: 'tap-spin', targetId: 'stars-dizzy', data: {} },

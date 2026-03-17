@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Lion and the Mouse',
+  endMessage: 'Even tiny friends can do BIG things! 🦁🐭',
   audioDir: '/arthurs-world/audio/lion-mouse',
   pages: [
     // ── Page 1: The Big Lion ──
@@ -17,7 +18,7 @@ const storyData = {
         { id: 'zzz', x: 60, y: 28, hotspot: true, w: 70, h: 70, z: 2 },
       ],
       interactions: [
-        { id: 'lion-sound', type: 'tap-sound', targetId: 'lion', data: { say: 'Zzzzz...' } },
+        { id: 'lion-sound', type: 'character-speak', targetId: 'lion', data: { say: 'Zzzzz...', character: 'lion' } },
         { id: 'lion-wiggle', type: 'tap-wiggle', targetId: 'lion', data: {} },
         { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
         { id: 'zzz-grow', type: 'tap-grow', targetId: 'zzz', data: {} },
@@ -36,7 +37,7 @@ const storyData = {
         { id: 'hidden-bug', x: 85, y: 70, hotspot: true, w: 50, h: 50, z: 1 },
       ],
       interactions: [
-        { id: 'lion-roar', type: 'tap-sound', targetId: 'lion-angry', data: { say: 'ROAR! Who woke me up?' } },
+        { id: 'lion-roar', type: 'character-speak', targetId: 'lion-angry', data: { say: 'ROAR! Who woke me up?', character: 'lion' } },
         { id: 'lion-shake', type: 'tap-shake', targetId: 'lion-angry', data: {} },
         { id: 'mouse-jump', type: 'tap-jump', targetId: 'mouse-tiny', data: {} },
         { id: 'bug-reveal', type: 'tap-reveal', targetId: 'hidden-bug', data: { content: 'Eek!' } },
@@ -55,7 +56,7 @@ const storyData = {
         { id: 'flower', x: 80, y: 70, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'mouse-beg', data: { say: 'Please! I will help you!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'mouse-beg', data: { say: 'Please! I will help you!', character: 'mouse' } },
         { id: 'mouse-wiggle', type: 'tap-wiggle', targetId: 'mouse-beg', data: {} },
         { id: 'tear-color', type: 'tap-color', targetId: 'tear', data: { colors: ['#60a5fa', '#93c5fd'] } },
         { id: 'flower-spin', type: 'tap-spin', targetId: 'flower', data: {} },
@@ -74,7 +75,7 @@ const storyData = {
         { id: 'bird', x: 20, y: 25, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'lion-laugh-sound', type: 'tap-sound', targetId: 'lion-laugh', data: { say: 'Ha ha ha! Off you go!' } },
+        { id: 'lion-laugh-sound', type: 'character-speak', targetId: 'lion-laugh', data: { say: 'Ha ha ha! Off you go!', character: 'lion' } },
         { id: 'lion-shake', type: 'tap-shake', targetId: 'lion-laugh', data: {} },
         { id: 'mouse-jump', type: 'tap-jump', targetId: 'mouse-free', data: {} },
         { id: 'ha-grow', type: 'tap-grow', targetId: 'ha-ha', data: {} },
@@ -93,7 +94,7 @@ const storyData = {
         { id: 'roar-text', x: 60, y: 18, hotspot: true, w: 90, h: 80, z: 2 },
       ],
       interactions: [
-        { id: 'lion-roar', type: 'tap-sound', targetId: 'lion-trapped', data: { say: 'ROAR! Help me!' } },
+        { id: 'lion-roar', type: 'character-speak', targetId: 'lion-trapped', data: { say: 'ROAR! Help me!', character: 'lion' } },
         { id: 'lion-shake', type: 'tap-shake', targetId: 'lion-trapped', data: {} },
         { id: 'net-wiggle', type: 'tap-wiggle', targetId: 'net', data: {} },
         { id: 'roar-grow', type: 'tap-grow', targetId: 'roar-text', data: {} },
@@ -112,7 +113,7 @@ const storyData = {
         { id: 'leaf', x: 80, y: 65, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'mouse-running', data: { say: 'Hold on! I am coming!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'mouse-running', data: { say: 'Hold on! I am coming!', character: 'mouse' } },
         { id: 'mouse-animate', type: 'tap-animate', targetId: 'mouse-running', data: { animation: 'animate-dance', duration: 600 } },
         { id: 'waves-spin', type: 'tap-spin', targetId: 'sound-waves', data: {} },
         { id: 'leaf-wiggle', type: 'tap-wiggle', targetId: 'leaf', data: {} },
@@ -131,7 +132,7 @@ const storyData = {
         { id: 'nibble-bits', x: 55, y: 65, hotspot: true, w: 70, h: 70, z: 2 },
       ],
       interactions: [
-        { id: 'mouse-sound', type: 'tap-sound', targetId: 'mouse-chew', data: { say: 'Nibble nibble nibble!' } },
+        { id: 'mouse-sound', type: 'character-speak', targetId: 'mouse-chew', data: { say: 'Nibble nibble nibble!', character: 'mouse' } },
         { id: 'mouse-wiggle', type: 'tap-wiggle', targetId: 'mouse-chew', data: {} },
         { id: 'net-shake', type: 'tap-shake', targetId: 'net-breaking', data: {} },
         { id: 'bits-spin', type: 'tap-spin', targetId: 'nibble-bits', data: {} },
@@ -151,7 +152,7 @@ const storyData = {
         { id: 'star-right', x: 85, y: 25, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'lion-sound', type: 'tap-sound', targetId: 'lion-happy', data: { say: 'Thank you little friend!' } },
+        { id: 'lion-sound', type: 'character-speak', targetId: 'lion-happy', data: { say: 'Thank you little friend!', character: 'lion' } },
         { id: 'lion-sparkle', type: 'tap-sparkle', targetId: 'lion-happy', data: {} },
         { id: 'mouse-jump', type: 'tap-jump', targetId: 'mouse-proud', data: {} },
         { id: 'hearts-color', type: 'tap-color', targetId: 'hearts', data: { colors: ['#f43f5e', '#ec4899', '#f472b6'] } },

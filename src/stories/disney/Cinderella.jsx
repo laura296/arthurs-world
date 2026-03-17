@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Cinderella',
+  endMessage: 'And they lived happily ever after! 👸✨',
   audioDir: '/arthurs-world/audio/cinderella',
   pages: [
     // ── Page 1: Introduction ──
@@ -18,9 +19,9 @@ const storyData = {
         { id: 'hidden-mouse', x: 12, y: 72, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'cinderella-sound', type: 'tap-sound', targetId: 'cinderella', data: { say: 'I wish I could go to the ball!' } },
+        { id: 'cinderella-sound', type: 'character-speak', targetId: 'cinderella', data: { say: 'I wish I could go to the ball!', character: 'cinderella' } },
         { id: 'stepsister1-shake', type: 'tap-shake', targetId: 'stepsister1', data: {} },
-        { id: 'stepsister2-sound', type: 'tap-sound', targetId: 'stepsister2', data: { say: 'Clean the floors!' } },
+        { id: 'stepsister2-sound', type: 'character-speak', targetId: 'stepsister2', data: { say: 'Clean the floors!', character: 'stepsister' } },
         { id: 'broom-wiggle', type: 'tap-wiggle', targetId: 'broom', data: {} },
         { id: 'mouse-reveal', type: 'tap-reveal', targetId: 'hidden-mouse', data: { content: 'Squeak!' } },
       ],
@@ -41,7 +42,7 @@ const storyData = {
         { id: 'invitation-sparkle', type: 'tap-sparkle', targetId: 'invitation', data: {} },
         { id: 'invitation-grow', type: 'tap-grow', targetId: 'invitation', data: {} },
         { id: 'castle-sparkle', type: 'tap-sparkle', targetId: 'castle', data: {} },
-        { id: 'trumpet-sound', type: 'tap-sound', targetId: 'trumpet', data: { say: 'A ball! A ball!' } },
+        { id: 'trumpet-sound', type: 'character-speak', targetId: 'trumpet', data: { say: 'A ball! A ball!', character: 'herald' } },
         { id: 'crown-spin', type: 'tap-spin', targetId: 'crown', data: {} },
       ],
     },
@@ -58,7 +59,7 @@ const storyData = {
         { id: 'hidden-star', x: 85, y: 15, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'cinderella-sad-sound', type: 'tap-sound', targetId: 'cinderella-sad', data: { say: 'I wish I could go too!' } },
+        { id: 'cinderella-sad-sound', type: 'character-speak', targetId: 'cinderella-sad', data: { say: 'I wish I could go too!', character: 'cinderella' } },
         { id: 'window-sparkle', type: 'tap-sparkle', targetId: 'window', data: {} },
         { id: 'tear-color', type: 'tap-color', targetId: 'tear', data: { colors: ['#60a5fa', '#93c5fd', '#bfdbfe'] } },
         { id: 'star-reveal', type: 'tap-reveal', targetId: 'hidden-star', data: { content: 'Make a wish!' } },
@@ -79,7 +80,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'fairy-sparkle', type: 'tap-sparkle', targetId: 'fairy', data: {} },
-        { id: 'fairy-sound', type: 'tap-sound', targetId: 'fairy', data: { say: 'Bibbidi Bobbidi Boo!' } },
+        { id: 'fairy-sound', type: 'character-speak', targetId: 'fairy', data: { say: 'Bibbidi Bobbidi Boo!', character: 'fairy-godmother' } },
         { id: 'wand-spin', type: 'tap-spin', targetId: 'wand', data: {} },
         { id: 'sparkle1-color', type: 'tap-color', targetId: 'sparkle1', data: { colors: ['#c084fc', '#f0abfc', '#fbbf24', '#60a5fa'] } },
         { id: 'cinderella-amazed-animate', type: 'tap-animate', targetId: 'cinderella-amazed', data: { animation: 'animate-dance', duration: 1000 } },
@@ -138,7 +139,7 @@ const storyData = {
         { id: 'music-note', x: 85, y: 30, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'prince-sound', type: 'tap-sound', targetId: 'prince', data: { say: 'May I have this dance?' } },
+        { id: 'prince-sound', type: 'character-speak', targetId: 'prince', data: { say: 'May I have this dance?', character: 'prince' } },
         { id: 'cinderella-dance-animate', type: 'tap-animate', targetId: 'cinderella-dance', data: { animation: 'animate-dance', duration: 1500 } },
         { id: 'prince-dance', type: 'tap-animate', targetId: 'prince', data: { animation: 'animate-dance', duration: 1500 } },
         { id: 'chandelier-sparkle', type: 'tap-sparkle', targetId: 'chandelier', data: {} },
@@ -159,7 +160,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'clock-shake', type: 'tap-shake', targetId: 'clock', data: {} },
-        { id: 'clock-sound', type: 'tap-sound', targetId: 'clock', data: { say: 'Bong! Bong! Midnight!' } },
+        { id: 'clock-sound', type: 'character-speak', targetId: 'clock', data: { say: 'Bong! Bong! Midnight!', character: 'clock' } },
         { id: 'cinderella-run-animate', type: 'tap-animate', targetId: 'cinderella-run', data: { animation: 'animate-dance', duration: 800 } },
         { id: 'slipper-sparkle', type: 'tap-sparkle', targetId: 'slipper-stairs', data: {} },
       ],
@@ -177,7 +178,7 @@ const storyData = {
         { id: 'hearts', x: 50, y: 22, hotspot: true, w: 90, h: 90, z: 1 },
       ],
       interactions: [
-        { id: 'prince-kneel-sound', type: 'tap-sound', targetId: 'prince-kneel', data: { say: 'It fits! It is you!' } },
+        { id: 'prince-kneel-sound', type: 'character-speak', targetId: 'prince-kneel', data: { say: 'It fits! It is you!', character: 'prince' } },
         { id: 'cinderella-fit-sparkle', type: 'tap-sparkle', targetId: 'cinderella-fit', data: {} },
         { id: 'slipper-fit-sparkle', type: 'tap-sparkle', targetId: 'slipper-fit', data: {} },
         { id: 'hearts-color', type: 'tap-color', targetId: 'hearts', data: { colors: ['#f43f5e', '#ec4899', '#f472b6'] } },

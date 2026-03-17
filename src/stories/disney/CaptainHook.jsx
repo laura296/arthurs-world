@@ -3,6 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Captain Hook',
+  endMessage: 'To Neverland and beyond! 🏴‍☠️⭐',
   audioDir: '/arthurs-world/audio/captain-hook',
   pages: [
     // ── Page 1: Neverland ──
@@ -39,10 +40,10 @@ const storyData = {
         { id: 'sword', x: 75, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
       ],
       interactions: [
-        { id: 'hook-sound', type: 'tap-sound', targetId: 'hook', data: { say: 'I am Captain Hook! Fear me!' } },
+        { id: 'hook-sound', type: 'character-speak', targetId: 'hook', data: { say: 'I am Captain Hook! Fear me!', character: 'hook' } },
         { id: 'hook-hand-sparkle', type: 'tap-sparkle', targetId: 'hook-hand', data: {} },
         { id: 'hat-spin', type: 'tap-spin', targetId: 'hat', data: {} },
-        { id: 'smee-sound', type: 'tap-sound', targetId: 'smee', data: { say: 'Yes, Captain!' } },
+        { id: 'smee-sound', type: 'character-speak', targetId: 'smee', data: { say: 'Yes, Captain!', character: 'smee' } },
         { id: 'sword-wiggle', type: 'tap-wiggle', targetId: 'sword', data: {} },
       ],
     },
@@ -60,9 +61,9 @@ const storyData = {
       ],
       interactions: [
         { id: 'croc-shake', type: 'tap-shake', targetId: 'croc', data: {} },
-        { id: 'croc-sound', type: 'tap-sound', targetId: 'croc', data: { say: 'Tick tock tick tock!' } },
+        { id: 'croc-sound', type: 'character-speak', targetId: 'croc', data: { say: 'Tick tock tick tock!', character: 'crocodile' } },
         { id: 'clock-spin', type: 'tap-spin', targetId: 'clock-croc', data: {} },
-        { id: 'hook-scared-sound', type: 'tap-sound', targetId: 'hook-scared', data: { say: 'SMEE! The crocodile!' } },
+        { id: 'hook-scared-sound', type: 'character-speak', targetId: 'hook-scared', data: { say: 'SMEE! The crocodile!', character: 'hook' } },
         { id: 'hook-scared-shake', type: 'tap-shake', targetId: 'hook-scared', data: {} },
       ],
     },
@@ -80,9 +81,9 @@ const storyData = {
       ],
       interactions: [
         { id: 'peter-pan-animate', type: 'tap-animate', targetId: 'peter-pan', data: { animation: 'animate-fly', duration: 1200 } },
-        { id: 'peter-pan-sound', type: 'tap-sound', targetId: 'peter-pan', data: { say: 'Catch me if you can, Hook!' } },
+        { id: 'peter-pan-sound', type: 'character-speak', targetId: 'peter-pan', data: { say: 'Catch me if you can, Hook!', character: 'peter-pan' } },
         { id: 'tinkerbell-sparkle', type: 'tap-sparkle', targetId: 'tinkerbell', data: {} },
-        { id: 'hook-angry-sound', type: 'tap-sound', targetId: 'hook-angry', data: { say: 'I\'ll get you, Pan!' } },
+        { id: 'hook-angry-sound', type: 'character-speak', targetId: 'hook-angry', data: { say: 'I\'ll get you, Pan!', character: 'hook' } },
         { id: 'clouds-wiggle', type: 'tap-wiggle', targetId: 'clouds', data: {} },
       ],
     },
@@ -103,7 +104,7 @@ const storyData = {
         { id: 'map-grow', type: 'tap-grow', targetId: 'map', data: {} },
         { id: 'x-mark-sparkle', type: 'tap-sparkle', targetId: 'x-mark', data: {} },
         { id: 'compass-spin', type: 'tap-spin', targetId: 'compass', data: {} },
-        { id: 'hook-map-sound', type: 'tap-sound', targetId: 'hook-map', data: { say: 'The treasure is mine!' } },
+        { id: 'hook-map-sound', type: 'character-speak', targetId: 'hook-map', data: { say: 'The treasure is mine!', character: 'hook' } },
         { id: 'gem-reveal', type: 'tap-reveal', targetId: 'hidden-gem', data: { content: 'Shiny!' } },
       ],
     },
@@ -122,7 +123,7 @@ const storyData = {
       interactions: [
         { id: 'peter-fight-animate', type: 'tap-animate', targetId: 'peter-fight', data: { animation: 'animate-dance', duration: 800 } },
         { id: 'hook-fight-shake', type: 'tap-shake', targetId: 'hook-fight', data: {} },
-        { id: 'swords-sound', type: 'tap-sound', targetId: 'swords', data: { say: 'Clang! Clang!' } },
+        { id: 'swords-sound', type: 'character-speak', targetId: 'swords', data: { say: 'Clang! Clang!', character: 'narrator' } },
         { id: 'swords-sparkle', type: 'tap-sparkle', targetId: 'swords', data: {} },
         { id: 'mast-wiggle', type: 'tap-wiggle', targetId: 'ship-mast', data: {} },
       ],
@@ -141,8 +142,8 @@ const storyData = {
       ],
       interactions: [
         { id: 'plank-wiggle', type: 'tap-wiggle', targetId: 'plank', data: {} },
-        { id: 'lost-boys-sound', type: 'tap-sound', targetId: 'lost-boys', data: { say: 'Peter, help us!' } },
-        { id: 'hook-plank-sound', type: 'tap-sound', targetId: 'hook-plank', data: { say: 'Walk the plank!' } },
+        { id: 'lost-boys-sound', type: 'character-speak', targetId: 'lost-boys', data: { say: 'Peter, help us!', character: 'lost-boys' } },
+        { id: 'hook-plank-sound', type: 'character-speak', targetId: 'hook-plank', data: { say: 'Walk the plank!', character: 'hook' } },
         { id: 'ocean-animate', type: 'tap-animate', targetId: 'ocean', data: { animation: 'animate-float', duration: 1200 } },
       ],
     },
@@ -160,10 +161,10 @@ const storyData = {
       ],
       interactions: [
         { id: 'hook-fall-animate', type: 'tap-animate', targetId: 'hook-fall', data: { animation: 'animate-dance', duration: 800 } },
-        { id: 'hook-fall-sound', type: 'tap-sound', targetId: 'hook-fall', data: { say: 'SMEE! SMEEEEE!' } },
+        { id: 'hook-fall-sound', type: 'character-speak', targetId: 'hook-fall', data: { say: 'SMEE! SMEEEEE!', character: 'hook' } },
         { id: 'croc-shake', type: 'tap-shake', targetId: 'croc-water', data: {} },
         { id: 'splash-sparkle', type: 'tap-sparkle', targetId: 'splash', data: {} },
-        { id: 'peter-laugh-sound', type: 'tap-sound', targetId: 'peter-laugh', data: { say: 'Ha ha! Goodbye Hook!' } },
+        { id: 'peter-laugh-sound', type: 'character-speak', targetId: 'peter-laugh', data: { say: 'Ha ha! Goodbye Hook!', character: 'peter-pan' } },
       ],
     },
 
@@ -180,10 +181,10 @@ const storyData = {
       ],
       interactions: [
         { id: 'hook-run-animate', type: 'tap-animate', targetId: 'hook-run', data: { animation: 'animate-dance', duration: 600 } },
-        { id: 'hook-run-sound', type: 'tap-sound', targetId: 'hook-run', data: { say: 'Help! Help!' } },
+        { id: 'hook-run-sound', type: 'character-speak', targetId: 'hook-run', data: { say: 'Help! Help!', character: 'hook' } },
         { id: 'croc-chase-shake', type: 'tap-shake', targetId: 'croc-chase', data: {} },
         { id: 'dust-spin', type: 'tap-spin', targetId: 'dust-cloud', data: {} },
-        { id: 'clock-sound-sound', type: 'tap-sound', targetId: 'clock-sound', data: { say: 'Tick tock tick tock!' } },
+        { id: 'clock-sound-sound', type: 'character-speak', targetId: 'clock-sound', data: { say: 'Tick tock tick tock!', character: 'crocodile' } },
       ],
     },
 
@@ -201,7 +202,7 @@ const storyData = {
       ],
       interactions: [
         { id: 'peter-celebrate-animate', type: 'tap-animate', targetId: 'peter-celebrate', data: { animation: 'animate-dance', duration: 1500 } },
-        { id: 'peter-celebrate-sound', type: 'tap-sound', targetId: 'peter-celebrate', data: { say: 'To Neverland!' } },
+        { id: 'peter-celebrate-sound', type: 'character-speak', targetId: 'peter-celebrate', data: { say: 'To Neverland!', character: 'peter-pan' } },
         { id: 'lost-boys-dance-animate', type: 'tap-animate', targetId: 'lost-boys-dance', data: { animation: 'animate-dance', duration: 1200 } },
         { id: 'tink-sparkle', type: 'tap-sparkle', targetId: 'tink-celebrate', data: {} },
         { id: 'star-neverland-spin', type: 'tap-spin', targetId: 'star-neverland', data: {} },
