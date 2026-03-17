@@ -3,7 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'The Crab That Played with the Sea',
-  endMessage: 'Splash splash! That is the tides! 🦀🌊',
+  endMessage: 'Splash splash! That is the tides!',
   audioDir: '/arthurs-world/audio/crab-sea',
   pages: [
     // ── Page 1: The Eldest Magician makes the world ──

@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Tortoise and the Hare',
-  endMessage: 'Slow and steady wins the race! 🐢🏆',
+  endMessage: 'Slow and steady wins the race!',
   audioDir: '/arthurs-world/audio/tortoise-hare',
   pages: [
     // ── Page 1: Introduction ──

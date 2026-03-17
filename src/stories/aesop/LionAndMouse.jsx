@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Lion and the Mouse',
-  endMessage: 'Even tiny friends can do BIG things! 🦁🐭',
+  endMessage: 'Even tiny friends can do BIG things!',
   audioDir: '/arthurs-world/audio/lion-mouse',
   pages: [
     // ── Page 1: The Big Lion ──

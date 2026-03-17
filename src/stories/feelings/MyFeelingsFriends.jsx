@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'My Feelings Friends',
-  endMessage: 'Every feeling is your friend! 🐰🐱🐶💛',
+  endMessage: 'Every feeling is your friend!',
   pages: [
     // ── Page 1: Meet the Friends ──
     {

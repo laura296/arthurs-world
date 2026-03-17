@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Ant and the Grasshopper',
-  endMessage: 'Work hard AND have fun! 🐜🦗💛',
+  endMessage: 'Work hard AND have fun!',
   audioDir: '/arthurs-world/audio/ant-grasshopper',
   pages: [
     // ── Page 1: Summer Day ──

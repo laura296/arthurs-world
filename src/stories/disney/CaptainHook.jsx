@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Captain Hook',
-  endMessage: 'To Neverland and beyond! 🏴‍☠️⭐',
+  endMessage: 'To Neverland and beyond!',
   audioDir: '/arthurs-world/audio/captain-hook',
   pages: [
     // ── Page 1: Neverland ──

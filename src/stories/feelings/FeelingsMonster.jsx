@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Feelings Monster',
-  endMessage: 'Every feeling is special! 🌈💛',
+  endMessage: 'Every feeling is special!',
   pages: [
     // ── Page 1: Meet the Monster ──
     {

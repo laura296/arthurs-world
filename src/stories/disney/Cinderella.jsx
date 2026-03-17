@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Cinderella',
-  endMessage: 'And they lived happily ever after! 👸✨',
+  endMessage: 'And they lived happily ever after!',
   audioDir: '/arthurs-world/audio/cinderella',
   pages: [
     // ── Page 1: Introduction ──

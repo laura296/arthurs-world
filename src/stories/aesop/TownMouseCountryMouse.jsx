@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Town Mouse and Country Mouse',
-  endMessage: 'Home sweet home! 🐭🏡💛',
+  endMessage: 'Home sweet home!',
   audioDir: '/arthurs-world/audio/town-country-mouse',
   pages: [
     // ── Page 1: Country Mouse ──

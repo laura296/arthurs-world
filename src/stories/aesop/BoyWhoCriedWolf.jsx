@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Boy Who Cried Wolf',
-  endMessage: 'Always tell the truth! 🐑💛',
+  endMessage: 'Always tell the truth!',
   audioDir: '/arthurs-world/audio/boy-cried-wolf',
   pages: [
     // ── Page 1: The Shepherd Boy ──

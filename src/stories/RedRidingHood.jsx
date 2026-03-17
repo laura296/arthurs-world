@@ -3,7 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'Little Red Riding Hood',
-  endMessage: 'What big eyes you have! 🐺🧒🏡',
+  endMessage: 'What big eyes you have!',
   audioDir: '/arthurs-world/audio/red-riding',
   pages: [
     // ─── Page 1: Introduction ───

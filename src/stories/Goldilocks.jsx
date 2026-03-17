@@ -3,7 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'Goldilocks',
-  endMessage: 'Just right! 🐻🥣✨',
+  endMessage: 'Just right!',
   audioDir: '/arthurs-world/audio/goldilocks',
   pages: [
     // ── Page 1: Walk in the forest ──

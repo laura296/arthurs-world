@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'When I Feel Big',
-  endMessage: 'All your feelings are okay! 🐻💛',
+  endMessage: 'All your feelings are okay!',
   pages: [
     // ── Page 1: Little Bear, Big Feelings ──
     {

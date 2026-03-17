@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Fox and the Grapes',
-  endMessage: 'Don\'t pretend you never wanted it! 🦊🍇',
+  endMessage: 'Don\'t pretend you never wanted it!',
   audioDir: '/arthurs-world/audio/fox-grapes',
   pages: [
     // ── Page 1: Hungry Fox ──

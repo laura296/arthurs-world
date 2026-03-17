@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'Winnie the Pooh',
-  endMessage: 'Friends are the best! 🍯🐻💛',
+  endMessage: 'Friends are the best!',
   audioDir: '/arthurs-world/audio/winnie-the-pooh',
   pages: [
     // ── Page 1: The Hundred Acre Wood ──

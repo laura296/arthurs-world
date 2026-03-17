@@ -3,7 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'How the First Letter Was Written',
-  endMessage: 'The very first letter! ✉️✨',
+  endMessage: 'The very first letter!',
   audioDir: '/arthurs-world/audio/first-letter',
   pages: [
     // ── Page 1: Fishing by the river ──
