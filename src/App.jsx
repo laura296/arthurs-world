@@ -82,6 +82,12 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+// Easter
+const EasterEggHunt = lazy(() => import('./games/easter/EasterEggHunt'));
+const PaintEasterEggs = lazy(() => import('./games/easter/PaintEasterEggs'));
+const BunnyHop = lazy(() => import('./games/easter/BunnyHop'));
+const HatchingChicks = lazy(() => import('./games/easter/HatchingChicks'));
+const SpringEggHunt = lazy(() => import('./stories/easter/SpringEggHunt'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -271,6 +277,13 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/morning-routine" element={<G><MorningRoutine /></G>} />
         <Route path="/games/:mode/:section/sparkle-teeth" element={<G><SparkleTeeth /></G>} />
         <Route path="/games/:mode/:section/arthurs-lunchbox" element={<G><ArthursLunchbox /></G>} />
+
+        {/* Easter */}
+        <Route path="/games/:mode/:section/easter-egg-hunt" element={<G><EasterEggHunt /></G>} />
+        <Route path="/games/:mode/:section/paint-easter-eggs" element={<G><PaintEasterEggs /></G>} />
+        <Route path="/games/:mode/:section/bunny-hop" element={<G><BunnyHop /></G>} />
+        <Route path="/games/:mode/:section/hatching-chicks" element={<G><HatchingChicks /></G>} />
+        <Route path="/games/:mode/:section/spring-egg-hunt" element={<G><SpringEggHunt /></G>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

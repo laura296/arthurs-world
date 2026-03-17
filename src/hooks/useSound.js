@@ -678,6 +678,7 @@ export function playSectionTap(section) {
     art: playArtTap,
     music: playMusicTap,
     puzzles: playPuzzlesTap,
+    easter: playPop,
   };
   (tapMap[section] || playRichTap)();
 }

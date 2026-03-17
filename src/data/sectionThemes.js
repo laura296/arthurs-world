@@ -94,6 +94,23 @@ export const SECTION_THEMES = {
     animationVibe: 'bouncy',
   },
 
+  // ── Easter ──
+  easter: {
+    id: 'easter',
+    label: 'Easter',
+    palette: {
+      primary: '#f9a8d4',
+      secondary: '#86efac',
+      accent: '#fde68a',
+      bg: 'from-pink-200 via-yellow-100 to-green-200',
+      cardBg: 'from-pink-200/20 via-yellow-100/20 to-green-200/20',
+    },
+    particles: { shapes: ['circle', 'heart', 'star'], colors: ['#f9a8d4', '#86efac', '#fde68a', '#c4b5fd'] },
+    tapSound: 'pop',
+    ambient: 'birds',
+    animationVibe: 'bouncy',
+  },
+
   // ── Disney Hub ──
   disney: {
     id: 'disney',

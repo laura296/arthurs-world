@@ -13,6 +13,7 @@ const sectionMeta = {
   books:   { emoji: '📚', label: 'Books' },
   music:   { emoji: '🎵', label: 'Music' },
   videos:  { emoji: '📺', label: 'Videos' },
+  easter:  { emoji: '🐣', label: 'Easter' },
 };
 
 /** Map section animationVibe to a Tailwind animation class */
