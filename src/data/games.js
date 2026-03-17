@@ -118,6 +118,12 @@ const games = [
   { id: 'hatching-chicks',    emoji: '🐥', title: 'Hatching Chicks', path: 'hatching-chicks',   category: 'easter', group: '🐣 Games',   bg: 'from-amber-100 to-yellow-200' },
   { id: 'paint-easter-eggs',  emoji: '🎨', title: 'Paint Eggs',     path: 'paint-easter-eggs',  category: 'easter', group: '🎨 Creative', bg: 'from-purple-200 to-pink-200' },
   { id: 'spring-egg-hunt',    emoji: '📖', title: 'Rosie\'s Egg Hunt', path: 'spring-egg-hunt', category: 'easter', group: '📖 Story',    bg: 'from-sky-100 to-green-100' },
+
+  // ── Halloween ──
+  { id: 'pumpkin-patch',    emoji: '🎃', title: 'Pumpkin Patch',    path: 'pumpkin-patch',    category: 'halloween', group: '🎃 Games',    bg: 'from-orange-500 to-amber-600' },
+  { id: 'ghost-peekaboo',   emoji: '👻', title: 'Ghost Peekaboo',   path: 'ghost-peekaboo',   category: 'halloween', group: '🎃 Games',    bg: 'from-purple-600 to-indigo-800' },
+  { id: 'trick-or-treat',   emoji: '🍬', title: 'Trick or Treat',   path: 'trick-or-treat',   category: 'halloween', group: '🎃 Games',    bg: 'from-violet-600 to-purple-900' },
+  { id: 'spooky-sounds',    emoji: '🦇', title: 'Spooky Sounds',    path: 'spooky-sounds',    category: 'halloween', group: '🎵 Music',    bg: 'from-gray-800 to-purple-900' },
 ];
 
 export default games;

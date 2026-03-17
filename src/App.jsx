@@ -82,6 +82,11 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+// Halloween
+const PumpkinPatch = lazy(() => import('./games/halloween/PumpkinPatch'));
+const GhostPeekaboo = lazy(() => import('./games/halloween/GhostPeekaboo'));
+const TrickOrTreat = lazy(() => import('./games/halloween/TrickOrTreat'));
+const SpookySounds = lazy(() => import('./games/halloween/SpookySounds'));
 // Easter
 const EasterEggHunt = lazy(() => import('./games/easter/EasterEggHunt'));
 const PaintEasterEggs = lazy(() => import('./games/easter/PaintEasterEggs'));
@@ -277,6 +282,12 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/morning-routine" element={<G><MorningRoutine /></G>} />
         <Route path="/games/:mode/:section/sparkle-teeth" element={<G><SparkleTeeth /></G>} />
         <Route path="/games/:mode/:section/arthurs-lunchbox" element={<G><ArthursLunchbox /></G>} />
+
+        {/* Halloween */}
+        <Route path="/games/:mode/:section/pumpkin-patch" element={<G><PumpkinPatch /></G>} />
+        <Route path="/games/:mode/:section/ghost-peekaboo" element={<G><GhostPeekaboo /></G>} />
+        <Route path="/games/:mode/:section/trick-or-treat" element={<G><TrickOrTreat /></G>} />
+        <Route path="/games/:mode/:section/spooky-sounds" element={<G><SpookySounds /></G>} />
 
         {/* Easter */}
         <Route path="/games/:mode/:section/easter-egg-hunt" element={<G><EasterEggHunt /></G>} />

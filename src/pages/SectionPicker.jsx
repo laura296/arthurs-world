@@ -13,6 +13,7 @@ const sections = [
   { id: 'music',   emoji: '🎵', label: 'Music',   hero: '/arthurs-world/images/sections/music.png',   grad: ['#C49265', '#A06840'] },
   { id: 'videos',  emoji: '📺', label: 'Videos',  hero: '/arthurs-world/images/sections/videos.png',  grad: ['#E67E22', '#C0592B'] },
   { id: 'easter',  emoji: '🐣', label: 'Easter',  hero: '/arthurs-world/images/sections/easter.png',  grad: ['#F9A8D4', '#86EFAC'] },
+  { id: 'halloween', emoji: '🎃', label: 'Halloween', hero: '/arthurs-world/images/sections/halloween.png', grad: ['#7C3AED', '#F97316'] },
 ];
 
 export default function SectionPicker() {
