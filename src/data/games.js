@@ -124,6 +124,7 @@ const games = [
   { id: 'ghost-peekaboo',   emoji: '👻', title: 'Ghost Peekaboo',   path: 'ghost-peekaboo',   category: 'halloween', group: '🎃 Games',    bg: 'from-purple-600 to-indigo-800' },
   { id: 'trick-or-treat',   emoji: '🍬', title: 'Trick or Treat',   path: 'trick-or-treat',   category: 'halloween', group: '🎃 Games',    bg: 'from-violet-600 to-purple-900' },
   { id: 'spooky-sounds',    emoji: '🦇', title: 'Spooky Sounds',    path: 'spooky-sounds',    category: 'halloween', group: '🎵 Music',    bg: 'from-gray-800 to-purple-900' },
+  { id: 'witch-flight',     emoji: '🧙‍♀️', title: 'Witch Flight',    path: 'witch-flight',     category: 'halloween', group: '🎃 Games',    bg: 'from-purple-800 to-indigo-900' },
 ];
 
 export default games;
