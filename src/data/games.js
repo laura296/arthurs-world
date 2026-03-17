@@ -48,6 +48,7 @@ const games = [
   { id: 'xylophone',     emoji: '🎶', title: 'Xylophone',     path: 'xylophone',     category: 'music', bg: 'from-sky-400 to-indigo-600' },
   { id: 'drum-pad',      emoji: '🥁', title: 'Drum Pad',      path: 'drum-pad',      category: 'music', bg: 'from-red-500 to-rose-700' },
   { id: 'animal-sounds', emoji: '🐄', title: 'Animal Sounds', path: 'animal-sounds', category: 'music', bg: 'from-green-400 to-emerald-600' },
+  { id: 'jukebox',       emoji: '🎵', title: 'Jukebox',       path: 'jukebox',       category: 'music', bg: 'from-indigo-500 to-purple-700' },
 
   // ── Books: Feelings ──
   { id: 'feelings-monster',   emoji: '🎨', title: 'Feelings Monster',   path: 'feelings-monster',   category: 'books', group: '💛 Feelings', bg: 'from-purple-300 to-pink-400', cover: '/arthurs-world/images/feelings-monster/page-1.png' },

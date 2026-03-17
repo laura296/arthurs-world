@@ -24,6 +24,7 @@ const MusicPad = lazy(() => import('./games/MusicPad'));
 const Xylophone = lazy(() => import('./games/Xylophone'));
 const DrumPad = lazy(() => import('./games/DrumPad'));
 const AnimalSounds = lazy(() => import('./games/AnimalSounds'));
+const Jukebox = lazy(() => import('./games/Jukebox'));
 const MemoryMatch = lazy(() => import('./games/MemoryMatch'));
 const FarmBook = lazy(() => import('./games/FarmBook'));
 const ThreeLittlePigs = lazy(() => import('./stories/ThreeLittlePigs'));
@@ -214,6 +215,7 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/xylophone" element={<G><Xylophone /></G>} />
         <Route path="/games/:mode/:section/drum-pad" element={<G><DrumPad /></G>} />
         <Route path="/games/:mode/:section/animal-sounds" element={<G><AnimalSounds /></G>} />
+        <Route path="/games/:mode/:section/jukebox" element={<G><Jukebox /></G>} />
         <Route path="/games/:mode/:section/memory-match" element={<G><MemoryMatch /></G>} />
         <Route path="/games/:mode/:section/farm-book" element={<G><FarmBook /></G>} />
         <Route path="/games/:mode/:section/three-pigs" element={<G><ThreeLittlePigs /></G>} />
