@@ -188,6 +188,7 @@ When adding new content: add an entry to games.js, create the component, add a l
 
 ### Content Rules
 
+- **No emoji anywhere** — all visuals must be proper SVG illustrations or WebP assets. Never use emoji characters (Unicode emoji) in components, game data, or UI. Use illustrated SVG elements instead.
 - **No scary content** — everything safe, curious, gentle
 - **No text-heavy UI** — Arthur is pre-literate (~3.5 years old)
 - **Large touch targets** — minimum 44pt, prefer 60pt+ for primary actions
