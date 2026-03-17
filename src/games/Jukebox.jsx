@@ -1,223 +1,121 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import BackButton from '../components/BackButton';
-import { useArthurPeek } from '../components/ArthurPeek';
-import { playPiano, playSparkle, playPop } from '../hooks/useSound';
+import { playPop } from '../hooks/useSound';
 
 /**
  * Jukebox — Arthur's song player.
- * A grid of illustrated song cards. Tap one to hear a synthesised
- * melody of the song played on piano. Visual feedback while playing.
- * All illustrations are SVG — no emoji.
+ * A grid of illustrated song cards. Tap one to play the real song
+ * via an embedded YouTube player. Visual feedback while playing.
+ * All card illustrations are SVG — no emoji.
  */
 
-/* ── Note frequencies (C4-C6 range) ── */
-const N = {
-  C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00,
-  A4: 440.00, B4: 493.88,
-  C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99,
-  A5: 880.00, B5: 987.77, C6: 1046.50,
-  // Flats/sharps
-  Bb4: 466.16, Eb4: 311.13, Ab4: 415.30, Fs4: 369.99,
-  Bb3: 233.08, A3: 220.00, G3: 196.00,
-  R: 0, // rest
-};
-
-/* ── Song melody definitions ── */
+/* ── Song data with YouTube video IDs ── */
 const SONGS = [
   {
     id: 'baby-shark',
     title: 'Baby Shark',
     colour: '#38bdf8',
     accentColour: '#0ea5e9',
-    tempo: 280,
-    notes: [
-      N.C4, N.D4, N.E4, N.E4, N.E4, N.E4, N.E4, N.E4,
-      N.C4, N.D4, N.E4, N.E4, N.E4, N.E4, N.E4, N.E4,
-      N.C4, N.D4, N.E4, N.E4, N.E4, N.E4,
-      N.D4, N.E4, N.C4,
-    ],
+    youtubeId: 'XqZsoesa55w',
   },
   {
     id: 'sleeping-bunnies',
     title: 'Sleeping Bunnies',
     colour: '#c084fc',
     accentColour: '#a855f7',
-    tempo: 400,
-    notes: [
-      N.E4, N.E4, N.D4, N.D4, N.C4, N.C4, N.D4, N.R,
-      N.E4, N.E4, N.D4, N.D4, N.C4, N.R,
-      N.E4, N.E4, N.D4, N.D4, N.C4, N.C4, N.D4, N.R,
-      N.E4, N.D4, N.C4,
-    ],
+    youtubeId: 'wYrNcWrnQa0',
   },
   {
     id: 'let-it-go',
     title: 'Let It Go',
     colour: '#a5f3fc',
-    accentColour: '#67e8f9',
-    tempo: 450,
-    notes: [
-      N.E4, N.F4, N.G4, N.R, N.G4, N.R, N.E4, N.F4,
-      N.G4, N.R, N.G4, N.R, N.E4, N.F4, N.G4, N.A4,
-      N.G4, N.F4, N.F4, N.E4, N.R,
-      N.E4, N.F4, N.G4, N.R, N.G4, N.R,
-    ],
+    accentColour: '#22d3ee',
+    youtubeId: 'L0MK7qz13bU',
   },
   {
     id: 'yo-ho-pirate',
     title: 'Yo Ho Pirate Song',
     colour: '#fbbf24',
     accentColour: '#f59e0b',
-    tempo: 380,
-    notes: [
-      N.G4, N.G4, N.G4, N.E4, N.R, N.A4, N.A4, N.A4, N.G4, N.R,
-      N.G4, N.G4, N.G4, N.E4, N.R,
-      N.A4, N.G4, N.E4, N.C4, N.R,
-    ],
+    youtubeId: 'ifu4c4P-bak',
   },
   {
     id: 'bluey-intro',
     title: 'Bluey',
     colour: '#60a5fa',
     accentColour: '#3b82f6',
-    tempo: 300,
-    notes: [
-      N.G4, N.A4, N.B4, N.G4, N.R, N.A4, N.B4, N.C5, N.R,
-      N.G4, N.A4, N.B4, N.G4, N.R, N.B4, N.A4, N.G4, N.R,
-      N.C5, N.B4, N.A4, N.G4,
-    ],
+    youtubeId: 'uyJMydFeM0Q',
   },
   {
     id: 'wheels-on-bus',
     title: 'Wheels on the Bus',
     colour: '#fb923c',
     accentColour: '#f97316',
-    tempo: 380,
-    notes: [
-      N.C4, N.C4, N.C4, N.E4, N.G4, N.G4, N.R,
-      N.G4, N.E4, N.G4, N.A4, N.G4, N.F4, N.E4, N.D4, N.R,
-      N.D4, N.D4, N.D4, N.F4, N.E4, N.E4, N.R,
-      N.E4, N.D4, N.E4, N.F4, N.D4, N.C4,
-    ],
+    youtubeId: 'e_04ZrNroTo',
   },
   {
     id: 'twinkle-twinkle',
     title: 'Twinkle Twinkle',
     colour: '#fde68a',
-    accentColour: '#fbbf24',
-    tempo: 420,
-    notes: [
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4, N.R,
-      N.F4, N.F4, N.E4, N.E4, N.D4, N.D4, N.C4, N.R,
-      N.G4, N.G4, N.F4, N.F4, N.E4, N.E4, N.D4, N.R,
-      N.G4, N.G4, N.F4, N.F4, N.E4, N.E4, N.D4, N.R,
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4,
-    ],
+    accentColour: '#d97706',
+    youtubeId: 'yCjJyiqpAuU',
   },
   {
     id: 'frere-jacques',
     title: 'Frere Jacques',
     colour: '#86efac',
-    accentColour: '#4ade80',
-    tempo: 380,
-    notes: [
-      N.C4, N.D4, N.E4, N.C4, N.R, N.C4, N.D4, N.E4, N.C4, N.R,
-      N.E4, N.F4, N.G4, N.R, N.E4, N.F4, N.G4, N.R,
-      N.G4, N.A4, N.G4, N.F4, N.E4, N.C4, N.R,
-      N.G4, N.A4, N.G4, N.F4, N.E4, N.C4,
-    ],
+    accentColour: '#16a34a',
+    youtubeId: 'Lxrzmg-dnmc',
   },
   {
     id: 'happy-and-you-know-it',
     title: 'If You\'re Happy',
     colour: '#fca5a5',
-    accentColour: '#f87171',
-    tempo: 350,
-    notes: [
-      N.C4, N.R, N.C4, N.E4, N.E4, N.E4, N.D4, N.E4, N.F4, N.R,
-      N.F4, N.R, N.F4, N.A4, N.A4, N.A4, N.G4, N.F4, N.E4, N.R,
-      N.E4, N.E4, N.D4, N.D4, N.C4,
-    ],
+    accentColour: '#ef4444',
+    youtubeId: 'l4WNrvVjiTw',
   },
   {
     id: 'head-shoulders',
     title: 'Head Shoulders',
     colour: '#93c5fd',
-    accentColour: '#60a5fa',
-    tempo: 320,
-    notes: [
-      N.C4, N.D4, N.E4, N.F4, N.G4, N.G4, N.R,
-      N.G4, N.A4, N.G4, N.F4, N.E4, N.E4, N.R,
-      N.E4, N.F4, N.E4, N.D4, N.C4, N.D4, N.E4, N.C4,
-    ],
+    accentColour: '#3b82f6',
+    youtubeId: 'WX8HmogNyCY',
   },
   {
     id: 'baa-baa-black-sheep',
     title: 'Baa Baa Black Sheep',
     colour: '#a3a3a3',
-    accentColour: '#737373',
-    tempo: 420,
-    notes: [
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4, N.R,
-      N.F4, N.F4, N.E4, N.E4, N.D4, N.D4, N.C4, N.R,
-      N.G4, N.G4, N.F4, N.R, N.E4, N.E4, N.D4, N.R,
-      N.G4, N.G4, N.F4, N.F4, N.E4, N.E4, N.D4, N.R,
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4,
-    ],
+    accentColour: '#525252',
+    youtubeId: 'MR5XSOdjKMA',
   },
   {
     id: 'alphabet-song',
     title: 'Alphabet Song',
     colour: '#d8b4fe',
-    accentColour: '#c084fc',
-    tempo: 380,
-    notes: [
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4, N.R,
-      N.F4, N.F4, N.E4, N.E4, N.D4, N.D4, N.C4, N.R,
-      N.G4, N.F4, N.E4, N.D4, N.R,
-      N.G4, N.G4, N.F4, N.E4, N.D4, N.R,
-      N.C4, N.C4, N.G4, N.G4, N.A4, N.A4, N.G4,
-    ],
+    accentColour: '#9333ea',
+    youtubeId: 'hq3yfQnllfQ',
   },
   {
     id: 'teddy-bears-picnic',
     title: 'Teddy Bears\' Picnic',
     colour: '#a16207',
     accentColour: '#854d0e',
-    tempo: 360,
-    notes: [
-      N.C4, N.E4, N.G4, N.C5, N.R, N.A4, N.G4, N.R,
-      N.E4, N.G4, N.E4, N.C4, N.R,
-      N.D4, N.F4, N.A4, N.D5, N.R, N.C5, N.A4, N.R,
-      N.G4, N.E4, N.C4,
-    ],
+    youtubeId: 'dZANKFxrcKU',
   },
   {
     id: 'incy-wincy-spider',
     title: 'Incy Wincy Spider',
     colour: '#6b7280',
-    accentColour: '#4b5563',
-    tempo: 380,
-    notes: [
-      N.G4, N.C5, N.C5, N.C5, N.D5, N.E5, N.E5, N.R,
-      N.E5, N.D5, N.C5, N.D5, N.E5, N.C5, N.R,
-      N.G4, N.C5, N.C5, N.C5, N.D5, N.E5, N.E5, N.R,
-      N.E5, N.D5, N.C5, N.D5, N.E5, N.C5,
-    ],
+    accentColour: '#374151',
+    youtubeId: 'jzA3WE2bLVE',
   },
   {
     id: 'im-a-little-teapot',
     title: 'I\'m a Little Teapot',
     colour: '#f9a8d4',
-    accentColour: '#f472b6',
-    tempo: 400,
-    notes: [
-      N.C4, N.D4, N.E4, N.F4, N.G4, N.G4, N.R,
-      N.A4, N.G4, N.F4, N.E4, N.D4, N.C4, N.R,
-      N.G4, N.G4, N.A4, N.G4, N.F4, N.E4, N.R,
-      N.G4, N.F4, N.E4, N.D4, N.C4,
-    ],
+    accentColour: '#ec4899',
+    youtubeId: 'jAd3qdSLDxg',
   },
 ];
 
@@ -473,7 +371,6 @@ function SpiderIcon() {
       <ellipse cx="50" cy="48" rx="18" ry="20" fill="#374151" />
       <ellipse cx="50" cy="48" rx="14" ry="16" fill="#4b5563" opacity="0.3" />
       <circle cx="50" cy="34" r="12" fill="#374151" />
-      {/* Eyes */}
       <circle cx="44" cy="32" r="4" fill="white" />
       <circle cx="56" cy="32" r="4" fill="white" />
       <circle cx="44" cy="32" r="2.5" fill="#1e293b" />
@@ -481,7 +378,6 @@ function SpiderIcon() {
       <circle cx="45" cy="31" r="1" fill="white" />
       <circle cx="57" cy="31" r="1" fill="white" />
       <path d="M46,40 Q50,43 54,40" fill="none" stroke="#1e293b" strokeWidth="1.2" strokeLinecap="round" />
-      {/* Legs */}
       {[-1, 1].map(side => [0, 1, 2, 3].map(i => (
         <path key={`${side}-${i}`}
           d={`M${50 + side * 14},${38 + i * 8} Q${50 + side * 30},${30 + i * 8} ${50 + side * 36},${38 + i * 10}`}
@@ -500,14 +396,10 @@ function TeapotIcon() {
       <path d="M50,36 Q50,24 50,20" stroke="#f472b6" strokeWidth="4" strokeLinecap="round" />
       <circle cx="50" cy="18" r="5" fill="#f472b6" />
       <circle cx="50" cy="18" r="3" fill="#f9a8d4" />
-      {/* Spout */}
       <path d="M22,52 Q10,44 14,34" fill="none" stroke="#f472b6" strokeWidth="4" strokeLinecap="round" />
-      {/* Handle */}
       <path d="M78,46 Q92,50 90,62 Q88,72 78,70" fill="none" stroke="#f472b6" strokeWidth="4" strokeLinecap="round" />
-      {/* Steam */}
       <path d="M16,32 Q12,26 16,20" fill="none" stroke="#d1d5db" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
       <path d="M22,28 Q18,22 22,16" fill="none" stroke="#d1d5db" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-      {/* Base */}
       <ellipse cx="50" cy="82" rx="22" ry="4" fill="#ec4899" opacity="0.3" />
     </svg>
   );
@@ -532,9 +424,9 @@ const SONG_ICONS = {
 };
 
 /* ─── Music note SVG for decoration ─── */
-function MusicNoteSVG({ className, style }) {
+function MusicNoteSVG({ style }) {
   return (
-    <svg viewBox="0 0 24 32" className={className} style={style}>
+    <svg viewBox="0 0 24 32" style={style}>
       <ellipse cx="8" cy="26" rx="7" ry="5" fill="currentColor" />
       <rect x="14" y="4" width="3" height="23" rx="1.5" fill="currentColor" />
       <path d="M15,4 Q20,2 24,6 Q20,4 17,8" fill="currentColor" />
@@ -542,8 +434,18 @@ function MusicNoteSVG({ className, style }) {
   );
 }
 
+/* ─── Stop button SVG ─── */
+function StopIcon() {
+  return (
+    <svg viewBox="0 0 40 40" className="w-8 h-8">
+      <circle cx="20" cy="20" r="18" fill="rgba(0,0,0,0.4)" />
+      <rect x="13" y="13" width="14" height="14" rx="2" fill="white" />
+    </svg>
+  );
+}
+
 /* ─── Song Card Component ─── */
-function SongCard({ song, isPlaying, noteIndex, onPress }) {
+function SongCard({ song, isPlaying, onPress }) {
   const Icon = SONG_ICONS[song.id];
 
   return (
@@ -582,7 +484,7 @@ function SongCard({ song, isPlaying, noteIndex, onPress }) {
           {Icon && <Icon />}
         </motion.div>
 
-        {/* Note progress dots */}
+        {/* Animated dots while playing */}
         {isPlaying && (
           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
             {[0, 1, 2].map(i => (
@@ -610,47 +512,103 @@ function SongCard({ song, isPlaying, noteIndex, onPress }) {
 /* ─── Main Jukebox Component ─── */
 export default function Jukebox() {
   const [playingSong, setPlayingSong] = useState(null);
-  const [noteIndex, setNoteIndex] = useState(0);
-  const playTimeoutRefs = useRef([]);
-  const { peek: arthurPeek, ArthurPeekComponent } = useArthurPeek();
+  const iframeRef = useRef(null);
+  const playerRef = useRef(null);
+  const apiLoadedRef = useRef(false);
 
-  const stopPlaying = useCallback(() => {
-    playTimeoutRefs.current.forEach(clearTimeout);
-    playTimeoutRefs.current = [];
-    setPlayingSong(null);
-    setNoteIndex(0);
+  // Load YouTube IFrame API
+  useEffect(() => {
+    if (window.YT && window.YT.Player) {
+      apiLoadedRef.current = true;
+      return;
+    }
+
+    const existing = document.getElementById('yt-iframe-api');
+    if (existing) {
+      // Script already loading — wait for it
+      const check = setInterval(() => {
+        if (window.YT && window.YT.Player) {
+          apiLoadedRef.current = true;
+          clearInterval(check);
+        }
+      }, 100);
+      return () => clearInterval(check);
+    }
+
+    const tag = document.createElement('script');
+    tag.id = 'yt-iframe-api';
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      apiLoadedRef.current = true;
+    };
+
+    return () => {
+      // Don't remove the script — other instances may use it
+    };
   }, []);
 
-  const playSong = useCallback((song) => {
-    // Stop any current song
-    stopPlaying();
+  const waitForApi = useCallback(() => {
+    return new Promise((resolve) => {
+      if (apiLoadedRef.current) { resolve(); return; }
+      const check = setInterval(() => {
+        if (window.YT && window.YT.Player) {
+          apiLoadedRef.current = true;
+          clearInterval(check);
+          resolve();
+        }
+      }, 100);
+    });
+  }, []);
 
+  const playSong = useCallback(async (song) => {
     playPop();
     setPlayingSong(song.id);
-    arthurPeek('excited');
 
-    const timeouts = [];
-    song.notes.forEach((freq, i) => {
-      const t = setTimeout(() => {
-        if (freq > 0) {
-          playPiano(freq);
-        }
-        setNoteIndex(i);
+    await waitForApi();
 
-        // End of song
-        if (i === song.notes.length - 1) {
-          setTimeout(() => {
-            playSparkle();
+    // Destroy previous player if exists
+    if (playerRef.current) {
+      try { playerRef.current.destroy(); } catch (_) { /* ignore */ }
+      playerRef.current = null;
+    }
+
+    playerRef.current = new window.YT.Player(iframeRef.current, {
+      height: '1',
+      width: '1',
+      videoId: song.youtubeId,
+      playerVars: {
+        autoplay: 1,
+        playsinline: 1,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        modestbranding: 1,
+        rel: 0,
+      },
+      events: {
+        onStateChange: (event) => {
+          // YT.PlayerState.ENDED === 0
+          if (event.data === 0) {
             setPlayingSong(null);
-            setNoteIndex(0);
-          }, song.tempo);
-        }
-      }, i * song.tempo);
-      timeouts.push(t);
+          }
+        },
+        onError: () => {
+          setPlayingSong(null);
+        },
+      },
     });
+  }, [waitForApi]);
 
-    playTimeoutRefs.current = timeouts;
-  }, [stopPlaying, arthurPeek]);
+  const stopPlaying = useCallback(() => {
+    if (playerRef.current) {
+      try { playerRef.current.stopVideo(); } catch (_) { /* ignore */ }
+      try { playerRef.current.destroy(); } catch (_) { /* ignore */ }
+      playerRef.current = null;
+    }
+    setPlayingSong(null);
+  }, []);
 
   const handlePress = useCallback((song) => {
     if (playingSong === song.id) {
@@ -663,9 +621,13 @@ export default function Jukebox() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      playTimeoutRefs.current.forEach(clearTimeout);
+      if (playerRef.current) {
+        try { playerRef.current.destroy(); } catch (_) { /* ignore */ }
+      }
     };
   }, []);
+
+  const currentSong = SONGS.find(s => s.id === playingSong);
 
   return (
     <div className="relative w-full h-full overflow-hidden select-none"
@@ -674,6 +636,11 @@ export default function Jukebox() {
       }}
     >
       <BackButton />
+
+      {/* Hidden YouTube player container */}
+      <div style={{ position: 'absolute', top: -9999, left: -9999, width: 1, height: 1, overflow: 'hidden' }}>
+        <div ref={iframeRef} />
+      </div>
 
       {/* Floating music notes decoration */}
       {[...Array(6)].map((_, i) => (
@@ -700,25 +667,57 @@ export default function Jukebox() {
         </motion.div>
       ))}
 
+      {/* Now-playing bar */}
+      {currentSong && (
+        <motion.div
+          initial={{ y: -60 }}
+          animate={{ y: 0 }}
+          exit={{ y: -60 }}
+          className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center gap-3 px-20 py-3"
+          style={{
+            background: `linear-gradient(90deg, ${currentSong.colour}80, ${currentSong.colour}40)`,
+            backdropFilter: 'blur(12px)',
+          }}
+        >
+          {/* Animated equaliser bars */}
+          <div className="flex items-end gap-0.5 h-6">
+            {[0, 1, 2, 3, 4].map(i => (
+              <motion.div
+                key={i}
+                animate={{ height: ['40%', '100%', '60%', '90%', '30%'] }}
+                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.1, ease: 'easeInOut' }}
+                className="rounded-full"
+                style={{ width: 4, background: 'white', minHeight: 4 }}
+              />
+            ))}
+          </div>
+          <span className="text-white font-heading font-bold text-base truncate">
+            {currentSong.title}
+          </span>
+          <button onPointerDown={stopPlaying} className="ml-2 flex-shrink-0">
+            <StopIcon />
+          </button>
+        </motion.div>
+      )}
+
       {/* Scrollable card grid */}
-      <div className="absolute inset-0 pt-20 pb-6 px-4 overflow-y-auto"
-        style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="absolute inset-0 pb-6 px-4 overflow-y-auto"
+        style={{
+          paddingTop: playingSong ? '5.5rem' : '5rem',
+          WebkitOverflowScrolling: 'touch',
+        }}>
         <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
           {SONGS.map(song => (
             <SongCard
               key={song.id}
               song={song}
               isPlaying={playingSong === song.id}
-              noteIndex={playingSong === song.id ? noteIndex : 0}
               onPress={() => handlePress(song)}
             />
           ))}
         </div>
-        {/* Bottom spacer for safe area */}
         <div className="h-8" />
       </div>
-
-      {ArthurPeekComponent}
     </div>
   );
 }
