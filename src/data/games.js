@@ -50,9 +50,9 @@ const games = [
   { id: 'animal-sounds', emoji: '🐄', title: 'Animal Sounds', path: 'animal-sounds', category: 'music', bg: 'from-green-400 to-emerald-600' },
 
   // ── Books: Feelings ──
-  { id: 'feelings-monster',   emoji: '🎨', title: 'Feelings Monster',   path: 'feelings-monster',   category: 'books', group: '💛 Feelings', bg: 'from-purple-300 to-pink-400' },
-  { id: 'when-i-feel-big',    emoji: '🐻', title: 'When I Feel Big',    path: 'when-i-feel-big',    category: 'books', group: '💛 Feelings', bg: 'from-amber-300 to-orange-400' },
-  { id: 'feelings-friends',   emoji: '🐰', title: 'Feelings Friends',   path: 'feelings-friends',   category: 'books', group: '💛 Feelings', bg: 'from-sky-200 to-amber-200' },
+  { id: 'feelings-monster',   emoji: '🎨', title: 'Feelings Monster',   path: 'feelings-monster',   category: 'books', group: '💛 Feelings', bg: 'from-purple-300 to-pink-400', cover: '/arthurs-world/images/feelings-monster/page-1.png' },
+  { id: 'when-i-feel-big',    emoji: '🐻', title: 'When I Feel Big',    path: 'when-i-feel-big',    category: 'books', group: '💛 Feelings', bg: 'from-amber-300 to-orange-400', cover: '/arthurs-world/images/when-i-feel-big/page-1.png' },
+  { id: 'feelings-friends',   emoji: '🐰', title: 'Feelings Friends',   path: 'feelings-friends',   category: 'books', group: '💛 Feelings', bg: 'from-sky-200 to-amber-200',    cover: '/arthurs-world/images/feelings-friends/page-1.png' },
 
   // ── Books: Fairy Tales ──
   { id: 'ellie-tiny-folk', emoji: '🐘', title: "Ellie's Story", path: 'ellie-tiny-folk', category: 'books', group: '🏰 Fairy Tales', bg: 'from-purple-300 to-pink-400', cover: '/arthurs-world/images/ellie/character-sheet.png' },
@@ -76,12 +76,12 @@ const games = [
   { id: 'butterfly-stamped', emoji: '🦋', title: 'Butterfly Stamped',  path: 'butterfly-stamped', category: 'books', group: '📖 Just So Stories', bg: 'from-pink-300 to-purple-500',   cover: '/arthurs-world/images/butterfly-stamped/page-1.png' },
 
   // ── Books: Aesop's Fables ──
-  { id: 'tortoise-hare',       emoji: '🐢', title: 'Tortoise & Hare',     path: 'tortoise-hare',       category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-amber-400' },
-  { id: 'lion-mouse',          emoji: '🦁', title: 'Lion & Mouse',        path: 'lion-mouse',          category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-amber-300 to-orange-500' },
-  { id: 'boy-cried-wolf',      emoji: '🐺', title: 'Boy Cried Wolf',      path: 'boy-cried-wolf',      category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-sky-400' },
-  { id: 'ant-grasshopper',     emoji: '🐜', title: 'Ant & Grasshopper',   path: 'ant-grasshopper',     category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-yellow-400' },
-  { id: 'fox-grapes',          emoji: '🦊', title: 'Fox & the Grapes',    path: 'fox-grapes',          category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-purple-300 to-green-400' },
-  { id: 'town-country-mouse',  emoji: '🐭', title: 'Town & Country Mouse', path: 'town-country-mouse', category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-blue-400' },
+  { id: 'tortoise-hare',       emoji: '🐢', title: 'Tortoise & Hare',     path: 'tortoise-hare',       category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-amber-400',   cover: '/arthurs-world/images/tortoise-hare/page-1.png' },
+  { id: 'lion-mouse',          emoji: '🦁', title: 'Lion & Mouse',        path: 'lion-mouse',          category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-amber-300 to-orange-500',  cover: '/arthurs-world/images/lion-mouse/page-1.png' },
+  { id: 'boy-cried-wolf',      emoji: '🐺', title: 'Boy Cried Wolf',      path: 'boy-cried-wolf',      category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-sky-400',     cover: '/arthurs-world/images/boy-cried-wolf/page-1.png' },
+  { id: 'ant-grasshopper',     emoji: '🐜', title: 'Ant & Grasshopper',   path: 'ant-grasshopper',     category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-yellow-400',  cover: '/arthurs-world/images/ant-grasshopper/page-1.png' },
+  { id: 'fox-grapes',          emoji: '🦊', title: 'Fox & the Grapes',    path: 'fox-grapes',          category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-purple-300 to-green-400',  cover: '/arthurs-world/images/fox-grapes/page-1.png' },
+  { id: 'town-country-mouse',  emoji: '🐭', title: 'Town & Country Mouse', path: 'town-country-mouse', category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-blue-400',   cover: '/arthurs-world/images/town-country-mouse/page-1.png' },
 
   // ── Books: Disney ──
   { id: 'cinderella',       emoji: '👠', title: 'Cinderella',        path: 'cinderella',       category: 'books', group: '✨ Disney', bg: 'from-blue-300 to-indigo-400',    cover: '/arthurs-world/images/disney/cinderella/page-1.png' },

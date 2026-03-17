@@ -8,6 +8,7 @@ const storyData = {
     // ── Page 1: Meet the Monster ──
     {
       bg: 'from-purple-300 to-pink-300',
+      image: '/arthurs-world/images/feelings-monster/page-1.png',
       text: 'This is the Feelings Monster! Today all his colours are muddled up. Can you help him sort them out?',
       elements: [
         { id: 'monster', x: 50, y: 45, hotspot: true, w: 180, h: 180, z: 3 },
@@ -29,6 +30,7 @@ const storyData = {
     // ── Page 2: Happy is Yellow ──
     {
       bg: 'from-yellow-300 to-amber-400',
+      image: '/arthurs-world/images/feelings-monster/page-2.png',
       text: 'HAPPY feels like sunshine! When you are happy, you want to jump and dance and laugh!',
       elements: [
         { id: 'happy-monster', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -50,6 +52,7 @@ const storyData = {
     // ── Page 3: Sad is Blue ──
     {
       bg: 'from-blue-300 to-indigo-400',
+      image: '/arthurs-world/images/feelings-monster/page-3.png',
       text: 'SAD feels like rain. When you feel sad, it is okay to cry. Sadness needs a big cuddle.',
       elements: [
         { id: 'sad-monster', x: 45, y: 50, hotspot: true, w: 160, h: 160, z: 3 },
@@ -71,6 +74,7 @@ const storyData = {
     // ── Page 4: Angry is Red ──
     {
       bg: 'from-red-400 to-orange-500',
+      image: '/arthurs-world/images/feelings-monster/page-4.png',
       text: 'ANGRY feels hot like a fire! When you are angry, take a deep breath. In… and out… That is better!',
       elements: [
         { id: 'angry-monster', x: 45, y: 45, hotspot: true, w: 170, h: 170, z: 3 },
@@ -92,6 +96,7 @@ const storyData = {
     // ── Page 5: Scared is Dark ──
     {
       bg: 'from-gray-600 to-slate-800',
+      image: '/arthurs-world/images/feelings-monster/page-5.png',
       text: 'SCARED feels small and dark. Everyone feels scared sometimes. A brave hug makes it better!',
       elements: [
         { id: 'scared-monster', x: 45, y: 50, hotspot: true, w: 140, h: 140, z: 3 },
@@ -113,6 +118,7 @@ const storyData = {
     // ── Page 6: Calm is Green ──
     {
       bg: 'from-green-300 to-emerald-400',
+      image: '/arthurs-world/images/feelings-monster/page-6.png',
       text: 'CALM feels like a gentle breeze. When you feel calm, everything feels soft and peaceful.',
       elements: [
         { id: 'calm-monster', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -134,6 +140,7 @@ const storyData = {
     // ── Page 7: Love is Pink ──
     {
       bg: 'from-pink-300 to-rose-400',
+      image: '/arthurs-world/images/feelings-monster/page-7.png',
       text: 'LOVE feels warm and cuddly! Love is hugs, and kisses, and being with the people you love most.',
       elements: [
         { id: 'love-monster', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -155,6 +162,7 @@ const storyData = {
     // ── Page 8: All Sorted! ──
     {
       bg: 'from-amber-200 to-pink-300',
+      image: '/arthurs-world/images/feelings-monster/page-8.png',
       text: 'Well done! You helped the Feelings Monster sort all his colours! Every feeling is special and important.',
       elements: [
         { id: 'sorted-monster', x: 50, y: 40, hotspot: true, w: 170, h: 170, z: 3 },
