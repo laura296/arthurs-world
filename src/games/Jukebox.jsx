@@ -115,7 +115,7 @@ const SONGS = [
     title: 'I\'m a Little Teapot',
     colour: '#f9a8d4',
     accentColour: '#ec4899',
-    youtubeId: 'jAd3qdSLDxg',
+    youtubeId: 'BgTEG6wV5ak',
   },
 ];
 
