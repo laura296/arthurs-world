@@ -3,6 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'Three Little Pigs',
+  endMessage: 'Not by the hair on my chinny chin chin! 🐷🐷🐷🏠',
   audioDir: '/arthurs-world/audio/three-pigs',
   pages: [
     // ── Page 1: Introduction ──

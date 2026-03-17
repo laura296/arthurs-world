@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'When I Feel Big',
-  audioDir: '/arthurs-world/audio/when-i-feel-big',
+  endMessage: 'All your feelings are okay! 🐻💛',
   pages: [
     // ── Page 1: Little Bear, Big Feelings ──
     {
@@ -17,7 +17,7 @@ const storyData = {
         { id: 'bird', x: 82, y: 25, hotspot: true, w: 65, h: 65, z: 2 },
       ],
       interactions: [
-        { id: 'bear-say', type: 'tap-sound', targetId: 'bear', data: { say: 'Sometimes my feelings feel SO big!' } },
+        { id: 'bear-say', type: 'character-speak', targetId: 'bear', data: { say: 'Sometimes my feelings feel SO big!', character: 'little-bear' } },
         { id: 'bear-wiggle', type: 'tap-wiggle', targetId: 'bear', data: {} },
         { id: 'cloud-grow', type: 'tap-grow', targetId: 'feeling-cloud', data: {} },
         { id: 'tree-shake', type: 'tap-shake', targetId: 'tree', data: {} },
@@ -38,7 +38,7 @@ const storyData = {
         { id: 'hidden-present', x: 85, y: 70, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'excited-say', type: 'tap-sound', targetId: 'excited-bear', data: { say: 'I am SO excited! Wheee!' } },
+        { id: 'excited-say', type: 'character-speak', targetId: 'excited-bear', data: { say: 'I am SO excited! Wheee!', character: 'little-bear' } },
         { id: 'excited-jump', type: 'tap-jump', targetId: 'excited-bear', data: {} },
         { id: 'bounce-jump-1', type: 'tap-jump', targetId: 'bounce-1', data: {} },
         { id: 'bounce-jump-2', type: 'tap-jump', targetId: 'bounce-2', data: {} },
@@ -60,7 +60,7 @@ const storyData = {
         { id: 'hidden-star', x: 20, y: 20, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'frust-say', type: 'tap-sound', targetId: 'frustrated-bear', data: { say: 'Oh no! It fell down AGAIN!' } },
+        { id: 'frust-say', type: 'character-speak', targetId: 'frustrated-bear', data: { say: 'Oh no! It fell down AGAIN!', character: 'little-bear' } },
         { id: 'frust-shake', type: 'tap-shake', targetId: 'frustrated-bear', data: {} },
         { id: 'tower-wobble', type: 'tap-wiggle', targetId: 'tower-block-1', data: {} },
         { id: 'tower-spin', type: 'tap-spin', targetId: 'tower-block-2', data: {} },
@@ -82,7 +82,7 @@ const storyData = {
         { id: 'hidden-hug', x: 15, y: 70, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'worried-say', type: 'tap-sound', targetId: 'worried-bear', data: { say: 'What if something goes wrong?' } },
+        { id: 'worried-say', type: 'character-speak', targetId: 'worried-bear', data: { say: 'What if something goes wrong?', character: 'little-bear' } },
         { id: 'worried-wiggle', type: 'tap-wiggle', targetId: 'worried-bear', data: {} },
         { id: 'thought-grow', type: 'tap-grow', targetId: 'thought-bubble', data: {} },
         { id: 'knot-spin', type: 'tap-spin', targetId: 'knot', data: {} },
@@ -104,7 +104,7 @@ const storyData = {
         { id: 'sparkle-zone', x: 45, y: 70, hotspot: true, w: 120, h: 60, z: 2 },
       ],
       interactions: [
-        { id: 'proud-say', type: 'tap-sound', targetId: 'proud-bear', data: { say: 'I did it all by myself! Look!' } },
+        { id: 'proud-say', type: 'character-speak', targetId: 'proud-bear', data: { say: 'I did it all by myself! Look!', character: 'little-bear' } },
         { id: 'proud-grow', type: 'tap-grow', targetId: 'proud-bear', data: {} },
         { id: 'trophy-spin', type: 'tap-spin', targetId: 'trophy', data: {} },
         { id: 'star-sparkle-1', type: 'tap-sparkle', targetId: 'star-1', data: {} },
@@ -126,9 +126,9 @@ const storyData = {
         { id: 'hidden-wave', x: 20, y: 70, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'shy-say', type: 'tap-sound', targetId: 'shy-bear', data: { say: 'I feel a bit shy...' } },
+        { id: 'shy-say', type: 'character-speak', targetId: 'shy-bear', data: { say: 'I feel a bit shy...', character: 'little-bear' } },
         { id: 'shy-wiggle', type: 'tap-wiggle', targetId: 'shy-bear', data: {} },
-        { id: 'mummy-say', type: 'tap-sound', targetId: 'mummy-bear', data: { say: 'It is okay, I am right here.' } },
+        { id: 'mummy-say', type: 'character-speak', targetId: 'mummy-bear', data: { say: 'It is okay, I am right here.', character: 'mummy-bear' } },
         { id: 'peek-sparkle', type: 'tap-sparkle', targetId: 'peek-eye', data: {} },
         { id: 'friend-jump', type: 'tap-jump', targetId: 'friend', data: {} },
         { id: 'wave-reveal', type: 'tap-reveal', targetId: 'hidden-wave', data: { content: <span>👋 Hello!</span> } },
@@ -148,7 +148,7 @@ const storyData = {
         { id: 'zzz', x: 58, y: 35, hotspot: true, w: 70, h: 50, z: 4 },
       ],
       interactions: [
-        { id: 'sleepy-say', type: 'tap-sound', targetId: 'sleepy-bear', data: { say: 'Yaaaawn! I am so sleepy.' } },
+        { id: 'sleepy-say', type: 'character-speak', targetId: 'sleepy-bear', data: { say: 'Yaaaawn! I am so sleepy.', character: 'little-bear' } },
         { id: 'sleepy-wiggle', type: 'tap-wiggle', targetId: 'sleepy-bear', data: {} },
         { id: 'moon-spin', type: 'tap-spin', targetId: 'moon', data: {} },
         { id: 'star-sparkle-1', type: 'tap-sparkle', targetId: 'star-1', data: {} },
@@ -170,7 +170,7 @@ const storyData = {
         { id: 'star', x: 50, y: 72, hotspot: true, w: 80, h: 80, z: 2 },
       ],
       interactions: [
-        { id: 'bear-say', type: 'tap-sound', targetId: 'happy-bear', data: { say: 'All my feelings are important! I love you!' } },
+        { id: 'bear-say', type: 'character-speak', targetId: 'happy-bear', data: { say: 'All my feelings are important! I love you!', character: 'little-bear' } },
         { id: 'bear-jump', type: 'tap-jump', targetId: 'happy-bear', data: {} },
         { id: 'rainbow-sparkle', type: 'tap-sparkle', targetId: 'rainbow', data: {} },
         { id: 'heart-grow-1', type: 'tap-grow', targetId: 'heart-1', data: {} },

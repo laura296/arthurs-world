@@ -3,6 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'How the First Letter Was Written',
+  endMessage: 'The very first letter! ✉️✨',
   audioDir: '/arthurs-world/audio/first-letter',
   pages: [
     // ── Page 1: Fishing by the river ──
@@ -158,9 +159,9 @@ const storyData = {
         },
         {
           id: 'taffy-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'worried-taffy',
-          data: { say: 'Oh no!' },
+          data: { say: 'Oh no!', character: 'taffy' },
         },
         {
           id: 'home-sparkle',
@@ -440,9 +441,9 @@ const storyData = {
         },
         {
           id: 'taffy-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'taffy-giving',
-          data: { say: 'Please take this to Mummy!' },
+          data: { say: 'Please take this to Mummy!', character: 'taffy' },
         },
         {
           id: 'stranger-wiggle',
@@ -526,9 +527,9 @@ const storyData = {
         },
         {
           id: 'stranger-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'confused-stranger',
-          data: { say: 'I do not understand!' },
+          data: { say: 'I do not understand!', character: 'stranger' },
         },
         {
           id: 'question-1-spin',
@@ -713,9 +714,9 @@ const storyData = {
         },
         {
           id: 'mummy-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'mummy',
-          data: { say: 'Oh Taffy, what a silly mix-up!' },
+          data: { say: 'Oh Taffy, what a silly mix-up!', character: 'mummy' },
         },
         {
           id: 'laughing-1-shake',
@@ -799,9 +800,9 @@ const storyData = {
       interactions: [
         {
           id: 'taffy-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'determined-taffy',
-          data: { say: 'I will try again!' },
+          data: { say: 'I will try again!', character: 'taffy' },
         },
         {
           id: 'taffy-grow',
@@ -918,9 +919,9 @@ const storyData = {
         },
         {
           id: 'letter-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'final-letter',
-          data: { say: 'The very first letter!' },
+          data: { say: 'The very first letter!', character: 'taffy' },
         },
         {
           id: 'celebration-shake',

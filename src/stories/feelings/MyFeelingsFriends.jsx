@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'My Feelings Friends',
-  audioDir: '/arthurs-world/audio/feelings-friends',
+  endMessage: 'Every feeling is your friend! 🐰🐱🐶💛',
   pages: [
     // ── Page 1: Meet the Friends ──
     {
@@ -19,10 +19,10 @@ const storyData = {
       ],
       interactions: [
         { id: 'bunny-jump', type: 'tap-jump', targetId: 'bunny', data: {} },
-        { id: 'bunny-say', type: 'tap-sound', targetId: 'bunny', data: { say: 'Hello! I am Bunny!' } },
-        { id: 'kitten-say', type: 'tap-sound', targetId: 'kitten', data: { say: 'Miaow! I am Kitten!' } },
+        { id: 'bunny-say', type: 'character-speak', targetId: 'bunny', data: { say: 'Hello! I am Bunny!', character: 'bunny' } },
+        { id: 'kitten-say', type: 'character-speak', targetId: 'kitten', data: { say: 'Miaow! I am Kitten!', character: 'kitten' } },
         { id: 'kitten-wiggle', type: 'tap-wiggle', targetId: 'kitten', data: {} },
-        { id: 'puppy-say', type: 'tap-sound', targetId: 'puppy', data: { say: 'Woof! I am Puppy!' } },
+        { id: 'puppy-say', type: 'character-speak', targetId: 'puppy', data: { say: 'Woof! I am Puppy!', character: 'puppy' } },
         { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
         { id: 'butterfly-reveal', type: 'tap-reveal', targetId: 'hidden-butterfly', data: { content: <span>🦋</span> } },
       ],
@@ -41,7 +41,7 @@ const storyData = {
         { id: 'sunshine', x: 80, y: 15, hotspot: true, w: 90, h: 90, z: 1 },
       ],
       interactions: [
-        { id: 'bunny-say', type: 'tap-sound', targetId: 'happy-bunny', data: { say: 'I am so happy! Boing boing boing!' } },
+        { id: 'bunny-say', type: 'character-speak', targetId: 'happy-bunny', data: { say: 'I am so happy! Boing boing boing!', character: 'bunny' } },
         { id: 'bunny-jump', type: 'tap-jump', targetId: 'happy-bunny', data: {} },
         { id: 'flower-grow-1', type: 'tap-grow', targetId: 'flower-1', data: {} },
         { id: 'flower-color', type: 'tap-color', targetId: 'flower-2', data: { colors: ['#fde047', '#a78bfa', '#f9a8d4', '#34d399'] } },
@@ -63,7 +63,7 @@ const storyData = {
         { id: 'hidden-sun', x: 15, y: 18, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'kitten-say', type: 'tap-sound', targetId: 'sad-kitten', data: { say: 'Miaow... I cannot find my toy.' } },
+        { id: 'kitten-say', type: 'character-speak', targetId: 'sad-kitten', data: { say: 'Miaow... I cannot find my toy.', character: 'kitten' } },
         { id: 'kitten-wiggle', type: 'tap-wiggle', targetId: 'sad-kitten', data: {} },
         { id: 'tear-color', type: 'tap-color', targetId: 'tear', data: { colors: ['#60a5fa', '#93c5fd', '#3b82f6'] } },
         { id: 'cloud-shake', type: 'tap-shake', targetId: 'rain-cloud', data: {} },
@@ -85,11 +85,11 @@ const storyData = {
         { id: 'hidden-treat', x: 18, y: 60, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'puppy-say', type: 'tap-sound', targetId: 'angry-puppy', data: { say: 'GRRR! That is MY bone!' } },
+        { id: 'puppy-say', type: 'character-speak', targetId: 'angry-puppy', data: { say: 'GRRR! That is MY bone!', character: 'puppy' } },
         { id: 'puppy-shake', type: 'tap-shake', targetId: 'angry-puppy', data: {} },
         { id: 'bone-spin', type: 'tap-spin', targetId: 'bone', data: {} },
         { id: 'stomp-shake', type: 'tap-shake', targetId: 'stomp-1', data: {} },
-        { id: 'count-say', type: 'tap-sound', targetId: 'count-bubble', data: { say: 'One... two... three! I feel better.' } },
+        { id: 'count-say', type: 'character-speak', targetId: 'count-bubble', data: { say: 'One... two... three! I feel better.', character: 'puppy' } },
         { id: 'treat-reveal', type: 'tap-reveal', targetId: 'hidden-treat', data: { content: <span>🦴 A new bone!</span> } },
       ],
     },
@@ -107,7 +107,7 @@ const storyData = {
         { id: 'hidden-friend', x: 15, y: 65, hotspot: true, w: 70, h: 70, z: 1 },
       ],
       interactions: [
-        { id: 'hedgehog-say', type: 'tap-sound', targetId: 'hedgehog', data: { say: 'What was that noise? I am scared!' } },
+        { id: 'hedgehog-say', type: 'character-speak', targetId: 'hedgehog', data: { say: 'What was that noise? I am scared!', character: 'hedgehog' } },
         { id: 'hedgehog-wiggle', type: 'tap-wiggle', targetId: 'hedgehog', data: {} },
         { id: 'shadow-hide', type: 'tap-hide', targetId: 'shadow', data: {} },
         { id: 'leaf-shake', type: 'tap-shake', targetId: 'leaf-rustle', data: {} },
@@ -129,7 +129,7 @@ const storyData = {
         { id: 'hidden-frog', x: 82, y: 68, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'duck-say', type: 'tap-sound', targetId: 'silly-duck', data: { say: 'QUACK QUACK QUACK! I am so silly!' } },
+        { id: 'duck-say', type: 'character-speak', targetId: 'silly-duck', data: { say: 'QUACK QUACK QUACK! I am so silly!', character: 'duckling' } },
         { id: 'duck-spin', type: 'tap-spin', targetId: 'silly-duck', data: {} },
         { id: 'puddle-sparkle', type: 'tap-sparkle', targetId: 'puddle', data: {} },
         { id: 'quack-grow-1', type: 'tap-grow', targetId: 'quack-1', data: {} },
@@ -151,9 +151,9 @@ const storyData = {
         { id: 'star', x: 50, y: 12, hotspot: true, w: 60, h: 60, z: 2 },
       ],
       interactions: [
-        { id: 'owl-say', type: 'tap-sound', targetId: 'owl', data: { say: 'I love you to the moon and back!' } },
+        { id: 'owl-say', type: 'character-speak', targetId: 'owl', data: { say: 'I love you to the moon and back!', character: 'owl' } },
         { id: 'owl-grow', type: 'tap-grow', targetId: 'owl', data: {} },
-        { id: 'baby-say', type: 'tap-sound', targetId: 'baby-owl', data: { say: 'Love you, Mummy!' } },
+        { id: 'baby-say', type: 'character-speak', targetId: 'baby-owl', data: { say: 'Love you, Mummy!', character: 'baby-owl' } },
         { id: 'heart-grow-1', type: 'tap-grow', targetId: 'heart-1', data: {} },
         { id: 'heart-color', type: 'tap-color', targetId: 'heart-2', data: { colors: ['#f9a8d4', '#fb7185', '#ec4899', '#f472b6'] } },
         { id: 'star-sparkle', type: 'tap-sparkle', targetId: 'star', data: {} },

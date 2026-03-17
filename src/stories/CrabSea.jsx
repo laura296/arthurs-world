@@ -3,6 +3,7 @@ import StoryBook from '../components/StoryBook';
 
 const storyData = {
   title: 'The Crab That Played with the Sea',
+  endMessage: 'Splash splash! That is the tides! 🦀🌊',
   audioDir: '/arthurs-world/audio/crab-sea',
   pages: [
     // ── Page 1: The Eldest Magician makes the world ──
@@ -146,9 +147,9 @@ const storyData = {
       interactions: [
         {
           id: 'elephant-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'elephant',
-          data: { say: 'Trumpet! I am an elephant!' },
+          data: { say: 'Trumpet! I am an elephant!', character: 'elephant' },
         },
         {
           id: 'cow-sound',
@@ -410,9 +411,9 @@ const storyData = {
         },
         {
           id: 'crab-out-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'out-crab',
-          data: { say: 'In and out! Up and down!' },
+          data: { say: 'In and out! Up and down!', character: 'crab' },
         },
         {
           id: 'down-arrow-spin',
@@ -576,9 +577,9 @@ const storyData = {
       interactions: [
         {
           id: 'doris-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'doris',
-          data: { say: "It's the crab! He's making the water go whoosh!" },
+          data: { say: "It's the crab! He's making the water go whoosh!", character: 'doris' },
         },
         {
           id: 'doris-animate',
@@ -674,9 +675,9 @@ const storyData = {
         },
         {
           id: 'magician-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'magic-magician',
-          data: { say: 'Be SMALL, little crab!' },
+          data: { say: 'Be SMALL, little crab!', character: 'magician' },
         },
         {
           id: 'stars-spin',
@@ -849,9 +850,9 @@ const storyData = {
         },
         {
           id: 'happy-crab-sound',
-          type: 'tap-sound',
+          type: 'character-speak',
           targetId: 'happy-crab',
-          data: { say: 'I love playing with the sea!' },
+          data: { say: 'I love playing with the sea!', character: 'crab' },
         },
         {
           id: 'wave-1-wiggle',

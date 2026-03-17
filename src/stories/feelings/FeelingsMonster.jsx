@@ -3,7 +3,7 @@ import StoryBook from '../../components/StoryBook';
 
 const storyData = {
   title: 'The Feelings Monster',
-  audioDir: '/arthurs-world/audio/feelings-monster',
+  endMessage: 'Every feeling is special! 🌈💛',
   pages: [
     // ── Page 1: Meet the Monster ──
     {
@@ -18,7 +18,7 @@ const storyData = {
         { id: 'hidden-star', x: 85, y: 75, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'monster-speak', type: 'tap-sound', targetId: 'monster', data: { say: 'My colours are all mixed up! Help me!' } },
+        { id: 'monster-speak', type: 'character-speak', targetId: 'monster', data: { say: 'My colours are all mixed up! Help me!', character: 'feelings-monster' } },
         { id: 'monster-shake', type: 'tap-shake', targetId: 'monster', data: {} },
         { id: 'swirl-spin-1', type: 'tap-spin', targetId: 'swirl-1', data: {} },
         { id: 'swirl-spin-2', type: 'tap-spin', targetId: 'swirl-2', data: {} },
@@ -40,7 +40,7 @@ const storyData = {
         { id: 'butterfly', x: 65, y: 30, hotspot: true, w: 70, h: 70, z: 2 },
       ],
       interactions: [
-        { id: 'happy-say', type: 'tap-sound', targetId: 'happy-monster', data: { say: 'I feel so happy! Ha ha ha!' } },
+        { id: 'happy-say', type: 'character-speak', targetId: 'happy-monster', data: { say: 'I feel so happy! Ha ha ha!', character: 'happy-monster' } },
         { id: 'happy-jump', type: 'tap-jump', targetId: 'happy-monster', data: {} },
         { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
         { id: 'flower-grow-1', type: 'tap-grow', targetId: 'flower-1', data: {} },
@@ -62,7 +62,7 @@ const storyData = {
         { id: 'hidden-rainbow', x: 80, y: 25, hotspot: true, w: 80, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'sad-say', type: 'tap-sound', targetId: 'sad-monster', data: { say: 'I feel a bit sad today.' } },
+        { id: 'sad-say', type: 'character-speak', targetId: 'sad-monster', data: { say: 'I feel a bit sad today.', character: 'sad-monster' } },
         { id: 'sad-wiggle', type: 'tap-wiggle', targetId: 'sad-monster', data: {} },
         { id: 'cloud-shake', type: 'tap-shake', targetId: 'cloud', data: {} },
         { id: 'tear-color-1', type: 'tap-color', targetId: 'tear-1', data: { colors: ['#60a5fa', '#93c5fd', '#3b82f6'] } },
@@ -84,7 +84,7 @@ const storyData = {
         { id: 'hidden-heart', x: 82, y: 20, hotspot: true, w: 60, h: 60, z: 1 },
       ],
       interactions: [
-        { id: 'angry-say', type: 'tap-sound', targetId: 'angry-monster', data: { say: 'GRRR! I am so cross!' } },
+        { id: 'angry-say', type: 'character-speak', targetId: 'angry-monster', data: { say: 'GRRR! I am so cross!', character: 'angry-monster' } },
         { id: 'angry-shake', type: 'tap-shake', targetId: 'angry-monster', data: {} },
         { id: 'flame-grow-1', type: 'tap-grow', targetId: 'flame-1', data: {} },
         { id: 'flame-color', type: 'tap-color', targetId: 'flame-2', data: { colors: ['#ef4444', '#f97316', '#eab308', '#dc2626'] } },
@@ -106,7 +106,7 @@ const storyData = {
         { id: 'hidden-light', x: 50, y: 20, hotspot: true, w: 80, h: 80, z: 1 },
       ],
       interactions: [
-        { id: 'scared-say', type: 'tap-sound', targetId: 'scared-monster', data: { say: 'I am a little bit scared.' } },
+        { id: 'scared-say', type: 'character-speak', targetId: 'scared-monster', data: { say: 'I am a little bit scared.', character: 'scared-monster' } },
         { id: 'scared-wiggle', type: 'tap-wiggle', targetId: 'scared-monster', data: {} },
         { id: 'shadow-hide-1', type: 'tap-hide', targetId: 'shadow-1', data: {} },
         { id: 'shadow-hide-2', type: 'tap-hide', targetId: 'shadow-2', data: {} },
@@ -128,7 +128,7 @@ const storyData = {
         { id: 'dragonfly', x: 65, y: 25, hotspot: true, w: 65, h: 65, z: 2 },
       ],
       interactions: [
-        { id: 'calm-say', type: 'tap-sound', targetId: 'calm-monster', data: { say: 'Ahhhh, I feel so calm and peaceful.' } },
+        { id: 'calm-say', type: 'character-speak', targetId: 'calm-monster', data: { say: 'Ahhhh, I feel so calm and peaceful.', character: 'calm-monster' } },
         { id: 'calm-grow', type: 'tap-grow', targetId: 'calm-monster', data: {} },
         { id: 'leaf-fly-1', type: 'tap-animate', targetId: 'leaf-1', data: { animation: 'animate-fly', duration: 1500 } },
         { id: 'leaf-fly-2', type: 'tap-animate', targetId: 'leaf-2', data: { animation: 'animate-fly', duration: 1200 } },
@@ -150,7 +150,7 @@ const storyData = {
         { id: 'sparkle-zone', x: 45, y: 70, hotspot: true, w: 100, h: 60, z: 2 },
       ],
       interactions: [
-        { id: 'love-say', type: 'tap-sound', targetId: 'love-monster', data: { say: 'I love you SO much!' } },
+        { id: 'love-say', type: 'character-speak', targetId: 'love-monster', data: { say: 'I love you SO much!', character: 'love-monster' } },
         { id: 'love-jump', type: 'tap-jump', targetId: 'love-monster', data: {} },
         { id: 'heart-grow-1', type: 'tap-grow', targetId: 'heart-1', data: {} },
         { id: 'heart-color', type: 'tap-color', targetId: 'heart-2', data: { colors: ['#f9a8d4', '#fb7185', '#ec4899', '#f472b6'] } },
@@ -173,7 +173,7 @@ const storyData = {
         { id: 'jar-pink', x: 85, y: 68, hotspot: true, w: 70, h: 80, z: 2 },
       ],
       interactions: [
-        { id: 'sorted-say', type: 'tap-sound', targetId: 'sorted-monster', data: { say: 'Thank you! All my feelings are sorted!' } },
+        { id: 'sorted-say', type: 'character-speak', targetId: 'sorted-monster', data: { say: 'Thank you! All my feelings are sorted!', character: 'feelings-monster' } },
         { id: 'sorted-jump', type: 'tap-jump', targetId: 'sorted-monster', data: {} },
         { id: 'jar-sparkle-1', type: 'tap-sparkle', targetId: 'jar-yellow', data: {} },
         { id: 'jar-sparkle-2', type: 'tap-sparkle', targetId: 'jar-blue', data: {} },
