@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useRef, useContext } from 'react';
+import { useRef, useContext, useCallback } from 'react';
 import { playNavigate } from '../hooks/useSound';
 import GoldenHourScene from '../components/scenes/GoldenHourScene';
 import ArthurBear from '../components/ArthurBear';
@@ -15,6 +15,7 @@ export default function ModePicker() {
   const navigate = useNavigate();
   const sessionTimer = useContext(SessionTimerContext);
   const longPressRef = useRef(null);
+  const tapCountRef = useRef({ count: 0, lastTap: 0 });
 
   // Long-press ArthurBear (3s) opens parent timer picker
   const handleBearDown = () => {
@@ -26,6 +27,19 @@ export default function ModePicker() {
     if (longPressRef.current) clearTimeout(longPressRef.current);
   };
 
+  // 5 quick taps on title opens parent video admin page
+  const handleTitleTap = useCallback(() => {
+    const now = Date.now();
+    const ref = tapCountRef.current;
+    if (now - ref.lastTap > 800) ref.count = 0;
+    ref.count++;
+    ref.lastTap = now;
+    if (ref.count >= 5) {
+      ref.count = 0;
+      navigate('/admin/videos');
+    }
+  }, [navigate]);
+
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center gap-6 p-6 bg-aw-warm">
       <GoldenHourScene />
@@ -34,8 +48,9 @@ export default function ModePicker() {
         <div onPointerDown={handleBearDown} onPointerUp={handleBearUp} onPointerCancel={handleBearUp}>
           <ArthurBear expression="excited" size={80} />
         </div>
-        <h1 className="text-5xl font-heading text-amber-900 drop-shadow-lg animate-float"
-            style={{ textShadow: '0 2px 8px rgba(245, 176, 65, 0.4)' }}>
+        <h1 className="text-5xl font-heading text-amber-900 drop-shadow-lg animate-float select-none"
+            style={{ textShadow: '0 2px 8px rgba(245, 176, 65, 0.4)' }}
+            onClick={handleTitleTap}>
           Arthur's World
         </h1>
       </div>

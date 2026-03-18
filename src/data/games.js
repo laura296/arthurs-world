@@ -4,7 +4,23 @@
  * `path`: route segment under /games/:mode/:section/
  * `cover`: optional image path for book cover cards
  * `group`: optional sub-grouping label for visual dividers in GameGrid
+ *
+ * Videos are loaded dynamically from data/video-registry.json (only approved videos).
  */
+import registry from '../../data/video-registry.json';
+
+const videoEntries = registry.videos
+  .filter(v => v.status === 'approved')
+  .map(v => ({
+    id: v.id,
+    emoji: '',
+    title: v.title,
+    path: `video/${v.id}`,
+    category: 'videos',
+    bg: v.bg,
+    cover: `/arthurs-world/videos/${v.id}.webp`,
+  }));
+
 const games = [
   // ── Games ──
   { id: 'bubble-pop',    emoji: '🫧', title: 'Bubble Pop',    path: 'bubble-pop',    category: 'games', group: '🎮 Games', bg: 'from-sky to-blue-500',           cover: '/arthurs-world/images/cards/bubble-pop.png' },
@@ -14,20 +30,8 @@ const games = [
   { id: 'stack-bricks',  emoji: '🧱', title: 'Bricks',        path: 'stack-bricks',  category: 'games', group: '🎮 Games', bg: 'from-orange-400 to-red-500' },
   { id: 'odd-one-picks', emoji: '🔍', title: 'Picks',         path: 'odd-one-picks', category: 'games', group: '🧩 Puzzles', bg: 'from-violet-400 to-fuchsia-500' },
 
-  // ── Videos ──
-  { id: 'baby-shark',        emoji: '🦈', title: 'Baby Shark',         path: 'video/baby-shark',        category: 'videos', bg: 'from-yellow-400 to-orange-500',  cover: '/arthurs-world/videos/baby-shark.webp' },
-  { id: 'wheels-on-bus',     emoji: '🚌', title: 'Wheels on the Bus',  path: 'video/wheels-on-bus',     category: 'videos', bg: 'from-red-400 to-rose-600',       cover: '/arthurs-world/videos/wheels-on-bus.webp' },
-  { id: 'let-it-go',         emoji: '❄️', title: 'Let It Go',          path: 'video/let-it-go',         category: 'videos', bg: 'from-sky-300 to-blue-600',       cover: '/arthurs-world/videos/let-it-go.webp' },
-  { id: 'old-macdonald',     emoji: '🐄', title: 'Old MacDonald',      path: 'video/old-macdonald',     category: 'videos', bg: 'from-green-400 to-emerald-600',  cover: '/arthurs-world/videos/old-macdonald.webp' },
-  { id: 'bath-song',         emoji: '🛁', title: 'Bath Song',          path: 'video/bath-song',         category: 'videos', bg: 'from-cyan-400 to-blue-500',      cover: '/arthurs-world/videos/bath-song.webp' },
-  { id: 'head-shoulders',     emoji: '🙆', title: 'Head Shoulders',     path: 'video/head-shoulders',     category: 'videos', bg: 'from-amber-400 to-yellow-600',   cover: '/arthurs-world/videos/head-shoulders.webp' },
-  { id: 'twinkle-star',       emoji: '⭐', title: 'Twinkle Twinkle',    path: 'video/twinkle-star',       category: 'videos', bg: 'from-indigo-400 to-purple-600',  cover: '/arthurs-world/videos/twinkle-star.webp' },
-  { id: 'itsy-bitsy-spider',  emoji: '🕷️', title: 'Itsy Bitsy Spider',  path: 'video/itsy-bitsy-spider',  category: 'videos', bg: 'from-pink-400 to-rose-600',      cover: '/arthurs-world/videos/itsy-bitsy-spider.webp' },
-  { id: 'if-youre-happy',     emoji: '😊', title: "If You're Happy",    path: 'video/if-youre-happy',     category: 'videos', bg: 'from-fuchsia-400 to-pink-600',   cover: '/arthurs-world/videos/if-youre-happy.webp' },
-  { id: 'five-little-ducks',  emoji: '🦆', title: 'Five Little Ducks',  path: 'video/five-little-ducks',  category: 'videos', bg: 'from-violet-400 to-purple-600',  cover: '/arthurs-world/videos/five-little-ducks.webp' },
-  { id: 'yes-yes-vegetables', emoji: '🥕', title: 'Yes Yes Vegetables', path: 'video/yes-yes-vegetables', category: 'videos', bg: 'from-lime-400 to-green-600',   cover: '/arthurs-world/videos/yes-yes-vegetables.webp' },
-  { id: 'dinosaur-dance',    emoji: '🦕', title: 'Dinosaur Dance',    path: 'video/dinosaur-dance',    category: 'videos', bg: 'from-emerald-400 to-teal-600', cover: '/arthurs-world/videos/dinosaur-dance.webp' },
-  { id: 'youre-welcome',     emoji: '🪝', title: "You're Welcome",   path: 'video/youre-welcome',     category: 'videos', bg: 'from-teal-400 to-cyan-600',    cover: '/arthurs-world/videos/youre-welcome.webp' },
+  // ── Videos (from registry) ──
+  ...videoEntries,
 
   // ── Puzzles & Learning ──
   { id: 'memory-match',    emoji: '🧠', title: 'Memory',        path: 'memory-match',    category: 'games', group: '🧩 Puzzles', bg: 'from-teal-400 to-cyan-600',    cover: '/arthurs-world/images/cards/memory-match.png' },

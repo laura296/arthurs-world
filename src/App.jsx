@@ -90,6 +90,7 @@ const TrickOrTreat = lazy(() => import('./games/halloween/TrickOrTreat'));
 const SpookySounds = lazy(() => import('./games/halloween/SpookySounds'));
 const WitchFlight = lazy(() => import('./games/halloween/WitchFlight'));
 // Easter
+const VideoAdmin = lazy(() => import('./pages/VideoAdmin'));
 const EasterEggHunt = lazy(() => import('./games/easter/EasterEggHunt'));
 const PaintEasterEggs = lazy(() => import('./games/easter/PaintEasterEggs'));
 const BunnyHop = lazy(() => import('./games/easter/BunnyHop'));
@@ -198,6 +199,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<P><ModePicker /></P>} />
+      <Route path="/admin/videos" element={<P><VideoAdmin /></P>} />
 
       {/* Mode-aware hub routes */}
       <Route path="/games/:mode" element={<M><P><SectionPicker /></P></M>} />

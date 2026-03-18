@@ -1,0 +1,186 @@
+{
+  "videos": [
+    {
+      "id": "baby-shark",
+      "title": "Baby Shark",
+      "youtubeUrl": "https://www.youtube.com/watch?v=XqZsoesa55w",
+      "bg": "from-yellow-400 to-orange-500",
+      "color": "#f59e0b",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Classic children's sing-along song. No concerning content.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "wheels-on-bus",
+      "title": "Wheels on the Bus",
+      "youtubeUrl": "https://www.youtube.com/watch?v=e_04ZrNroTo",
+      "bg": "from-red-400 to-rose-600",
+      "color": "#f87171",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Classic nursery rhyme. Safe for toddlers.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "let-it-go",
+      "title": "Let It Go",
+      "youtubeUrl": "https://www.youtube.com/watch?v=L0MK7qz13bU",
+      "bg": "from-sky-300 to-blue-600",
+      "color": "#38bdf8",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Disney Frozen song. Age-appropriate empowerment theme.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "old-macdonald",
+      "title": "Old MacDonald",
+      "youtubeUrl": "https://www.youtube.com/watch?v=_6HzoUcx3eo",
+      "bg": "from-green-400 to-emerald-600",
+      "color": "#4ade80",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Classic farm animal nursery rhyme. Educational and fun.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "bath-song",
+      "title": "Bath Song",
+      "youtubeUrl": "https://www.youtube.com/watch?v=WRVsOCh907o",
+      "bg": "from-cyan-400 to-blue-500",
+      "color": "#22d3ee",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Hygiene-themed children's song. Positive self-care message.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "head-shoulders",
+      "title": "Head Shoulders",
+      "youtubeUrl": "https://www.youtube.com/watch?v=RuqvGiZi0qg",
+      "bg": "from-amber-400 to-yellow-600",
+      "color": "#fbbf24",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Body-parts learning song. Educational and active.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "twinkle-star",
+      "title": "Twinkle Twinkle",
+      "youtubeUrl": "https://www.youtube.com/watch?v=yCjJyiqpAuU",
+      "bg": "from-indigo-400 to-purple-600",
+      "color": "#818cf8",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Classic lullaby. Gentle and soothing.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "itsy-bitsy-spider",
+      "title": "Itsy Bitsy Spider",
+      "youtubeUrl": "https://www.youtube.com/watch?v=bne3Ix_tJL8",
+      "bg": "from-pink-400 to-rose-600",
+      "color": "#f472b6",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Classic nursery rhyme about perseverance. Gentle content.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "if-youre-happy",
+      "title": "If You're Happy",
+      "youtubeUrl": "https://www.youtube.com/watch?v=M6LoRZsHMSs",
+      "bg": "from-fuchsia-400 to-pink-600",
+      "color": "#e879f9",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Emotions and actions song. Positive and interactive.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "five-little-ducks",
+      "title": "Five Little Ducks",
+      "youtubeUrl": "https://www.youtube.com/watch?v=pZw9veQ76fo",
+      "bg": "from-violet-400 to-purple-600",
+      "color": "#a78bfa",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Counting song with gentle story. Age-appropriate.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "yes-yes-vegetables",
+      "title": "Yes Yes Vegetables",
+      "youtubeUrl": "https://www.youtube.com/watch?v=RE5tvaveVak",
+      "bg": "from-lime-400 to-green-600",
+      "color": "#a3e635",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Healthy eating song. Positive food messaging.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "dinosaur-dance",
+      "title": "Dinosaur Dance",
+      "youtubeUrl": "https://www.youtube.com/watch?v=qSkVgH-4PKw",
+      "bg": "from-emerald-400 to-teal-600",
+      "color": "#34d399",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Fun dance-along with dinosaurs. Active and playful.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    },
+    {
+      "id": "youre-welcome",
+      "title": "You're Welcome",
+      "youtubeUrl": "https://www.youtube.com/watch?v=79DijItQXMM",
+      "bg": "from-teal-400 to-cyan-600",
+      "color": "#2dd4bf",
+      "status": "approved",
+      "addedAt": "2025-01-01T00:00:00Z",
+      "screening": {
+        "verdict": "approved",
+        "reason": "Disney Moana song. Fun, age-appropriate musical number.",
+        "screenedAt": "2025-01-01T00:00:00Z"
+      }
+    }
+  ]
+}
