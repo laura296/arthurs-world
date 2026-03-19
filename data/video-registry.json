@@ -1,4 +1,27 @@
 {
+  "shows": [
+    {
+      "id": "peppa-pig",
+      "title": "Peppa Pig",
+      "bg": "from-pink-400 to-rose-500",
+      "color": "#f472b6",
+      "illustration": "peppa"
+    },
+    {
+      "id": "morphle",
+      "title": "Morphle",
+      "bg": "from-red-400 to-orange-500",
+      "color": "#ef4444",
+      "illustration": "morphle"
+    },
+    {
+      "id": "spidey",
+      "title": "Spidey",
+      "bg": "from-blue-500 to-red-500",
+      "color": "#3b82f6",
+      "illustration": "spidey"
+    }
+  ],
   "videos": [
     {
       "id": "baby-shark",

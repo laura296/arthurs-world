@@ -30,6 +30,9 @@ const games = [
   { id: 'stack-bricks',  emoji: '🧱', title: 'Bricks',        path: 'stack-bricks',  category: 'games', group: '🎮 Games', bg: 'from-orange-400 to-red-500' },
   { id: 'odd-one-picks', emoji: '🔍', title: 'Picks',         path: 'odd-one-picks', category: 'games', group: '🧩 Puzzles', bg: 'from-violet-400 to-fuchsia-500' },
 
+  // ── TV Shows hub ──
+  { id: 'tv-shows', emoji: '', title: 'TV Shows', path: 'tv-shows', category: 'videos', bg: 'from-indigo-500 to-purple-700' },
+
   // ── Videos (from registry) ──
   ...videoEntries,
 

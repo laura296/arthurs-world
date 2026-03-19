@@ -10,10 +10,24 @@ const videos = registry.videos
   .map(v => ({
     id: v.id,
     title: v.title,
+    show: v.show || null,
     src: `/arthurs-world/videos/${v.id}.mp4`,
     thumb: `/arthurs-world/videos/${v.id}.webp`,
     bg: v.bg,
     color: v.color,
   }));
+
+export const shows = (registry.shows || []).map(s => ({
+  id: s.id,
+  title: s.title,
+  bg: s.bg,
+  color: s.color,
+  illustration: s.illustration,
+  episodeCount: videos.filter(v => v.show === s.id).length,
+}));
+
+export function getShowEpisodes(showId) {
+  return videos.filter(v => v.show === showId);
+}
 
 export default videos;

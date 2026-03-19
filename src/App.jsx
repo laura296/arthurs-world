@@ -46,6 +46,9 @@ const BuildAScene = lazy(() => import('./games/BuildAScene'));
 const ShapeMatch = lazy(() => import('./games/ShapeMatch'));
 const EllieStorybook = lazy(() => import('./stories/ellie/EllieStorybook'));
 const VideoPlayer = lazy(() => import('./games/VideoPlayer'));
+// TV Shows
+const TVShowsHub = lazy(() => import('./pages/TVShowsHub'));
+const ShowEpisodes = lazy(() => import('./pages/ShowEpisodes'));
 // Feelings Books
 const FeelingsMonster = lazy(() => import('./stories/feelings/FeelingsMonster'));
 const WhenIFeelBig = lazy(() => import('./stories/feelings/WhenIFeelBig'));
@@ -239,6 +242,11 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/shape-match" element={<G><ShapeMatch /></G>} />
         <Route path="/games/:mode/:section/ellie-tiny-folk" element={<G><EllieStorybook /></G>} />
         <Route path="/games/:mode/:section/video/:videoId" element={<G><VideoPlayer /></G>} />
+
+        {/* TV Shows */}
+        <Route path="/games/:mode/tv-shows" element={<G><TVShowsHub /></G>} />
+        <Route path="/games/:mode/tv-shows/:showId" element={<G><ShowEpisodes /></G>} />
+        <Route path="/games/:mode/tv-shows/video/:videoId" element={<G><VideoPlayer /></G>} />
 
         {/* Feelings Books */}
         <Route path="/games/:mode/:section/feelings-monster" element={<G><FeelingsMonster /></G>} />
