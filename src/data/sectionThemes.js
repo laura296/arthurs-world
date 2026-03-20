@@ -94,6 +94,23 @@ export const SECTION_THEMES = {
     animationVibe: 'bouncy',
   },
 
+  // ── Movement ──
+  movement: {
+    id: 'movement',
+    label: 'Movement',
+    palette: {
+      primary: '#22c55e',
+      secondary: '#38bdf8',
+      accent: '#facc15',
+      bg: 'from-green-400 to-sky-500',
+      cardBg: 'from-green-400/20 to-sky-500/20',
+    },
+    particles: { shapes: ['star', 'circle', 'heart'], colors: ['#22c55e', '#38bdf8', '#facc15'] },
+    tapSound: 'boing',
+    ambient: 'birds',
+    animationVibe: 'bouncy',
+  },
+
   // ── Halloween ──
   halloween: {
     id: 'halloween',

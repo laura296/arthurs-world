@@ -120,6 +120,11 @@ const games = [
   { id: 'sparkle-teeth',     emoji: '🪥', title: 'Sparkle Teeth',  path: 'sparkle-teeth',     category: 'games', group: '🧸 Self-Care', bg: 'from-sky-300 to-blue-500' },
   { id: 'arthurs-lunchbox',  emoji: '🥗', title: 'Lunchbox',       path: 'arthurs-lunchbox',  category: 'games', group: '🧸 Self-Care', bg: 'from-green-300 to-emerald-500' },
 
+  // ── Movement ──
+  { id: 'dance-along',      emoji: '🕺', title: 'Dance Along',    path: 'dance-along',      category: 'movement', bg: 'from-purple-500 to-pink-500' },
+  { id: 'balloon-keep-up',  emoji: '🎈', title: 'Balloon Keep-Up', path: 'balloon-keep-up', category: 'movement', bg: 'from-sky-300 to-sky-100' },
+  { id: 'trampoline-jump',  emoji: '⭐', title: 'Trampoline Jump', path: 'trampoline-jump', category: 'movement', bg: 'from-indigo-700 to-purple-600' },
+
   // ── Easter ──
   { id: 'easter-egg-hunt',    emoji: '🥚', title: 'Egg Hunt',       path: 'easter-egg-hunt',    category: 'easter', group: '🐣 Games',   bg: 'from-pink-200 to-green-200' },
   { id: 'bunny-hop',          emoji: '🐰', title: 'Bunny Hop',      path: 'bunny-hop',          category: 'easter', group: '🐣 Games',   bg: 'from-green-200 to-yellow-200' },

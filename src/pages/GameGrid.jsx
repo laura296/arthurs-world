@@ -13,6 +13,7 @@ const sectionMeta = {
   books:   { emoji: '📚', label: 'Books' },
   music:   { emoji: '🎵', label: 'Music' },
   videos:  { emoji: '📺', label: 'Videos' },
+  movement: { emoji: '🌀', label: 'Movement' },
   easter:  { emoji: '🐣', label: 'Easter' },
 };
 

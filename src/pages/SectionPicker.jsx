@@ -12,6 +12,7 @@ const sections = [
   { id: 'books',   emoji: '📚', label: 'Books',   hero: '/arthurs-world/images/sections/books.png',   grad: ['#D4A853', '#B8862A'] },
   { id: 'music',   emoji: '🎵', label: 'Music',   hero: '/arthurs-world/images/sections/music.png',   grad: ['#C49265', '#A06840'] },
   { id: 'videos',  emoji: '📺', label: 'Videos',  hero: '/arthurs-world/images/sections/videos.png',  grad: ['#E67E22', '#C0592B'] },
+  { id: 'movement', emoji: '🌀', label: 'Movement', hero: '/arthurs-world/images/sections/movement.png', grad: ['#22c55e', '#38bdf8'] },
   { id: 'easter',  emoji: '🐣', label: 'Easter',  hero: '/arthurs-world/images/sections/easter.png',  grad: ['#F9A8D4', '#86EFAC'] },
   { id: 'halloween', emoji: '🎃', label: 'Halloween', hero: '/arthurs-world/images/sections/halloween.png', grad: ['#7C3AED', '#F97316'] },
 ];

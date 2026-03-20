@@ -86,6 +86,10 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+// Movement
+const DanceAlong = lazy(() => import('./games/movement/DanceAlong'));
+const BalloonKeepUp = lazy(() => import('./games/movement/BalloonKeepUp'));
+const TrampolineJump = lazy(() => import('./games/movement/TrampolineJump'));
 // Halloween
 const PumpkinPatch = lazy(() => import('./games/halloween/PumpkinPatch'));
 const GhostPeekaboo = lazy(() => import('./games/halloween/GhostPeekaboo'));
@@ -295,6 +299,11 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/morning-routine" element={<G><MorningRoutine /></G>} />
         <Route path="/games/:mode/:section/sparkle-teeth" element={<G><SparkleTeeth /></G>} />
         <Route path="/games/:mode/:section/arthurs-lunchbox" element={<G><ArthursLunchbox /></G>} />
+
+        {/* Movement */}
+        <Route path="/games/:mode/:section/dance-along" element={<G><DanceAlong /></G>} />
+        <Route path="/games/:mode/:section/balloon-keep-up" element={<G><BalloonKeepUp /></G>} />
+        <Route path="/games/:mode/:section/trampoline-jump" element={<G><TrampolineJump /></G>} />
 
         {/* Halloween */}
         <Route path="/games/:mode/:section/pumpkin-patch" element={<G><PumpkinPatch /></G>} />
