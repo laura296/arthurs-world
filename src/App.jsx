@@ -67,6 +67,8 @@ const CaptainHook = lazy(() => import('./stories/disney/CaptainHook'));
 const WinnieThePooh = lazy(() => import('./stories/disney/WinnieThePooh'));
 const FairyDust = lazy(() => import('./games/FairyDust'));
 const HoneyHunt = lazy(() => import('./games/HoneyHunt'));
+const PoohBalloonFloat = lazy(() => import('./games/pooh/PoohBalloonFloat'));
+const TiggerBounce = lazy(() => import('./games/pooh/TiggerBounce'));
 const HadesRiverStyx = lazy(() => import('./games/HadesRiverStyx'));
 const UrsulaPotions = lazy(() => import('./games/UrsulaPotions'));
 const PuppyWash = lazy(() => import('./games/PuppyWash'));
@@ -274,6 +276,8 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/hades-river-styx" element={<G><HadesRiverStyx /></G>} />
         <Route path="/games/:mode/:section/ursula-potions" element={<G><UrsulaPotions /></G>} />
         <Route path="/games/:mode/:section/honey-hunt" element={<G><HoneyHunt /></G>} />
+        <Route path="/games/:mode/:section/pooh-balloon" element={<G><PoohBalloonFloat /></G>} />
+        <Route path="/games/:mode/:section/tigger-bounce" element={<G><TiggerBounce /></G>} />
         <Route path="/games/:mode/:section/inside-out-hub" element={<G><InsideOutHub /></G>} />
         <Route path="/games/:mode/:section/control-panel-meltdown" element={<G><ControlPanelMeltdown /></G>} />
         <Route path="/games/:mode/:section/anger-cool-down" element={<G><AngerCoolDown /></G>} />

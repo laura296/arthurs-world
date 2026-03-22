@@ -31,9 +31,10 @@ function InkTree({ x, height = 160, flip = false }) {
   );
 }
 
-// ── SVG Pooh Bear (Shepard-style simple) ──
+// ── SVG Pooh Bear (bigger, more detailed Shepard-style) ──
 function PoohBear({ reaction, honeyLevel }) {
   const fillPct = Math.min(honeyLevel / 30, 1);
+  const expr = reaction === 'sting' ? 'sting' : reaction === 'catch' ? 'catch' : 'happy';
   return (
     <div
       className="select-none"
@@ -45,41 +46,83 @@ function PoohBear({ reaction, honeyLevel }) {
           : 'pooh-idle 3s ease-in-out infinite',
       }}
     >
-      <svg width="90" height="110" viewBox="0 0 90 110">
+      <svg width="140" height="180" viewBox="0 0 140 180">
         {/* Body */}
-        <ellipse cx="45" cy="58" rx="28" ry="30" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1.5" />
+        <ellipse cx="70" cy="100" rx="42" ry="44" fill="#e8c97a" />
+        <ellipse cx="70" cy="100" rx="42" ry="44" fill="none" stroke="#c4943a" strokeWidth="1.5" />
+        {/* Tummy highlight */}
+        <ellipse cx="70" cy="96" rx="28" ry="30" fill="#f0d68a" opacity="0.4" />
         {/* Red shirt */}
-        <path d="M20 55 Q20 80 45 82 Q70 80 70 55 Q60 48 45 48 Q30 48 20 55Z"
-          fill="#c0392b" stroke="#6b4c2a" strokeWidth="1" />
+        <path d="M32 85 Q32 120 70 124 Q108 120 108 85 Q96 74 70 72 Q44 74 32 85Z"
+          fill="#c0392b" stroke="#962d22" strokeWidth="1.2" />
+        <path d="M48 76 Q70 82 92 76" fill="none" stroke="#962d22" strokeWidth="0.8" opacity="0.5" />
+        <path d="M42 90 Q52 94 62 91" fill="none" stroke="#d4534a" strokeWidth="1.2" opacity="0.3" />
         {/* Head */}
-        <circle cx="45" cy="30" r="20" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1.5" />
+        <circle cx="70" cy="42" r="30" fill="#e8c97a" stroke="#c4943a" strokeWidth="1.5" />
+        {/* Forehead highlight */}
+        <ellipse cx="70" cy="32" rx="16" ry="10" fill="#f0d68a" opacity="0.5" />
         {/* Ears */}
-        <circle cx="28" cy="15" r="8" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1.2" />
-        <circle cx="28" cy="15" r="4" fill="#d4a54a" />
-        <circle cx="62" cy="15" r="8" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1.2" />
-        <circle cx="62" cy="15" r="4" fill="#d4a54a" />
+        <circle cx="44" cy="18" r="12" fill="#e8c97a" stroke="#c4943a" strokeWidth="1.2" />
+        <circle cx="44" cy="18" r="6" fill="#d4a54a" />
+        <circle cx="96" cy="18" r="12" fill="#e8c97a" stroke="#c4943a" strokeWidth="1.2" />
+        <circle cx="96" cy="18" r="6" fill="#d4a54a" />
         {/* Eyes */}
-        <circle cx="38" cy="28" r="2.5" fill="#2c1810" />
-        <circle cx="52" cy="28" r="2.5" fill="#2c1810" />
+        {expr === 'sting' ? (
+          <>
+            <path d="M56 38 Q62 42 68 38" fill="none" stroke="#3d2414" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M72 38 Q78 42 84 38" fill="none" stroke="#3d2414" strokeWidth="2.5" strokeLinecap="round" />
+          </>
+        ) : (
+          <>
+            <circle cx="60" cy="40" r="4.5" fill="#3d2414" />
+            <circle cx="61.5" cy="38.5" r="1.5" fill="white" />
+            <circle cx="80" cy="40" r="4.5" fill="#3d2414" />
+            <circle cx="81.5" cy="38.5" r="1.5" fill="white" />
+            {expr === 'catch' && (
+              <>
+                <ellipse cx="60" cy="40" rx="5" ry="5.5" fill="#3d2414" />
+                <circle cx="61.5" cy="38" r="1.8" fill="white" />
+                <ellipse cx="80" cy="40" rx="5" ry="5.5" fill="#3d2414" />
+                <circle cx="81.5" cy="38" r="1.8" fill="white" />
+              </>
+            )}
+          </>
+        )}
         {/* Nose */}
-        <ellipse cx="45" cy="34" rx="3" ry="2" fill="#2c1810" />
-        {/* Smile */}
-        <path d="M40 37 Q45 42 50 37" fill="none" stroke="#2c1810" strokeWidth="1.2" strokeLinecap="round" />
+        <ellipse cx="70" cy="50" rx="4.5" ry="3" fill="#3d2414" />
+        <ellipse cx="69" cy="49" rx="1.2" ry="0.8" fill="#6B4C2A" opacity="0.5" />
+        {/* Mouth */}
+        {expr === 'catch' ? (
+          <path d="M60 55 Q70 66 80 55" fill="none" stroke="#3d2414" strokeWidth="2" strokeLinecap="round" />
+        ) : expr === 'sting' ? (
+          <circle cx="70" cy="58" r="4" fill="#3d2414" />
+        ) : (
+          <path d="M62 54 Q70 62 78 54" fill="none" stroke="#3d2414" strokeWidth="1.8" strokeLinecap="round" />
+        )}
+        {/* Cheek blush */}
+        <ellipse cx="50" cy="50" rx="5" ry="3.5" fill="#f0a060" opacity="0.25" />
+        <ellipse cx="90" cy="50" rx="5" ry="3.5" fill="#f0a060" opacity="0.25" />
         {/* Arms */}
-        <path d="M18 60 Q8 70 15 82" fill="none" stroke="#6b4c2a" strokeWidth="2" strokeLinecap="round" />
-        <path d="M72 60 Q82 70 75 82" fill="none" stroke="#6b4c2a" strokeWidth="2" strokeLinecap="round" />
+        <path d="M32 90 Q16 104 22 124" fill="none" stroke="#c4943a" strokeWidth="3.5" strokeLinecap="round" />
+        <circle cx="22" cy="124" r="6" fill="#e8c97a" stroke="#c4943a" strokeWidth="1" />
+        <path d="M108 90 Q124 104 118 124" fill="none" stroke="#c4943a" strokeWidth="3.5" strokeLinecap="round" />
+        <circle cx="118" cy="124" r="6" fill="#e8c97a" stroke="#c4943a" strokeWidth="1" />
         {/* Legs */}
-        <ellipse cx="33" cy="88" rx="10" ry="6" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1" />
-        <ellipse cx="57" cy="88" rx="10" ry="6" fill="#e8c97a" stroke="#6b4c2a" strokeWidth="1" />
+        <ellipse cx="54" cy="142" rx="14" ry="9" fill="#e8c97a" stroke="#c4943a" strokeWidth="1" />
+        <ellipse cx="86" cy="142" rx="14" ry="9" fill="#e8c97a" stroke="#c4943a" strokeWidth="1" />
+        {/* Feet */}
+        <ellipse cx="50" cy="150" rx="12" ry="6" fill="#e8c97a" stroke="#c4943a" strokeWidth="0.8" />
+        <ellipse cx="90" cy="150" rx="12" ry="6" fill="#e8c97a" stroke="#c4943a" strokeWidth="0.8" />
         {/* Honey pot */}
-        <g transform="translate(30, 90)">
-          <path d="M5 5 Q5 0 15 0 Q25 0 25 5 L27 20 Q27 25 15 25 Q3 25 3 20Z"
+        <g transform="translate(48, 152)">
+          <path d="M6 6 Q6 0 20 0 Q34 0 34 6 L36 26 Q36 32 20 32 Q4 32 2 26Z"
             fill="#b87333" stroke="#6b4c2a" strokeWidth="1" />
-          <rect x="6" y="2" width="18" height="18" rx="2" fill="#c4873b" opacity="0.5" />
-          <text x="15" y="16" textAnchor="middle" fontSize="6" fill="#4a2c0a" fontWeight="bold" fontFamily="serif">HUNNY</text>
+          <rect x="8" y="3" width="24" height="22" rx="3" fill="#c4873b" opacity="0.5" />
+          <ellipse cx="20" cy="4" rx="12" ry="3" fill="#d4943a" />
           {/* Honey fill level */}
-          <rect x="6" y={20 - fillPct * 15} width="18" height={fillPct * 15} rx="1"
-            fill="#f59e0b" opacity="0.8" />
+          <rect x="8" y={25 - fillPct * 18} width="24" height={fillPct * 18} rx="2"
+            fill="#f59e0b" opacity="0.85" />
+          {fillPct > 0.3 && <ellipse cx="20" cy="2" rx="8" ry="2" fill="#f59e0b" opacity="0.6" />}
         </g>
       </svg>
     </div>

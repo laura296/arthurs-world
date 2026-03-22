@@ -102,6 +102,8 @@ const games = [
   { id: 'hades-river-styx', emoji: '🔥', title: 'River Styx',       path: 'hades-river-styx', category: 'games', group: '✨ Adventures', bg: 'from-purple-800 to-indigo-950',  cover: '/arthurs-world/images/disney/hades/bg.png' },
   { id: 'ursula-potions',   emoji: '🧪', title: "Ursula's Potions", path: 'ursula-potions',   category: 'games', group: '✨ Adventures', bg: 'from-purple-700 to-fuchsia-900', cover: '/arthurs-world/images/disney/ursula/bg.png' },
   { id: 'honey-hunt',       emoji: '🐝', title: 'Honey Hunt',       path: 'honey-hunt',       category: 'games', group: '✨ Adventures', bg: 'from-amber-400 to-orange-500' },
+  { id: 'pooh-balloon',     emoji: '🎈', title: 'Balloon Float',    path: 'pooh-balloon',     category: 'games', group: '✨ Adventures', bg: 'from-sky-300 to-amber-300' },
+  { id: 'tigger-bounce',    emoji: '🐯', title: "Tigger's Bounce",  path: 'tigger-bounce',    category: 'games', group: '✨ Adventures', bg: 'from-orange-400 to-amber-500' },
   { id: 'inside-out-hub',            emoji: '🧠', title: 'Headquarters',    path: 'inside-out-hub',            category: 'games', group: '✨ Adventures', bg: 'from-violet-600 to-indigo-900' },
   { id: 'control-panel-meltdown',    emoji: '🎛️', title: 'Control Panel',   path: 'control-panel-meltdown',    category: 'games', group: '✨ Adventures', bg: 'from-yellow-400 to-amber-600' },
   { id: 'anger-cool-down',           emoji: '🔥', title: 'Cool Down!',      path: 'anger-cool-down',           category: 'games', group: '✨ Adventures', bg: 'from-red-500 to-orange-600' },
