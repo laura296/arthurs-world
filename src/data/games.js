@@ -104,6 +104,7 @@ const games = [
   { id: 'honey-hunt',       emoji: '🐝', title: 'Honey Hunt',       path: 'honey-hunt',       category: 'games', group: '✨ Adventures', bg: 'from-amber-400 to-orange-500' },
   { id: 'pooh-balloon',     emoji: '🎈', title: 'Balloon Float',    path: 'pooh-balloon',     category: 'games', group: '✨ Adventures', bg: 'from-sky-300 to-amber-300' },
   { id: 'tigger-bounce',    emoji: '🐯', title: "Tigger's Bounce",  path: 'tigger-bounce',    category: 'games', group: '✨ Adventures', bg: 'from-orange-400 to-amber-500' },
+  { id: 'eeyore-tail',      emoji: '🎀', title: "Eeyore's Tail",   path: 'eeyore-tail',      category: 'games', group: '✨ Adventures', bg: 'from-blue-300 to-slate-400' },
   { id: 'inside-out-hub',            emoji: '🧠', title: 'Headquarters',    path: 'inside-out-hub',            category: 'games', group: '✨ Adventures', bg: 'from-violet-600 to-indigo-900' },
   { id: 'control-panel-meltdown',    emoji: '🎛️', title: 'Control Panel',   path: 'control-panel-meltdown',    category: 'games', group: '✨ Adventures', bg: 'from-yellow-400 to-amber-600' },
   { id: 'anger-cool-down',           emoji: '🔥', title: 'Cool Down!',      path: 'anger-cool-down',           category: 'games', group: '✨ Adventures', bg: 'from-red-500 to-orange-600' },

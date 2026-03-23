@@ -443,15 +443,25 @@ export default function TiggerBounce() {
           <div style={{ animation: 'tigger-air 1s ease-in-out infinite' }}>
             <TiggerSprite phase="air" facing="right" />
           </div>
-          <h1 className="text-3xl font-heading text-amber-900 mb-2 drop-shadow-sm mt-2">
-            Tigger's Bounce!
-          </h1>
-          <p className="text-amber-800/70 text-sm font-heading mb-1">Tap left or right to steer!</p>
-          <p className="text-amber-800/50 text-xs mb-6">Collect stars, dodge puddles!</p>
+          {/* Visual arrows showing left/right tap */}
+          <div className="flex items-center gap-8 mt-4 mb-6">
+            <svg width="44" height="44" viewBox="0 0 44 44" style={{ animation: 'star-float 1.5s ease-in-out infinite' }}>
+              <circle cx="22" cy="22" r="20" fill="#f59e0b" opacity="0.3" />
+              <path d="M26 14 L16 22 L26 30" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <StarItem size={32} />
+            <svg width="44" height="44" viewBox="0 0 44 44" style={{ animation: 'star-float 1.5s ease-in-out infinite reverse' }}>
+              <circle cx="22" cy="22" r="20" fill="#f59e0b" opacity="0.3" />
+              <path d="M18 14 L28 22 L18 30" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
           <button onClick={handleStart}
             className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-heading text-xl
-                       px-10 py-4 rounded-full shadow-xl transition-all border-2 border-orange-600">
-            Bounce!
+                       px-12 py-5 rounded-full shadow-xl transition-all border-2 border-orange-600
+                       w-24 h-24 flex items-center justify-center">
+            <svg width="40" height="40" viewBox="0 0 40 40">
+              <polygon points="14,8 32,20 14,32" fill="white" />
+            </svg>
           </button>
         </div>
       )}
@@ -470,8 +480,17 @@ export default function TiggerBounce() {
               <span className="text-sm font-heading text-white">{streak}x</span>
             </div>
           )}
-          <div className="bg-blue-800/40 backdrop-blur-sm rounded-xl px-2 py-1">
-            <span className="text-xs font-heading text-white/80">{30 - bounces} left</span>
+          {/* Visual bounce counter — paw prints that fill up */}
+          <div className="bg-orange-800/40 backdrop-blur-sm rounded-xl px-2 py-1 flex items-center gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg key={i} width="10" height="10" viewBox="0 0 12 12"
+                style={{ opacity: i < Math.ceil((30 - bounces) / 6) ? 1 : 0.2 }}>
+                <circle cx="6" cy="8" r="3" fill="#fbbf24" />
+                <circle cx="3" cy="4" r="1.5" fill="#fbbf24" />
+                <circle cx="9" cy="4" r="1.5" fill="#fbbf24" />
+                <circle cx="6" cy="3" r="1.5" fill="#fbbf24" />
+              </svg>
+            ))}
           </div>
         </div>
       )}
@@ -507,10 +526,17 @@ export default function TiggerBounce() {
         </div>
       )}
 
-      {/* ── HINT ── */}
-      {phase === 'playing' && bounces < 3 && (
-        <div className="absolute bottom-16 left-0 right-0 z-20 text-center animate-pulse">
-          <span className="text-amber-900/40 text-xs font-heading">Tap left or right to steer Tigger!</span>
+      {/* ── HINT — visual arrows, no text ── */}
+      {phase === 'playing' && bounces < 4 && (
+        <div className="absolute bottom-16 left-0 right-0 z-20 flex justify-between px-8 pointer-events-none">
+          <svg width="50" height="50" viewBox="0 0 50 50" className="animate-pulse" style={{ opacity: 0.4 }}>
+            <circle cx="25" cy="25" r="22" fill="#f59e0b" opacity="0.25" />
+            <path d="M30 15 L18 25 L30 35" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <svg width="50" height="50" viewBox="0 0 50 50" className="animate-pulse" style={{ opacity: 0.4 }}>
+            <circle cx="25" cy="25" r="22" fill="#f59e0b" opacity="0.25" />
+            <path d="M20 15 L32 25 L20 35" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
       )}
 
@@ -522,24 +548,34 @@ export default function TiggerBounce() {
             <div className="mb-2">
               <TiggerSprite phase="land" facing="right" />
             </div>
-            <h2 className="text-2xl font-heading text-orange-800 mb-1">
-              {score >= 25 ? 'T-I-Double-Guh-ER!' : score >= 12 ? 'Hoo hoo hoo!' : 'Bouncy bouncy!'}
-            </h2>
-            <div className="flex gap-2 justify-center my-2">
+            {/* Star rating — visual only */}
+            <div className="flex gap-3 justify-center my-3">
               {[1, 2, 3].map(s => (
-                <svg key={s} width={28} height={28} viewBox="0 0 22 22"
-                  style={{ opacity: s <= starCount ? 1 : 0.2 }}>
+                <svg key={s} width={36} height={36} viewBox="0 0 22 22"
+                  style={{
+                    opacity: s <= starCount ? 1 : 0.2,
+                    animation: s <= starCount ? `tigger-land 0.4s ease-out ${s * 0.2}s backwards` : 'none',
+                  }}>
                   <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8"
                     fill={s <= starCount ? '#fbbf24' : '#d1d5db'} stroke={s <= starCount ? '#d97706' : '#9ca3af'} strokeWidth="1" />
                 </svg>
               ))}
             </div>
-            <p className="text-orange-700 text-sm mb-0.5">Stars collected</p>
-            <p className="text-4xl font-heading text-orange-600 mb-3">{score}</p>
+            {/* Score with honey icon */}
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <svg width="24" height="24" viewBox="0 0 22 22">
+                <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+              </svg>
+              <span className="text-4xl font-heading text-orange-600">{score}</span>
+            </div>
             <button onClick={handleStart}
               className="bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-heading text-lg
-                         px-8 py-3 rounded-full shadow-lg transition-all border-2 border-orange-600">
-              Bounce Again!
+                         w-20 h-20 rounded-full shadow-lg transition-all border-2 border-orange-600
+                         flex items-center justify-center mx-auto">
+              <svg width="30" height="30" viewBox="0 0 24 24">
+                <path d="M12 4 A8 8 0 1 1 4 12" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M12 4 L8 1 M12 4 L8 7" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </div>
         </div>
