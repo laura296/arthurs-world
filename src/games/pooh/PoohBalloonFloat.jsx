@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BackButton from '../../components/BackButton';
-import { playPop, playSuccess, playBoing, playBuzz, playSparkle, playFanfare } from '../../hooks/useSound';
+import { playPop, playSuccess, playBoing, playBuzz, playSparkle, playFanfare, playError } from '../../hooks/useSound';
 import { useParticleBurst } from '../../components/ParticleBurst';
 import { useArthurPeek } from '../../components/ArthurPeek';
 import { useCelebration } from '../../components/CelebrationOverlay';
@@ -37,7 +37,7 @@ function FloatingPooh({ balloonCount, reaction }) {
 
   return (
     <svg width="100" height="140" viewBox="0 0 100 140"
-      style={{ animation: 'pooh-float 2.5s ease-in-out infinite' }}>
+      style={{ animation: 'pooh-float 1.8s ease-in-out infinite' }}>
       {/* Balloon strings */}
       {balloons.map((b, i) => (
         <line key={`s${i}`} x1={b.x + 7} y1={90 - b.stringLen} x2={50} y2={100}
@@ -234,7 +234,7 @@ export default function PoohBalloonFloat() {
   const [countdown, setCountdown] = useState(3);
   const [items, setItems] = useState([]);
   const [score, setScore] = useState(0);
-  const [balloons, setBalloons] = useState(3);
+  const [balloons, setBalloons] = useState(4);
   const [dims, setDims] = useState({ w: 400, h: 700 });
   const [poohY, setPoohY] = useState(0);
   const [reaction, setReaction] = useState(null);
@@ -323,6 +323,7 @@ export default function PoohBalloonFloat() {
           if (newY > dims.h + 60) {
             // Missed honey = lose balloon
             if (item.type !== 'bee') {
+              playError();
               setBalloons(b => {
                 const newB = b - 1;
                 if (newB <= 0) setPhase('gameOver');
@@ -419,7 +420,7 @@ export default function PoohBalloonFloat() {
 
   const handleRestart = useCallback(() => {
     setScore(0);
-    setBalloons(3);
+    setBalloons(4);
     setItems([]);
     setPoohY(0);
     setPhase('countdown');

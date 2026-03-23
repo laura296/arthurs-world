@@ -1,19 +1,11 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BackButton from '../components/BackButton';
-import { playPop, playSuccess, playBoing, playBuzz } from '../hooks/useSound';
+import { playPop, playSuccess, playBoing, playBuzz, playError, playCollectPing, playFanfare, playCelebrate } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 
 const HONEY_COLORS = ['#fbbf24', '#f59e0b', '#d97706', '#b45309'];
-const POOH_QUOTES = [
-  'Oh bother, I need more!',
-  'Think think think...',
-  'A little more honey, please!',
-  'How sweet!',
-  'Rumbly in my tumbly!',
-  'What a wonderful day!',
-  'Honey makes everything better!',
-];
+// Milestone celebrations are visual/audio only (no text — Arthur is pre-literate)
 
 // ── SVG Ink-Style Tree ──
 function InkTree({ x, height = 160, flip = false }) {
@@ -151,7 +143,7 @@ function HoneycombItem({ size }) {
         fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
       <polygon points="20,10 28,15 28,25 20,30 12,25 12,15"
         fill="#fde68a" stroke="#f59e0b" strokeWidth="0.8" />
-      <text x="20" y="23" textAnchor="middle" fontSize="10" fill="#92400e">&#9733;</text>
+      <polygon points="20,12 22,18 28,18 23,22 25,28 20,24 15,28 17,22 12,18 18,18" fill="#92400e" />
     </svg>
   );
 }
@@ -207,7 +199,7 @@ function PigletItem({ size }) {
       <circle cx="18.5" cy="17" r="0.8" fill="#c4628e" />
       <circle cx="21.5" cy="17" r="0.8" fill="#c4628e" />
       {/* Heart */}
-      <text x="20" y="35" textAnchor="middle" fontSize="8" fill="#e74c6f">&#10084;</text>
+      <path d="M20 36 C20 36 14 32 14 29 C14 27 16 26 18 26 C19 26 20 27 20 28 C20 27 21 26 22 26 C24 26 26 27 26 29 C26 32 20 36 20 36Z" fill="#e74c6f" />
     </svg>
   );
 }
@@ -237,17 +229,24 @@ function HoneyDropEl({ drop, onCatch }) {
   );
 }
 
-// ── Floating Quote Bubble ──
-function QuoteBubble({ text, onDone }) {
+// ── Visual Milestone Burst (no text — pre-literate) ──
+function MilestoneBurst({ milestone, onDone }) {
   useEffect(() => {
-    const t = setTimeout(onDone, 2500);
+    const t = setTimeout(onDone, 1800);
     return () => clearTimeout(t);
   }, [onDone]);
 
   return (
-    <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-30 animate-float-up pointer-events-none">
-      <div className="bg-amber-50/90 border-2 border-amber-400 rounded-2xl px-4 py-2 shadow-lg max-w-[200px]">
-        <p className="text-amber-800 text-xs font-heading text-center leading-tight">{text}</p>
+    <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-30 pointer-events-none"
+      style={{ animation: 'float-up 1.8s ease-out forwards' }}>
+      <div className="flex items-center gap-1">
+        {Array.from({ length: Math.min(milestone, 5) }).map((_, i) => (
+          <svg key={i} width="28" height="28" viewBox="0 0 32 32"
+            style={{ animation: `star-pop 0.4s ease-out ${i * 0.1}s both` }}>
+            <polygon points="16,2 20,11 30,12 23,19 25,29 16,24 7,29 9,19 2,12 12,11"
+              fill="#f59e0b" stroke="#d97706" strokeWidth="1" />
+          </svg>
+        ))}
       </div>
     </div>
   );
@@ -259,17 +258,27 @@ function StarRating({ score }) {
   return (
     <div className="flex gap-2 justify-center my-2">
       {[1, 2, 3].map((s) => (
-        <span
+        <svg
           key={s}
-          className="text-3xl"
+          width="32" height="32" viewBox="0 0 32 32"
           style={{
             opacity: s <= stars ? 1 : 0.2,
             animation: s <= stars ? `star-pop 0.5s ease-out ${0.3 + s * 0.2}s both` : 'none',
-            display: 'inline-block',
           }}
         >
-          &#11088;
-        </span>
+          <polygon
+            points="16,2 20,11 30,12 23,19 25,29 16,24 7,29 9,19 2,12 12,11"
+            fill={s <= stars ? '#f59e0b' : '#9ca3af'}
+            stroke={s <= stars ? '#d97706' : '#6b7280'}
+            strokeWidth="1"
+          />
+          {s <= stars && (
+            <polygon
+              points="16,6 18.5,12 24,12.5 20,17 21.5,24 16,20.5 10.5,24 12,17 8,12.5 13.5,12"
+              fill="#fbbf24" opacity="0.5"
+            />
+          )}
+        </svg>
       ))}
     </div>
   );
@@ -337,7 +346,7 @@ export default function HoneyHunt() {
   const [lives, setLives] = useState(5);
   const [dims, setDims] = useState({ w: 400, h: 600 });
   const [reaction, setReaction] = useState(null); // 'catch' | 'sting' | null
-  const [quote, setQuote] = useState(null);
+  const [milestoneShow, setMilestoneShow] = useState(null);
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const lastQuoteMilestone = useRef(0);
@@ -403,7 +412,7 @@ export default function HoneyHunt() {
         for (const d of prev) {
           const newY = d.y + d.speed;
           if (newY > dims.h + 50) {
-            if (d.type !== 'bee') lostLife = true;
+            if (d.type !== 'bee') { lostLife = true; playError(); }
           } else {
             updated.push({ ...d, y: newY });
           }
@@ -425,6 +434,14 @@ export default function HoneyHunt() {
       cancelAnimationFrame(frameRef.current);
     };
   }, [dims.h, phase]);
+
+  // Game over sound
+  useEffect(() => {
+    if (phase !== 'gameOver') return;
+    if (score >= 20) { playFanfare(); }
+    else if (score >= 10) { playSuccess(); }
+    else { playCollectPing(); }
+  }, [phase, score]);
 
   // Pooh reaction timeout
   useEffect(() => {
@@ -459,13 +476,13 @@ export default function HoneyHunt() {
       setReaction('catch');
       setScore((s) => {
         const newScore = s + points;
-        // Quote milestone every 10 points
+        // Visual milestone every 10 points
         const milestone = Math.floor(newScore / 10);
         if (milestone > lastQuoteMilestone.current) {
           lastQuoteMilestone.current = milestone;
-          playSuccess();
-          peek('happy');
-          setQuote(POOH_QUOTES[milestone % POOH_QUOTES.length]);
+          playCelebrate();
+          peek('excited');
+          setMilestoneShow(milestone);
         }
         return newScore;
       });
@@ -537,8 +554,11 @@ export default function HoneyHunt() {
               <PoohBear reaction={null} honeyLevel={0} />
             </div>
             <h1 className="text-3xl font-heading text-amber-900 mb-2 drop-shadow-sm">Honey Hunt</h1>
-            <p className="text-amber-800/80 text-sm mb-1 font-heading">Catch the honey pots!</p>
-            <p className="text-amber-800/60 text-xs mb-6">Avoid the bees! Tap Piglet for a bonus!</p>
+            <div className="flex justify-center gap-3 mb-6">
+              <HoneyPotItem size={36} />
+              <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ef4444" /></svg>
+              <BeeItem size={36} />
+            </div>
             <button
               onClick={handleStart}
               className="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white font-heading text-xl
@@ -576,9 +596,10 @@ export default function HoneyHunt() {
             </div>
             <div className="bg-red-800/60 backdrop-blur-sm rounded-2xl px-2 py-1.5 flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className="text-sm" style={{ opacity: i < lives ? 1 : 0.15 }}>
-                  &#10084;&#65039;
-                </span>
+                <svg key={i} width="16" height="16" viewBox="0 0 24 24" style={{ opacity: i < lives ? 1 : 0.15 }}>
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    fill={i < lives ? '#ef4444' : '#9ca3af'} />
+                </svg>
               ))}
             </div>
           </div>
@@ -602,17 +623,18 @@ export default function HoneyHunt() {
         </div>
       )}
 
-      {/* ── QUOTE BUBBLE ── */}
-      {quote && phase === 'playing' && (
-        <QuoteBubble key={quote + lastQuoteMilestone.current} text={quote} onDone={() => setQuote(null)} />
+      {/* ── MILESTONE BURST ── */}
+      {milestoneShow && phase === 'playing' && (
+        <MilestoneBurst key={milestoneShow} milestone={milestoneShow} onDone={() => setMilestoneShow(null)} />
       )}
 
-      {/* ── HINT ── */}
+      {/* ── VISUAL HINT (animated pointing arrow) ── */}
       {phase === 'playing' && score === 0 && (
-        <div className="absolute bottom-28 left-0 right-0 z-20 text-center animate-pulse">
-          <span className="text-amber-900/50 text-xs font-heading">
-            Catch the honey! Avoid the bees!
-          </span>
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20 animate-bounce pointer-events-none">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <path d="M20 5 L20 30" stroke="#92400e" strokeWidth="3" strokeLinecap="round" opacity="0.4" />
+            <polygon points="12,25 20,35 28,25" fill="#92400e" opacity="0.4" />
+          </svg>
         </div>
       )}
 
