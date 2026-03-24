@@ -19,6 +19,9 @@ const KF = `
 @keyframes float-gentle { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes bow-bounce { 0% { transform: scale(1); } 30% { transform: scale(1.3); } 60% { transform: scale(0.9); } 100% { transform: scale(1); } }
 @keyframes glow-pulse { 0%,100% { filter: drop-shadow(0 0 4px rgba(240,160,184,0.4)); } 50% { filter: drop-shadow(0 0 12px rgba(240,160,184,0.8)); } }
+@keyframes warm-glow-pulse { 0%,100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.15); opacity: 1; } }
+@keyframes milestone-star { 0% { transform: scale(0) rotate(-30deg); opacity: 0; } 50% { transform: scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+@keyframes milestone-fade { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
 `;
 
 /* ── Big Eeyore SVG (facing direction controlled by scaleX) ── */
@@ -155,14 +158,68 @@ function Flowers() {
   );
 }
 
-/* ── Compute tail target position based on Eeyore's facing ── */
-function getTailTarget(facing, eeyoreCenter) {
+/* ── Compute tail target position based on Eeyore's facing and position ── */
+function getTailTarget(facing, eeyorePos) {
   // Tail goes on the back — when facing right, tail target is on the left
   const offsetX = facing === 'right' ? -62 : 62;
   return {
-    x: eeyoreCenter.x + offsetX,
-    y: eeyoreCenter.y + 10,
+    x: eeyorePos.x + offsetX,
+    y: eeyorePos.y + 10,
   };
+}
+
+/* ── Position variety presets (safe screen zones) ── */
+const EEYORE_POSITIONS = [
+  { xRatio: 0.50, yRatio: 0.42 }, // center (default)
+  { xRatio: 0.35, yRatio: 0.40 }, // left
+  { xRatio: 0.65, yRatio: 0.40 }, // right
+  { xRatio: 0.45, yRatio: 0.34 }, // center-up
+  { xRatio: 0.55, yRatio: 0.46 }, // center-down-right
+  { xRatio: 0.38, yRatio: 0.46 }, // left-down
+  { xRatio: 0.62, yRatio: 0.36 }, // right-up
+  { xRatio: 0.48, yRatio: 0.38 }, // slightly left-up
+  { xRatio: 0.52, yRatio: 0.44 }, // slightly right-down
+  { xRatio: 0.40, yRatio: 0.36 }, // far left-up
+  { xRatio: 0.60, yRatio: 0.46 }, // far right-down
+];
+
+/* ── Milestone stars overlay ── */
+function MilestoneStars({ count }) {
+  const stars = useMemo(() => {
+    const positions = [];
+    for (let i = 0; i < 5; i++) {
+      positions.push({
+        x: 20 + (i * 15),
+        y: 30 + Math.sin(i * 1.2) * 10,
+        delay: i * 0.12,
+        size: 18 + Math.random() * 8,
+      });
+    }
+    return positions;
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-40 pointer-events-none flex items-center justify-center"
+      style={{ animation: 'milestone-fade 2.5s ease-out forwards' }}>
+      <div className="bg-blue-900/40 backdrop-blur-sm rounded-3xl px-8 py-6 flex items-center gap-2">
+        {stars.map((s, i) => (
+          <svg key={i} width={s.size} height={s.size} viewBox="0 0 24 24"
+            style={{ animation: `milestone-star 0.5s ease-out ${s.delay}s both` }}>
+            <polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9"
+              fill="#fbbf24" stroke="#f59e0b" strokeWidth="0.5" />
+          </svg>
+        ))}
+        <svg width="22" height="22" viewBox="0 0 16 16" style={{ animation: 'milestone-star 0.5s ease-out 0.6s both' }}>
+          <ellipse cx="5" cy="8" rx="4" ry="3" fill="#f0a0b8" />
+          <ellipse cx="11" cy="8" rx="4" ry="3" fill="#f0a0b8" />
+          <circle cx="8" cy="8" r="2" fill="#d4789a" />
+        </svg>
+        <span className="text-2xl font-heading text-white" style={{ animation: 'milestone-star 0.5s ease-out 0.7s both' }}>
+          {count}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 /* ══════════════════════════════════════════════
@@ -180,18 +237,31 @@ export default function EeyoreTailPin() {
   const [pinned, setPinned] = useState(false);
   const [sparkleAt, setSparkleAt] = useState(null);
   const [showHint, setShowHint] = useState(false);
+  const [posIndex, setPosIndex] = useState(0);
+  const [showMilestone, setShowMilestone] = useState(false);
   const dragOffset = useRef({ dx: 0, dy: 0 });
+  const pendingStartRef = useRef(false);
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
-  // Eeyore center position
-  const eeyoreCenter = useMemo(() => ({
-    x: dims.w / 2,
-    y: dims.h * 0.42,
-  }), [dims]);
+  // Eeyore position with variety
+  const eeyoreCenter = useMemo(() => {
+    const pos = EEYORE_POSITIONS[posIndex % EEYORE_POSITIONS.length];
+    return {
+      x: dims.w * pos.xRatio,
+      y: dims.h * pos.yRatio,
+    };
+  }, [dims, posIndex]);
 
   const tailTarget = useMemo(() => getTailTarget(facing, eeyoreCenter), [facing, eeyoreCenter]);
+
+  // Distance from tail to target (used for warm glow)
+  const distToTarget = useMemo(() => {
+    const dx = tailPos.x - tailTarget.x;
+    const dy = tailPos.y - tailTarget.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }, [tailPos, tailTarget]);
 
   // Inject keyframes
   useEffect(() => {
@@ -213,11 +283,16 @@ export default function EeyoreTailPin() {
     return () => obs.disconnect();
   }, []);
 
-  // Start game
-  const handleStart = useCallback(() => {
-    const facings = ['right', 'left'];
-    const newFacing = facings[round % facings.length];
+  // Start game — always receives explicit round value to avoid stale closures.
+  // When called from the intro button, defaults to 0.
+  const handleStart = useCallback((roundValue = 0) => {
+    const r = roundValue;
+    // Pick facing based on round — randomised order to add variety
+    const facings = ['right', 'left', 'left', 'right'];
+    const newFacing = facings[r % facings.length];
     setFacing(newFacing);
+    // Pick a new position for variety — avoid repeating the same index
+    setPosIndex(r % EEYORE_POSITIONS.length);
     setPinned(false);
     setSparkleAt(null);
     setShowHint(false);
@@ -227,7 +302,17 @@ export default function EeyoreTailPin() {
       y: dims.h * 0.75 + Math.random() * (dims.h * 0.1),
     });
     setPhase('playing');
-  }, [dims, round]);
+  }, [dims]);
+
+  // Watch for round changes triggered by handleNextRound to start next round.
+  // Using a ref flag + effect avoids the stale closure problem entirely:
+  // setRound updates round, which triggers this effect with the fresh value.
+  useEffect(() => {
+    if (pendingStartRef.current && round > 0) {
+      pendingStartRef.current = false;
+      handleStart(round);
+    }
+  }, [round, handleStart]);
 
   // Show hint after 5 seconds of inactivity
   useEffect(() => {
@@ -260,11 +345,22 @@ export default function EeyoreTailPin() {
     if (!rect) return;
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
-    setTailPos({
-      x: px + dragOffset.current.dx,
-      y: py + dragOffset.current.dy,
-    });
-  }, [dragging]);
+    let newX = px + dragOffset.current.dx;
+    let newY = py + dragOffset.current.dy;
+
+    // Magnetic snap: gently pull toward target when within 120px
+    const MAGNETIC_RANGE = 120;
+    const dx = tailTarget.x - newX;
+    const dy = tailTarget.y - newY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < MAGNETIC_RANGE && dist > 0) {
+      const pull = 0.15 * (1 - dist / MAGNETIC_RANGE);
+      newX += dx * pull;
+      newY += dy * pull;
+    }
+
+    setTailPos({ x: newX, y: newY });
+  }, [dragging, tailTarget]);
 
   const handlePointerUp = useCallback(() => {
     if (!dragging) return;
@@ -280,14 +376,17 @@ export default function EeyoreTailPin() {
       setTailPos({ x: tailTarget.x, y: tailTarget.y });
       setPinned(true);
       setSparkleAt({ x: tailTarget.x, y: tailTarget.y });
-      setTotalPins(p => p + 1);
+      const newTotal = totalPins + 1;
+      setTotalPins(newTotal);
       playFanfare();
       burst(tailTarget.x, tailTarget.y, { colors: ['#f0a0b8', '#fbbf24', '#87CEEB', '#a0b0c8'] });
       peek('excited');
 
-      // Celebrate every 3 successful pins
-      if ((totalPins + 1) % 3 === 0) {
+      // Milestone celebration every 5 successful pins
+      if (newTotal % 5 === 0) {
         celebrate();
+        setShowMilestone(true);
+        setTimeout(() => setShowMilestone(false), 2500);
       }
 
       // Move to next round after a moment
@@ -301,9 +400,9 @@ export default function EeyoreTailPin() {
   }, [dragging, tailPos, tailTarget, totalPins, burst, peek, celebrate]);
 
   const handleNextRound = useCallback(() => {
+    pendingStartRef.current = true;
     setRound(r => r + 1);
-    handleStart();
-  }, [handleStart]);
+  }, []);
 
   // Star rating based on total pins
   const starCount = totalPins >= 5 ? 3 : totalPins >= 3 ? 2 : 1;
@@ -353,7 +452,7 @@ export default function EeyoreTailPin() {
           <div className="mt-2" style={{ animation: 'tail-wiggle 1.5s ease-in-out infinite' }}>
             <TailSVG size={50} pinned={false} />
           </div>
-          <button onClick={handleStart}
+          <button onClick={() => handleStart(0)}
             className="mt-6 bg-blue-400 hover:bg-blue-500 active:scale-95 text-white font-heading text-xl
                        w-24 h-24 rounded-full shadow-xl transition-all border-2 border-blue-500
                        flex items-center justify-center">
@@ -372,6 +471,27 @@ export default function EeyoreTailPin() {
             top: eeyoreCenter.y - 110,
           }}>
           <BigEeyore facing={facing} mood={pinned ? 'happy' : 'sad'} showTarget={!pinned && showHint} />
+        </div>
+      )}
+
+      {/* ── WARMER/COLDER GLOW around target ── */}
+      {phase === 'playing' && dragging && !pinned && distToTarget < 250 && (
+        <div className="absolute pointer-events-none z-10"
+          style={{
+            left: tailTarget.x - 60,
+            top: tailTarget.y - 60,
+            width: 120,
+            height: 120,
+            animation: 'warm-glow-pulse 1.2s ease-in-out infinite',
+          }}>
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <radialGradient id="warm-glow-grad">
+              <stop offset="0%" stopColor="#F5B041" stopOpacity={Math.max(0.05, 0.6 * (1 - distToTarget / 250))} />
+              <stop offset="60%" stopColor="#fbbf24" stopOpacity={Math.max(0.02, 0.3 * (1 - distToTarget / 250))} />
+              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0" />
+            </radialGradient>
+            <circle cx="60" cy="60" r={40 + 20 * (1 - distToTarget / 250)} fill="url(#warm-glow-grad)" />
+          </svg>
         </div>
       )}
 
@@ -421,6 +541,9 @@ export default function EeyoreTailPin() {
           </svg>
         </div>
       )}
+
+      {/* ── MILESTONE STARS (every 5 pins) ── */}
+      {showMilestone && <MilestoneStars count={totalPins} />}
 
       {/* ── CELEBRATION / NEXT ROUND ── */}
       {phase === 'celebration' && (

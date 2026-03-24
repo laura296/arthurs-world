@@ -97,6 +97,8 @@ export default function FeedAnimals() {
 
   // track which woodland animals have been introduced
   const seenWoodlandRef = useRef(new Set());
+  // track chomp interval for cleanup
+  const chompIntervalRef = useRef(null);
 
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
@@ -126,6 +128,13 @@ export default function FeedAnimals() {
       setTimeout(() => setPhase('choosing'), 1800);
     }
   }, [currentIdx, round]);
+
+  // clean up chomp interval on unmount
+  useEffect(() => {
+    return () => {
+      if (chompIntervalRef.current) clearInterval(chompIntervalRef.current);
+    };
+  }, []);
 
   const tapAnimal = useCallback(() => {
     if (phase === 'intro' || phase === 'round-end') return;
@@ -188,12 +197,14 @@ export default function FeedAnimals() {
       }
 
       let c = 0;
+      if (chompIntervalRef.current) clearInterval(chompIntervalRef.current);
       const chompInterval = setInterval(() => {
         c++;
         setChomps(c);
         playTap();
         if (c >= 3) {
           clearInterval(chompInterval);
+          chompIntervalRef.current = null;
           setPhase('celebrating');
           playSuccess();
           const cx = window.innerWidth / 2;
@@ -216,6 +227,7 @@ export default function FeedAnimals() {
           }, 2200);
         }
       }, 300);
+      chompIntervalRef.current = chompInterval;
     } else {
       playBoing();
       setWrongPick(food);

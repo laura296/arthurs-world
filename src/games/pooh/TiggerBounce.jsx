@@ -27,7 +27,7 @@ const KF = `
 function TiggerSprite({ phase: bouncePhase, facing }) {
   const scaleX = facing === 'left' ? -1 : 1;
   return (
-    <svg width="70" height="90" viewBox="0 0 70 90"
+    <svg width="70" height={bouncePhase === 'air' ? 120 : 75} viewBox={bouncePhase === 'air' ? '0 0 70 120' : '0 0 70 75'}
       style={{
         transform: `scaleX(${scaleX})`,
         animation: bouncePhase === 'air' ? 'tigger-air 0.4s ease-in-out' : bouncePhase === 'land' ? 'tigger-land 0.3s ease-out' : undefined,
@@ -65,21 +65,25 @@ function TiggerSprite({ phase: bouncePhase, facing }) {
       <ellipse cx="35" cy="24" rx="3" ry="2" fill="#3d2414" />
       {/* Big grin */}
       <path d="M27 28 Q35 36 43 28" fill="none" stroke="#3d2414" strokeWidth="1.5" strokeLinecap="round" />
-      {/* Spring legs */}
+      {/* Spring legs — dramatically extended in air, squashed flat on land */}
       {bouncePhase === 'air' ? (
         <>
-          <path d="M26 66 Q24 72 28 76 Q32 78 30 84" fill="none" stroke="#c47820" strokeWidth="3" strokeLinecap="round" />
-          <path d="M44 66 Q46 72 42 76 Q38 78 40 84" fill="none" stroke="#c47820" strokeWidth="3" strokeLinecap="round" />
+          {/* Left spring — fully stretched with 4 wide coils */}
+          <path d="M26 66 Q18 72 34 78 Q46 84 20 90 Q10 96 34 102 Q42 106 26 112" fill="none" stroke="#c47820" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Right spring — fully stretched with 4 wide coils */}
+          <path d="M44 66 Q52 72 36 78 Q24 84 50 90 Q60 96 36 102 Q28 106 44 112" fill="none" stroke="#c47820" strokeWidth="2.5" strokeLinecap="round" />
         </>
       ) : (
         <>
-          <path d="M26 66 Q24 68 28 70 Q32 72 30 74" fill="none" stroke="#c47820" strokeWidth="3" strokeLinecap="round" />
-          <path d="M44 66 Q46 68 42 70 Q38 72 40 74" fill="none" stroke="#c47820" strokeWidth="3" strokeLinecap="round" />
+          {/* Left spring — pancake-flat compressed */}
+          <path d="M26 66 Q22 66.5 30 67 Q36 67.5 24 68 Q20 68.3 30 68.6 Q36 68.9 26 69" fill="none" stroke="#c47820" strokeWidth="4" strokeLinecap="round" />
+          {/* Right spring — pancake-flat compressed */}
+          <path d="M44 66 Q48 66.5 40 67 Q34 67.5 46 68 Q50 68.3 40 68.6 Q34 68.9 44 69" fill="none" stroke="#c47820" strokeWidth="4" strokeLinecap="round" />
         </>
       )}
-      {/* Feet */}
-      <ellipse cx="30" cy={bouncePhase === 'air' ? 86 : 76} rx="7" ry="3.5" fill="#f0a030" stroke="#c47820" strokeWidth="0.8" />
-      <ellipse cx="40" cy={bouncePhase === 'air' ? 86 : 76} rx="7" ry="3.5" fill="#f0a030" stroke="#c47820" strokeWidth="0.8" />
+      {/* Feet — way down in air, tucked tight on land */}
+      <ellipse cx="30" cy={bouncePhase === 'air' ? 115 : 71} rx={bouncePhase === 'air' ? 6 : 8} ry={bouncePhase === 'air' ? 3 : 2.5} fill="#f0a030" stroke="#c47820" strokeWidth="0.8" />
+      <ellipse cx="40" cy={bouncePhase === 'air' ? 115 : 71} rx={bouncePhase === 'air' ? 6 : 8} ry={bouncePhase === 'air' ? 3 : 2.5} fill="#f0a030" stroke="#c47820" strokeWidth="0.8" />
     </svg>
   );
 }
@@ -216,6 +220,11 @@ export default function TiggerBounce() {
   const [popups, setPopups] = useState([]);
   const [splashAt, setSplashAt] = useState(null);
   const nextIdRef = useRef(0);
+  const bouncesRef = useRef(0);
+  const scoreRef = useRef(0);
+  const tiggerXRef = useRef(200);
+  const tiggerYRef = useRef(0);
+  const vxRef = useRef(0);
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
@@ -242,7 +251,7 @@ export default function TiggerBounce() {
     return () => obs.disconnect();
   }, []);
 
-  // Tap to steer left/right
+  // Tap to steer left/right — velocity-based smooth slide
   const handleTap = useCallback((e) => {
     if (phase !== 'playing') return;
     const rect = containerRef.current?.getBoundingClientRect();
@@ -251,13 +260,10 @@ export default function TiggerBounce() {
     const mid = dims.w / 2;
     const dir = tapX < mid ? 'left' : 'right';
     setFacing(dir);
-    setTiggerX(x => {
-      const dx = dir === 'left' ? -55 : 55;
-      return Math.max(35, Math.min(dims.w - 35, x + dx));
-    });
+    vxRef.current = dir === 'left' ? -8 : 8;
   }, [phase, dims.w]);
 
-  // Auto-bounce physics
+  // Auto-bounce physics — uses refs for bounces/score to avoid restarting the rAF loop
   useEffect(() => {
     if (phase !== 'playing') return;
     let running = true;
@@ -273,23 +279,35 @@ export default function TiggerBounce() {
       vy += 0.55 * dt; // gravity
       ty += vy * dt;
 
+      // Apply horizontal velocity (smooth steering)
+      const vx = vxRef.current;
+      if (Math.abs(vx) > 0.1) {
+        const newX = Math.max(35, Math.min(dims.w - 35, tiggerXRef.current + vx * dt));
+        tiggerXRef.current = newX;
+        setTiggerX(newX);
+        vxRef.current *= 0.92; // decay
+      } else if (vxRef.current !== 0) {
+        vxRef.current = 0;
+      }
+
       // Hit ground — bounce!
       if (ty >= groundY - 80) {
         ty = groundY - 80;
-        vy = -(9 + Math.min(bounces * 0.1, 3)); // bounce velocity
+        vy = -(9 + Math.min(bouncesRef.current * 0.1, 3)); // bounce velocity
         setBouncePhase('land');
         playBoing();
-        setBounces(b => b + 1);
+        bouncesRef.current += 1;
+        setBounces(bouncesRef.current);
         setTimeout(() => setBouncePhase('air'), 150);
 
         // Spawn new items periodically
-        if (bounces % 2 === 0) {
+        if (bouncesRef.current % 2 === 0) {
           setItems(prev => {
             if (prev.filter(i => !i.collected).length < 6) {
               const newItems = [];
               const count = 2 + Math.floor(Math.random() * 2);
               for (let i = 0; i < count; i++) {
-                newItems.push(spawnItem(nextIdRef.current++, dims.w, groundY, score));
+                newItems.push(spawnItem(nextIdRef.current++, dims.w, groundY, scoreRef.current));
               }
               return [...prev.filter(i => !i.collected), ...newItems];
             }
@@ -298,24 +316,27 @@ export default function TiggerBounce() {
         }
       }
 
+      tiggerYRef.current = ty;
       setTiggerY(ty);
       setTiggerVY(vy);
       requestAnimationFrame(tick);
     };
     const id = requestAnimationFrame(tick);
     return () => { running = false; cancelAnimationFrame(id); };
-  }, [phase, groundY, dims.w, bounces, score]);
+  }, [phase, groundY, dims.w]);
 
-  // Collision detection
+  // Collision detection — uses refs for tiggerX/tiggerY to avoid interval churn
   useEffect(() => {
     if (phase !== 'playing') return;
     const checkInterval = setInterval(() => {
+      const tx = tiggerXRef.current;
+      const ty = tiggerYRef.current;
       setItems(prev => {
         let changed = false;
         const updated = prev.map(item => {
           if (item.collected) return item;
-          const dx = item.x - tiggerX;
-          const dy = item.y - tiggerY;
+          const dx = item.x - tx;
+          const dy = item.y - ty;
           const dist = Math.sqrt(dx * dx + dy * dy);
           const hitDist = item.type === 'puddle' ? 40 : 35;
 
@@ -338,15 +359,13 @@ export default function TiggerBounce() {
             }
             // Star or honey — collect!
             const pts = item.type === 'honey' ? 3 : 1;
-            setScore(s => {
-              const ns = s + pts;
-              if (ns % 15 === 0 && ns > 0) {
-                playFanfare();
-                peek('excited');
-                celebrate();
-              }
-              return ns;
-            });
+            scoreRef.current += pts;
+            setScore(scoreRef.current);
+            if (scoreRef.current % 15 === 0 && scoreRef.current > 0) {
+              playFanfare();
+              peek('excited');
+              celebrate();
+            }
             setStreak(s => {
               const ns = s + 1;
               if (ns >= 5) playSparkle();
@@ -363,7 +382,7 @@ export default function TiggerBounce() {
       });
     }, 50);
     return () => clearInterval(checkInterval);
-  }, [phase, tiggerX, tiggerY, burst, peek, celebrate]);
+  }, [phase, burst, peek, celebrate]);
 
   // Clean up popups
   useEffect(() => {
@@ -389,6 +408,11 @@ export default function TiggerBounce() {
     setScore(0);
     setStreak(0);
     setBounces(0);
+    scoreRef.current = 0;
+    bouncesRef.current = 0;
+    tiggerXRef.current = dims.w / 2;
+    tiggerYRef.current = groundY - 80;
+    vxRef.current = 0;
     setTiggerX(dims.w / 2);
     setTiggerY(groundY - 80);
     setItems([]);

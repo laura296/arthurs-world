@@ -24,6 +24,7 @@ function createAmbient(section) {
   masterGain.connect(ctx.destination);
 
   const nodes = [];
+  const intervalIds = [];
 
   switch (section) {
     case 'games': {
@@ -42,6 +43,7 @@ function createAmbient(section) {
         osc.start();
         osc.stop(ctx.currentTime + 0.1);
       }, 1500 + Math.random() * 3000);
+      intervalIds.push(chirpInterval);
       const breezeBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
       const breezeData = breezeBuffer.getChannelData(0);
       for (let i = 0; i < breezeData.length; i++) breezeData[i] = Math.random() * 2 - 1;
@@ -55,7 +57,7 @@ function createAmbient(section) {
       breezeGain.gain.value = 0.02;
       breeze.connect(breezeFilter).connect(breezeGain).connect(masterGain);
       breeze.start();
-      nodes.push({ stop: () => { clearInterval(chirpInterval); breeze.stop(); } });
+      nodes.push({ stop: () => breeze.stop() });
       break;
     }
 
@@ -80,7 +82,8 @@ function createAmbient(section) {
         src.connect(g).connect(masterGain);
         src.start();
       }, 2000 + Math.random() * 4000);
-      nodes.push({ stop: () => { hum.stop(); clearInterval(crackleInterval); } });
+      intervalIds.push(crackleInterval);
+      nodes.push({ stop: () => hum.stop() });
       break;
     }
 
@@ -131,7 +134,8 @@ function createAmbient(section) {
         osc.start();
         osc.stop(ctx.currentTime + 0.1);
       }, 3000 + Math.random() * 5000);
-      nodes.push({ stop: () => { rain.stop(); clearInterval(dripInterval); } });
+      intervalIds.push(dripInterval);
+      nodes.push({ stop: () => rain.stop() });
       break;
     }
 
@@ -161,7 +165,8 @@ function createAmbient(section) {
         osc.start();
         osc.stop(ctx.currentTime + 0.55);
       }, 5000 + Math.random() * 8000);
-      nodes.push({ stop: () => { wind.stop(); clearInterval(chimeInterval); } });
+      intervalIds.push(chimeInterval);
+      nodes.push({ stop: () => wind.stop() });
       break;
     }
 
@@ -175,6 +180,8 @@ function createAmbient(section) {
 
   return {
     stop() {
+      intervalIds.forEach(id => clearInterval(id));
+      intervalIds.length = 0;
       masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
       masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
       setTimeout(() => {

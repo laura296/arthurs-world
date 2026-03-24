@@ -265,6 +265,11 @@
   50% { box-shadow: 0 0 20px 6px rgba(251, 191, 36, 0.4); }
 }
 
+@keyframes nudge-pulse {
+  0%, 100% { transform: scale(1.06); }
+  50% { transform: scale(1.12); }
+}
+
 @keyframes bloom-grow {
   0% { transform: scale(0) translateY(10px); opacity: 0; }
   40% { transform: scale(1.2) translateY(-4px); opacity: 1; }

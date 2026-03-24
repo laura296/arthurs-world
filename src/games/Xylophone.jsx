@@ -139,6 +139,7 @@ function SongLevel({ level, onComplete, onBack }) {
   const [activeIdx, setActiveIdx] = useState(null);
   const [highlightIdx, setHighlightIdx] = useState(null);
   const [mistakes, setMistakes] = useState(0);
+  const [nudgeIdx, setNudgeIdx] = useState(null);
   const [floatingNotes, setFloatingNotes] = useState([]);
   const nextNoteId = useRef(0);
   const { burst, ParticleLayer } = useParticleBurst();
@@ -213,11 +214,12 @@ function SongLevel({ level, onComplete, onBack }) {
         setPlayIdx(nextIdx);
       }
     } else {
-      // Wrong note
+      // Wrong note — gentle nudge toward the correct bar
       playBoing();
       setMistakes(m => m + 1);
       setPhase('wrong');
-      setTimeout(() => setPhase('play'), 400);
+      setNudgeIdx(expected);
+      setTimeout(() => { setPhase('play'); setNudgeIdx(null); }, 800);
     }
   }, [phase, playIdx, song.notes, mistakes, burst, peek, celebrate, onComplete]);
 
@@ -262,7 +264,7 @@ function SongLevel({ level, onComplete, onBack }) {
         </button>
       )}
 
-      <XylophoneBars activeIdx={activeIdx} highlightIdx={highlightIdx} onTap={tapBar} />
+      <XylophoneBars activeIdx={activeIdx} highlightIdx={highlightIdx} nudgeIdx={nudgeIdx} onTap={tapBar} />
 
       {/* Progress bar for song */}
       {phase === 'play' && (
@@ -288,7 +290,7 @@ function SongLevel({ level, onComplete, onBack }) {
 }
 
 /* ── Shared xylophone bars component ── */
-function XylophoneBars({ activeIdx, highlightIdx, onTap }) {
+function XylophoneBars({ activeIdx, highlightIdx, nudgeIdx, onTap }) {
   return (
     <>
       <div className="relative z-10 flex items-end justify-center gap-1.5 sm:gap-2 px-4 w-full max-w-2xl"
@@ -296,25 +298,29 @@ function XylophoneBars({ activeIdx, highlightIdx, onTap }) {
         {BARS.map((bar, i) => {
           const isActive = activeIdx === i;
           const isHighlighted = highlightIdx === i;
+          const isNudged = nudgeIdx === i;
           const heightPct = 100 - (i * 7);
 
           return (
             <button key={bar.note} onPointerDown={(e) => onTap(bar, i, e)}
               className="flex-1 rounded-t-2xl rounded-b-lg relative overflow-hidden transition-all
-                         shadow-lg border-2 border-white/10 cursor-pointer"
+                         shadow-lg border-2 cursor-pointer"
               style={{
                 height: `${heightPct}%`,
                 backgroundColor: bar.colour,
-                transform: isActive ? 'scaleY(0.95)' : 'scaleY(1)',
+                transform: isActive ? 'scaleY(0.95)' : isNudged ? 'scale(1.06)' : 'scaleY(1)',
                 transformOrigin: 'bottom',
-                filter: isActive ? 'brightness(1.3)' : isHighlighted ? 'brightness(1.15)' : 'brightness(1)',
+                filter: isActive ? 'brightness(1.3)' : isNudged ? 'brightness(1.35)' : isHighlighted ? 'brightness(1.15)' : 'brightness(1)',
+                borderColor: isNudged ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.1)',
                 boxShadow: isActive
                   ? `0 0 30px ${bar.colour}80, 0 0 60px ${bar.colour}40, inset 0 2px 20px rgba(255,255,255,0.3)`
-                  : isHighlighted
-                    ? `0 0 20px ${bar.colour}60, 0 0 40px ${bar.colour}30, inset 0 2px 12px rgba(255,255,255,0.2)`
-                    : `0 4px 12px rgba(0,0,0,0.3), inset 0 2px 8px rgba(255,255,255,0.15)`,
+                  : isNudged
+                    ? `0 0 30px ${bar.colour}aa, 0 0 60px ${bar.colour}60, 0 0 80px rgba(255,255,255,0.2), inset 0 2px 20px rgba(255,255,255,0.4)`
+                    : isHighlighted
+                      ? `0 0 20px ${bar.colour}60, 0 0 40px ${bar.colour}30, inset 0 2px 12px rgba(255,255,255,0.2)`
+                      : `0 4px 12px rgba(0,0,0,0.3), inset 0 2px 8px rgba(255,255,255,0.15)`,
                 touchAction: 'none',
-                animation: isHighlighted ? 'hint-glow 1s ease-in-out infinite' : 'none',
+                animation: isNudged ? 'nudge-pulse 0.4s ease-in-out 2' : isHighlighted ? 'hint-glow 1s ease-in-out infinite' : 'none',
               }}>
               <div className="absolute top-0 left-0 right-0 h-1/3 rounded-t-2xl"
                 style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)' }} />

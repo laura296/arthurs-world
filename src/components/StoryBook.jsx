@@ -164,10 +164,25 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
   const dragRef = useRef(null);
   const [dragOffset, setDragOffset] = useState(null);
   const [pressed, setPressed] = useState(false);
+  const timeoutsRef = useRef([]);
+
+  // Clear all tracked timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+    };
+  }, []);
 
   // Check if this element has a drag interaction
   const dragInteraction = myInteractions.find(i => i.type === 'drag-to-target');
   const isDraggable = dragInteraction && !state.dropped;
+
+  const trackTimeout = useCallback((fn, delay) => {
+    const id = setTimeout(fn, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
 
   const handleTap = useCallback(() => {
     // Skip tap handling if element is being dragged
@@ -214,7 +229,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], animating: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], animating: false },
@@ -244,7 +259,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], wiggling: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], wiggling: false },
@@ -258,7 +273,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], shaking: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], shaking: false },
@@ -272,7 +287,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], sparkleKey: (prev[el.id]?.sparkleKey || 0) + 1 },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], sparkleKey: 0 },
@@ -286,7 +301,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], spinning: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], spinning: false },
@@ -308,7 +323,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], hiding: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], hidden: true },
@@ -322,7 +337,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], jumping: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], jumping: false },
@@ -336,7 +351,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], customAnim: inter.data.animation, customAnimating: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], customAnimating: false },
@@ -365,13 +380,13 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
               animating: true,
             },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], animating: false },
             }));
           }, 600);
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], speaking: false },
@@ -397,7 +412,7 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
             ...prev,
             [el.id]: { ...prev[el.id], peeked: true },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], peekDone: true },
@@ -412,14 +427,14 @@ function InteractiveElement({ el, interactions, pageState, setPageState, contain
           const count = (pageState[collectKey]?.count || 0) + 1;
           const max = inter.data.max || 3;
           if (count >= max) {
-            setTimeout(() => playSuccess(), 200);
+            trackTimeout(() => playSuccess(), 200);
           }
           setPageState(prev => ({
             ...prev,
             [el.id]: { ...prev[el.id], collected: true, collecting: true },
             [collectKey]: { count: Math.min(count, max) },
           }));
-          setTimeout(() => {
+          trackTimeout(() => {
             setPageState(prev => ({
               ...prev,
               [el.id]: { ...prev[el.id], collecting: false, hidden: true },
@@ -631,8 +646,23 @@ export default function StoryBook({ story, onComplete }) {
   const touchStart = useRef(null);
   const containerRef = useRef(null);
   const celebratedRef = useRef(false);
+  const timeoutsRef = useRef([]);
   const { celebrate, CelebrationLayer } = useCelebration();
   const { burst, ParticleLayer } = useParticleBurst();
+
+  const trackTimeout = useCallback((fn, delay) => {
+    const id = setTimeout(fn, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  }, []);
+
+  // Clear all tracked timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+    };
+  }, []);
 
   const current = story.pages[page];
   const isFirst = page === 0;
@@ -645,12 +675,12 @@ export default function StoryBook({ story, onComplete }) {
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2 - 60;
       burst(cx, cy, { count: 16, spread: 90, colors: ['#facc15', '#ec4899', '#38bdf8', '#22c55e'], shapes: ['star', 'heart', 'circle'] });
-      setTimeout(() => {
-        celebrate({ message: story.endMessage || 'The End! 🎉' });
+      trackTimeout(() => {
+        celebrate({ message: story.endMessage || 'The End!' });
         onComplete?.();
       }, 400);
     }
-  }, [isLast, celebrate, burst, onComplete]);
+  }, [isLast, celebrate, burst, onComplete, trackTimeout]);
 
   // Build audio source path for current page
   const audioSrc = story.audioDir ? `${story.audioDir}/page-${page + 1}.mp3` : null;
@@ -680,11 +710,11 @@ export default function StoryBook({ story, onComplete }) {
     setTurnDir(dir);
     setTurning(true);
     if (navigator.vibrate) navigator.vibrate(10);
-    setTimeout(() => {
+    trackTimeout(() => {
       setPage(next);
       setTurning(false);
     }, 600);
-  }, [page, turning, story.pages.length]);
+  }, [page, turning, story.pages.length, trackTimeout]);
 
   // Swipe support
   const onTouchStart = useCallback((e) => {
@@ -785,10 +815,14 @@ export default function StoryBook({ story, onComplete }) {
           {/* Read aloud button */}
           <button
             onClick={() => speak(current.text, audioSrc)}
-            className="absolute -top-4 right-4 w-10 h-10 rounded-full bg-sun shadow-lg
-                       flex items-center justify-center text-xl active:scale-90 transition-transform"
+            className="absolute -top-4 right-4 w-14 h-14 rounded-full bg-sun shadow-lg
+                       flex items-center justify-center active:scale-90 transition-transform"
           >
-            🔊
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-800">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
           </button>
         </div>
       </div>
@@ -804,30 +838,37 @@ export default function StoryBook({ story, onComplete }) {
         {!isFirst ? (
           <button
             onClick={() => turnPage(-1)}
-            className="pointer-events-auto w-14 h-14 rounded-full bg-white/70 backdrop-blur-sm shadow-lg
-                       flex items-center justify-center text-2xl active:scale-90 transition-transform"
+            className="pointer-events-auto w-20 h-20 rounded-full bg-white/70 backdrop-blur-sm shadow-lg
+                       flex items-center justify-center active:scale-90 transition-transform"
           >
-            ◀️
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="text-gray-700">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
           </button>
-        ) : <div className="w-14" />}
+        ) : <div className="w-20" />}
 
         {!isLast ? (
           <button
             onClick={() => turnPage(1)}
-            className="pointer-events-auto w-14 h-14 rounded-full bg-white/70 backdrop-blur-sm shadow-lg
-                       flex items-center justify-center text-2xl active:scale-90 transition-transform
+            className="pointer-events-auto w-20 h-20 rounded-full bg-white/70 backdrop-blur-sm shadow-lg
+                       flex items-center justify-center active:scale-90 transition-transform
                        animate-pulse"
           >
-            ▶️
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="text-gray-700">
+              <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+            </svg>
           </button>
         ) : (
           <button
             onClick={() => { setPage(0); celebratedRef.current = false; playSuccess(); }}
-            className="pointer-events-auto w-14 h-14 rounded-full bg-sun/80 backdrop-blur-sm shadow-lg
-                       flex items-center justify-center text-2xl active:scale-90 transition-transform
+            className="pointer-events-auto w-20 h-20 rounded-full bg-sun/80 backdrop-blur-sm shadow-lg
+                       flex items-center justify-center active:scale-90 transition-transform
                        animate-bounce"
           >
-            🔄
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-700">
+              <path d="M1 4v6h6" />
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            </svg>
           </button>
         )}
       </div>

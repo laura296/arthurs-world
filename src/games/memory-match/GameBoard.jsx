@@ -10,6 +10,8 @@ export default function GameBoard({ theme, cards: initialCards, level, onWin, on
   const [sidekickEvent, setSidekickEvent] = useState(null);
   const [peekActive, setPeekActive] = useState(false);
   const locked = useRef(false);
+  const cardsRef = useRef(cards);
+  cardsRef.current = cards;
   const idleTimer = useRef(null);
   const sidekickTimer = useRef(null);
   const { burst, ParticleLayer } = useParticleBurst();
@@ -129,7 +131,7 @@ export default function GameBoard({ theme, cards: initialCards, level, onWin, on
 
     // Flip back after 3 seconds with stagger
     setTimeout(() => {
-      const unmatched = cards.filter(c => !c.matched);
+      const unmatched = cardsRef.current.filter(c => !c.matched);
       unmatched.forEach((c, i) => {
         setTimeout(() => {
           setCards(p => p.map(card =>
@@ -145,7 +147,7 @@ export default function GameBoard({ theme, cards: initialCards, level, onWin, on
         locked.current = false;
       }, totalDelay);
     }, 3000);
-  }, [peekActive, cards]);
+  }, [peekActive]);
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden">
