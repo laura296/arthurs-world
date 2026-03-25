@@ -146,11 +146,7 @@
   80% { transform: translateX(1px); }
 }
 
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-12deg); }
-  75% { transform: rotate(12deg); }
-}
+/* wiggle keyframes now defined in tailwind.config.js with spring physics */
 
 @keyframes celebrateStar {
   0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
