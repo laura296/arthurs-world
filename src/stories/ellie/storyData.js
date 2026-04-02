@@ -131,9 +131,9 @@ export function getAllImageKeys() {
 const BASE = '/arthurs-world/images/ellie';
 
 export const STATIC_ASSETS = {
-  characterSheet: `${BASE}/character-sheet.png`,
-  scene: (i) => `${BASE}/scene-${i}.png`,
-  gameBg: (i) => `${BASE}/game-bg-${i}.png`,
-  animal: (name) => `${BASE}/animal-${name}.png`,
-  folk: (name) => `${BASE}/folk-${name}.png`,
+  characterSheet: `${BASE}/character-sheet.webp`,
+  scene: (i) => `${BASE}/scene-${i}.webp`,
+  gameBg: (i) => `${BASE}/game-bg-${i}.webp`,
+  animal: (name) => `${BASE}/animal-${name}.webp`,
+  folk: (name) => `${BASE}/folk-${name}.webp`,
 };
