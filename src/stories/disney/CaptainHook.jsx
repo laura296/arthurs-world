@@ -9,7 +9,7 @@ const storyData = {
     {
       bg: 'from-blue-400 to-teal-600',
       image: '/arthurs-world/images/disney/captain-hook/page-1.png',
-      text: 'Far away in Neverland, the mean Captain Hook sailed his pirate ship!',
+      text: 'Far away in Neverland, the silly Captain Hook sailed his pirate ship!',
       elements: [
         { id: 'ship', x: 50, y: 45, hotspot: true, w: 160, h: 160, z: 2 },
         { id: 'flag', x: 55, y: 18, hotspot: true, w: 80, h: 80, z: 3 },
@@ -30,7 +30,7 @@ const storyData = {
     {
       bg: 'from-red-600 to-gray-800',
       image: '/arthurs-world/images/disney/captain-hook/page-2.png',
-      text: 'Captain Hook was a fearsome pirate! But he was very scared of one thing...',
+      text: 'Captain Hook was a funny pirate! But he was very scared of one thing...',
       elements: [
         { id: 'hook', x: 50, y: 48, hotspot: true, w: 140, h: 140, z: 2 },
         { id: 'hook-hand', x: 60, y: 55, hotspot: true, w: 80, h: 80, z: 3 },
@@ -39,7 +39,7 @@ const storyData = {
         { id: 'sword', x: 75, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
       ],
       interactions: [
-        { id: 'hook-sound', type: 'tap-sound', targetId: 'hook', data: { say: 'I am Captain Hook! Fear me!' } },
+        { id: 'hook-sound', type: 'tap-sound', targetId: 'hook', data: { say: 'I am Captain Hook! Arr!' } },
         { id: 'hook-hand-sparkle', type: 'tap-sparkle', targetId: 'hook-hand', data: {} },
         { id: 'hat-spin', type: 'tap-spin', targetId: 'hat', data: {} },
         { id: 'smee-sound', type: 'tap-sound', targetId: 'smee', data: { say: 'Yes, Captain!' } },
@@ -82,7 +82,7 @@ const storyData = {
         { id: 'peter-pan-animate', type: 'tap-animate', targetId: 'peter-pan', data: { animation: 'animate-fly', duration: 1200 } },
         { id: 'peter-pan-sound', type: 'tap-sound', targetId: 'peter-pan', data: { say: 'Catch me if you can, Hook!' } },
         { id: 'tinkerbell-sparkle', type: 'tap-sparkle', targetId: 'tinkerbell', data: {} },
-        { id: 'hook-angry-sound', type: 'tap-sound', targetId: 'hook-angry', data: { say: 'I\'ll get you, Pan!' } },
+        { id: 'hook-angry-sound', type: 'tap-sound', targetId: 'hook-angry', data: { say: 'Come back here, Pan!' } },
         { id: 'clouds-wiggle', type: 'tap-wiggle', targetId: 'clouds', data: {} },
       ],
     },
@@ -112,7 +112,7 @@ const storyData = {
     {
       bg: 'from-orange-400 to-red-600',
       image: '/arthurs-world/images/disney/captain-hook/page-6.png',
-      text: 'Peter Pan and Captain Hook had a sword fight on the ship!',
+      text: 'Peter Pan and Captain Hook had a silly play fight on the ship!',
       elements: [
         { id: 'peter-fight', x: 35, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
         { id: 'hook-fight', x: 65, y: 48, hotspot: true, w: 130, h: 130, z: 2 },

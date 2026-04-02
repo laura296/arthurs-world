@@ -30,7 +30,7 @@ const storyData = {
     {
       bg: 'from-purple-600 to-gray-800',
       image: '/arthurs-world/images/disney/snow-white/page-2.png',
-      text: 'The Evil Queen had a magic mirror. She asked it, "Who is the fairest of them all?"',
+      text: 'The Queen had a magic mirror. She asked it, "Who is the fairest of them all?"',
       elements: [
         { id: 'queen', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
         { id: 'mirror', x: 68, y: 35, hotspot: true, w: 120, h: 120, z: 2 },
@@ -50,7 +50,7 @@ const storyData = {
     {
       bg: 'from-green-700 to-gray-900',
       image: '/arthurs-world/images/disney/snow-white/page-3.png',
-      text: 'Snow White ran deep into the dark forest. The trees were tall and scary!',
+      text: 'Snow White ran into the big forest. The trees were very tall!',
       elements: [
         { id: 'snow-white-run', x: 50, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
         { id: 'tree-left', x: 15, y: 35, hotspot: true, w: 120, h: 120, z: 1 },
@@ -115,7 +115,7 @@ const storyData = {
     {
       bg: 'from-green-600 to-gray-800',
       image: '/arthurs-world/images/disney/snow-white/page-6.png',
-      text: 'The Evil Queen disguised herself as an old woman. She brought a shiny red apple.',
+      text: 'The Queen dressed up as an old woman. She brought a shiny red apple.',
       elements: [
         { id: 'old-woman', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
         { id: 'apple', x: 60, y: 55, hotspot: true, w: 90, h: 90, z: 3 },

@@ -396,7 +396,7 @@ function MatchPicLevel({ level, onComplete, onBack }) {
         </div>
         {/* Replay sound */}
         <button onPointerDown={() => playLetterSound(currentQ.correct)}
-          className="ml-3 inline-block bg-amber-400/30 rounded-full w-10 h-10 text-lg active:scale-90 transition-transform align-middle">
+          className="ml-3 inline-block bg-amber-400/30 rounded-full w-14 h-14 text-xl active:scale-90 transition-transform align-middle">
           🔊
         </button>
       </div>
