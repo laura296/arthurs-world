@@ -149,19 +149,18 @@ function ProgressBar({ current, results }) {
   );
 }
 
-/** Streak flame badge — appears at 3+ first-try streak */
+/** Streak flame badge — appears at 3+ first-try streak, emoji only */
 function StreakBadge({ streak }) {
   if (streak < 3) return null;
   const scale = Math.min(1 + (streak - 3) * 0.08, 1.6);
   return (
     <div
       className="fixed top-4 right-4 z-50 flex items-center gap-1 bg-orange-600/60 backdrop-blur-sm
-                 rounded-full px-4 py-1.5 border-2 border-orange-400/40 shadow-lg
+                 rounded-full px-4 py-2 border-2 border-orange-400/40 shadow-lg
                  transition-all duration-300"
       style={{ transform: `scale(${scale})`, animation: 'oop-popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
     >
-      <span className="text-xl animate-bounce" style={{ animationDuration: '0.5s' }}>🔥</span>
-      <span className="text-lg font-heading text-orange-100">{streak}x</span>
+      <span className="text-2xl animate-bounce" style={{ animationDuration: '0.5s' }}>🔥</span>
     </div>
   );
 }
@@ -310,15 +309,12 @@ function ScoreOverlay({ perfectCount, bestScore, onReplay }) {
         ))}
       </div>
 
-      {/* Big score number (digits are fine for 3.5yo) */}
+      {/* Big celebration — emoji only, no number */}
       <div
-        className="relative z-10 mt-2 flex items-center gap-3"
+        className="relative z-10 mt-2"
         style={{ animation: 'oop-popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both' }}
       >
-        <span className="text-5xl">🎯</span>
-        <span className="text-8xl font-heading text-amber-600 drop-shadow-lg">
-          {perfectCount}
-        </span>
+        <span className="text-7xl">🎉</span>
       </div>
 
       {/* New best badge — emoji only */}

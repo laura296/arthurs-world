@@ -32,23 +32,25 @@ function StreakBadge({ streak }) {
                  transition-all duration-300"
       style={{ transform: `scale(${scale})` }}
     >
-      <span className="text-xl animate-bounce" style={{ animationDuration: '0.5s' }}>🔥</span>
-      <span className="text-lg font-heading text-orange-100">{streak}x</span>
+      <span className="text-2xl animate-bounce" style={{ animationDuration: '0.5s' }}>🔥</span>
     </div>
   );
 }
 
-/* ── Score badge with star icon and pop animation ── */
+/* ── Score badge — emoji stars only, no numbers ── */
 function ScoreBadge({ score, justScored }) {
+  const starCount = Math.min(Math.floor(score / 5), 5);
+  if (starCount === 0) return null;
   return (
     <div
-      className={`fixed top-4 right-4 z-50 flex items-center gap-2 bg-amber-900/50 backdrop-blur-sm
-                  rounded-full px-5 py-2 border-2 border-amber-500/40 shadow-lg shadow-amber-900/30
+      className={`fixed top-4 right-4 z-50 flex items-center gap-1 bg-amber-900/50 backdrop-blur-sm
+                  rounded-full px-4 py-2 border-2 border-amber-500/40 shadow-lg shadow-amber-900/30
                   transition-transform duration-200
                   ${justScored ? 'scale-110' : 'scale-100'}`}
     >
-      <span className="text-xl">⭐</span>
-      <span className="text-2xl font-heading text-sun">{score}</span>
+      {Array.from({ length: starCount }).map((_, i) => (
+        <span key={i} className="text-xl">⭐</span>
+      ))}
     </div>
   );
 }
@@ -100,12 +102,9 @@ function IntroOverlay({ difficulty, onDone }) {
           </span>
         ))}
       </div>
-      <h2 className="text-3xl font-heading text-white drop-shadow-lg animate-pulse">
-        {difficulty.emoji} {difficulty.label}
-      </h2>
-      <p className="text-lg font-heading text-amber-200 mt-2 opacity-80">
-        Tap the critters!
-      </p>
+      <span className="text-6xl animate-pulse">
+        {difficulty.emoji}
+      </span>
     </div>
   );
 }
@@ -249,7 +248,6 @@ export default function PopCritters() {
         if (next % 15 === 0) {
           setTimeout(() => {
             celebrate({
-              message: next >= 30 ? 'Amazing!' : 'Hooray!',
               colors: ['#facc15', '#22c55e', '#38bdf8', '#ec4899'],
             });
           }, 300);
@@ -304,10 +302,10 @@ export default function PopCritters() {
       {/* Streak badge */}
       <StreakBadge streak={streak} />
 
-      {/* Difficulty label */}
-      <div className="fixed top-4 left-16 z-50 bg-amber-900/40 backdrop-blur-sm rounded-full px-4 py-2
-                      text-lg font-heading text-amber-200 border-2 border-amber-600/30">
-        {difficulty?.emoji} {difficulty?.label}
+      {/* Difficulty — emoji only */}
+      <div className="fixed top-4 left-16 z-50 bg-amber-900/40 backdrop-blur-sm rounded-full px-3 py-2
+                      border-2 border-amber-600/30">
+        <span className="text-2xl">{difficulty?.emoji}</span>
       </div>
 
       {/* Game grid */}

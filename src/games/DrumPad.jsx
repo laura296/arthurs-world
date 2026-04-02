@@ -35,14 +35,10 @@ function IntroOverlay({ onDone }) {
           </span>
         ))}
       </div>
-      <h2 className="text-3xl font-heading text-white drop-shadow-lg"
+      <span className="text-6xl"
           style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-        🥁 Drum Pad
-      </h2>
-      <p className="text-lg font-heading text-red-200 mt-2 opacity-80"
-         style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.7s both' }}>
-        Tap the pads to play!
-      </p>
+        🥁
+      </span>
     </div>
   );
 }
@@ -103,14 +99,13 @@ export default function DrumPad() {
              background: 'conic-gradient(from 180deg at 50% 0%, transparent 30%, rgba(239,68,68,0.06) 45%, rgba(239,68,68,0.12) 50%, rgba(239,68,68,0.06) 55%, transparent 70%)',
            }} />
 
-      {/* Title */}
-      <h2 className="font-heading text-white/80 text-lg mb-3 z-10">🥁 Drum Pad</h2>
+      {/* Title — emoji only */}
+      <div className="text-4xl mb-3 z-10">🥁</div>
 
-      {/* Hit counter */}
-      {hitCount > 0 && (
-        <div className="absolute top-4 right-4 z-20 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1
-                        font-heading text-white text-sm border border-white/10">
-          🥁 {hitCount}
+      {/* Hit counter — visual milestone star, no numbers */}
+      {hitCount > 0 && hitCount % 10 === 0 && (
+        <div className="absolute top-4 right-4 z-20 text-3xl animate-bounce">
+          🌟
         </div>
       )}
 
@@ -140,8 +135,7 @@ export default function DrumPad() {
                    style={{
                      background: 'linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%)',
                    }} />
-              <span className="text-3xl sm:text-4xl relative z-10">{pad.label}</span>
-              <span className="text-xs font-heading text-white/70 relative z-10">{pad.name}</span>
+              <span className="text-4xl sm:text-5xl relative z-10">{pad.label}</span>
 
               {/* Hit flash */}
               {isActive && (

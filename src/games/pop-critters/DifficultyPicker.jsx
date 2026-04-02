@@ -9,22 +9,20 @@ export default function DifficultyPicker({ onSelect }) {
   return (
     <div className="relative w-full h-full overflow-hidden">
       <GardenScene />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-8">
-        <h1 className="text-4xl font-heading text-white drop-shadow-lg">
-          Pick Your Garden
-        </h1>
-        <div className="flex flex-col gap-4 w-full max-w-xs">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 p-8">
+        {/* Title — emoji only */}
+        <span className="text-6xl drop-shadow-lg">🐿️</span>
+        <div className="flex gap-6">
           {Object.entries(DIFFICULTIES).map(([key, diff]) => (
             <button
               key={key}
               onClick={() => onSelect(key)}
-              className="px-6 py-5 rounded-2xl text-2xl font-heading text-amber-900
+              className="w-28 h-28 rounded-3xl flex items-center justify-center
                          bg-gradient-to-b from-amber-200 to-amber-400
                          border-4 border-amber-600 shadow-lg
-                         active:scale-95 transition-transform
-                         hover:from-amber-100 hover:to-amber-300"
+                         active:scale-90 transition-transform"
             >
-              {diff.emoji} {diff.label}
+              <span className="text-5xl">{diff.emoji}</span>
             </button>
           ))}
         </div>

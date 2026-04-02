@@ -84,20 +84,16 @@ function IntroOverlay({ onDone }) {
         style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
         🪥
       </span>
-      <h2 className="text-3xl font-heading text-white drop-shadow-lg"
+      <span className="text-6xl"
           style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both' }}>
-        Sparkle Teeth!
-      </h2>
-      <p className="text-lg font-heading text-sky-200 mt-2 opacity-80"
-         style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-        Help Arthur brush!
-      </p>
+        🪥
+      </span>
     </div>
   );
 }
 
 /* ── Single tooth button ── */
-function ToothButton({ tooth, brushCount, onBrush, isTarget }) {
+function ToothButton({ tooth, brushCount, onBrush }) {
   const clean = brushCount >= BRUSH_NEEDED;
   const progress = Math.min(brushCount / BRUSH_NEEDED, 1);
 
@@ -105,10 +101,9 @@ function ToothButton({ tooth, brushCount, onBrush, isTarget }) {
     <button
       onPointerDown={() => !clean && onBrush(tooth)}
       className={`relative flex items-center justify-center rounded-2xl transition-all
-                  ${clean ? 'scale-95' : 'active:scale-90 cursor-pointer'}
-                  ${isTarget && !clean ? 'animate-pulse ring-4 ring-sky-400/50' : ''}`}
+                  ${clean ? 'scale-95' : 'active:scale-90 cursor-pointer'}`}
       style={{
-        width: 80, height: 80,
+        width: 90, height: 90,
         background: clean
           ? 'linear-gradient(135deg, #dbeafe, #bfdbfe)'
           : `linear-gradient(135deg, ${tooth.color}, #fefce8)`,
@@ -158,12 +153,12 @@ function ArthurMouth({ cleanCount, total }) {
         🪥
       </div>
 
-      {/* Speech */}
+      {/* Visual hint — toothbrush emoji, no text */}
       {cleanCount === 0 && (
-        <div className="absolute -top-2 left-0 bg-white rounded-xl px-3 py-1.5 shadow-lg
-                        text-sm font-heading text-sky-700 animate-bounce"
+        <div className="absolute -top-1 left-0 bg-white rounded-full w-9 h-9
+                        flex items-center justify-center shadow-lg animate-bounce"
              style={{ animation: 'pop-in 0.5s ease-out 1s both' }}>
-          Brush my teeth!
+          <span className="text-xl">👇</span>
         </div>
       )}
 
@@ -185,22 +180,15 @@ export default function SparkleTeeth() {
   const [brushCounts, setBrushCounts] = useState(() =>
     Object.fromEntries(TEETH.map(t => [t.id, 0]))
   );
-  const [targetIdx, setTargetIdx] = useState(0);
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
 
   const cleanCount = TEETH.filter(t => brushCounts[t.id] >= BRUSH_NEEDED).length;
   const isComplete = cleanCount === TEETH.length;
-  const currentTarget = TEETH[targetIdx];
 
   const handleBrush = useCallback((tooth) => {
-    // Must brush in order — current target tooth
-    if (tooth.id !== currentTarget?.id) {
-      playBoing();
-      return;
-    }
-
+    // Any tooth can be brushed — no strict ordering
     setBrushCounts(prev => {
       const newCount = (prev[tooth.id] || 0) + 1;
       const updated = { ...prev, [tooth.id]: newCount };
@@ -210,17 +198,15 @@ export default function SparkleTeeth() {
         playSparkle();
         playSuccess();
 
-        // Move to next tooth
-        const nextIdx = targetIdx + 1;
-        if (nextIdx >= TEETH.length) {
-          // All done!
+        // Check if all done
+        const newCleanCount = TEETH.filter(t => updated[t.id] >= BRUSH_NEEDED).length;
+        if (newCleanCount >= TEETH.length) {
           setTimeout(() => {
             playFanfare();
             celebrate();
             peek('excited');
           }, 400);
         } else {
-          setTargetIdx(nextIdx);
           peek('happy');
         }
       } else {
@@ -229,11 +215,10 @@ export default function SparkleTeeth() {
 
       return updated;
     });
-  }, [currentTarget, targetIdx, celebrate, peek]);
+  }, [celebrate, peek]);
 
   const handlePlayAgain = useCallback(() => {
     setBrushCounts(Object.fromEntries(TEETH.map(t => [t.id, 0])));
-    setTargetIdx(0);
   }, []);
 
   return (
@@ -244,30 +229,29 @@ export default function SparkleTeeth() {
       {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}
 
       <div className="relative z-10 flex flex-col items-center justify-between h-full py-16 px-4">
-        {/* Title */}
-        <h2 className="font-heading text-sky-800/80 text-lg">
-          🪥 Sparkle Teeth
-        </h2>
+        {/* Title — emoji only */}
+        <div className="text-3xl">🪥</div>
 
         {/* Arthur */}
         <ArthurMouth cleanCount={cleanCount} total={TEETH.length} />
 
-        {/* Hint */}
+        {/* Visual progress — no text */}
         {!isComplete && cleanCount > 0 && (
-          <p className="text-sm font-heading text-sky-700/60 animate-pulse">
-            {cleanCount === 1 ? '🪥 Keep going!' :
-             cleanCount === 3 ? '🦷 Halfway there!' :
-             cleanCount === 5 ? '✨ Last one!' :
-             '🪥 Brush brush brush!'}
-          </p>
+          <div className="flex gap-1">
+            {Array.from({ length: TEETH.length }).map((_, i) => (
+              <span key={i} className="text-xl">
+                {i < cleanCount ? '✨' : '🦷'}
+              </span>
+            ))}
+          </div>
         )}
 
         {/* Teeth grid — top row and bottom row */}
         <div className="flex flex-col gap-3 w-full max-w-sm">
-          {/* Label */}
-          <p className="text-center text-xs font-heading text-sky-600/50">
-            {isComplete ? '✨ All sparkly!' : `Tap the glowing tooth!`}
-          </p>
+          {/* Visual label — emoji only */}
+          {isComplete && (
+            <div className="text-center text-3xl animate-bounce">✨</div>
+          )}
 
           {/* Top row */}
           <div className="flex justify-center gap-3">
@@ -277,7 +261,6 @@ export default function SparkleTeeth() {
                 tooth={tooth}
                 brushCount={brushCounts[tooth.id]}
                 onBrush={handleBrush}
-                isTarget={tooth.id === currentTarget?.id}
               />
             ))}
           </div>
@@ -297,7 +280,6 @@ export default function SparkleTeeth() {
                 tooth={tooth}
                 brushCount={brushCounts[tooth.id]}
                 onBrush={handleBrush}
-                isTarget={tooth.id === currentTarget?.id}
               />
             ))}
           </div>
@@ -309,7 +291,7 @@ export default function SparkleTeeth() {
             className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-sky-400 to-blue-500
                        text-white font-heading text-lg active:scale-95 transition-transform shadow-lg"
             style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-            Brush Again! 🪥
+            🔄 🪥
           </button>
         )}
       </div>

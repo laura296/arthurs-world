@@ -146,7 +146,7 @@ export default function FeedAnimals() {
       setPhase('round-end');
       playFanfare();
       const roundNum = round + 1;
-      celebrate({ message: `Round ${roundNum} done! 🎉`, duration: 3500 });
+      celebrate({ duration: 3500 });
 
       setTimeout(() => {
         const nextRound = round + 1;
@@ -237,31 +237,15 @@ export default function FeedAnimals() {
       <FarmScene />
       <BackButton />
 
-      {/* ── Round badge (top-left) ── */}
-      <div className="absolute top-4 left-16 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-white/50">
-        <span className="text-lg font-heading text-amber-800">
-          Round {round + 1}
-        </span>
-      </div>
-
-      {/* ── Score badge (top-right) ── */}
-      <div className="absolute top-4 right-4 z-30 bg-white/70 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-white/50 flex items-center gap-2">
-        <span className="text-lg font-heading text-amber-800">
-          ⭐ {score}
-        </span>
-        {streak >= 3 && (
-          <span className="text-lg animate-bounce">
-            🔥{streak}
+      {/* ── Score badge (top-right) — emoji stars only, no numbers ── */}
+      <div className="absolute top-4 right-4 z-30 flex gap-1">
+        {Array.from({ length: Math.min(Math.floor(score / 10), 5) }).map((_, i) => (
+          <span key={i} className="text-2xl drop-shadow-lg"
+                style={{ animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+            ⭐
           </span>
-        )}
+        ))}
       </div>
-
-      {/* ── Score popup ── */}
-      {scorePopup && (
-        <div className="absolute top-16 right-6 z-40 text-2xl font-heading text-green-600 drop-shadow-lg animate-bounce-in">
-          +{scorePopup}!
-        </div>
-      )}
 
       {/* Falling celebration stars */}
       {stars.map(s => (
@@ -283,12 +267,12 @@ export default function FeedAnimals() {
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10"
            style={{ paddingBottom: '20%' }}>
 
-        {/* New animal intro speech bubble */}
+        {/* New animal intro — sparkle effect, no text */}
         {phase === 'intro' && (
-          <div className="mb-4 bg-white/90 rounded-3xl px-6 py-3 shadow-lg border-2 border-purple-200 animate-bounce-in">
-            <span className="text-2xl font-heading text-purple-700">
-              Hi! I'm {animal.id.charAt(0).toUpperCase() + animal.id.slice(1)}! 🌟
-            </span>
+          <div className="mb-4 flex gap-2 animate-bounce-in">
+            <span className="text-3xl">✨</span>
+            <span className="text-3xl">🌟</span>
+            <span className="text-3xl">✨</span>
           </div>
         )}
 
@@ -342,9 +326,9 @@ export default function FeedAnimals() {
                            : 'active:scale-90 hover:bg-white/90'
                          }`}
               style={{
-                width: choiceCount <= 3 ? 96 : choiceCount === 4 ? 80 : 72,
-                height: choiceCount <= 3 ? 96 : choiceCount === 4 ? 80 : 72,
-                fontSize: choiceCount <= 3 ? '3rem' : choiceCount === 4 ? '2.5rem' : '2.2rem',
+                width: choiceCount <= 3 ? 100 : choiceCount === 4 ? 90 : 80,
+                height: choiceCount <= 3 ? 100 : choiceCount === 4 ? 90 : 80,
+                fontSize: choiceCount <= 3 ? '3.5rem' : choiceCount === 4 ? '3rem' : '2.5rem',
                 animationDelay: `${i * 0.1}s`,
                 animationFillMode: 'backwards',
               }}

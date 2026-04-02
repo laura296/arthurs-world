@@ -91,14 +91,10 @@ function IntroOverlay({ onDone }) {
           </span>
         ))}
       </div>
-      <h2 className="text-3xl font-heading text-white drop-shadow-lg"
+      <span className="text-6xl"
           style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-        👕 Getting Dressed!
-      </h2>
-      <p className="text-lg font-heading text-amber-200 mt-2 opacity-80"
-         style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.7s both' }}>
-        Help Arthur get ready!
-      </p>
+        👕
+      </span>
     </div>
   );
 }
@@ -118,12 +114,12 @@ function ClothingItem({ item, onTap, disabled, dressed, wrong }) {
         border: `3px solid ${dressed ? '#d1d5db' : item.color}50`,
         boxShadow: dressed ? 'none' : `0 4px 12px ${item.color}25`,
         touchAction: 'none',
-        minWidth: 80,
-        minHeight: 80,
+        minWidth: 90,
+        minHeight: 90,
       }}
       disabled={disabled || dressed}
     >
-      <span className="text-4xl">{item.emoji}</span>
+      <span className="text-5xl">{item.emoji}</span>
       {dressed && (
         <span className="absolute top-1 right-1 text-lg">✅</span>
       )}
@@ -150,12 +146,12 @@ function ArthurDressing({ dressedItems }) {
         ))}
       </div>
 
-      {/* Speech bubble hint */}
+      {/* Visual hint — pointing emoji, no text */}
       {count === 0 && (
-        <div className="absolute -top-2 right-0 bg-white rounded-xl px-3 py-1.5 shadow-lg
-                        text-sm font-heading text-amber-700 animate-bounce"
+        <div className="absolute -top-1 -right-2 bg-white rounded-full w-9 h-9
+                        flex items-center justify-center shadow-lg animate-bounce"
              style={{ animation: 'pop-in 0.5s ease-out 1s both' }}>
-          What goes on first?
+          <span className="text-xl">👇</span>
         </div>
       )}
     </div>
@@ -214,27 +210,24 @@ export default function MorningRoutine() {
       {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}
 
       <div className="relative z-10 flex flex-col items-center justify-between h-full py-16 px-4">
-        {/* Title */}
-        <h2 className="font-heading text-amber-800/80 text-lg">
-          👕 Getting Dressed
-        </h2>
+        {/* Title — emoji only */}
+        <div className="text-3xl">👕</div>
 
         {/* Arthur in the middle */}
         <ArthurDressing dressedItems={dressedItems} />
 
-        {/* Hint about what's next */}
+        {/* Visual progress — shows next item emoji as hint */}
         {!isComplete && nextOrder > 0 && (
-          <p className="text-sm font-heading text-amber-700/60 animate-pulse">
-            {nextOrder === 1 ? '🧦 Now what?' :
-             nextOrder === 2 ? '👕 What goes on next?' :
-             nextOrder === 3 ? '👖 Nearly there!' :
-             nextOrder === 4 ? '🧥 Almost dressed!' :
-             '👟 Last one!'}
-          </p>
+          <div className="flex items-center gap-1">
+            {CLOTHES.slice(0, nextOrder).map((c, i) => (
+              <span key={c.id} className="text-xl opacity-40">{c.emoji}</span>
+            ))}
+            <span className="text-2xl animate-pulse">❓</span>
+          </div>
         )}
 
-        {/* Clothing choices */}
-        <div className="grid grid-cols-3 gap-3 w-full max-w-sm">
+        {/* Clothing choices — bigger buttons */}
+        <div className="grid grid-cols-3 gap-4 w-full max-w-md">
           {shuffledClothes.map(item => (
             <ClothingItem
               key={item.id}
@@ -253,7 +246,7 @@ export default function MorningRoutine() {
             className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500
                        text-white font-heading text-lg active:scale-95 transition-transform shadow-lg"
             style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-            Play Again! 👕
+            🔄 👕
           </button>
         )}
       </div>
