@@ -21,6 +21,44 @@ export default defineConfig({
           { src: 'icon-512.svg', sizes: '512x512', type: 'image/svg+xml' },
           { src: 'icon-maskable.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' },
         ],
+        shortcuts: [
+          {
+            name: 'Games',
+            short_name: 'Games',
+            url: '#/games/all/games',
+            icons: [{ src: 'icons/shortcut-games.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+          {
+            name: 'Puzzles',
+            short_name: 'Puzzles',
+            url: '#/games/all/puzzles',
+            icons: [{ src: 'icons/shortcut-puzzles.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+          {
+            name: 'Art',
+            short_name: 'Art',
+            url: '#/games/all/art',
+            icons: [{ src: 'icons/shortcut-art.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+          {
+            name: 'Stories',
+            short_name: 'Stories',
+            url: '#/games/all/books',
+            icons: [{ src: 'icons/shortcut-stories.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+          {
+            name: 'Music',
+            short_name: 'Music',
+            url: '#/games/all/music',
+            icons: [{ src: 'icons/shortcut-music.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+          {
+            name: 'Disney',
+            short_name: 'Disney',
+            url: '#/games/all/disney',
+            icons: [{ src: 'icons/shortcut-disney.svg', sizes: '192x192', type: 'image/svg+xml' }],
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,ico,woff2}'],

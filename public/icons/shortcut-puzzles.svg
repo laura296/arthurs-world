@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <!-- Puzzle piece -->
+  <path d="M68 64 h20 c0-10 16-10 16 0 h20 v20 c10 0 10 16 0 16 v20 h-20 c0 10-16 10-16 0 h-20 v-20 c-10 0-10-16 0-16 z" fill="#fff" opacity="0.95"/>
+  <circle cx="96" cy="96" r="8" fill="#2dd4bf"/>
+</svg>
