@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../components/BackButton';
 import ArthurBear from '../components/ArthurBear';
 import { playPop, playSuccess, playBoing, playFanfare, playSparkle } from '../hooks/useSound';
@@ -8,26 +9,25 @@ import { useCelebration } from '../components/CelebrationOverlay';
 
 /* ── Food items ── */
 const HEALTHY_FOODS = [
-  { id: 'apple',      emoji: '🍎', label: 'Apple',      color: '#ef4444', healthy: true },
-  { id: 'banana',     emoji: '🍌', label: 'Banana',     color: '#eab308', healthy: true },
-  { id: 'carrot',     emoji: '🥕', label: 'Carrot',     color: '#f97316', healthy: true },
-  { id: 'broccoli',   emoji: '🥦', label: 'Broccoli',   color: '#22c55e', healthy: true },
-  { id: 'strawberry', emoji: '🍓', label: 'Strawberry', color: '#f43f5e', healthy: true },
-  { id: 'grapes',     emoji: '🍇', label: 'Grapes',     color: '#8b5cf6', healthy: true },
-  { id: 'orange',     emoji: '🍊', label: 'Orange',     color: '#f97316', healthy: true },
-  { id: 'peas',       emoji: '🫛', label: 'Peas',       color: '#16a34a', healthy: true },
-  { id: 'corn',       emoji: '🌽', label: 'Corn',       color: '#eab308', healthy: true },
-  { id: 'watermelon', emoji: '🍉', label: 'Watermelon', color: '#ef4444', healthy: true },
+  { id: 'apple',      emoji: '🍎', color: '#ef4444', healthy: true },
+  { id: 'banana',     emoji: '🍌', color: '#eab308', healthy: true },
+  { id: 'carrot',     emoji: '🥕', color: '#f97316', healthy: true },
+  { id: 'broccoli',   emoji: '🥦', color: '#22c55e', healthy: true },
+  { id: 'strawberry', emoji: '🍓', color: '#f43f5e', healthy: true },
+  { id: 'grapes',     emoji: '🍇', color: '#8b5cf6', healthy: true },
+  { id: 'orange',     emoji: '🍊', color: '#f97316', healthy: true },
+  { id: 'corn',       emoji: '🌽', color: '#eab308', healthy: true },
+  { id: 'watermelon', emoji: '🍉', color: '#ef4444', healthy: true },
 ];
 
 const TREAT_FOODS = [
-  { id: 'cookie',    emoji: '🍪', label: 'Cookie',    color: '#d97706', healthy: false },
-  { id: 'cake',      emoji: '🍰', label: 'Cake',      color: '#ec4899', healthy: false },
-  { id: 'candy',     emoji: '🍬', label: 'Candy',     color: '#a855f7', healthy: false },
-  { id: 'icecream',  emoji: '🍦', label: 'Ice Cream', color: '#f9a8d4', healthy: false },
+  { id: 'cookie',    emoji: '🍪', color: '#d97706', healthy: false },
+  { id: 'cake',      emoji: '🍰', color: '#ec4899', healthy: false },
+  { id: 'candy',     emoji: '🍬', color: '#a855f7', healthy: false },
+  { id: 'icecream',  emoji: '🍦', color: '#f9a8d4', healthy: false },
 ];
 
-const LUNCHBOX_SIZE = 5; // items needed to fill the lunchbox
+const LUNCHBOX_SIZE = 3;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -38,22 +38,21 @@ function shuffle(arr) {
   return a;
 }
 
-function pickFoods() {
-  // Pick 5 random healthy + 3 random treats = 8 choices
-  const healthy = shuffle(HEALTHY_FOODS).slice(0, 5);
-  const treats = shuffle(TREAT_FOODS).slice(0, 3);
-  return shuffle([...healthy, ...treats]);
+/** Pick a round of choices: 2 healthy + 1 treat, shuffled */
+function pickRound(exclude = []) {
+  const excludeIds = new Set(exclude.map(f => f.id));
+  const available = HEALTHY_FOODS.filter(f => !excludeIds.has(f.id));
+  const healthy = shuffle(available).slice(0, 2);
+  const treat = shuffle(TREAT_FOODS)[0];
+  return shuffle([...healthy, treat]);
 }
 
 /* ── Kitchen background ── */
 function KitchenScene() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Wall */}
       <div className="absolute inset-0"
         style={{ background: 'linear-gradient(180deg, #FFF8F0 0%, #FFECD2 60%, #FFE0B2 100%)' }} />
-
-      {/* Window */}
       <div className="absolute top-[6%] right-[8%] w-20 h-24 rounded-t-lg overflow-hidden"
         style={{
           background: 'linear-gradient(180deg, #87CEEB 0%, #B8E6FF 80%)',
@@ -62,12 +61,8 @@ function KitchenScene() {
         <div className="absolute top-3 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-yellow-300"
           style={{ boxShadow: '0 0 15px #facc15' }} />
       </div>
-
-      {/* Counter top */}
       <div className="absolute bottom-[20%] left-0 right-0 h-3"
         style={{ background: 'linear-gradient(180deg, #D4A853, #C49245)' }} />
-
-      {/* Cabinet */}
       <div className="absolute top-[15%] left-[5%] w-14 h-[35%] rounded-lg"
         style={{
           background: 'linear-gradient(180deg, #D4A853, #B8862A)',
@@ -76,8 +71,6 @@ function KitchenScene() {
         <div className="absolute top-1/3 right-1.5 w-1.5 h-3 bg-amber-300 rounded-full" />
         <div className="absolute top-2/3 right-1.5 w-1.5 h-3 bg-amber-300 rounded-full" />
       </div>
-
-      {/* Fridge */}
       <div className="absolute top-[10%] right-[5%] w-14 h-[40%] rounded-lg"
         style={{
           background: 'linear-gradient(180deg, #e2e8f0, #cbd5e1)',
@@ -85,114 +78,96 @@ function KitchenScene() {
         }}>
         <div className="absolute top-1/4 left-1.5 w-1.5 h-5 bg-gray-400 rounded-full" />
       </div>
-
-      {/* Floor */}
       <div className="absolute bottom-0 left-0 right-0 h-[20%]"
         style={{ background: 'linear-gradient(180deg, #D4A865 0%, #C49255 100%)' }} />
     </div>
   );
 }
 
-/* ── Intro overlay ── */
-function IntroOverlay({ onDone }) {
-  useEffect(() => {
-    const t = setTimeout(onDone, 2500);
-    return () => clearTimeout(t);
-  }, [onDone]);
-
-  const emojis = ['🍎', '🥕', '🥦', '🍌', '🍇'];
-  return (
-    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="flex gap-2 mb-4">
-        {emojis.map((e, i) => (
-          <span key={i} className="text-3xl"
-            style={{ animation: `pop-in 0.35s cubic-bezier(0.34,1.56,0.64,1) ${i * 80}ms both` }}>
-            {e}
-          </span>
-        ))}
-      </div>
-      <h2 className="text-3xl font-heading text-white drop-shadow-lg"
-          style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-        🥗 Arthur's Lunchbox
-      </h2>
-      <p className="text-lg font-heading text-green-200 mt-2 opacity-80"
-         style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.7s both' }}>
-        Pack a healthy lunch!
-      </p>
-    </div>
-  );
-}
-
 /* ── Food item button ── */
-function FoodItem({ food, onTap, packed, wobble }) {
+function FoodItem({ food, onTap, wobble }) {
+  const isHealthy = food.healthy;
   return (
-    <button
-      onPointerDown={() => !packed && onTap(food)}
-      className={`relative flex flex-col items-center justify-center rounded-3xl p-3 transition-all
-                  ${packed ? 'opacity-30 scale-90' : 'active:scale-90 cursor-pointer'}
-                  ${wobble ? 'animate-[wiggle_0.3s_ease-in-out]' : ''}`}
+    <motion.button
+      onPointerDown={() => onTap(food)}
+      className="relative flex flex-col items-center justify-center rounded-3xl transition-all
+                 active:scale-90 cursor-pointer"
+      animate={wobble ? { rotate: [0, -12, 12, -8, 8, 0], x: [0, -4, 4, -2, 2, 0] } : {}}
+      transition={{ duration: 0.4 }}
       style={{
-        background: packed
-          ? '#e5e7eb'
-          : food.healthy
-            ? `linear-gradient(135deg, ${food.color}25, ${food.color}10)`
-            : `linear-gradient(135deg, ${food.color}15, ${food.color}08)`,
-        border: `3px solid ${packed ? '#d1d5db' : food.healthy ? `${food.color}60` : `${food.color}30`}`,
-        boxShadow: packed ? 'none'
-          : food.healthy
-            ? `0 4px 12px ${food.color}20, 0 0 0 2px ${food.color}15`
-            : `0 2px 6px ${food.color}10`,
+        background: isHealthy
+          ? `linear-gradient(135deg, ${food.color}30, ${food.color}15)`
+          : `linear-gradient(135deg, #9ca3af20, #9ca3af10)`,
+        border: isHealthy
+          ? `4px solid ${food.color}80`
+          : '4px solid #d1d5db80',
+        boxShadow: isHealthy
+          ? `0 4px 16px ${food.color}30, 0 0 0 3px rgba(34,197,94,0.2)`
+          : '0 2px 6px rgba(0,0,0,0.06)',
         touchAction: 'none',
-        minWidth: 90,
-        minHeight: 90,
+        width: 110,
+        height: 110,
       }}
-      disabled={packed}
     >
-      <span className="text-5xl">{food.emoji}</span>
-      {packed && <span className="absolute top-0.5 right-0.5 text-sm">✅</span>}
-      {/* Subtle golden glow on healthy foods */}
-      {food.healthy && !packed && (
-        <div className="absolute inset-0 rounded-2xl pointer-events-none"
+      <span className="text-6xl">{food.emoji}</span>
+      {/* Green sparkle ring on healthy foods */}
+      {isHealthy && (
+        <div className="absolute inset-0 rounded-3xl pointer-events-none"
              style={{
-               background: 'radial-gradient(circle, rgba(250,204,21,0.08) 0%, transparent 70%)',
+               background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)',
+               boxShadow: 'inset 0 0 12px rgba(34,197,94,0.15)',
              }} />
       )}
-    </button>
+      {/* Subtle star on healthy foods */}
+      {isHealthy && (
+        <span className="absolute -top-1 -right-1 text-lg"
+              style={{ filter: 'drop-shadow(0 0 4px rgba(250,204,21,0.6))' }}>
+          ⭐
+        </span>
+      )}
+      {/* Grey overlay on treats */}
+      {!isHealthy && (
+        <div className="absolute inset-0 rounded-3xl pointer-events-none opacity-20"
+             style={{ background: '#9ca3af' }} />
+      )}
+    </motion.button>
   );
 }
 
 /* ── Lunchbox display ── */
 function Lunchbox({ items }) {
   return (
-    <div className="relative w-64 h-24 rounded-2xl overflow-hidden"
+    <div className="relative w-80 h-28 rounded-3xl overflow-hidden"
          style={{
            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-           border: '4px solid #b91c1c',
-           boxShadow: '0 6px 20px rgba(185,28,28,0.3), inset 0 2px 8px rgba(255,255,255,0.2)',
+           border: '5px solid #b91c1c',
+           boxShadow: '0 8px 24px rgba(185,28,28,0.3), inset 0 2px 8px rgba(255,255,255,0.2)',
          }}>
-      {/* Lunchbox lid line */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-red-800/30" />
-
-      {/* Handle */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-4 rounded-t-full"
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 rounded-t-full"
            style={{ background: 'linear-gradient(to bottom, #991b1b, #b91c1c)', border: '2px solid #7f1d1d' }} />
 
-      {/* Slots */}
-      <div className="flex items-center justify-center gap-2 h-full px-3">
+      <div className="flex items-center justify-center gap-4 h-full px-4">
         {Array.from({ length: LUNCHBOX_SIZE }).map((_, i) => (
-          <div key={i} className="w-12 h-12 rounded-xl flex items-center justify-center"
+          <div key={i} className="w-16 h-16 rounded-2xl flex items-center justify-center"
                style={{
-                 background: items[i] ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
-                 border: `2px dashed ${items[i] ? 'transparent' : 'rgba(255,255,255,0.2)'}`,
+                 background: items[i] ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
+                 border: `3px dashed ${items[i] ? 'transparent' : 'rgba(255,255,255,0.3)'}`,
                }}>
-            {items[i] ? (
-              <span className="text-2xl"
-                    style={{ animation: `pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both` }}>
-                {items[i].emoji}
-              </span>
-            ) : (
-              <span className="text-lg opacity-20">?</span>
-            )}
+            <AnimatePresence>
+              {items[i] ? (
+                <motion.span
+                  key={items[i].id}
+                  className="text-4xl"
+                  initial={{ scale: 0, y: 40 }}
+                  animate={{ scale: 1, y: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
+                  {items[i].emoji}
+                </motion.span>
+              ) : (
+                <span className="text-2xl opacity-30">?</span>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>
@@ -200,11 +175,29 @@ function Lunchbox({ items }) {
   );
 }
 
+/* ── Flying food animation ── */
+function FlyingFood({ emoji, onDone }) {
+  return (
+    <motion.div
+      className="fixed z-[200] text-6xl pointer-events-none"
+      initial={{ scale: 1.2, opacity: 1, y: 0 }}
+      animate={{ scale: 0.6, opacity: 0.8, y: -120 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.45, ease: 'easeInOut' }}
+      onAnimationComplete={onDone}
+      style={{ left: '50%', top: '55%', transform: 'translateX(-50%)' }}
+    >
+      {emoji}
+    </motion.div>
+  );
+}
+
 export default function ArthursLunchbox() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [foods] = useState(() => pickFoods());
   const [packedItems, setPackedItems] = useState([]);
+  const [choices, setChoices] = useState(() => pickRound());
   const [wobbleId, setWobbleId] = useState(null);
+  const [flyingEmoji, setFlyingEmoji] = useState(null);
+  const [arthurMood, setArthurMood] = useState('happy');
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
   const { celebrate, CelebrationLayer } = useCelebration();
@@ -215,99 +208,120 @@ export default function ArthursLunchbox() {
     if (isComplete) return;
 
     if (food.healthy) {
-      // Good choice!
       playPop();
       playSparkle();
-      setPackedItems(prev => [...prev, food]);
-      setWobbleId(null);
+      setFlyingEmoji(food.emoji);
+      setArthurMood('excited');
 
-      const newCount = packedItems.length + 1;
-      if (newCount >= LUNCHBOX_SIZE) {
-        setTimeout(() => {
-          playFanfare();
-          celebrate();
-          peek('excited');
-        }, 400);
-      } else if (newCount === 3) {
-        playSuccess();
-        peek('happy');
-      }
+      // Small delay so flying animation plays before item lands
+      setTimeout(() => {
+        setPackedItems(prev => {
+          const next = [...prev, food];
+          if (next.length >= LUNCHBOX_SIZE) {
+            setTimeout(() => {
+              playFanfare();
+              celebrate();
+              peek('excited');
+            }, 300);
+          } else {
+            playSuccess();
+          }
+          return next;
+        });
+        // Pick new choices for next round
+        setChoices(prev => pickRound([...packedItems, food]));
+        setFlyingEmoji(null);
+      }, 450);
+
+      setTimeout(() => setArthurMood('happy'), 1200);
     } else {
-      // Treat food — gentle nudge
+      // Treat — gentle shake + Arthur shakes head
       playBoing();
       setWobbleId(food.id);
-      setTimeout(() => setWobbleId(null), 500);
+      setArthurMood('curious');
+      setTimeout(() => {
+        setWobbleId(null);
+        setArthurMood('happy');
+      }, 600);
     }
-  }, [isComplete, packedItems.length, celebrate, peek]);
+  }, [isComplete, packedItems, celebrate, peek]);
 
   const handlePlayAgain = useCallback(() => {
     setPackedItems([]);
+    setChoices(pickRound());
     setWobbleId(null);
+    setFlyingEmoji(null);
+    setArthurMood('happy');
   }, []);
 
-  const expression = isComplete ? 'excited' : packedItems.length > 2 ? 'happy' : 'curious';
+  const expression = isComplete ? 'excited' : arthurMood;
 
   return (
     <div className="relative w-full h-full overflow-hidden">
       <KitchenScene />
       <BackButton variant="dark" />
 
-      {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}
-
-      <div className="relative z-10 flex flex-col items-center justify-between h-full py-14 px-4">
-        {/* Title */}
-        <h2 className="font-heading text-amber-800/80 text-lg">
-          🥗 Arthur's Lunchbox
-        </h2>
-
-        {/* Arthur + speech */}
+      <div className="relative z-10 flex flex-col items-center justify-center gap-5 h-full px-4">
+        {/* Arthur — visual guide instead of text */}
         <div className="relative flex flex-col items-center">
-          <ArthurBear expression={expression} size={80} />
-          {packedItems.length === 0 && (
-            <div className="absolute -top-2 right-0 bg-white rounded-xl px-3 py-1.5 shadow-lg
-                            text-sm font-heading text-green-700 animate-bounce"
-                 style={{ animation: 'pop-in 0.5s ease-out 1s both' }}>
-              I'm hungry!
-            </div>
+          <ArthurBear expression={expression} size={90} />
+          {/* Visual-only speech: emoji bubble, no text */}
+          {packedItems.length === 0 && !isComplete && (
+            <motion.div
+              className="absolute -top-1 -right-2 bg-white rounded-full w-10 h-10
+                         flex items-center justify-center shadow-lg"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', delay: 0.3 }}>
+              <span className="text-xl">🍎</span>
+            </motion.div>
           )}
         </div>
 
-        {/* Lunchbox */}
+        {/* Lunchbox — progress is visual (slots filling up) */}
         <Lunchbox items={packedItems} />
 
-        {/* Hint */}
-        {!isComplete && packedItems.length > 0 && (
-          <p className="text-sm font-heading text-green-700/60 animate-pulse">
-            {packedItems.length === 1 ? '🍎 More fruit & veg!' :
-             packedItems.length === 3 ? '🥦 Nearly full!' :
-             packedItems.length === 4 ? '🥕 One more!' :
-             '🍌 Keep going!'}
-          </p>
+        {/* Food choices — only 3 at a time */}
+        {!isComplete && (
+          <div className="flex gap-5 justify-center">
+            <AnimatePresence mode="popLayout">
+              {choices.map(food => (
+                <motion.div
+                  key={food.id}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                  <FoodItem
+                    food={food}
+                    onTap={handleTap}
+                    wobble={wobbleId === food.id}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         )}
 
-        {/* Food choices */}
-        <div className="grid grid-cols-4 gap-3 w-full max-w-md">
-          {foods.map(food => (
-            <FoodItem
-              key={food.id}
-              food={food}
-              onTap={handleTap}
-              packed={packedItems.some(p => p.id === food.id)}
-              wobble={wobbleId === food.id}
-            />
-          ))}
-        </div>
-
-        {/* Play again */}
+        {/* Play again — big, visual, no reading needed */}
         {isComplete && (
-          <button onClick={handlePlayAgain}
-            className="mt-4 px-8 py-3 rounded-full bg-gradient-to-r from-green-400 to-emerald-500
-                       text-white font-heading text-lg active:scale-95 transition-transform shadow-lg"
-            style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-            Pack Again! 🥗
-          </button>
+          <motion.button
+            onClick={handlePlayAgain}
+            className="px-10 py-5 rounded-full bg-gradient-to-r from-green-400 to-emerald-500
+                       text-white font-heading text-2xl active:scale-95 transition-transform shadow-xl"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.8 }}>
+            🔄 🥗
+          </motion.button>
         )}
       </div>
+
+      {/* Flying food animation */}
+      <AnimatePresence>
+        {flyingEmoji && <FlyingFood emoji={flyingEmoji} onDone={() => setFlyingEmoji(null)} />}
+      </AnimatePresence>
 
       <ParticleLayer />
       <ArthurPeekLayer />
