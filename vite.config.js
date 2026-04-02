@@ -31,7 +31,7 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'images',
-              expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              expiration: { maxEntries: 800, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
@@ -41,6 +41,15 @@ export default defineConfig({
             options: {
               cacheName: 'audio',
               expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /\.mp4$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'videos',
+              expiration: { maxEntries: 20, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

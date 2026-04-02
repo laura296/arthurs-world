@@ -3,6 +3,7 @@ import { useRef, useContext } from 'react';
 import { playNavigate } from '../hooks/useSound';
 import GoldenHourScene from '../components/scenes/GoldenHourScene';
 import ArthurBear from '../components/ArthurBear';
+import DownloadAll from '../components/DownloadAll';
 import { SessionTimerContext } from '../App';
 
 const modes = [
@@ -54,6 +55,10 @@ export default function ModePicker() {
             <span className="text-2xl font-heading text-white drop-shadow">{m.label}</span>
           </button>
         ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-sm">
+        <DownloadAll />
       </div>
     </div>
   );
