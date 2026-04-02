@@ -82,6 +82,7 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+const MissingImages = lazy(() => import('./pages/MissingImages'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -185,6 +186,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<P><ModePicker /></P>} />
+      <Route path="/missing-images" element={<P><MissingImages /></P>} />
 
       {/* Mode-aware hub routes */}
       <Route path="/games/:mode" element={<M><P><SectionPicker /></P></M>} />
