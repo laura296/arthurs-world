@@ -128,7 +128,7 @@ function FoodItem({ food, onTap, packed, wobble }) {
   return (
     <button
       onPointerDown={() => !packed && onTap(food)}
-      className={`relative flex flex-col items-center justify-center rounded-2xl p-2 transition-all
+      className={`relative flex flex-col items-center justify-center rounded-3xl p-3 transition-all
                   ${packed ? 'opacity-30 scale-90' : 'active:scale-90 cursor-pointer'}
                   ${wobble ? 'animate-[wiggle_0.3s_ease-in-out]' : ''}`}
       style={{
@@ -143,12 +143,12 @@ function FoodItem({ food, onTap, packed, wobble }) {
             ? `0 4px 12px ${food.color}20, 0 0 0 2px ${food.color}15`
             : `0 2px 6px ${food.color}10`,
         touchAction: 'none',
-        minWidth: 72,
-        minHeight: 72,
+        minWidth: 90,
+        minHeight: 90,
       }}
       disabled={packed}
     >
-      <span className="text-3xl">{food.emoji}</span>
+      <span className="text-5xl">{food.emoji}</span>
       {packed && <span className="absolute top-0.5 right-0.5 text-sm">✅</span>}
       {/* Subtle golden glow on healthy foods */}
       {food.healthy && !packed && (
@@ -250,11 +250,11 @@ export default function ArthursLunchbox() {
   return (
     <div className="relative w-full h-full overflow-hidden">
       <KitchenScene />
-      <BackButton />
+      <BackButton variant="dark" />
 
       {showIntro && <IntroOverlay onDone={() => setShowIntro(false)} />}
 
-      <div className="relative z-10 flex flex-col items-center justify-between h-full py-16 px-4">
+      <div className="relative z-10 flex flex-col items-center justify-between h-full py-14 px-4">
         {/* Title */}
         <h2 className="font-heading text-amber-800/80 text-lg">
           🥗 Arthur's Lunchbox
@@ -262,7 +262,7 @@ export default function ArthursLunchbox() {
 
         {/* Arthur + speech */}
         <div className="relative flex flex-col items-center">
-          <ArthurBear expression={expression} size={100} />
+          <ArthurBear expression={expression} size={80} />
           {packedItems.length === 0 && (
             <div className="absolute -top-2 right-0 bg-white rounded-xl px-3 py-1.5 shadow-lg
                             text-sm font-heading text-green-700 animate-bounce"
@@ -286,7 +286,7 @@ export default function ArthursLunchbox() {
         )}
 
         {/* Food choices */}
-        <div className="grid grid-cols-4 gap-2 w-full max-w-sm">
+        <div className="grid grid-cols-4 gap-3 w-full max-w-md">
           {foods.map(food => (
             <FoodItem
               key={food.id}
