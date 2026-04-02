@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Taffy wants to do better ──
     {
       bg: 'from-purple-300 to-indigo-500',
-      image: '/arthurs-world/images/alphabet-made/page-1.png',
+      image: '/arthurs-world/images/alphabet-made/page-1.webp',
       text: 'After the funny mix-up with the first letter, Taffy wanted to do BETTER!',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: Let's make shapes for sounds ──
     {
       bg: 'from-violet-300 to-purple-500',
-      image: '/arthurs-world/images/alphabet-made/page-2.png',
+      image: '/arthurs-world/images/alphabet-made/page-2.webp',
       text: 'She said to Daddy "Let\'s make shapes for SOUNDS! Then everyone will understand!"',
       elements: [
         {
@@ -180,7 +180,7 @@ const storyData = {
     // ── Page 3: AAAH becomes A (key alphabet page) ──
     {
       bg: 'from-indigo-300 to-violet-500',
-      image: '/arthurs-world/images/alphabet-made/page-3.png',
+      image: '/arthurs-world/images/alphabet-made/page-3.webp',
       text: 'Taffy opened her mouth wide and said "AAAH!" Daddy drew a mouth shape \u2014 that became the letter A!',
       elements: [
         {
@@ -266,7 +266,7 @@ const storyData = {
     // ── Page 4: Buh buh becomes B (key alphabet page) ──
     {
       bg: 'from-purple-400 to-indigo-600',
-      image: '/arthurs-world/images/alphabet-made/page-4.png',
+      image: '/arthurs-world/images/alphabet-made/page-4.webp',
       text: 'Then she made a "Buh buh" sound with her lips. Daddy drew lips together \u2014 that became B!',
       elements: [
         {
@@ -352,7 +352,7 @@ const storyData = {
     // ── Page 5: Sssss becomes S (key alphabet page) ──
     {
       bg: 'from-indigo-400 to-blue-600',
-      image: '/arthurs-world/images/alphabet-made/page-5.png',
+      image: '/arthurs-world/images/alphabet-made/page-5.webp',
       text: 'She made a "Sssss" sound like a snake! Daddy drew a wiggly snake \u2014 that became S!',
       elements: [
         {
@@ -438,7 +438,7 @@ const storyData = {
     // ── Page 6: O is a round mouth (key alphabet page) ──
     {
       bg: 'from-blue-300 to-indigo-500',
-      image: '/arthurs-world/images/alphabet-made/page-6.png',
+      image: '/arthurs-world/images/alphabet-made/page-6.webp',
       text: 'They kept going! Every sound got its own special shape! O was a round mouth saying "Ooooh!"',
       elements: [
         {
@@ -524,7 +524,7 @@ const storyData = {
     // ── Page 7: Lots of letters! ──
     {
       bg: 'from-violet-400 to-purple-600',
-      image: '/arthurs-world/images/alphabet-made/page-7.png',
+      image: '/arthurs-world/images/alphabet-made/page-7.webp',
       text: 'Soon they had LOTS of letters! A, B, C, D, E, F, G... so many shapes!',
       elements: [
         {
@@ -625,7 +625,7 @@ const storyData = {
     // ── Page 8: Taffy writes her name (drag-to-target page) ──
     {
       bg: 'from-purple-300 to-violet-500',
-      image: '/arthurs-world/images/alphabet-made/page-8.png',
+      image: '/arthurs-world/images/alphabet-made/page-8.webp',
       text: 'Now Taffy could write WORDS! She wrote her name: T-A-F-F-Y!',
       elements: [
         {
@@ -711,7 +711,7 @@ const storyData = {
     // ── Page 9: Teaching friends ──
     {
       bg: 'from-indigo-300 to-purple-500',
-      image: '/arthurs-world/images/alphabet-made/page-9.png',
+      image: '/arthurs-world/images/alphabet-made/page-9.webp',
       text: 'She taught all her friends the alphabet. Now everyone could read and write!',
       elements: [
         {
@@ -797,7 +797,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-violet-300 to-indigo-500',
-      image: '/arthurs-world/images/alphabet-made/page-10.png',
+      image: '/arthurs-world/images/alphabet-made/page-10.webp',
       text: 'And that is how the alphabet was made! Now YOU can learn your letters too! The end!',
       elements: [
         {

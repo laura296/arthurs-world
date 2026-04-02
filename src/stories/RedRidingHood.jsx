@@ -8,7 +8,7 @@ const storyData = {
     // ─── Page 1: Introduction ───
     {
       bg: 'from-green-200 via-yellow-100 to-sky-200',
-      image: '/arthurs-world/images/red-riding/page-1.png',
+      image: '/arthurs-world/images/red-riding/page-1.webp',
       text: 'Once upon a time, there was a little girl who wore a red hood.',
       elements: [
         {
@@ -101,7 +101,7 @@ const storyData = {
     // ─── Page 2: Mummy gives basket ───
     {
       bg: 'from-amber-100 via-orange-100 to-yellow-100',
-      image: '/arthurs-world/images/red-riding/page-2.png',
+      image: '/arthurs-world/images/red-riding/page-2.webp',
       text: "Her mummy gave her a basket of yummy food to take to Grandma's house.",
       elements: [
         {
@@ -188,7 +188,7 @@ const storyData = {
     // ─── Page 3: Skipping through forest ───
     {
       bg: 'from-green-300 via-emerald-200 to-green-100',
-      image: '/arthurs-world/images/red-riding/page-3.png',
+      image: '/arthurs-world/images/red-riding/page-3.webp',
       text: 'Little Red Riding Hood skipped through the big forest.',
       elements: [
         {
@@ -295,7 +295,7 @@ const storyData = {
     // ─── Page 4: Meeting the silly wolf ───
     {
       bg: 'from-green-400 via-green-200 to-emerald-100',
-      image: '/arthurs-world/images/red-riding/page-4.png',
+      image: '/arthurs-world/images/red-riding/page-4.webp',
       text: 'She met a silly wolf in the forest. Hello Mr Wolf!',
       elements: [
         {
@@ -382,7 +382,7 @@ const storyData = {
     // ─── Page 5: Wolf runs ahead ───
     {
       bg: 'from-green-300 via-lime-200 to-green-100',
-      image: '/arthurs-world/images/red-riding/page-5.png',
+      image: '/arthurs-world/images/red-riding/page-5.webp',
       text: "The silly wolf ran ahead to Grandma's house.",
       elements: [
         {
@@ -469,7 +469,7 @@ const storyData = {
     // ─── Page 6: Wolf knocks on door ───
     {
       bg: 'from-amber-200 via-orange-100 to-yellow-100',
-      image: '/arthurs-world/images/red-riding/page-6.png',
+      image: '/arthurs-world/images/red-riding/page-6.webp',
       text: "The wolf knocked on Grandma's door. Knock knock knock!",
       elements: [
         {
@@ -548,7 +548,7 @@ const storyData = {
     // ─── Page 7: Wolf dresses up ───
     {
       bg: 'from-pink-100 via-amber-100 to-yellow-100',
-      image: '/arthurs-world/images/red-riding/page-7.png',
+      image: '/arthurs-world/images/red-riding/page-7.webp',
       text: 'The silly wolf dressed up as Grandma. What a funny wolf!',
       elements: [
         {
@@ -635,7 +635,7 @@ const storyData = {
     // ─── Page 8: What big eyes you have ───
     {
       bg: 'from-amber-100 via-orange-100 to-pink-100',
-      image: '/arthurs-world/images/red-riding/page-8.png',
+      image: '/arthurs-world/images/red-riding/page-8.webp',
       text: 'What big eyes you have! What big ears you have!',
       elements: [
         {
@@ -734,7 +734,7 @@ const storyData = {
     // ─── Page 9: Woodcutter helps ───
     {
       bg: 'from-green-200 via-emerald-200 to-lime-100',
-      image: '/arthurs-world/images/red-riding/page-9.png',
+      image: '/arthurs-world/images/red-riding/page-9.webp',
       text: 'A friendly woodcutter heard the noise and came to help!',
       elements: [
         {
@@ -827,7 +827,7 @@ const storyData = {
     // ─── Page 10: Happy ending ───
     {
       bg: 'from-pink-200 via-amber-100 to-yellow-100',
-      image: '/arthurs-world/images/red-riding/page-10.png',
+      image: '/arthurs-world/images/red-riding/page-10.webp',
       text: 'They all had tea and cakes together. Grandma was safe and happy!',
       elements: [
         {

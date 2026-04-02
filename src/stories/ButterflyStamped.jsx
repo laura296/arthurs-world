@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: King Solomon the wise ──
     {
       bg: 'from-amber-300 to-purple-500',
-      image: '/arthurs-world/images/butterfly-stamped/page-1.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-1.webp',
       text: 'King Solomon was the wisest king in the whole world. He could talk to ALL the animals!',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: The butterfly friend ──
     {
       bg: 'from-pink-300 to-purple-500',
-      image: '/arthurs-world/images/butterfly-stamped/page-2.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-2.webp',
       text: 'He had a beautiful butterfly friend. But the butterfly liked to show off to his wife!',
       elements: [
         {
@@ -180,7 +180,7 @@ const storyData = {
     // ── Page 3: The butterfly shows off ──
     {
       bg: 'from-purple-400 to-pink-600',
-      image: '/arthurs-world/images/butterfly-stamped/page-3.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-3.webp',
       text: 'The butterfly said to his wife "I am SO powerful! Watch \u2014 if I stamp my foot, the palace will disappear!"',
       elements: [
         {
@@ -266,7 +266,7 @@ const storyData = {
     // ── Page 4: Wife laughs ──
     {
       bg: 'from-pink-400 to-rose-600',
-      image: '/arthurs-world/images/butterfly-stamped/page-4.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-4.webp',
       text: 'His wife laughed! "You\'re just a tiny butterfly! You can\'t make a palace disappear!"',
       elements: [
         {
@@ -352,7 +352,7 @@ const storyData = {
     // ── Page 5: Butterfly asks Solomon for help (drag-to-target) ──
     {
       bg: 'from-amber-400 to-purple-600',
-      image: '/arthurs-world/images/butterfly-stamped/page-5.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-5.webp',
       text: 'The butterfly was worried. He\'d been showing off and now he was stuck! He went to ask King Solomon for help.',
       elements: [
         {
@@ -438,7 +438,7 @@ const storyData = {
     // ── Page 6: Solomon helps ──
     {
       bg: 'from-amber-300 to-yellow-500',
-      image: '/arthurs-world/images/butterfly-stamped/page-6.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-6.webp',
       text: 'Kind King Solomon said "Don\'t worry little friend! When you stamp, I\'ll use MY magic!"',
       elements: [
         {
@@ -539,7 +539,7 @@ const storyData = {
     // ── Page 7: THE BIG STAMP! (key page) ──
     {
       bg: 'from-purple-500 to-pink-600',
-      image: '/arthurs-world/images/butterfly-stamped/page-7.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-7.webp',
       text: 'The butterfly stamped his tiny foot \u2014 STAMP! And King Solomon made the palace shimmer and shake!',
       elements: [
         {
@@ -640,7 +640,7 @@ const storyData = {
     // ── Page 8: Wife is amazed ──
     {
       bg: 'from-pink-400 to-purple-600',
-      image: '/arthurs-world/images/butterfly-stamped/page-8.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-8.webp',
       text: 'The butterfly\'s wife was AMAZED! "Wow! You really ARE powerful!" she said.',
       elements: [
         {
@@ -726,7 +726,7 @@ const storyData = {
     // ── Page 9: The lesson ──
     {
       bg: 'from-amber-300 to-pink-500',
-      image: '/arthurs-world/images/butterfly-stamped/page-9.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-9.webp',
       text: 'But the butterfly learned his lesson \u2014 it\'s not nice to show off. Being kind is better than being powerful!',
       elements: [
         {
@@ -812,7 +812,7 @@ const storyData = {
     // ── Page 10: The end ──
     {
       bg: 'from-pink-300 to-amber-400',
-      image: '/arthurs-world/images/butterfly-stamped/page-10.png',
+      image: '/arthurs-world/images/butterfly-stamped/page-10.webp',
       text: 'And that is the story of the butterfly that stamped! Even tiny creatures can do big things! The end!',
       elements: [
         {

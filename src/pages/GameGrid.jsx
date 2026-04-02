@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import games from '../data/games';
 import BackButton from '../components/BackButton';
 import SectionBackground from '../components/backgrounds/SectionBackground';
@@ -55,10 +56,22 @@ export default function GameGrid() {
   const groups = groupGames(filtered);
   const hasMultipleGroups = groups.length > 1;
 
+  const scrollRef = useRef(null);
+  const [showScrollHint, setShowScrollHint] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const check = () => setShowScrollHint(el.scrollHeight > el.clientHeight + 40 && el.scrollTop < el.scrollHeight - el.clientHeight - 40);
+    check();
+    el.addEventListener('scroll', check, { passive: true });
+    return () => el.removeEventListener('scroll', check);
+  }, [filtered]);
+
   let globalIdx = 0;
 
   return (
-    <div className="relative w-full h-full bg-night overflow-y-auto no-scrollbar">
+    <div ref={scrollRef} className="relative w-full h-full bg-night overflow-y-auto no-scrollbar">
       <SectionBackground section={section} />
       <BackButton />
 
@@ -136,6 +149,14 @@ export default function GameGrid() {
           })}
         </div>
       </div>
+
+      {showScrollHint && (
+        <div className="fixed bottom-4 left-0 right-0 z-30 flex justify-center pointer-events-none">
+          <div className="bg-white/30 backdrop-blur-sm rounded-full px-4 py-2 animate-bounce">
+            <span className="text-2xl">👇</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

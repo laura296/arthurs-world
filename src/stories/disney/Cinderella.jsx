@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Introduction ──
     {
       bg: 'from-blue-200 to-indigo-400',
-      image: '/arthurs-world/images/disney/cinderella/page-1.png',
+      image: '/arthurs-world/images/disney/cinderella/page-1.webp',
       text: 'Once upon a time, a kind girl named Cinderella lived with her mean stepsisters.',
       elements: [
         { id: 'cinderella', x: 50, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: The Royal Invitation ──
     {
       bg: 'from-amber-200 to-yellow-400',
-      image: '/arthurs-world/images/disney/cinderella/page-2.png',
+      image: '/arthurs-world/images/disney/cinderella/page-2.webp',
       text: 'A royal invitation arrived! The Prince was holding a grand ball at the palace.',
       elements: [
         { id: 'invitation', x: 50, y: 45, hotspot: true, w: 120, h: 120, z: 2 },
@@ -49,7 +49,7 @@ const storyData = {
     // ── Page 3: Cinderella is Sad ──
     {
       bg: 'from-gray-400 to-blue-600',
-      image: '/arthurs-world/images/disney/cinderella/page-3.png',
+      image: '/arthurs-world/images/disney/cinderella/page-3.webp',
       text: 'The stepsisters went to the ball, but Cinderella had to stay behind. She was so sad!',
       elements: [
         { id: 'cinderella-sad', x: 50, y: 55, hotspot: true, w: 130, h: 130, z: 2 },
@@ -68,7 +68,7 @@ const storyData = {
     // ── Page 4: The Fairy Godmother ──
     {
       bg: 'from-purple-300 to-blue-500',
-      image: '/arthurs-world/images/disney/cinderella/page-4.png',
+      image: '/arthurs-world/images/disney/cinderella/page-4.webp',
       text: 'Suddenly, a sparkle of light appeared! It was the Fairy Godmother!',
       elements: [
         { id: 'fairy', x: 50, y: 40, hotspot: true, w: 140, h: 140, z: 3 },
@@ -89,7 +89,7 @@ const storyData = {
     // ── Page 5: The Pumpkin Coach ──
     {
       bg: 'from-orange-300 to-purple-500',
-      image: '/arthurs-world/images/disney/cinderella/page-5.png',
+      image: '/arthurs-world/images/disney/cinderella/page-5.webp',
       text: 'The Fairy Godmother turned a pumpkin into a beautiful golden coach!',
       elements: [
         { id: 'pumpkin', x: 30, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -109,7 +109,7 @@ const storyData = {
     // ── Page 6: The Glass Slipper ──
     {
       bg: 'from-blue-300 to-indigo-500',
-      image: '/arthurs-world/images/disney/cinderella/page-6.png',
+      image: '/arthurs-world/images/disney/cinderella/page-6.webp',
       text: 'Cinderella got a beautiful dress and tiny glass slippers! She looked like a princess!',
       elements: [
         { id: 'cinderella-dress', x: 50, y: 45, hotspot: true, w: 140, h: 140, z: 3 },
@@ -129,7 +129,7 @@ const storyData = {
     // ── Page 7: The Ball ──
     {
       bg: 'from-amber-300 to-rose-400',
-      image: '/arthurs-world/images/disney/cinderella/page-7.png',
+      image: '/arthurs-world/images/disney/cinderella/page-7.webp',
       text: 'At the ball, the Prince saw Cinderella and asked her to dance!',
       elements: [
         { id: 'prince', x: 35, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
@@ -149,7 +149,7 @@ const storyData = {
     // ── Page 8: Midnight ──
     {
       bg: 'from-indigo-600 to-gray-900',
-      image: '/arthurs-world/images/disney/cinderella/page-8.png',
+      image: '/arthurs-world/images/disney/cinderella/page-8.webp',
       text: 'Bong! Bong! The clock struck midnight! Cinderella had to run — she lost a glass slipper!',
       elements: [
         { id: 'clock', x: 50, y: 20, hotspot: true, w: 120, h: 120, z: 2 },
@@ -168,7 +168,7 @@ const storyData = {
     // ── Page 9: The Prince Searches ──
     {
       bg: 'from-green-300 to-blue-400',
-      image: '/arthurs-world/images/disney/cinderella/page-9.png',
+      image: '/arthurs-world/images/disney/cinderella/page-9.webp',
       text: 'The Prince searched the kingdom for the girl who fit the glass slipper. It fit Cinderella!',
       elements: [
         { id: 'prince-kneel', x: 35, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -187,7 +187,7 @@ const storyData = {
     // ── Page 10: Happily Ever After ──
     {
       bg: 'from-pink-300 to-amber-300',
-      image: '/arthurs-world/images/disney/cinderella/page-10.png',
+      image: '/arthurs-world/images/disney/cinderella/page-10.webp',
       text: 'Cinderella and the Prince lived happily ever after! And she was always kind to everyone.',
       elements: [
         { id: 'couple', x: 50, y: 45, hotspot: true, w: 150, h: 150, z: 2 },

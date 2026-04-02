@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Neverland ──
     {
       bg: 'from-blue-400 to-teal-600',
-      image: '/arthurs-world/images/disney/captain-hook/page-1.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-1.webp',
       text: 'Far away in Neverland, the silly Captain Hook sailed his pirate ship!',
       elements: [
         { id: 'ship', x: 50, y: 45, hotspot: true, w: 160, h: 160, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: Captain Hook ──
     {
       bg: 'from-red-600 to-gray-800',
-      image: '/arthurs-world/images/disney/captain-hook/page-2.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-2.webp',
       text: 'Captain Hook was a funny pirate! But he was very scared of one thing...',
       elements: [
         { id: 'hook', x: 50, y: 48, hotspot: true, w: 140, h: 140, z: 2 },
@@ -50,7 +50,7 @@ const storyData = {
     // ── Page 3: The Crocodile ──
     {
       bg: 'from-green-500 to-teal-700',
-      image: '/arthurs-world/images/disney/captain-hook/page-3.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-3.webp',
       text: 'A crocodile had swallowed a clock! Tick tock tick tock! Captain Hook was terrified!',
       elements: [
         { id: 'croc', x: 50, y: 55, hotspot: true, w: 160, h: 160, z: 2 },
@@ -70,7 +70,7 @@ const storyData = {
     // ── Page 4: Peter Pan Arrives ──
     {
       bg: 'from-sky-400 to-indigo-500',
-      image: '/arthurs-world/images/disney/captain-hook/page-4.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-4.webp',
       text: 'Peter Pan flew over the ship! He was always playing tricks on Captain Hook.',
       elements: [
         { id: 'peter-pan', x: 50, y: 25, hotspot: true, w: 130, h: 130, z: 3 },
@@ -90,7 +90,7 @@ const storyData = {
     // ── Page 5: Treasure Map ──
     {
       bg: 'from-amber-400 to-orange-600',
-      image: '/arthurs-world/images/disney/captain-hook/page-5.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-5.webp',
       text: 'Captain Hook found a treasure map! X marks the spot on Skull Island!',
       elements: [
         { id: 'map', x: 50, y: 45, hotspot: true, w: 140, h: 140, z: 2 },
@@ -111,7 +111,7 @@ const storyData = {
     // ── Page 6: The Sword Fight ──
     {
       bg: 'from-orange-400 to-red-600',
-      image: '/arthurs-world/images/disney/captain-hook/page-6.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-6.webp',
       text: 'Peter Pan and Captain Hook had a silly play fight on the ship!',
       elements: [
         { id: 'peter-fight', x: 35, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
@@ -131,7 +131,7 @@ const storyData = {
     // ── Page 7: Walk the Plank ──
     {
       bg: 'from-blue-500 to-blue-800',
-      image: '/arthurs-world/images/disney/captain-hook/page-7.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-7.webp',
       text: 'Captain Hook made the Lost Boys walk the plank! But Peter Pan had a plan.',
       elements: [
         { id: 'plank', x: 50, y: 50, hotspot: true, w: 140, h: 100, z: 2 },
@@ -150,7 +150,7 @@ const storyData = {
     // ── Page 8: Hook Falls ──
     {
       bg: 'from-teal-400 to-blue-700',
-      image: '/arthurs-world/images/disney/captain-hook/page-8.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-8.webp',
       text: 'Peter Pan tricked Captain Hook — and Hook fell into the water with the crocodile!',
       elements: [
         { id: 'hook-fall', x: 50, y: 45, hotspot: true, w: 140, h: 140, z: 2 },
@@ -170,7 +170,7 @@ const storyData = {
     // ── Page 9: Hook Runs Away ──
     {
       bg: 'from-green-500 to-teal-600',
-      image: '/arthurs-world/images/disney/captain-hook/page-9.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-9.webp',
       text: 'Captain Hook ran away as fast as he could! The crocodile chased him — tick tock tick tock!',
       elements: [
         { id: 'hook-run', x: 30, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -190,7 +190,7 @@ const storyData = {
     // ── Page 10: Neverland is Safe ──
     {
       bg: 'from-sky-300 to-amber-300',
-      image: '/arthurs-world/images/disney/captain-hook/page-10.png',
+      image: '/arthurs-world/images/disney/captain-hook/page-10.webp',
       text: 'Neverland was safe again! Peter Pan and the Lost Boys celebrated together!',
       elements: [
         { id: 'peter-celebrate', x: 50, y: 40, hotspot: true, w: 140, h: 140, z: 2 },

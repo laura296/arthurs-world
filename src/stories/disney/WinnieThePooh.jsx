@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Hundred Acre Wood ──
     {
       bg: 'from-green-300 to-amber-400',
-      image: '/arthurs-world/images/disney/pooh/page-1.png',
+      image: '/arthurs-world/images/disney/pooh/page-1.webp',
       text: 'In the Hundred Acre Wood, a little bear named Winnie the Pooh woke up feeling hungry!',
       elements: [
         { id: 'pooh', x: 50, y: 50, hotspot: true, w: 140, h: 140, z: 2 },
@@ -30,7 +30,7 @@ const storyData = {
     // ── Page 2: The Honey Pot ──
     {
       bg: 'from-amber-300 to-yellow-500',
-      image: '/arthurs-world/images/disney/pooh/page-2.png',
+      image: '/arthurs-world/images/disney/pooh/page-2.webp',
       text: 'Pooh looked in his honey pot. Oh no — it was empty! Not even a smidge of honey!',
       elements: [
         { id: 'pooh-sad', x: 50, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
@@ -50,7 +50,7 @@ const storyData = {
     // ── Page 3: Visit Piglet ──
     {
       bg: 'from-pink-300 to-green-400',
-      image: '/arthurs-world/images/disney/pooh/page-3.png',
+      image: '/arthurs-world/images/disney/pooh/page-3.webp',
       text: 'Pooh went to visit his best friend Piglet! Piglet was very small and very brave.',
       elements: [
         { id: 'pooh-walk', x: 35, y: 52, hotspot: true, w: 130, h: 130, z: 2 },
@@ -71,7 +71,7 @@ const storyData = {
     // ── Page 4: Tigger Bounces In ──
     {
       bg: 'from-orange-400 to-amber-500',
-      image: '/arthurs-world/images/disney/pooh/page-4.png',
+      image: '/arthurs-world/images/disney/pooh/page-4.webp',
       text: 'Tigger bounced in! Bouncing is what Tiggers do best!',
       elements: [
         { id: 'tigger', x: 50, y: 42, hotspot: true, w: 140, h: 140, z: 3 },
@@ -91,7 +91,7 @@ const storyData = {
     // ── Page 5: The Bee Tree ──
     {
       bg: 'from-green-400 to-emerald-600',
-      image: '/arthurs-world/images/disney/pooh/page-5.png',
+      image: '/arthurs-world/images/disney/pooh/page-5.webp',
       text: 'They found a tree full of bees! That means honey! Pooh started to climb up.',
       elements: [
         { id: 'bee-tree', x: 50, y: 30, hotspot: true, w: 150, h: 150, z: 1 },
@@ -113,7 +113,7 @@ const storyData = {
     // ── Page 6: Oh Bother! ──
     {
       bg: 'from-amber-400 to-orange-500',
-      image: '/arthurs-world/images/disney/pooh/page-6.png',
+      image: '/arthurs-world/images/disney/pooh/page-6.webp',
       text: 'Oh bother! The bees chased Pooh! He fell right into a puddle of mud!',
       elements: [
         { id: 'pooh-mud', x: 50, y: 55, hotspot: true, w: 140, h: 140, z: 2 },
@@ -133,7 +133,7 @@ const storyData = {
     // ── Page 7: Rabbit's House ──
     {
       bg: 'from-green-300 to-amber-300',
-      image: '/arthurs-world/images/disney/pooh/page-7.png',
+      image: '/arthurs-world/images/disney/pooh/page-7.webp',
       text: 'They went to Rabbit\'s house! Rabbit had lots and lots of honey!',
       elements: [
         { id: 'rabbit', x: 35, y: 50, hotspot: true, w: 120, h: 120, z: 2 },
@@ -154,7 +154,7 @@ const storyData = {
     // ── Page 8: Pooh Gets Stuck ──
     {
       bg: 'from-amber-300 to-green-500',
-      image: '/arthurs-world/images/disney/pooh/page-8.png',
+      image: '/arthurs-world/images/disney/pooh/page-8.webp',
       text: 'Pooh ate SO much honey that he got stuck in Rabbit\'s front door! Oh bother!',
       elements: [
         { id: 'pooh-stuck', x: 50, y: 50, hotspot: true, w: 160, h: 160, z: 2 },
@@ -175,7 +175,7 @@ const storyData = {
     // ── Page 9: POP! ──
     {
       bg: 'from-yellow-300 to-green-400',
-      image: '/arthurs-world/images/disney/pooh/page-9.png',
+      image: '/arthurs-world/images/disney/pooh/page-9.webp',
       text: 'POP! Everyone pulled together and Pooh popped right out! He flew through the air!',
       elements: [
         { id: 'pooh-fly', x: 50, y: 35, hotspot: true, w: 140, h: 140, z: 3 },
@@ -195,7 +195,7 @@ const storyData = {
     // ── Page 10: A Lovely Day ──
     {
       bg: 'from-amber-200 to-pink-300',
-      image: '/arthurs-world/images/disney/pooh/page-10.png',
+      image: '/arthurs-world/images/disney/pooh/page-10.webp',
       text: 'What a lovely day! Pooh and his friends shared honey together. Because friends are the best!',
       elements: [
         { id: 'pooh-end', x: 35, y: 48, hotspot: true, w: 130, h: 130, z: 2 },

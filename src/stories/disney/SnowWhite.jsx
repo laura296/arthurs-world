@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Introduction ──
     {
       bg: 'from-green-300 to-emerald-600',
-      image: '/arthurs-world/images/disney/snow-white/page-1.png',
+      image: '/arthurs-world/images/disney/snow-white/page-1.webp',
       text: 'Once upon a time, there lived a princess named Snow White. She was the fairest in the land!',
       elements: [
         { id: 'snow-white', x: 50, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: The Magic Mirror ──
     {
       bg: 'from-purple-600 to-gray-800',
-      image: '/arthurs-world/images/disney/snow-white/page-2.png',
+      image: '/arthurs-world/images/disney/snow-white/page-2.webp',
       text: 'The Queen had a magic mirror. She asked it, "Who is the fairest of them all?"',
       elements: [
         { id: 'queen', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -49,7 +49,7 @@ const storyData = {
     // ── Page 3: Into the Forest ──
     {
       bg: 'from-green-700 to-gray-900',
-      image: '/arthurs-world/images/disney/snow-white/page-3.png',
+      image: '/arthurs-world/images/disney/snow-white/page-3.webp',
       text: 'Snow White ran into the big forest. The trees were very tall!',
       elements: [
         { id: 'snow-white-run', x: 50, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -70,7 +70,7 @@ const storyData = {
     // ── Page 4: The Cottage ──
     {
       bg: 'from-green-400 to-amber-400',
-      image: '/arthurs-world/images/disney/snow-white/page-4.png',
+      image: '/arthurs-world/images/disney/snow-white/page-4.webp',
       text: 'Snow White found a tiny cottage in the woods! Everything inside was so small!',
       elements: [
         { id: 'cottage', x: 50, y: 35, hotspot: true, w: 150, h: 150, z: 2 },
@@ -89,7 +89,7 @@ const storyData = {
     // ── Page 5: The Seven Dwarfs ──
     {
       bg: 'from-amber-300 to-orange-500',
-      image: '/arthurs-world/images/disney/snow-white/page-5.png',
+      image: '/arthurs-world/images/disney/snow-white/page-5.webp',
       text: 'Seven little dwarfs lived in the cottage! They worked in the diamond mine all day.',
       elements: [
         { id: 'dwarf1', x: 15, y: 55, hotspot: true, w: 80, h: 80, z: 2 },
@@ -114,7 +114,7 @@ const storyData = {
     // ── Page 6: The Poison Apple ──
     {
       bg: 'from-green-600 to-gray-800',
-      image: '/arthurs-world/images/disney/snow-white/page-6.png',
+      image: '/arthurs-world/images/disney/snow-white/page-6.webp',
       text: 'The Queen dressed up as an old woman. She brought a shiny red apple.',
       elements: [
         { id: 'old-woman', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -134,7 +134,7 @@ const storyData = {
     // ── Page 7: Snow White Sleeps ──
     {
       bg: 'from-blue-400 to-indigo-700',
-      image: '/arthurs-world/images/disney/snow-white/page-7.png',
+      image: '/arthurs-world/images/disney/snow-white/page-7.webp',
       text: 'Snow White bit the apple and fell into a deep sleep. The dwarfs were so sad!',
       elements: [
         { id: 'snow-white-sleep', x: 50, y: 50, hotspot: true, w: 140, h: 140, z: 2 },
@@ -153,7 +153,7 @@ const storyData = {
     // ── Page 8: The Prince Arrives ──
     {
       bg: 'from-amber-300 to-rose-400',
-      image: '/arthurs-world/images/disney/snow-white/page-8.png',
+      image: '/arthurs-world/images/disney/snow-white/page-8.webp',
       text: 'A brave prince heard about Snow White. He rode through the forest to find her!',
       elements: [
         { id: 'prince', x: 40, y: 48, hotspot: true, w: 130, h: 130, z: 2 },
@@ -172,7 +172,7 @@ const storyData = {
     // ── Page 9: True Love's Kiss ──
     {
       bg: 'from-pink-300 to-purple-400',
-      image: '/arthurs-world/images/disney/snow-white/page-9.png',
+      image: '/arthurs-world/images/disney/snow-white/page-9.webp',
       text: 'The Prince kissed Snow White, and she woke up! True love broke the spell!',
       elements: [
         { id: 'snow-white-wake', x: 50, y: 48, hotspot: true, w: 140, h: 140, z: 2 },
@@ -193,7 +193,7 @@ const storyData = {
     // ── Page 10: Happily Ever After ──
     {
       bg: 'from-yellow-300 to-pink-300',
-      image: '/arthurs-world/images/disney/snow-white/page-10.png',
+      image: '/arthurs-world/images/disney/snow-white/page-10.webp',
       text: 'Snow White and the Prince lived happily ever after with all their forest friends!',
       elements: [
         { id: 'couple-final', x: 50, y: 45, hotspot: true, w: 150, h: 150, z: 2 },

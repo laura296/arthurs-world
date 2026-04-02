@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Shepherd Boy ──
     {
       bg: 'from-green-300 to-sky-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-1.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-1.webp',
       text: 'Once upon a time, a little boy looked after sheep on a big green hill.',
       elements: [
         { id: 'boy', x: 45, y: 45, hotspot: true, w: 120, h: 120, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: Boy Gets Bored ──
     {
       bg: 'from-amber-200 to-green-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-2.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-2.webp',
       text: 'The boy was SO bored! He had a naughty idea. He shouted "WOLF! WOLF!"',
       elements: [
         { id: 'boy-shout', x: 45, y: 42, hotspot: true, w: 130, h: 130, z: 2 },
@@ -48,7 +48,7 @@ const storyData = {
     // ── Page 3: Villagers Come ──
     {
       bg: 'from-orange-300 to-amber-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-3.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-3.webp',
       text: 'All the villagers came running up the hill! But there was NO wolf! The boy laughed!',
       elements: [
         { id: 'villager1', x: 25, y: 55, hotspot: true, w: 100, h: 100, z: 2 },
@@ -67,7 +67,7 @@ const storyData = {
     // ── Page 4: Second Time ──
     {
       bg: 'from-green-300 to-teal-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-4.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-4.webp',
       text: 'The next day, the naughty boy did it again! "WOLF! WOLF!" he cried.',
       elements: [
         { id: 'boy-again', x: 45, y: 42, hotspot: true, w: 130, h: 130, z: 2 },
@@ -86,7 +86,7 @@ const storyData = {
     // ── Page 5: Villagers Angry ──
     {
       bg: 'from-red-300 to-orange-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-5.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-5.webp',
       text: 'The villagers came running again! No wolf! They were very cross with the boy.',
       elements: [
         { id: 'angry-villager1', x: 30, y: 50, hotspot: true, w: 110, h: 110, z: 2 },
@@ -105,7 +105,7 @@ const storyData = {
     // ── Page 6: Real Wolf Comes ──
     {
       bg: 'from-gray-500 to-indigo-700',
-      image: '/arthurs-world/images/boy-cried-wolf/page-6.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-6.webp',
       text: 'Then one day, a REAL wolf came creeping out of the forest! The boy was so scared!',
       elements: [
         { id: 'real-wolf', x: 30, y: 50, hotspot: true, w: 140, h: 140, z: 2 },
@@ -124,7 +124,7 @@ const storyData = {
     // ── Page 7: Nobody Comes ──
     {
       bg: 'from-indigo-500 to-gray-700',
-      image: '/arthurs-world/images/boy-cried-wolf/page-7.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-7.webp',
       text: '"WOLF! WOLF!" cried the boy. But nobody came to help! They thought he was tricking them again.',
       elements: [
         { id: 'boy-alone', x: 50, y: 45, hotspot: true, w: 130, h: 130, z: 2 },
@@ -143,7 +143,7 @@ const storyData = {
     // ── Page 8: The Lesson ──
     {
       bg: 'from-amber-300 to-green-400',
-      image: '/arthurs-world/images/boy-cried-wolf/page-8.png',
+      image: '/arthurs-world/images/boy-cried-wolf/page-8.webp',
       text: 'A kind farmer chased the wolf away! The boy learned his lesson — always tell the truth!',
       elements: [
         { id: 'farmer', x: 35, y: 45, hotspot: true, w: 130, h: 130, z: 2 },

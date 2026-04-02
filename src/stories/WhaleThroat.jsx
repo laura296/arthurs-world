@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Meet the Whale ──
     {
       bg: 'from-blue-400 to-blue-700',
-      image: '/arthurs-world/images/whale-throat/page-1.png',
+      image: '/arthurs-world/images/whale-throat/page-1.webp',
       text: 'Once upon a time, in the big blue sea, there was a whale. A BIG whale. A VERY big whale!',
       elements: [
         { id: 'whale', x: 50, y: 40, hotspot: true, w: 160, h: 140, z: 3 },
@@ -54,7 +54,7 @@ const storyData = {
     // ── Page 2: The Hungry Whale ──
     {
       bg: 'from-blue-500 to-blue-800',
-      image: '/arthurs-world/images/whale-throat/page-2.png',
+      image: '/arthurs-world/images/whale-throat/page-2.webp',
       text: 'And this whale was HUNGRY. So hungry! His tummy went rumble rumble rumble. "I want FISH!" said the whale.',
       elements: [
         { id: 'hungry-whale', x: 25, y: 38, hotspot: true, w: 160, h: 140, z: 3 },
@@ -107,7 +107,7 @@ const storyData = {
     // ── Page 3: One Little Fish ──
     {
       bg: 'from-blue-300 to-blue-600',
-      image: '/arthurs-world/images/whale-throat/page-3.png',
+      image: '/arthurs-world/images/whale-throat/page-3.webp',
       text: 'He ate ALL the fish. Every one! But wait... one little fish was hiding. One teeny tiny clever fish.',
       elements: [
         { id: 'clever-fish', x: 70, y: 45, hotspot: true, w: 80, h: 70, z: 3 },
@@ -146,7 +146,7 @@ const storyData = {
     // ── Page 4: The Clever Fish Has a Plan ──
     {
       bg: 'from-cyan-400 to-blue-600',
-      image: '/arthurs-world/images/whale-throat/page-4.png',
+      image: '/arthurs-world/images/whale-throat/page-4.webp',
       text: 'The little fish had an idea! "Mr Whale! Mr Whale! See that man on the raft? I bet he is YUMMY!"',
       elements: [
         { id: 'plan-fish', x: 25, y: 50, hotspot: true, w: 80, h: 70, z: 3 },
@@ -192,7 +192,7 @@ const storyData = {
     // ── Page 5: Splish Splash! ──
     {
       bg: 'from-blue-400 to-indigo-700',
-      image: '/arthurs-world/images/whale-throat/page-5.png',
+      image: '/arthurs-world/images/whale-throat/page-5.webp',
       text: 'So off went the whale! Splish splash splosh! His tail went WHACK and the waves went WHOOSH!',
       elements: [
         { id: 'swimming-whale', x: 35, y: 42, hotspot: true, w: 160, h: 140, z: 3 },
@@ -231,7 +231,7 @@ const storyData = {
     // ── Page 6: GULP! ──
     {
       bg: 'from-blue-600 to-blue-900',
-      image: '/arthurs-world/images/whale-throat/page-6.png',
+      image: '/arthurs-world/images/whale-throat/page-6.webp',
       text: 'The whale opened his mouth wide wide WIDE. And he swallowed that man right up! GULP!',
       elements: [
         { id: 'big-whale-mouth', x: 40, y: 38, hotspot: true, w: 180, h: 160, z: 3 },
@@ -270,7 +270,7 @@ const storyData = {
     // ── Page 7: Bang Bang Bang! ──
     {
       bg: 'from-amber-800 to-rose-900',
-      image: '/arthurs-world/images/whale-throat/page-7.png',
+      image: '/arthurs-world/images/whale-throat/page-7.webp',
       text: 'But that man was clever! Inside the whale he went BANG BANG BANG! He built a scratchy poky grate to stick in the whale\'s throat!',
       elements: [
         { id: 'inside-man', x: 35, y: 45, hotspot: true, w: 100, h: 100, z: 3 },
@@ -309,7 +309,7 @@ const storyData = {
     // ── Page 8: Aaaaa-CHOO! ──
     {
       bg: 'from-blue-500 to-purple-700',
-      image: '/arthurs-world/images/whale-throat/page-8.png',
+      image: '/arthurs-world/images/whale-throat/page-8.webp',
       text: 'The grate got stuck in the whale\'s throat! "AAAAA-CHOO!" went the whale. He coughed and he spluttered and he wibbled and he wobbled!',
       elements: [
         { id: 'coughing-whale', x: 45, y: 40, hotspot: true, w: 160, h: 140, z: 3 },
@@ -355,7 +355,7 @@ const storyData = {
     // ── Page 9: Out He Pops! ──
     {
       bg: 'from-cyan-300 to-blue-500',
-      image: '/arthurs-world/images/whale-throat/page-9.png',
+      image: '/arthurs-world/images/whale-throat/page-9.webp',
       text: 'POP! Out jumped the man! He landed on his raft and sailed far far away. "Bye bye, silly whale!"',
       elements: [
         { id: 'escaping-man', x: 70, y: 30, hotspot: true, w: 100, h: 100, z: 3 },
@@ -394,7 +394,7 @@ const storyData = {
     // ── Page 10: Only Teeny Tiny Fish ──
     {
       bg: 'from-blue-300 to-cyan-500',
-      image: '/arthurs-world/images/whale-throat/page-10.png',
+      image: '/arthurs-world/images/whale-throat/page-10.webp',
       text: 'And from that day on, the whale could only eat teeny weeny tiny little fish. No more gobbling! The end!',
       elements: [
         { id: 'gentle-whale', x: 40, y: 35, hotspot: true, w: 160, h: 140, z: 2 },

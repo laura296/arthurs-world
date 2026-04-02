@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Eldest Magician makes the world ──
     {
       bg: 'from-cyan-300 to-blue-500',
-      image: '/arthurs-world/images/crab-sea/page-1.png',
+      image: '/arthurs-world/images/crab-sea/page-1.webp',
       text: 'In the very beginning, the Eldest Magician was making the world. He told all the animals to play!',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: Animals playing ──
     {
       bg: 'from-teal-300 to-cyan-500',
-      image: '/arthurs-world/images/crab-sea/page-2.png',
+      image: '/arthurs-world/images/crab-sea/page-2.webp',
       text: 'The elephant played at being an elephant. The cow played at being a cow. Everyone was happy!',
       elements: [
         {
@@ -180,7 +180,7 @@ const storyData = {
     // ── Page 3: Crab goes to the sea ──
     {
       bg: 'from-cyan-400 to-blue-600',
-      image: '/arthurs-world/images/crab-sea/page-3.png',
+      image: '/arthurs-world/images/crab-sea/page-3.webp',
       text: 'But one little crab went down to the sea and started playing with the water \u2014 splash, splash!',
       elements: [
         {
@@ -266,7 +266,7 @@ const storyData = {
     // ── Page 4: Water rises (key splash page) ──
     {
       bg: 'from-blue-500 to-blue-800',
-      image: '/arthurs-world/images/crab-sea/page-4.png',
+      image: '/arthurs-world/images/crab-sea/page-4.webp',
       text: 'The crab was SO big and strong! When he went IN the water, it rose up high!',
       elements: [
         {
@@ -352,7 +352,7 @@ const storyData = {
     // ── Page 5: Water goes down (key splash page) ──
     {
       bg: 'from-cyan-500 to-blue-700',
-      image: '/arthurs-world/images/crab-sea/page-5.png',
+      image: '/arthurs-world/images/crab-sea/page-5.webp',
       text: 'When the crab came OUT of the water, it went down low! In and out, up and down!',
       elements: [
         {
@@ -438,7 +438,7 @@ const storyData = {
     // ── Page 6: Magician notices ──
     {
       bg: 'from-teal-400 to-blue-600',
-      image: '/arthurs-world/images/crab-sea/page-6.png',
+      image: '/arthurs-world/images/crab-sea/page-6.webp',
       text: 'The Eldest Magician said "Who is playing with my sea? The water keeps going up and down!"',
       elements: [
         {
@@ -524,7 +524,7 @@ const storyData = {
     // ── Page 7: Little girl Doris tells ──
     {
       bg: 'from-cyan-300 to-teal-500',
-      image: '/arthurs-world/images/crab-sea/page-7.png',
+      image: '/arthurs-world/images/crab-sea/page-7.webp',
       text: "Little girl Doris said \"It's the big crab, Mr Magician! He's making the water go whoosh!\"",
       elements: [
         {
@@ -610,7 +610,7 @@ const storyData = {
     // ── Page 8: Magician makes crab small ──
     {
       bg: 'from-blue-400 to-indigo-600',
-      image: '/arthurs-world/images/crab-sea/page-8.png',
+      image: '/arthurs-world/images/crab-sea/page-8.webp',
       text: 'The Magician made the crab small with his magic! Now the crab was tiny!',
       elements: [
         {
@@ -696,7 +696,7 @@ const storyData = {
     // ── Page 9: Crab still plays — that's the tides! (drag-to-target) ──
     {
       bg: 'from-cyan-400 to-blue-600',
-      image: '/arthurs-world/images/crab-sea/page-9.png',
+      image: '/arthurs-world/images/crab-sea/page-9.webp',
       text: "But the little crab STILL plays with the sea! In and out, in and out \u2014 that's the TIDES!",
       elements: [
         {
@@ -782,7 +782,7 @@ const storyData = {
     // ── Page 10: The end — sea goes up and down! ──
     {
       bg: 'from-teal-300 to-cyan-500',
-      image: '/arthurs-world/images/crab-sea/page-10.png',
+      image: '/arthurs-world/images/crab-sea/page-10.webp',
       text: 'And that is why the sea goes up and down every day! The crab is still playing! The end!',
       elements: [
         {
