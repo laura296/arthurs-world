@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Lazy Camel ──
     {
       bg: 'from-amber-300 to-orange-500',
-      image: '/arthurs-world/images/camel-hump/page-1.png',
+      image: '/arthurs-world/images/camel-hump/page-1.webp',
       text: 'Once upon a time, there was a VERY lazy camel who lived in the hot hot desert.',
       elements: [
         { id: 'camel', x: 50, y: 40, hotspot: true, w: 160, h: 140, z: 3 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: The Horse Asks ──
     {
       bg: 'from-amber-200 to-yellow-500',
-      image: '/arthurs-world/images/camel-hump/page-2.png',
+      image: '/arthurs-world/images/camel-hump/page-2.webp',
       text: '"Please help us!" said the Horse. But the lazy camel just said... HUMPH!',
       elements: [
         { id: 'horse', x: 25, y: 40, hotspot: true, w: 130, h: 120, z: 3 },
@@ -49,7 +49,7 @@ const storyData = {
     // ── Page 3: The Dog Asks ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/camel-hump/page-3.png',
+      image: '/arthurs-world/images/camel-hump/page-3.webp',
       text: '"Please help us!" said the Dog. But the lazy camel just said... HUMPH!',
       elements: [
         { id: 'dog', x: 25, y: 42, hotspot: true, w: 120, h: 110, z: 3 },
@@ -70,7 +70,7 @@ const storyData = {
     // ── Page 4: The Ox Asks ──
     {
       bg: 'from-yellow-300 to-amber-500',
-      image: '/arthurs-world/images/camel-hump/page-4.png',
+      image: '/arthurs-world/images/camel-hump/page-4.webp',
       text: '"Please help us!" said the Ox. But the lazy camel STILL just said... HUMPH!',
       elements: [
         { id: 'ox', x: 25, y: 40, hotspot: true, w: 130, h: 120, z: 3 },
@@ -90,7 +90,7 @@ const storyData = {
     // ── Page 5: Extra Work — not fair! ──
     {
       bg: 'from-orange-300 to-red-400',
-      image: '/arthurs-world/images/camel-hump/page-5.png',
+      image: '/arthurs-world/images/camel-hump/page-5.webp',
       text: 'All the animals had to do EXTRA work because the lazy camel would not help! It was not fair!',
       elements: [
         { id: 'tired-horse', x: 18, y: 38, hotspot: true, w: 120, h: 110, z: 3 },
@@ -111,7 +111,7 @@ const storyData = {
     // ── Page 6: The Genie Appears ──
     {
       bg: 'from-purple-400 to-indigo-600',
-      image: '/arthurs-world/images/camel-hump/page-6.png',
+      image: '/arthurs-world/images/camel-hump/page-6.webp',
       text: 'WHOOOOSH! A magic genie appeared from the desert in a big swirl of sand!',
       elements: [
         { id: 'genie', x: 45, y: 35, hotspot: true, w: 150, h: 140, z: 3 },
@@ -132,7 +132,7 @@ const storyData = {
     // ── Page 7: Genie tells off the Camel ──
     {
       bg: 'from-violet-400 to-purple-600',
-      image: '/arthurs-world/images/camel-hump/page-7.png',
+      image: '/arthurs-world/images/camel-hump/page-7.webp',
       text: '"Camel! Why will you not work?" said the Genie. And the camel said it AGAIN... HUMPH!',
       elements: [
         { id: 'cross-genie', x: 30, y: 35, hotspot: true, w: 140, h: 130, z: 3 },
@@ -153,7 +153,7 @@ const storyData = {
     // ── Page 8: POOF! The Hump appears! ──
     {
       bg: 'from-fuchsia-400 to-purple-700',
-      image: '/arthurs-world/images/camel-hump/page-8.png',
+      image: '/arthurs-world/images/camel-hump/page-8.webp',
       text: 'The Genie waved his hands and POOF! A great big HUMPH — I mean HUMP — grew on the camel\'s back!',
       elements: [
         { id: 'magic-genie', x: 22, y: 32, hotspot: true, w: 130, h: 120, z: 3 },
@@ -174,7 +174,7 @@ const storyData = {
     // ── Page 9: The Hump helps! ──
     {
       bg: 'from-sky-300 to-amber-400',
-      image: '/arthurs-world/images/camel-hump/page-9.png',
+      image: '/arthurs-world/images/camel-hump/page-9.webp',
       text: 'Now the camel could keep water in his hump and work for days and days without stopping!',
       elements: [
         { id: 'working-camel', x: 50, y: 38, hotspot: true, w: 160, h: 140, z: 3 },
@@ -195,7 +195,7 @@ const storyData = {
     // ── Page 10: The End! ──
     {
       bg: 'from-green-300 to-amber-400',
-      image: '/arthurs-world/images/camel-hump/page-10.png',
+      image: '/arthurs-world/images/camel-hump/page-10.webp',
       text: 'And that is how the camel got his hump! He was not so lazy after that. The End!',
       elements: [
         { id: 'happy-camel', x: 50, y: 36, hotspot: true, w: 150, h: 140, z: 3 },

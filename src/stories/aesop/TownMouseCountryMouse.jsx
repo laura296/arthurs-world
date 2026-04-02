@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Country Mouse ──
     {
       bg: 'from-green-300 to-amber-400',
-      image: '/arthurs-world/images/town-country-mouse/page-1.png',
+      image: '/arthurs-world/images/town-country-mouse/page-1.webp',
       text: 'Once upon a time, a little country mouse lived in a cosy hole under a big oak tree.',
       elements: [
         { id: 'country-mouse', x: 45, y: 55, hotspot: true, w: 110, h: 110, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: Town Mouse Visits ──
     {
       bg: 'from-amber-200 to-green-400',
-      image: '/arthurs-world/images/town-country-mouse/page-2.png',
+      image: '/arthurs-world/images/town-country-mouse/page-2.webp',
       text: 'One day, his cousin the town mouse came to visit! "Hello cousin!" he said.',
       elements: [
         { id: 'town-mouse', x: 60, y: 48, hotspot: true, w: 110, h: 110, z: 2 },
@@ -48,7 +48,7 @@ const storyData = {
     // ── Page 3: Simple Food ──
     {
       bg: 'from-amber-300 to-orange-300',
-      image: '/arthurs-world/images/town-country-mouse/page-3.png',
+      image: '/arthurs-world/images/town-country-mouse/page-3.webp',
       text: 'Country mouse served seeds and berries. "Is this ALL you eat?" said town mouse.',
       elements: [
         { id: 'seeds', x: 40, y: 58, hotspot: true, w: 80, h: 70, z: 2 },
@@ -67,7 +67,7 @@ const storyData = {
     // ── Page 4: The Big City ──
     {
       bg: 'from-blue-300 to-purple-500',
-      image: '/arthurs-world/images/town-country-mouse/page-4.png',
+      image: '/arthurs-world/images/town-country-mouse/page-4.webp',
       text: 'They went to the big city! Country mouse had never seen such tall buildings!',
       elements: [
         { id: 'buildings', x: 50, y: 25, hotspot: true, w: 160, h: 140, z: 1 },
@@ -86,7 +86,7 @@ const storyData = {
     // ── Page 5: Fancy Feast ──
     {
       bg: 'from-amber-300 to-rose-400',
-      image: '/arthurs-world/images/town-country-mouse/page-5.png',
+      image: '/arthurs-world/images/town-country-mouse/page-5.webp',
       text: 'The town house had amazing food! Cheese, cake, chocolate! Country mouse was amazed!',
       elements: [
         { id: 'cheese', x: 30, y: 50, hotspot: true, w: 90, h: 90, z: 2 },
@@ -105,7 +105,7 @@ const storyData = {
     // ── Page 6: The Cat! ──
     {
       bg: 'from-gray-500 to-red-600',
-      image: '/arthurs-world/images/town-country-mouse/page-6.png',
+      image: '/arthurs-world/images/town-country-mouse/page-6.webp',
       text: 'Suddenly — MEOW! A big scary cat jumped out! The mice ran for their lives!',
       elements: [
         { id: 'cat', x: 50, y: 40, hotspot: true, w: 150, h: 150, z: 2 },
@@ -125,7 +125,7 @@ const storyData = {
     // ── Page 7: Too Scary! ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/town-country-mouse/page-7.png',
+      image: '/arthurs-world/images/town-country-mouse/page-7.webp',
       text: 'They hid in a tiny crack in the wall! "That was TOO scary!" said country mouse.',
       elements: [
         { id: 'crack', x: 50, y: 50, hotspot: true, w: 100, h: 120, z: 1 },
@@ -144,7 +144,7 @@ const storyData = {
     // ── Page 8: Home Sweet Home ──
     {
       bg: 'from-green-300 to-amber-300',
-      image: '/arthurs-world/images/town-country-mouse/page-8.png',
+      image: '/arthurs-world/images/town-country-mouse/page-8.webp',
       text: 'Country mouse went home. "Simple food and a safe home is better than fancy food and danger!" The end!',
       elements: [
         { id: 'country-mouse-home', x: 45, y: 50, hotspot: true, w: 120, h: 120, z: 2 },

@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Introduction ──
     {
       bg: 'from-green-400 to-green-700',
-      image: '/arthurs-world/images/three-pigs/page-1.png',
+      image: '/arthurs-world/images/three-pigs/page-1.webp',
       text: 'Once upon a time, three little pigs set off to build their very own houses!',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: Straw House ──
     {
       bg: 'from-yellow-300 to-green-500',
-      image: '/arthurs-world/images/three-pigs/page-2.png',
+      image: '/arthurs-world/images/three-pigs/page-2.webp',
       text: 'The first little pig built a house of straw. It was quick and easy!',
       elements: [
         {
@@ -180,7 +180,7 @@ const storyData = {
     // ── Page 3: Stick House ──
     {
       bg: 'from-green-600 to-emerald-800',
-      image: '/arthurs-world/images/three-pigs/page-3.png',
+      image: '/arthurs-world/images/three-pigs/page-3.webp',
       text: 'The second little pig built a house of sticks. Tap tap tap!',
       elements: [
         {
@@ -266,7 +266,7 @@ const storyData = {
     // ── Page 4: Brick House ──
     {
       bg: 'from-orange-300 to-amber-600',
-      image: '/arthurs-world/images/three-pigs/page-4.png',
+      image: '/arthurs-world/images/three-pigs/page-4.webp',
       text: 'The third little pig built a house of bricks. Strong and sturdy!',
       elements: [
         {
@@ -352,7 +352,7 @@ const storyData = {
     // ── Page 5: The Wolf Arrives ──
     {
       bg: 'from-gray-600 to-gray-900',
-      image: '/arthurs-world/images/three-pigs/page-5.png',
+      image: '/arthurs-world/images/three-pigs/page-5.webp',
       text: 'Along came the Big Bad Wolf! He was very hungry.',
       elements: [
         {
@@ -438,7 +438,7 @@ const storyData = {
     // ── Page 6: Straw House Blown Down ──
     {
       bg: 'from-yellow-400 to-orange-500',
-      image: '/arthurs-world/images/three-pigs/page-6.png',
+      image: '/arthurs-world/images/three-pigs/page-6.webp',
       text: 'The wolf went to the straw house. He huffed and he puffed and he blew it down!',
       elements: [
         {
@@ -515,7 +515,7 @@ const storyData = {
     // ── Page 7: Stick House Blown Down ──
     {
       bg: 'from-green-700 to-gray-800',
-      image: '/arthurs-world/images/three-pigs/page-7.png',
+      image: '/arthurs-world/images/three-pigs/page-7.webp',
       text: 'The wolf went to the stick house. He huffed and he puffed and he blew it down!',
       elements: [
         {
@@ -601,7 +601,7 @@ const storyData = {
     // ── Page 8: Safe in the Brick House ──
     {
       bg: 'from-orange-400 to-red-600',
-      image: '/arthurs-world/images/three-pigs/page-8.png',
+      image: '/arthurs-world/images/three-pigs/page-8.webp',
       text: 'The three little pigs ran to the brick house. The wolf followed!',
       elements: [
         {
@@ -687,7 +687,7 @@ const storyData = {
     // ── Page 9: Wolf Can't Blow It Down ──
     {
       bg: 'from-red-400 to-purple-700',
-      image: '/arthurs-world/images/three-pigs/page-9.png',
+      image: '/arthurs-world/images/three-pigs/page-9.webp',
       text: 'The wolf huffed and puffed but he could NOT blow the brick house down!',
       elements: [
         {
@@ -764,7 +764,7 @@ const storyData = {
     // ── Page 10: Happily Ever After ──
     {
       bg: 'from-pink-300 to-yellow-300',
-      image: '/arthurs-world/images/three-pigs/page-10.png',
+      image: '/arthurs-world/images/three-pigs/page-10.webp',
       text: 'The three little pigs lived happily ever after in their strong brick house!',
       elements: [
         {

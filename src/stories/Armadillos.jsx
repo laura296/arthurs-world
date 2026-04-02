@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Meet the best friends ──
     {
       bg: 'from-green-400 to-lime-600',
-      image: '/arthurs-world/images/armadillos/page-1.png',
+      image: '/arthurs-world/images/armadillos/page-1.webp',
       text: 'This is Hedgehog — all prickly! And this is Tortoise — all shelly! They were the BEST of friends.',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: The hungry jaguar arrives ──
     {
       bg: 'from-lime-500 to-green-700',
-      image: '/arthurs-world/images/armadillos/page-2.png',
+      image: '/arthurs-world/images/armadillos/page-2.webp',
       text: 'Along came a big spotty Jaguar. GRROWL! His tummy was so rumbly! He wanted to gobble them up!',
       elements: [
         {
@@ -195,7 +195,7 @@ const storyData = {
     // ── Page 3: Hedgehog curls into a ball ──
     {
       bg: 'from-green-500 to-emerald-700',
-      image: '/arthurs-world/images/armadillos/page-3.png',
+      image: '/arthurs-world/images/armadillos/page-3.webp',
       text: 'Hedgehog curled up into a prickly ball! Jaguar tried to bite and — OUCH! Too prickly!',
       elements: [
         {
@@ -281,7 +281,7 @@ const storyData = {
     // ── Page 4: Tortoise hides in her shell ──
     {
       bg: 'from-emerald-400 to-green-700',
-      image: '/arthurs-world/images/armadillos/page-4.png',
+      image: '/arthurs-world/images/armadillos/page-4.webp',
       text: 'Tortoise pulled into her hard hard shell! Jaguar tried to bite and — CRUNCH! Too hard!',
       elements: [
         {
@@ -367,7 +367,7 @@ const storyData = {
     // ── Page 5: Mama jaguar gives advice ──
     {
       bg: 'from-yellow-600 to-amber-800',
-      image: '/arthurs-world/images/armadillos/page-5.png',
+      image: '/arthurs-world/images/armadillos/page-5.webp',
       text: 'Jaguar ran home to his mummy. She said: "Curly one is Hedgehog. Shelly one is Tortoise. Easy peasy!"',
       elements: [
         {
@@ -468,7 +468,7 @@ const storyData = {
     // ── Page 6: Learning each other's tricks ──
     {
       bg: 'from-lime-400 to-green-600',
-      image: '/arthurs-world/images/armadillos/page-6.png',
+      image: '/arthurs-world/images/armadillos/page-6.webp',
       text: 'But Hedgehog and Tortoise had a clever plan! Swappity swap! Hedgehog learned to swim! Tortoise learned to curl!',
       elements: [
         {
@@ -554,7 +554,7 @@ const storyData = {
     // ── Page 7: The confused jaguar ──
     {
       bg: 'from-green-500 to-lime-700',
-      image: '/arthurs-world/images/armadillos/page-7.png',
+      image: '/arthurs-world/images/armadillos/page-7.webp',
       text: 'Jaguar came back but — oh no! Which one is which?! They both look the same! Poor silly Jaguar!',
       elements: [
         {
@@ -655,7 +655,7 @@ const storyData = {
     // ── Page 8: THE TRANSFORMATION (key page) ──
     {
       bg: 'from-amber-400 to-yellow-600',
-      image: '/arthurs-world/images/armadillos/page-8.png',
+      image: '/arthurs-world/images/armadillos/page-8.webp',
       text: 'They practised and practised until — WHOOOOSH! Drag Hedgehog to Tortoise and make something NEW!',
       elements: [
         {
@@ -741,7 +741,7 @@ const storyData = {
     // ── Page 9: The armadillo's powers ──
     {
       bg: 'from-lime-500 to-emerald-700',
-      image: '/arthurs-world/images/armadillos/page-9.png',
+      image: '/arthurs-world/images/armadillos/page-9.webp',
       text: 'A brand new animal! Hard shell AND curly ball! Jaguar tried to bite — CRUNCH! Tried to grab — OUCH! He ran away!',
       elements: [
         {
@@ -842,7 +842,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-green-300 to-lime-500',
-      image: '/arthurs-world/images/armadillos/page-10.png',
+      image: '/arthurs-world/images/armadillos/page-10.webp',
       text: 'And THAT is how armadillos began! A bit prickly, a bit shelly, and very VERY clever! The end!',
       elements: [
         {
