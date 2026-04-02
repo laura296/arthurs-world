@@ -106,11 +106,10 @@ function FreePlayLevel({ onBack }) {
         </svg>
       </button>
 
-      <h2 className="font-heading text-white/80 text-lg mb-2 z-10">🆓 Free Play!</h2>
-      {noteCount > 0 && (
-        <div className="absolute top-4 right-4 z-20 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1
-                        font-heading text-white text-sm border border-white/10">
-          ♪ {noteCount}
+      <div className="text-3xl mb-2 z-10">🎹</div>
+      {noteCount > 0 && noteCount % 10 === 0 && (
+        <div className="absolute top-4 right-4 z-20 text-3xl animate-bounce">
+          🌟
         </div>
       )}
 
@@ -234,21 +233,19 @@ function SongLevel({ level, onComplete, onBack }) {
         </svg>
       </button>
 
-      {/* Song title */}
-      <h2 className="font-heading text-white/80 text-lg mb-1 z-10">
-        🎵 {song.name}
-      </h2>
+      {/* Song — emoji only */}
+      <div className="text-3xl mb-1 z-10">🎵</div>
 
-      {/* Phase indicator */}
+      {/* Phase indicator — visual only */}
       <div className="z-10 mb-2">
         {phase === 'demo' && (
-          <div className="bg-amber-400/20 backdrop-blur-sm rounded-full px-4 py-1 border border-amber-400/30">
-            <span className="font-heading text-amber-200 text-sm animate-pulse">👀 Watch & Listen...</span>
+          <div className="bg-amber-400/20 backdrop-blur-sm rounded-full px-4 py-2 border border-amber-400/30">
+            <span className="text-2xl animate-pulse">👀</span>
           </div>
         )}
         {phase === 'play' && (
-          <div className="bg-green-400/20 backdrop-blur-sm rounded-full px-4 py-1 border border-green-400/30">
-            <span className="font-heading text-green-200 text-sm">🎹 Your turn! ({playIdx + 1}/{song.notes.length})</span>
+          <div className="bg-green-400/20 backdrop-blur-sm rounded-full px-4 py-2 border border-green-400/30">
+            <span className="text-2xl">👆</span>
           </div>
         )}
       </div>
@@ -256,9 +253,9 @@ function SongLevel({ level, onComplete, onBack }) {
       {/* Replay demo button */}
       {phase === 'play' && (
         <button onPointerDown={() => { setPhase('demo'); setDemoIdx(0); }}
-          className="absolute top-4 right-4 z-20 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1
-                     font-heading text-white text-sm border border-white/10 active:scale-90 transition-transform">
-          🔄
+          className="absolute top-4 right-4 z-20 bg-white/10 backdrop-blur-sm rounded-full w-12 h-12
+                     flex items-center justify-center border border-white/10 active:scale-90 transition-transform">
+          <span className="text-xl">🔄</span>
         </button>
       )}
 

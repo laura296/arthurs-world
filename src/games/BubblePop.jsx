@@ -238,7 +238,9 @@ function ProgressBar({ score, goal }) {
           </div>
         ))}
       </div>
-      <div className="text-xs font-heading text-white/80 mt-1">{Math.min(score, goal)}/{goal}</div>
+      <div className="text-xs font-heading text-white/80 mt-1">
+        {score >= goal ? '🏆' : ''}
+      </div>
     </div>
   );
 }
@@ -291,7 +293,7 @@ function WinScreen({ score, onPlayAgain, onNextLevel, hasNextLevel, starsEarned,
       <div className="text-7xl mb-4" style={{ animation: 'celebrationText 0.6s ease-out both' }}>🏆</div>
       <h2 className="font-heading text-5xl text-sun mb-3 drop-shadow-lg"
           style={{ animation: 'celebrationText 0.6s 0.2s ease-out both' }}>
-        You did it!
+        🎉
       </h2>
 
       {/* Stars earned */}
@@ -308,11 +310,6 @@ function WinScreen({ score, onPlayAgain, onNextLevel, hasNextLevel, starsEarned,
           </svg>
         ))}
       </div>
-
-      <p className="text-2xl text-white/90 font-heading mb-1"
-         style={{ animation: 'gentleIn 0.5s 0.6s ease-out both' }}>
-        {score} points!
-      </p>
 
       <div className="flex gap-3 mt-4" style={{ animation: 'springIn 0.5s 1s ease-out both' }}>
         <button onPointerDown={onPlayAgain}
@@ -334,9 +331,9 @@ function WinScreen({ score, onPlayAgain, onNextLevel, hasNextLevel, starsEarned,
 
 function ScorePopup({ x, y, points }) {
   return (
-    <div className="absolute pointer-events-none z-50 font-heading text-2xl drop-shadow-lg animate-bounce text-sun"
+    <div className="absolute pointer-events-none z-50 text-2xl drop-shadow-lg animate-bounce"
       style={{ left: x, top: y - 20 }}>
-      +{points}
+      ⭐
     </div>
   );
 }
@@ -626,10 +623,10 @@ function BubblePopLevel({ level, onComplete, onBack }) {
         </svg>
       </button>
 
-      {/* Level indicator */}
-      <div className="fixed top-4 left-20 z-50 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1
-                      font-heading text-white text-sm border border-white/20">
-        {level.label} Level {level.id}
+      {/* Level indicator — emoji only */}
+      <div className="fixed top-4 left-20 z-50 bg-white/20 backdrop-blur-sm rounded-full px-3 py-2
+                      border border-white/20">
+        <span className="text-xl">{level.label}</span>
       </div>
 
       <ProgressBar score={score} goal={GOAL} />

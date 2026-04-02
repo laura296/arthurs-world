@@ -129,14 +129,14 @@ function ExploreLevel({ level, onComplete, onBack }) {
       </button>
 
       <div className="relative z-10 pt-16 pb-2 text-center">
-        <h2 className="font-heading text-amber-900 text-xl drop-shadow-sm">🐾 {level.title}</h2>
-        <p className="text-amber-800/60 text-sm font-heading mt-1">Tap each animal to hear!</p>
+        <span className="text-3xl">🐾</span>
       </div>
 
-      {/* Discovery progress */}
-      <div className="absolute top-4 right-4 z-20 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1
-                      font-heading text-amber-800 text-sm border border-white/40">
-        {discovered.size}/{animals.length} 🐾
+      {/* Discovery progress — emoji only */}
+      <div className="absolute top-4 right-4 z-20 flex gap-1">
+        {animals.map((a, i) => (
+          <span key={a.id} className="text-xl">{discovered.has(a.id) ? '⭐' : '·'}</span>
+        ))}
       </div>
 
       {/* Animal grid */}
@@ -303,16 +303,16 @@ function QuizLevel({ level, onComplete, onBack }) {
         </svg>
       </button>
 
-      {/* Score */}
-      <div className="absolute top-4 right-4 z-20 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1
-                      font-heading text-amber-800 text-sm border border-white/40">
-        ⭐ {score}
-        {streak >= 3 && <span className="ml-1 animate-bounce">🔥{streak}</span>}
+      {/* Score — visual stars only */}
+      <div className="absolute top-4 right-4 z-20 flex gap-1">
+        {Array.from({ length: Math.min(Math.floor(score / 10), 5) }).map((_, i) => (
+          <span key={i} className="text-xl">⭐</span>
+        ))}
       </div>
 
-      {/* Question prompt */}
+      {/* Visual prompt — ear emoji, no text */}
       <div className="relative z-10 pt-16 pb-2 text-center">
-        <h2 className="font-heading text-amber-900 text-xl drop-shadow-sm">🔊 Who said that?</h2>
+        <span className="text-3xl">👂</span>
       </div>
 
       {/* Replay sound button */}
@@ -446,14 +446,15 @@ function ReverseQuizLevel({ level, onComplete, onBack }) {
         </svg>
       </button>
 
-      <div className="absolute top-4 right-4 z-20 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1
-                      font-heading text-amber-800 text-sm border border-white/40">
-        ⭐ {score}
+      {/* Score — visual stars */}
+      <div className="absolute top-4 right-4 z-20 flex gap-1">
+        {Array.from({ length: Math.min(Math.floor(score / 10), 5) }).map((_, i) => (
+          <span key={i} className="text-xl">⭐</span>
+        ))}
       </div>
 
-      {/* Show the target animal */}
+      {/* Show the target animal — no text */}
       <div className="relative z-10 pt-16 text-center">
-        <h2 className="font-heading text-amber-900 text-lg drop-shadow-sm">Which sound is this?</h2>
         <div className="mt-4" style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
           <span className="text-8xl">{currentQ.correct.emoji}</span>
         </div>

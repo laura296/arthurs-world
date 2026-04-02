@@ -28,12 +28,12 @@ export default function LevelSelect({ title, totalLevels, highestUnlocked, stars
       style={{ background: bg || 'linear-gradient(180deg, #87CEEB 0%, #38bdf8 100%)' }}>
       <BackButton />
 
-      {/* Title */}
+      {/* Title — shows emoji portion, strips text for pre-literate children */}
       <div className="relative z-10 pt-16 pb-4 text-center">
-        <h2 className="font-heading text-white text-2xl drop-shadow-lg"
+        <div className="text-4xl drop-shadow-lg"
           style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
           {title}
-        </h2>
+        </div>
       </div>
 
       {/* Level grid */}

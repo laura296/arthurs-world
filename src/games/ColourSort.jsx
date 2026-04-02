@@ -163,13 +163,13 @@ function Bucket({ colour, isTarget, onTap, sortedCount }) {
         <path d="M20 8 Q32 -4 44 8" stroke={colour.fill} strokeWidth="3" fill="none" strokeLinecap="round" />
       </svg>
 
-      {/* Count badge */}
+      {/* Visual count — dots instead of numbers */}
       {sortedCount > 0 && (
-        <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-md
-                        flex items-center justify-center border-2"
-          style={{ borderColor: colour.fill }}
-        >
-          <span className="text-sm font-heading" style={{ color: colour.fill }}>{sortedCount}</span>
+        <div className="absolute -top-2 -right-2 flex gap-0.5">
+          {Array.from({ length: Math.min(sortedCount, 4) }).map((_, i) => (
+            <div key={i} className="w-2.5 h-2.5 rounded-full bg-white shadow-sm border"
+              style={{ borderColor: colour.fill }} />
+          ))}
         </div>
       )}
 
@@ -201,8 +201,8 @@ function SortItem({ item, isSelected, onTap, isLeaving }) {
         }
         ${item.wrong ? 'animate-wiggle' : ''}`}
       style={{
-        width: 72,
-        height: 72,
+        width: 84,
+        height: 84,
         background: `linear-gradient(135deg, ${item.colour.light}, ${item.colour.fill}40)`,
         borderColor: isSelected ? item.colour.fill : `${item.colour.fill}80`,
         boxShadow: isSelected
@@ -311,24 +311,21 @@ function ColourSortLevel({ levelConfig, onComplete, onBack }) {
         </svg>
       </button>
 
-      <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2
-                      shadow-lg border-2 border-amber-200/60 flex items-center gap-2">
-        <span className="text-lg font-heading text-amber-800">⭐ {score}</span>
-        {streak >= 3 && <span className="text-lg animate-bounce">🔥{streak}</span>}
+      {/* Score — visual stars only */}
+      <div className="absolute top-4 right-4 z-30 flex gap-1">
+        {Array.from({ length: Math.min(Math.floor(score / 10), 5) }).map((_, i) => (
+          <span key={i} className="text-2xl drop-shadow-lg"
+                style={{ animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+            ⭐
+          </span>
+        ))}
       </div>
 
-      <div className="absolute top-4 left-20 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2
+      {/* Level — emoji only */}
+      <div className="absolute top-4 left-20 z-30 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2
                       shadow-lg border-2 border-amber-200/60">
-        <span className="text-lg font-heading text-amber-800">{levelConfig.label} {levelConfig.title}</span>
+        <span className="text-xl">{levelConfig.label}</span>
       </div>
-
-      {!selectedId && unsortedItems.length > 0 && (
-        <div className="absolute top-16 left-0 right-0 flex justify-center z-20">
-          <div className="bg-white/70 backdrop-blur-sm rounded-xl px-4 py-1 shadow border border-amber-200/40">
-            <span className="text-base font-heading text-amber-700">Tap an item, then tap its bucket!</span>
-          </div>
-        </div>
-      )}
 
       <div className="absolute top-24 left-0 right-0 z-10 flex flex-wrap gap-2 justify-center px-4"
         style={{ maxHeight: '45%', overflowY: 'auto' }}>
@@ -340,13 +337,6 @@ function ColourSortLevel({ levelConfig, onComplete, onBack }) {
         ))}
       </div>
 
-      {unsortedItems.length > 0 && (
-        <div className="absolute z-20 left-0 right-0 flex justify-center" style={{ bottom: '32%' }}>
-          <div className="bg-white/60 backdrop-blur-sm rounded-full px-3 py-1 shadow">
-            <span className="text-sm font-heading text-amber-700">{unsortedItems.length} left</span>
-          </div>
-        </div>
-      )}
 
       <div className="absolute bottom-8 left-0 right-0 z-20 flex gap-3 items-end justify-center px-4">
         {roundColours.map(colour => (

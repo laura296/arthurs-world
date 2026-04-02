@@ -51,37 +51,35 @@ export default function WinCelebration({ theme, nextLevel, onPlayAgain, onLevelU
       {/* Sidekick celebrating */}
       <Sidekick theme={theme} event="win" />
 
-      <p className="text-3xl font-heading text-sun drop-shadow-lg mt-4 animate-bounce-in">
-        Amazing!
-      </p>
+      <div className="text-5xl mt-4 animate-bounce-in">🎉</div>
 
-      {/* Buttons */}
+      {/* Buttons — emoji only */}
       {showButtons && (
         <div className="flex flex-col items-center gap-3 mt-6 animate-bounce-in">
           {nextLevel && (
             <button
               onClick={onLevelUp}
-              className="px-10 py-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl
-                         font-heading text-xl text-white shadow-lg active:scale-95 transition-transform
+              className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full
+                         flex items-center justify-center shadow-lg active:scale-90 transition-transform
                          ring-2 ring-yellow-300/50 animate-pulse"
             >
-              Level Up! &rarr; {nextLevel.label}
+              <span className="text-3xl">⬆️</span>
             </button>
           )}
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <button
               onClick={onPlayAgain}
-              className="px-6 py-3 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl
-                         font-heading text-lg text-white shadow-lg active:scale-95 transition-transform"
+              className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full
+                         flex items-center justify-center shadow-lg active:scale-90 transition-transform"
             >
-              Again!
+              <span className="text-2xl">🔄</span>
             </button>
             <button
               onClick={onNewTheme}
-              className="px-6 py-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl
-                         font-heading text-lg text-white shadow-lg active:scale-95 transition-transform"
+              className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full
+                         flex items-center justify-center shadow-lg active:scale-90 transition-transform"
             >
-              New Board
+              <span className="text-2xl">🃏</span>
             </button>
           </div>
         </div>

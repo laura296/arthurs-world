@@ -12,9 +12,9 @@ export default function ThemePicker({ onSelectTheme }) {
       <Starfield />
 
       <div className="relative z-10 p-6 pt-12">
-        <h2 className="text-3xl font-heading text-sun text-center mb-6 drop-shadow">
-          Pick a board!
-        </h2>
+        <div className="text-center mb-6">
+          <span className="text-4xl drop-shadow">🃏</span>
+        </div>
 
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pb-8">
           {themeList.map((theme, i) => {
@@ -44,12 +44,11 @@ export default function ThemePicker({ onSelectTheme }) {
                     className="absolute top-2 right-2 w-10 h-10 object-contain animate-float drop-shadow-lg"
                   />
                 )}
-                {/* Label overlay */}
-                <div className="relative z-10 w-full bg-gradient-to-t from-black/70 to-transparent p-3">
-                  <span className="text-lg font-heading text-white drop-shadow flex items-center justify-center gap-2">
-                    {theme.emoji} {theme.label}
+                {/* Label overlay — emoji only */}
+                <div className="relative z-10 w-full bg-gradient-to-t from-black/70 to-transparent p-3 flex justify-center">
+                  <span className="text-3xl drop-shadow">
+                    {theme.emoji}
                   </span>
-                  <span className="text-xs text-white/60 font-body">{level.label}</span>
                 </div>
               </button>
             );
