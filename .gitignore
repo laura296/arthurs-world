@@ -12,3 +12,4 @@ firebase-debug.log
 .worktrees/
 firebase-debug*.log
 nul
+.env
