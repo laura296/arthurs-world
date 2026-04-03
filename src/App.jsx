@@ -82,6 +82,11 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+// Science games
+const ColourMixing = lazy(() => import('./games/science/ColourMixing'));
+const GrowAPlant = lazy(() => import('./games/science/GrowAPlant'));
+const ShadowPlay = lazy(() => import('./games/science/ShadowPlay'));
+const MagnetFun = lazy(() => import('./games/science/MagnetFun'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
 const LOADING_MESSAGES = [
@@ -271,6 +276,12 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/morning-routine" element={<G><MorningRoutine /></G>} />
         <Route path="/games/:mode/:section/sparkle-teeth" element={<G><SparkleTeeth /></G>} />
         <Route path="/games/:mode/:section/arthurs-lunchbox" element={<G><ArthursLunchbox /></G>} />
+
+        {/* Science games */}
+        <Route path="/games/:mode/:section/colour-mixing" element={<G><ColourMixing /></G>} />
+        <Route path="/games/:mode/:section/grow-a-plant" element={<G><GrowAPlant /></G>} />
+        <Route path="/games/:mode/:section/shadow-play" element={<G><ShadowPlay /></G>} />
+        <Route path="/games/:mode/:section/magnet-fun" element={<G><MagnetFun /></G>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
