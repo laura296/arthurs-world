@@ -416,14 +416,14 @@ const MODES = ['match-shape', 'match-colour', 'match-both'];
 
 /* ── Level definitions — 8 levels with progressive difficulty ── */
 const LEVELS = [
-  { id: 1, label: '🔵', shapes: 3, colours: 3, options: 2, questionsPerRound: 4, mode: 'match-shape', title: 'Easy Shapes' },
-  { id: 2, label: '🔴', shapes: 4, colours: 4, options: 3, questionsPerRound: 5, mode: 'match-colour', title: 'Easy Colours' },
-  { id: 3, label: '⭐', shapes: 4, colours: 4, options: 3, questionsPerRound: 5, mode: 'match-shape', title: 'More Shapes' },
-  { id: 4, label: '🎨', shapes: 5, colours: 5, options: 3, questionsPerRound: 6, mode: 'match-colour', title: 'More Colours' },
-  { id: 5, label: '💎', shapes: 5, colours: 5, options: 3, questionsPerRound: 6, mode: 'match-both', title: 'Shape + Colour' },
-  { id: 6, label: '🔷', shapes: 6, colours: 6, options: 4, questionsPerRound: 7, mode: 'mixed', title: 'Mixed Match' },
-  { id: 7, label: '⬟', shapes: 7, colours: 7, options: 4, questionsPerRound: 7, mode: 'mixed', title: 'All Shapes' },
-  { id: 8, label: '🏆', shapes: 8, colours: 8, options: 4, questionsPerRound: 8, mode: 'mixed', title: 'Champion!' },
+  { id: 1, label: '🔵', shapes: 3, colours: 3, options: 2, questionsPerRound: 3, mode: 'match-shape' },
+  { id: 2, label: '🔴', shapes: 3, colours: 4, options: 2, questionsPerRound: 3, mode: 'match-colour' },
+  { id: 3, label: '⭐', shapes: 4, colours: 4, options: 3, questionsPerRound: 4, mode: 'match-shape' },
+  { id: 4, label: '🎨', shapes: 5, colours: 5, options: 3, questionsPerRound: 4, mode: 'match-colour' },
+  { id: 5, label: '💎', shapes: 5, colours: 5, options: 3, questionsPerRound: 5, mode: 'match-both' },
+  { id: 6, label: '🔷', shapes: 6, colours: 6, options: 3, questionsPerRound: 5, mode: 'mixed' },
+  { id: 7, label: '⬟', shapes: 7, colours: 7, options: 4, questionsPerRound: 6, mode: 'mixed' },
+  { id: 8, label: '🏆', shapes: 8, colours: 8, options: 4, questionsPerRound: 6, mode: 'mixed' },
 ];
 
 const LEVEL_LABELS = LEVELS.map(l => l.label);
@@ -595,8 +595,8 @@ function ShapeMatchLevel({ levelConfig, onComplete, onBack }) {
       if (isGolden || newStreak >= 5) setGuideState('dancing');
       else setGuideState('correct');
 
-      setScorePopup(isGolden ? `+${gained} ✨` : `+${gained}`);
-      setTimeout(() => setScorePopup(null), 1000);
+      setScorePopup(isGolden ? '✨' : '⭐');
+      setTimeout(() => setScorePopup(null), 800);
 
       if (streakBonus > 0) playCollectPing();
       if (Math.floor(newScore / 50) > Math.floor(score / 50)) {
@@ -632,8 +632,8 @@ function ShapeMatchLevel({ levelConfig, onComplete, onBack }) {
 
   const totalQuestions = levelConfig.questionsPerRound;
   const { correctShape, correctColour, options } = question;
-  const optSize = options.length <= 3 ? 110 : options.length === 4 ? 96 : 84;
-  const svgSize = options.length <= 3 ? 80 : options.length === 4 ? 68 : 58;
+  const optSize = options.length <= 2 ? 130 : options.length === 3 ? 110 : 96;
+  const svgSize = options.length <= 2 ? 96 : options.length === 3 ? 80 : 68;
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -650,17 +650,15 @@ function ShapeMatchLevel({ levelConfig, onComplete, onBack }) {
 
       <HazelGuide state={guideState} score={score} />
 
-      <div className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-2 shadow-lg border-2 border-amber-200/60 flex items-center gap-1.5">
-        <svg width={24} height={24} viewBox="0 0 22 22">
-          <polygon points="11,1 14,8 21,8 15.5,13 17.5,20 11,16 4.5,20 6.5,13 1,8 8,8" fill="#eab308" stroke="#ca8a04" strokeWidth={1} />
-        </svg>
-        <span className="text-xl font-heading text-amber-800">{score}</span>
-        {streak >= 3 && <span className="text-lg font-heading text-orange-500 animate-bounce">x{streak}</span>}
+      {/* Score — visual stars only, no numbers */}
+      <div className="absolute top-4 right-4 z-30 flex gap-1">
+        {Array.from({ length: Math.min(Math.floor(score / 10), 5) }).map((_, i) => (
+          <span key={i} className="text-2xl drop-shadow-lg"
+                style={{ animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+            ⭐
+          </span>
+        ))}
       </div>
-
-      {scorePopup && (
-        <div className="absolute top-16 right-6 z-40 text-2xl font-heading text-green-600 drop-shadow-lg animate-bounce-in">{scorePopup}</div>
-      )}
 
       {phase === 'intro' && (
         <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">

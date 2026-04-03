@@ -90,16 +90,16 @@ function StoryIntro({ puppy, onFinish }) {
           animation={page <= 1 ? 'idle' : 'happy'}
           className="w-48 h-48 sm:w-64 sm:h-64" />
       </div>
-      <div className={`max-w-sm text-center transition-all duration-500 bg-white/80 backdrop-blur-md rounded-3xl px-6 py-4 shadow-xl border border-white/40 ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <p className="text-lg sm:text-xl font-heading text-amber-900 leading-relaxed">
-          <span className="text-3xl mr-2">{s.emoji}</span>
-          {s.text}
-        </p>
+      {/* Emoji-only story bubble — no text */}
+      <div className={`transition-all duration-500 bg-white/80 backdrop-blur-md rounded-full w-20 h-20
+                       flex items-center justify-center shadow-xl border border-white/40
+                       ${fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
+        <span className="text-4xl">{s.emoji}</span>
       </div>
-      <p className="absolute bottom-8 text-sm text-white font-heading animate-pulse drop-shadow-lg"
-         style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-        {page < pages.length - 1 ? 'Tap to continue...' : 'Tap to start!'}
-      </p>
+      {/* Tap hint — visual arrow */}
+      <div className="absolute bottom-8 text-3xl animate-bounce">
+        👆
+      </div>
       <div className="absolute bottom-16 flex gap-2">
         {pages.map((_, i) => (
           <div key={i} className={`w-3 h-3 rounded-full transition-all shadow-sm ${i === page ? 'bg-white scale-125' : 'bg-white/30'}`} />
@@ -145,11 +145,9 @@ function FloatingBubbles({ count, active }) {
 function SelectScreen({ onSelect }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
-      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-6 shadow-xl border border-white/40 text-center">
-        <h2 className="text-xl sm:text-2xl font-heading text-amber-900">
-          Choose a Puppy!
-        </h2>
-        <p className="text-sm text-amber-700 font-heading mt-1">Each one wants something different</p>
+      {/* Title — emoji only */}
+      <div className="mb-6">
+        <span className="text-5xl drop-shadow-lg">🐾</span>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
@@ -162,8 +160,7 @@ function SelectScreen({ onSelect }) {
               state={puppy.activity === 'wash' ? 'muddy' : 'excited'}
               animation="idle"
               className="w-24 h-24 sm:w-28 sm:h-28" />
-            <span className="font-heading text-amber-900 text-base">{puppy.name}</span>
-            <span className="text-xs text-amber-700/60">{puppy.label}</span>
+            <span className="text-2xl">{puppy.emoji}</span>
           </button>
         ))}
       </div>
@@ -214,10 +211,9 @@ function SoapPumpStep({ puppy, onComplete }) {
   return (
     <div ref={containerRef} className="absolute inset-0 z-10">
       <ParticleLayer />
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
-        <p className="text-sm font-heading text-amber-900">
-          {done ? '✨ So clean!' : 'Tap the soap! 🧴'}
-        </p>
+      {/* Visual hint — emoji only */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
+        <span className="text-4xl">{done ? '✨' : '🧴'}</span>
       </div>
 
       <div className="absolute left-1/2 -translate-x-1/2 z-[5]" style={{ top: '10%' }}>
@@ -326,10 +322,9 @@ function RubStep({ puppy, config, onComplete }) {
          style={{ touchAction: 'none' }}>
       <ParticleLayer />
 
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
-        <p className="text-sm font-heading text-amber-900">
-          {done ? '✨ All done!' : config.voice}
-        </p>
+      {/* Visual hint — emoji only */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
+        <span className="text-4xl">{done ? '✨' : config.toolEmoji}</span>
       </div>
 
       <div ref={puppyRef}
@@ -342,13 +337,11 @@ function RubStep({ puppy, config, onComplete }) {
           className="w-56 h-56 sm:w-72 sm:h-72" />
       </div>
 
+      {/* Tool indicator — emoji only, bigger touch target hint */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-white/30 flex items-center gap-3">
-          <span className="text-3xl">{config.toolEmoji}</span>
-          <div>
-            <p className="font-heading text-amber-900 text-sm">{config.title}</p>
-            <p className="text-xs text-amber-700/60">Rub your finger over {puppy.name}!</p>
-          </div>
+        <div className="bg-white/70 backdrop-blur-md rounded-full w-16 h-16 shadow-lg border border-white/30
+                        flex items-center justify-center animate-pulse">
+          <span className="text-3xl">👆</span>
         </div>
       </div>
 
@@ -418,10 +411,9 @@ function FetchStep({ puppy, onComplete }) {
     <div ref={containerRef} className="absolute inset-0 z-10">
       <ParticleLayer />
 
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
-        <p className="text-sm font-heading text-amber-900">
-          {done ? `✨ ${puppy.name} loved that!` : ballState === 'flying' ? `${puppy.name} is running!` : ballState === 'returning' ? 'Good catch!' : 'Tap the ball to throw!'}
-        </p>
+      {/* Visual hint — emoji only */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
+        <span className="text-4xl">{done ? '✨' : ballState === 'flying' ? '🏃' : ballState === 'returning' ? '❤️' : '⚾'}</span>
       </div>
 
       {/* Puppy */}
@@ -443,7 +435,7 @@ function FetchStep({ puppy, onComplete }) {
                            border-4 border-red-400 relative">
               <div className="absolute inset-0 rounded-full"
                    style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%)' }} />
-              <span className="text-white font-bold text-sm font-heading drop-shadow">THROW!</span>
+              <span className="text-3xl">⚾</span>
             </div>
             {throws === 0 && (
               <div className="absolute inset-0 rounded-full animate-pulse"
@@ -536,10 +528,9 @@ function TugStep({ puppy, onComplete }) {
          style={{ touchAction: 'none' }}>
       <ParticleLayer />
 
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-white/80 backdrop-blur-md rounded-full px-5 py-1.5 shadow-lg border border-white/40">
-        <p className="text-sm font-heading text-amber-900">
-          {done ? `✨ ${puppy.name} wins!` : pulling ? 'Pull! Pull! 💪' : 'Swipe to play tug!'}
-        </p>
+      {/* Visual hint — emoji only */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
+        <span className="text-4xl">{done ? '✨' : pulling ? '💪' : '🪢'}</span>
       </div>
 
       {/* Puppy holding rope */}
@@ -563,14 +554,11 @@ function TugStep({ puppy, onComplete }) {
         </svg>
       </div>
 
-      {/* Pull instruction */}
+      {/* Pull hint — visual only */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl px-5 py-3 shadow-lg border border-white/30 flex items-center gap-3">
-          <span className="text-3xl">🪢</span>
-          <div>
-            <p className="font-heading text-amber-900 text-sm">Tug of War!</p>
-            <p className="text-xs text-amber-700/60">Swipe back and forth!</p>
-          </div>
+        <div className="bg-white/70 backdrop-blur-md rounded-full w-16 h-16 shadow-lg border border-white/30
+                        flex items-center justify-center animate-pulse">
+          <span className="text-3xl">↔️</span>
         </div>
       </div>
 
@@ -608,9 +596,9 @@ function ChoiceScreen({ puppy, items, title, subtitle, onChoose }) {
           className="w-32 h-32 sm:w-44 sm:h-44" />
       </div>
 
-      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-4 shadow-xl border border-white/40 text-center">
-        <h2 className="text-xl sm:text-2xl font-heading text-amber-900">{title}</h2>
-        <p className="text-sm text-amber-700 font-heading mt-1">{subtitle}</p>
+      {/* Emoji title only */}
+      <div className="mb-4">
+        <span className="text-4xl">🎀</span>
       </div>
 
       <div className="flex flex-wrap justify-center gap-4">
@@ -626,7 +614,6 @@ function ChoiceScreen({ puppy, items, title, subtitle, onChoose }) {
                          : 'border-white/30 hover:bg-white/80 hover:scale-105 active:scale-95'
                        }`}>
             <span className="text-4xl">{item.emoji}</span>
-            <span className="font-heading text-amber-900 text-sm">{item.label}</span>
           </button>
         ))}
       </div>
@@ -671,25 +658,20 @@ function CelebrateScreen({ puppy, accessory, onFinish }) {
                 }}>❤️</span>
         ))}
       </div>
-      <div className="bg-white/80 backdrop-blur-md rounded-3xl px-6 py-3 mb-3 shadow-xl border border-white/40 text-center">
-        <h2 className="text-2xl sm:text-3xl font-heading text-amber-900">{puppy.name} Is Happy!</h2>
-        <p className="text-base text-amber-700 font-heading mt-1">You were so kind and gentle</p>
-      </div>
+      {/* Celebration — emoji only */}
+      <div className="text-5xl mb-3">🎉</div>
       {showBadge && (
         <div className="animate-spring-in mb-4">
-          <div className="bg-gradient-to-b from-amber-50 to-pink-50 rounded-2xl px-6 py-3 border-2 border-amber-200/50 shadow-xl flex items-center gap-3">
+          <div className="bg-gradient-to-b from-amber-50 to-pink-50 rounded-full w-20 h-20
+                          border-2 border-amber-200/50 shadow-xl flex items-center justify-center">
             <span className="text-4xl">{activityBadge.emoji}</span>
-            <div>
-              <p className="font-heading text-amber-900 text-sm">{activityBadge.text}</p>
-              <p className="text-xs text-amber-700/60">You earned a badge!</p>
-            </div>
           </div>
         </div>
       )}
       <button onClick={() => { playNavigate(); onFinish(); }}
-        className="bg-amber-500 hover:bg-amber-400 active:scale-95 text-white font-heading text-base
-                   px-8 py-3 rounded-full shadow-xl transition-all border border-amber-400/50">
-        Play Again! 🐾
+        className="w-20 h-20 bg-amber-500 active:scale-90 rounded-full shadow-xl
+                   transition-transform flex items-center justify-center border border-amber-400/50">
+        <span className="text-3xl">🔄</span>
       </button>
     </div>
   );
@@ -763,7 +745,6 @@ export default function PuppyWash() {
       {step === 'scrub' && puppy && (
         <RubStep key="scrub" puppy={puppy}
           config={{
-            title: 'Scrub Scrub', voice: 'Rub the mud off gently!',
             toolEmoji: '🧽', target: 5, particles: BUBBLE_COLORS,
             puppyState: (r) => r < 0.5 ? 'soapy' : 'wet',
             showInBath: true,
@@ -773,7 +754,6 @@ export default function PuppyWash() {
       {step === 'dry' && puppy && (
         <RubStep key="dry" puppy={puppy}
           config={{
-            title: 'Dry Off', voice: `Rub the towel over ${puppy?.name}!`,
             toolEmoji: '🧣', target: 5, particles: HEART_COLORS,
             puppyState: (r) => r < 0.5 ? 'wet' : 'clean',
             showInBath: false,
@@ -783,7 +763,6 @@ export default function PuppyWash() {
       {step === 'brush' && puppy && (
         <RubStep key="brush" puppy={puppy}
           config={{
-            title: 'Brush Softly', voice: 'Stroke to make fur soft and shiny!',
             toolEmoji: '✨', target: 5, particles: SPARKLE_COLORS,
             puppyState: (r) => r < 0.5 ? 'clean' : 'fluffy',
             showInBath: false,
@@ -813,7 +792,6 @@ export default function PuppyWash() {
       {step === 'belly-rub' && puppy && (
         <RubStep key="belly" puppy={puppy}
           config={{
-            title: 'Belly Rubs!', voice: `${puppy?.name} wants belly rubs!`,
             toolEmoji: '🤗', target: 5, particles: HEART_COLORS,
             puppyState: 'excited',
             showInBath: false,
