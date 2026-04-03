@@ -259,6 +259,31 @@ export default function MissingImages() {
     }
   }, [generatedBlobs]);
 
+  /** Download all found images from the server */
+  const [downloading, setDownloading] = useState(false);
+  const [dlProgress, setDlProgress] = useState({ done: 0, total: 0 });
+
+  const downloadAllImages = useCallback(async () => {
+    setDownloading(true);
+    const allItems = groups.flatMap(g => g.items);
+    const found = allItems.filter(i => statuses[i.src] === 'ok' || statuses[i.src] === 'generated');
+    setDlProgress({ done: 0, total: found.length });
+
+    for (let i = 0; i < found.length; i++) {
+      try {
+        const res = await fetch(found[i].src);
+        const blob = await res.blob();
+        downloadBlob(blob, srcToFilename(found[i].src));
+      } catch (e) {
+        // skip failed downloads
+      }
+      setDlProgress({ done: i + 1, total: found.length });
+      // Small delay so browser doesn't choke on many downloads
+      await new Promise(r => setTimeout(r, 300));
+    }
+    setDownloading(false);
+  }, [groups, statuses]);
+
   // Stats
   const allItems = groups.flatMap(g => g.items);
   const okCount = allItems.filter(i => statuses[i.src] === 'ok').length;
@@ -392,6 +417,19 @@ export default function MissingImages() {
                          disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {generating ? 'Generating...' : `Generate All (${missingWithPrompts})`}
+            </button>
+          )}
+
+          {okCount > 0 && (
+            <button
+              onClick={downloadAllImages}
+              disabled={downloading}
+              className="px-4 py-2 rounded-xl font-heading text-sm
+                         bg-amber-600 text-white shadow-lg
+                         hover:bg-amber-500 active:scale-95 transition-all
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {downloading ? `Downloading ${dlProgress.done}/${dlProgress.total}...` : `Download All (${okCount + generatedCount})`}
             </button>
           )}
 
