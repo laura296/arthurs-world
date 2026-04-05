@@ -55,6 +55,14 @@ export default function ModePicker() {
           </button>
         ))}
       </div>
+
+      {/* Admin link */}
+      <button
+        onClick={() => navigate('/missing-images')}
+        className="relative z-10 mt-2 text-xs text-amber-700/40 font-body"
+      >
+        Image Studio
+      </button>
     </div>
   );
 }
