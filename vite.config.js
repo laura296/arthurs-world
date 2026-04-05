@@ -1,6 +1,34 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import fs from 'fs';
+import path from 'path';
+
+// Post-build plugin: append cache-cleanup code to generated sw.js
+function swCacheCleanup() {
+  let tries = 0;
+  function inject() {
+    const swPath = path.resolve('dist/sw.js');
+    if (fs.existsSync(swPath)) {
+      const cleanup = `\n// === Cache cleanup (injected at build) ===\nself.addEventListener('activate',function(e){e.waitUntil(caches.keys().then(function(ns){return Promise.all(ns.filter(function(n){return n!=='images-v3'&&n!=='audio'}).map(function(n){return caches.delete(n)}))}))});\n`;
+      fs.appendFileSync(swPath, cleanup);
+      console.log('[sw-cache-cleanup] Injected cache cleanup into sw.js');
+      return true;
+    }
+    return false;
+  }
+  return {
+    name: 'sw-cache-cleanup',
+    enforce: 'post',
+    closeBundle() {
+      if (!inject()) {
+        // SW might not exist yet, retry after a tick
+        setTimeout(() => inject(), 500);
+      }
+    },
+    buildEnd() { inject(); },
+  };
+}
 
 export default defineConfig({
   base: '/arthurs-world/',
@@ -66,12 +94,13 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallbackDenylist: [/clear-cache\.html/],
         runtimeCaching: [
           {
             urlPattern: /\.(?:png|webp)$/i,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'images-v2',
+              cacheName: 'images-v3',
               expiration: { maxEntries: 300, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [200] },
             },
@@ -88,5 +117,6 @@ export default defineConfig({
         ],
       },
     }),
+    swCacheCleanup(),
   ],
 });
