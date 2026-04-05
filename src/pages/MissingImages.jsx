@@ -309,6 +309,22 @@ export default function MissingImages() {
           Scan, generate and download missing images
         </p>
 
+        {/* Big Download All button — always visible */}
+        <button
+          onClick={downloadAllImages}
+          disabled={downloading || (okCount + generatedCount) === 0}
+          className="w-full py-4 rounded-2xl font-heading text-xl mb-6
+                     bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg
+                     hover:from-amber-400 hover:to-orange-400 active:scale-[0.98] transition-all
+                     disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {downloading
+            ? `Downloading ${dlProgress.done} / ${dlProgress.total}...`
+            : (okCount + generatedCount) > 0
+              ? `Download All Images (${okCount + generatedCount})`
+              : 'Scanning...'}
+        </button>
+
         {/* API key warning */}
         {!apiReady && (
           <div className="mb-4 p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-center">
