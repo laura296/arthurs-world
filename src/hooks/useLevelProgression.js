@@ -33,10 +33,10 @@ export function useLevelProgression(gameId, totalLevels) {
   }, [gameId]);
 
   const setLevel = useCallback((lvl) => {
-    if (lvl <= progress.highestUnlocked) {
+    if (lvl >= 1 && lvl <= totalLevels) {
       setCurrentLevel(lvl);
     }
-  }, [progress.highestUnlocked]);
+  }, [totalLevels]);
 
   const completeLevel = useCallback((level, starsEarned) => {
     setProgress(prev => {
