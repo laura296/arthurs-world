@@ -4,21 +4,34 @@ import { HashRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
-// One-time purge of poisoned image caches from old service worker.
-// The old SW cached 404 responses for images that didn't exist yet.
-// This deletes those caches so fresh images load from the network.
+// Aggressively purge all caches and force service worker reset.
+// Required because old SW cached 404 responses for images.
+const CACHE_VERSION = 'v2';
 (async () => {
   try {
-    const cacheNames = await caches.keys();
-    const stale = cacheNames.filter(n => n === 'images' || n.includes('workbox-precache'));
-    await Promise.all(stale.map(n => caches.delete(n)));
-    if (stale.length) {
-      console.log('[cache-purge] Cleared stale caches:', stale);
+    // Delete ALL caches
+    const names = await caches.keys();
+    await Promise.all(names.map(n => caches.delete(n)));
+    if (names.length) console.log('[cache-purge] Deleted all caches:', names);
+
+    // Unregister old service worker so it stops serving stale content
+    const regs = await navigator.serviceWorker?.getRegistrations();
+    if (regs?.length) {
+      for (const reg of regs) {
+        await reg.unregister();
+      }
+      console.log('[cache-purge] Unregistered old service workers');
+      // Mark that we've purged so we don't loop
+      if (!sessionStorage.getItem('cache-purged')) {
+        sessionStorage.setItem('cache-purged', CACHE_VERSION);
+        // Reload once to pick up fresh content without any SW interference
+        window.location.reload();
+        return;
+      }
     }
-    // Also force service worker update
-    const reg = await navigator.serviceWorker?.getRegistration();
-    if (reg) await reg.update();
-  } catch {}
+  } catch (e) {
+    console.warn('[cache-purge] Error:', e);
+  }
 })();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
