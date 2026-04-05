@@ -74,7 +74,7 @@ function StickerThumb({ sticker, scene, onSelect }) {
     >
       {!imgFailed ? (
         <img
-          src={`/arthurs-world/images/scenes/${scene}/stickers/${sticker.id}.png`}
+          src={`/arthurs-world/images/scenes/${scene}/stickers/${sticker.id}.webp`}
           alt={sticker.label}
           className="w-full h-full object-contain p-1.5"
           draggable={false}

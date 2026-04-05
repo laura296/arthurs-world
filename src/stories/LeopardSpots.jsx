@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Sandy-Yellow Leopard ──
     {
       bg: 'from-amber-300 to-yellow-500',
-      image: '/arthurs-world/images/leopard-spots/page-1.png',
+      image: '/arthurs-world/images/leopard-spots/page-1.webp',
       text: 'Once upon a time, Leopard was all sandy-yellow. Sandy sandy sandy — just like the desert!',
       elements: [
         { id: 'leopard', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -54,7 +54,7 @@ const storyData = {
     // ── Page 2: Leopard and His Best Friend ──
     {
       bg: 'from-orange-300 to-amber-500',
-      image: '/arthurs-world/images/leopard-spots/page-2.png',
+      image: '/arthurs-world/images/leopard-spots/page-2.webp',
       text: 'Leopard had a best friend called Ethiopian. They went looking for dinner together every single day!',
       elements: [
         { id: 'leopard-friend', x: 32, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -100,7 +100,7 @@ const storyData = {
     // ── Page 3: Animals Run to the Forest ──
     {
       bg: 'from-green-500 to-emerald-700',
-      image: '/arthurs-world/images/leopard-spots/page-3.png',
+      image: '/arthurs-world/images/leopard-spots/page-3.webp',
       text: 'But all the animals ran away! They hid in a big dark forest full of stripy, spotty, splotchy shadows.',
       elements: [
         { id: 'giraffe', x: 25, y: 35, hotspot: true, w: 120, h: 100, z: 3 },
@@ -146,7 +146,7 @@ const storyData = {
     // ── Page 4: Where Did Everybody Go? ──
     {
       bg: 'from-amber-200 to-orange-400',
-      image: '/arthurs-world/images/leopard-spots/page-4.png',
+      image: '/arthurs-world/images/leopard-spots/page-4.webp',
       text: 'Leopard looked and looked. Where did everybody go? He could not see ANY of them!',
       elements: [
         { id: 'confused-leopard', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -192,7 +192,7 @@ const storyData = {
     // ── Page 5: The Wise Baboon ──
     {
       bg: 'from-emerald-400 to-green-600',
-      image: '/arthurs-world/images/leopard-spots/page-5.png',
+      image: '/arthurs-world/images/leopard-spots/page-5.webp',
       text: 'A wise old baboon said "You need to look different!" So Ethiopian made his skin a lovely dark brown.',
       elements: [
         { id: 'baboon', x: 30, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
@@ -238,7 +238,7 @@ const storyData = {
     // ── Page 6: But What About Leopard? ──
     {
       bg: 'from-green-400 to-yellow-600',
-      image: '/arthurs-world/images/leopard-spots/page-6.png',
+      image: '/arthurs-world/images/leopard-spots/page-6.webp',
       text: 'Ethiopian looked at Leopard. "But what about YOU? You are still all yellow! You need SPOTS!"',
       elements: [
         { id: 'ethiopian-speaking', x: 30, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
@@ -284,7 +284,7 @@ const storyData = {
     // ── Page 7: Press Press PRESS! (Key Interactive Page) ──
     {
       bg: 'from-amber-400 to-orange-500',
-      image: '/arthurs-world/images/leopard-spots/page-7.png',
+      image: '/arthurs-world/images/leopard-spots/page-7.webp',
       text: 'Ethiopian dipped his fingers in dark paint and went — press, press, PRESS! SPLODGE! Spotty spotty spotty!',
       elements: [
         { id: 'leopard-getting-spots', x: 55, y: 40, hotspot: true, w: 140, h: 120, z: 2 },
@@ -351,7 +351,7 @@ const storyData = {
     // ── Page 8: SPLODGE! Beautiful Spots! ──
     {
       bg: 'from-yellow-300 to-amber-500',
-      image: '/arthurs-world/images/leopard-spots/page-8.png',
+      image: '/arthurs-world/images/leopard-spots/page-8.webp',
       text: 'SPLODGE SPLODGE SPLODGE! Now Leopard had big round beautiful spots all over! "WOW!" he said. "I am SPOTTY!"',
       elements: [
         { id: 'spotty-leopard', x: 45, y: 36, hotspot: true, w: 120, h: 100, z: 3 },
@@ -397,7 +397,7 @@ const storyData = {
     // ── Page 9: Sneaky Spotty Leopard ──
     {
       bg: 'from-green-500 to-emerald-700',
-      image: '/arthurs-world/images/leopard-spots/page-9.png',
+      image: '/arthurs-world/images/leopard-spots/page-9.webp',
       text: 'Now Leopard could creep through the spotty shadows. Creep creep creep! Nobody could see him!',
       elements: [
         { id: 'camo-leopard', x: 45, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -443,7 +443,7 @@ const storyData = {
     // ── Page 10: The End! ──
     {
       bg: 'from-amber-300 to-green-400',
-      image: '/arthurs-world/images/leopard-spots/page-10.png',
+      image: '/arthurs-world/images/leopard-spots/page-10.webp',
       text: 'And THAT is how Leopard got his beautiful spots! Spotty spotty spotty. The end!',
       elements: [
         { id: 'proud-leopard', x: 45, y: 36, hotspot: true, w: 120, h: 100, z: 3 },

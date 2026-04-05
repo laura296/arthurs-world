@@ -193,7 +193,7 @@ export default function SceneCanvas({
             onPointerUp={handleStickerPointerUp}
           >
             <img
-              src={`/arthurs-world/images/scenes/${scene}/stickers/${sticker.stickerId}.png`}
+              src={`/arthurs-world/images/scenes/${scene}/stickers/${sticker.stickerId}.webp`}
               alt={sticker.stickerId}
               className="w-full h-full object-contain pointer-events-none rounded-xl"
               style={{ mixBlendMode: 'multiply' }}

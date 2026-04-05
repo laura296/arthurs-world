@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Summer Day ──
     {
       bg: 'from-green-300 to-yellow-400',
-      image: '/arthurs-world/images/ant-grasshopper/page-1.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-1.webp',
       text: 'It was a hot summer day! A little ant was working very hard, carrying food to her home.',
       elements: [
         { id: 'ant', x: 40, y: 60, hotspot: true, w: 90, h: 90, z: 2 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: Grasshopper Plays ──
     {
       bg: 'from-lime-300 to-green-500',
-      image: '/arthurs-world/images/ant-grasshopper/page-2.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-2.webp',
       text: 'A grasshopper was singing and dancing in the sunshine! He was having SO much fun!',
       elements: [
         { id: 'grasshopper', x: 50, y: 42, hotspot: true, w: 130, h: 130, z: 2 },
@@ -48,7 +48,7 @@ const storyData = {
     // ── Page 3: Grasshopper Teases ──
     {
       bg: 'from-amber-200 to-green-400',
-      image: '/arthurs-world/images/ant-grasshopper/page-3.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-3.webp',
       text: '"Why are you working so hard?" said the grasshopper. "Come and play with me!"',
       elements: [
         { id: 'grasshopper-ask', x: 55, y: 40, hotspot: true, w: 130, h: 130, z: 2 },
@@ -67,7 +67,7 @@ const storyData = {
     // ── Page 4: Ant Keeps Working ──
     {
       bg: 'from-orange-300 to-amber-400',
-      image: '/arthurs-world/images/ant-grasshopper/page-4.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-4.webp',
       text: 'The ant kept working all summer long. She stored food, berries and seeds in her cosy home!',
       elements: [
         { id: 'ant-carry', x: 40, y: 55, hotspot: true, w: 90, h: 90, z: 2 },
@@ -88,7 +88,7 @@ const storyData = {
     // ── Page 5: Winter Comes ──
     {
       bg: 'from-blue-300 to-indigo-500',
-      image: '/arthurs-world/images/ant-grasshopper/page-5.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-5.webp',
       text: 'Then winter came! It was cold and snowy. The wind blew and blew! Brrrrr!',
       elements: [
         { id: 'snow', x: 50, y: 20, hotspot: true, w: 150, h: 100, z: 1 },
@@ -107,7 +107,7 @@ const storyData = {
     // ── Page 6: Grasshopper Cold ──
     {
       bg: 'from-gray-400 to-blue-600',
-      image: '/arthurs-world/images/ant-grasshopper/page-6.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-6.webp',
       text: 'The grasshopper was SO cold and hungry! He had no food because he played all summer!',
       elements: [
         { id: 'grasshopper-cold', x: 50, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -126,7 +126,7 @@ const storyData = {
     // ── Page 7: Ant Helps ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/ant-grasshopper/page-7.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-7.webp',
       text: 'The kind ant opened her door. "Come in!" she said. "I have plenty of food to share!"',
       elements: [
         { id: 'ant-kind', x: 35, y: 50, hotspot: true, w: 90, h: 90, z: 2 },
@@ -145,7 +145,7 @@ const storyData = {
     // ── Page 8: The Lesson ──
     {
       bg: 'from-yellow-300 to-amber-400',
-      image: '/arthurs-world/images/ant-grasshopper/page-8.png',
+      image: '/arthurs-world/images/ant-grasshopper/page-8.webp',
       text: 'The grasshopper learned — work hard AND have fun! And always help your friends! The end!',
       elements: [
         { id: 'friends', x: 50, y: 48, hotspot: true, w: 150, h: 140, z: 2 },

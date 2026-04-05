@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Four Short Legs ──
     {
       bg: 'from-amber-200 to-orange-400',
-      image: '/arthurs-world/images/old-man-kangaroo/page-1.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-1.webp',
       text: 'Once upon a time, Kangaroo had four short legs. All the same! He walked slowly — step, step, step — just like everyone else.',
       elements: [
         { id: 'kangaroo-walking', x: 50, y: 52, hotspot: true, w: 120, h: 100, z: 3 },
@@ -34,7 +34,7 @@ const storyData = {
     // ── Page 2: Boastful Kangaroo ──
     {
       bg: 'from-yellow-300 to-orange-500',
-      image: '/arthurs-world/images/old-man-kangaroo/page-2.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-2.webp',
       text: 'But Kangaroo was very proud. He said "I want to be DIFFERENT! I want to be SPECIAL! Not like the other animals!"',
       elements: [
         { id: 'proud-kangaroo', x: 50, y: 42, hotspot: true, w: 120, h: 100, z: 3 },
@@ -61,7 +61,7 @@ const storyData = {
     // ── Page 3: Asks Wise Old Nqong ──
     {
       bg: 'from-orange-300 to-red-400',
-      image: '/arthurs-world/images/old-man-kangaroo/page-3.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-3.webp',
       text: 'So Kangaroo went to wise old Nqong, who sat on a big rock. "Please, please, PLEASE make me different from all the other animals!"',
       elements: [
         { id: 'nqong', x: 30, y: 35, hotspot: true, w: 120, h: 100, z: 3 },
@@ -88,7 +88,7 @@ const storyData = {
     // ── Page 4: Dingo Summoned ──
     {
       bg: 'from-red-300 to-orange-500',
-      image: '/arthurs-world/images/old-man-kangaroo/page-4.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-4.webp',
       text: 'Wise old Nqong pointed at a big yellow dog called Dingo. "DINGO!" he said. "Chase that kangaroo! Chase him and DON\'T STOP!"',
       elements: [
         { id: 'nqong-pointing', x: 20, y: 35, hotspot: true, w: 120, h: 100, z: 3 },
@@ -114,7 +114,7 @@ const storyData = {
     // ── Page 5: Desert Chase ──
     {
       bg: 'from-yellow-400 to-orange-600',
-      image: '/arthurs-world/images/old-man-kangaroo/page-5.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-5.webp',
       text: 'Dingo chased Kangaroo across the hot, sandy desert! RUN RUN RUN! Kangaroo ran as fast as he could!',
       elements: [
         { id: 'running-kangaroo', x: 70, y: 42, hotspot: true, w: 120, h: 100, z: 3 },
@@ -142,7 +142,7 @@ const storyData = {
     // ── Page 6: Grassland Chase ──
     {
       bg: 'from-orange-400 to-yellow-600',
-      image: '/arthurs-world/images/old-man-kangaroo/page-6.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-6.webp',
       text: 'Then Dingo chased him through the tall, tall grass! HOP HOP HOP! Kangaroo started HOPPING to go faster!',
       elements: [
         { id: 'hopping-kangaroo', x: 65, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -170,7 +170,7 @@ const storyData = {
     // ── Page 7: Mountain Chase ──
     {
       bg: 'from-red-400 to-orange-600',
-      image: '/arthurs-world/images/old-man-kangaroo/page-7.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-7.webp',
       text: 'Then Dingo chased him up the big rocky mountains! JUMP JUMP JUMP! Kangaroo jumped SO HIGH! His back legs got bigger and bigger!',
       elements: [
         { id: 'jumping-kangaroo', x: 60, y: 28, hotspot: true, w: 120, h: 100, z: 3 },
@@ -201,7 +201,7 @@ const storyData = {
     // ── Page 8: New Legs ──
     {
       bg: 'from-amber-400 to-red-500',
-      image: '/arthurs-world/images/old-man-kangaroo/page-8.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-8.webp',
       text: 'At last Dingo stopped chasing. And look! Kangaroo\'s back legs were HUGE and strong! His front legs were teeny tiny! All that running changed him!',
       elements: [
         { id: 'changed-kangaroo', x: 50, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -231,7 +231,7 @@ const storyData = {
     // ── Page 9: Bouncy Kangaroo ──
     {
       bg: 'from-yellow-300 to-amber-500',
-      image: '/arthurs-world/images/old-man-kangaroo/page-9.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-9.webp',
       text: 'Now Kangaroo could BOUNCE so high! BOING BOING BOING! He was the bounciest, jumpiest animal in the WHOLE world!',
       elements: [
         { id: 'bouncy-kangaroo', x: 50, y: 30, hotspot: true, w: 120, h: 100, z: 3 },
@@ -263,7 +263,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-orange-300 to-red-500',
-      image: '/arthurs-world/images/old-man-kangaroo/page-10.png',
+      image: '/arthurs-world/images/old-man-kangaroo/page-10.webp',
       text: 'And THAT is how the kangaroo got his big, strong, bouncy legs! HOP HOP HOP — the end!',
       elements: [
         { id: 'happy-kangaroo', x: 50, y: 36, hotspot: true, w: 120, h: 100, z: 3 },

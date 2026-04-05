@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Fishing by the river ──
     {
       bg: 'from-amber-200 to-green-400',
-      image: '/arthurs-world/images/first-letter/page-1.png',
+      image: '/arthurs-world/images/first-letter/page-1.webp',
       text: 'Once upon a time, a little girl called Taffy went fishing with her daddy by the river.',
       elements: [
         {
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 2: Daddy's spear broke ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/first-letter/page-2.png',
+      image: '/arthurs-world/images/first-letter/page-2.webp',
       text: "Oh no! Daddy's fishing spear broke! He needed a new one from home.",
       elements: [
         {
@@ -180,7 +180,7 @@ const storyData = {
     // ── Page 3: Taffy has an idea ──
     {
       bg: 'from-yellow-200 to-amber-400',
-      image: '/arthurs-world/images/first-letter/page-3.png',
+      image: '/arthurs-world/images/first-letter/page-3.webp',
       text: 'Taffy had a great idea! She found a piece of bark and drew a picture on it!',
       elements: [
         {
@@ -281,7 +281,7 @@ const storyData = {
     // ── Page 4: The very first letter ──
     {
       bg: 'from-orange-200 to-amber-500',
-      image: '/arthurs-world/images/first-letter/page-4.png',
+      image: '/arthurs-world/images/first-letter/page-4.webp',
       text: 'She drew Daddy, the broken spear, and their home. It was the very first letter ever!',
       elements: [
         {
@@ -382,7 +382,7 @@ const storyData = {
     // ── Page 5: The stranger arrives ──
     {
       bg: 'from-green-300 to-amber-400',
-      image: '/arthurs-world/images/first-letter/page-5.png',
+      image: '/arthurs-world/images/first-letter/page-5.webp',
       text: 'A stranger came by and Taffy gave him the picture to take to Mummy.',
       elements: [
         {
@@ -468,7 +468,7 @@ const storyData = {
     // ── Page 6: The stranger is confused ──
     {
       bg: 'from-amber-300 to-rose-400',
-      image: '/arthurs-world/images/first-letter/page-6.png',
+      image: '/arthurs-world/images/first-letter/page-6.webp',
       text: "But the stranger didn't understand the picture! He thought it meant something different!",
       elements: [
         {
@@ -554,7 +554,7 @@ const storyData = {
     // ── Page 7: Everyone comes from the village ──
     {
       bg: 'from-green-300 to-emerald-500',
-      image: '/arthurs-world/images/first-letter/page-7.png',
+      image: '/arthurs-world/images/first-letter/page-7.webp',
       text: 'He brought ALL the people from the village! Everyone was very confused!',
       elements: [
         {
@@ -655,7 +655,7 @@ const storyData = {
     // ── Page 8: Mummy sees the mix-up ──
     {
       bg: 'from-rose-200 to-amber-300',
-      image: '/arthurs-world/images/first-letter/page-8.png',
+      image: '/arthurs-world/images/first-letter/page-8.webp',
       text: 'Mummy came too and saw the silly mix-up. Everyone laughed and laughed!',
       elements: [
         {
@@ -747,7 +747,7 @@ const storyData = {
     // ── Page 9: Taffy will try again ──
     {
       bg: 'from-yellow-200 to-orange-300',
-      image: '/arthurs-world/images/first-letter/page-9.png',
+      image: '/arthurs-world/images/first-letter/page-9.webp',
       text: "Taffy said 'Next time, I'll draw BETTER pictures so everyone understands!'",
       elements: [
         {
@@ -839,7 +839,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-amber-200 to-orange-400',
-      image: '/arthurs-world/images/first-letter/page-10.png',
+      image: '/arthurs-world/images/first-letter/page-10.webp',
       text: 'And that is how the very first letter was written! Now we can all write to each other! The end!',
       elements: [
         {

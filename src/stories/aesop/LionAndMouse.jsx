@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Big Lion ──
     {
       bg: 'from-amber-300 to-orange-500',
-      image: '/arthurs-world/images/lion-mouse/page-1.png',
+      image: '/arthurs-world/images/lion-mouse/page-1.webp',
       text: 'Once upon a time, a great big lion was having a nap in the warm sunshine.',
       elements: [
         { id: 'lion', x: 50, y: 50, hotspot: true, w: 160, h: 160, z: 2 },
@@ -27,7 +27,7 @@ const storyData = {
     // ── Page 2: Mouse Wakes Lion ──
     {
       bg: 'from-green-300 to-amber-400',
-      image: '/arthurs-world/images/lion-mouse/page-2.png',
+      image: '/arthurs-world/images/lion-mouse/page-2.webp',
       text: 'A tiny little mouse ran across the lion\'s nose! The lion woke up — ROAR!',
       elements: [
         { id: 'lion-angry', x: 50, y: 45, hotspot: true, w: 150, h: 150, z: 2 },
@@ -46,7 +46,7 @@ const storyData = {
     // ── Page 3: Mouse Begs ──
     {
       bg: 'from-amber-200 to-yellow-400',
-      image: '/arthurs-world/images/lion-mouse/page-3.png',
+      image: '/arthurs-world/images/lion-mouse/page-3.webp',
       text: 'The lion caught the mouse! "Please let me go!" squeaked the mouse. "One day I\'ll help YOU!"',
       elements: [
         { id: 'lion-hold', x: 40, y: 45, hotspot: true, w: 150, h: 150, z: 2 },
@@ -65,7 +65,7 @@ const storyData = {
     // ── Page 4: Lion Laughs ──
     {
       bg: 'from-green-400 to-emerald-500',
-      image: '/arthurs-world/images/lion-mouse/page-4.png',
+      image: '/arthurs-world/images/lion-mouse/page-4.webp',
       text: 'The lion laughed! "You? Help ME? You are so tiny!" But he let the little mouse go.',
       elements: [
         { id: 'lion-laugh', x: 45, y: 45, hotspot: true, w: 150, h: 150, z: 2 },
@@ -84,7 +84,7 @@ const storyData = {
     // ── Page 5: Lion Trapped ──
     {
       bg: 'from-gray-400 to-green-600',
-      image: '/arthurs-world/images/lion-mouse/page-5.png',
+      image: '/arthurs-world/images/lion-mouse/page-5.webp',
       text: 'One day, hunters caught the lion in a big net! He was stuck! He roared and roared!',
       elements: [
         { id: 'lion-trapped', x: 50, y: 50, hotspot: true, w: 150, h: 150, z: 2 },
@@ -103,7 +103,7 @@ const storyData = {
     // ── Page 6: Mouse Hears ──
     {
       bg: 'from-emerald-300 to-teal-500',
-      image: '/arthurs-world/images/lion-mouse/page-6.png',
+      image: '/arthurs-world/images/lion-mouse/page-6.webp',
       text: 'The little mouse heard the lion roaring! "I\'m coming!" she squeaked, and ran to help!',
       elements: [
         { id: 'mouse-running', x: 30, y: 58, hotspot: true, w: 80, h: 80, z: 2 },
@@ -122,7 +122,7 @@ const storyData = {
     // ── Page 7: Mouse Chews ──
     {
       bg: 'from-amber-300 to-green-400',
-      image: '/arthurs-world/images/lion-mouse/page-7.png',
+      image: '/arthurs-world/images/lion-mouse/page-7.webp',
       text: 'The mouse nibbled and nibbled and NIBBLED through the net with her tiny sharp teeth!',
       elements: [
         { id: 'mouse-chew', x: 45, y: 45, hotspot: true, w: 80, h: 80, z: 3 },
@@ -141,7 +141,7 @@ const storyData = {
     // ── Page 8: Lion is Free ──
     {
       bg: 'from-yellow-300 to-amber-400',
-      image: '/arthurs-world/images/lion-mouse/page-8.png',
+      image: '/arthurs-world/images/lion-mouse/page-8.webp',
       text: 'The lion was FREE! "Thank you, little mouse! Even tiny friends can do BIG things!"',
       elements: [
         { id: 'lion-happy', x: 45, y: 45, hotspot: true, w: 150, h: 150, z: 2 },

@@ -151,7 +151,7 @@ export default function GameBoard({ theme, cards: initialCards, level, onWin, on
     <div className="relative w-full h-full flex flex-col overflow-hidden">
       {/* Background */}
       <img
-        src={`/arthurs-world/images/scenes/${theme}/bg.png`}
+        src={`/arthurs-world/images/scenes/${theme}/bg.webp`}
         alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-30"
       />

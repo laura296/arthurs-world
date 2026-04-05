@@ -24,7 +24,7 @@ export const SCENES = {
     label: 'Space',
     emoji: '\u{1F680}',
     bg: 'from-indigo-900 to-purple-950',
-    bgImage: '/arthurs-world/images/scenes/space/bg.png',
+    bgImage: '/arthurs-world/images/scenes/space/bg.webp',
     stickers: [
       // Hero (6)
       sticker('rocket',           'Rocket',                     'hero', 'vehicle',  'float',  '3s',   'whoosh'),
@@ -78,7 +78,7 @@ export const SCENES = {
     label: 'Sea',
     emoji: '\u{1F30A}',
     bg: 'from-cyan-700 to-blue-950',
-    bgImage: '/arthurs-world/images/scenes/sea/bg.png',
+    bgImage: '/arthurs-world/images/scenes/sea/bg.webp',
     stickers: [
       // Hero (6)
       sticker('clownfish',    'Clownfish',        'hero', 'animal', 'swim',   '3s',   'bubble'),
@@ -132,7 +132,7 @@ export const SCENES = {
     label: 'Jungle',
     emoji: '\u{1F334}',
     bg: 'from-green-800 to-emerald-950',
-    bgImage: '/arthurs-world/images/scenes/jungle/bg.png',
+    bgImage: '/arthurs-world/images/scenes/jungle/bg.webp',
     stickers: [
       // Hero (6)
       sticker('lion',     'Lion',     'hero', 'animal',   'walk',   '4s',   'roar'),
@@ -186,7 +186,7 @@ export const SCENES = {
     label: 'Farm',
     emoji: '\u{1F33E}',
     bg: 'from-green-500 to-yellow-300',
-    bgImage: '/arthurs-world/images/scenes/farm/bg.png',
+    bgImage: '/arthurs-world/images/scenes/farm/bg.webp',
     stickers: [
       // Hero (6)
       sticker('cow',     'Cow',           'hero', 'animal', 'walk',   '4s', 'moo'),
@@ -240,7 +240,7 @@ export const SCENES = {
     label: 'Dinosaurs',
     emoji: '\u{1F995}',
     bg: 'from-orange-800 to-stone-900',
-    bgImage: '/arthurs-world/images/scenes/dinosaurs/bg.png',
+    bgImage: '/arthurs-world/images/scenes/dinosaurs/bg.webp',
     stickers: [
       // Hero (6)
       sticker('t-rex',         'T-Rex',         'hero', 'dinosaur', 'walk', '4s',   'roar'),
@@ -294,7 +294,7 @@ export const SCENES = {
     label: 'Theme Park',
     emoji: '\u{1F3A0}',
     bg: 'from-pink-500 to-yellow-400',
-    bgImage: '/arthurs-world/images/scenes/theme-park/bg.png',
+    bgImage: '/arthurs-world/images/scenes/theme-park/bg.webp',
     stickers: [
       // Hero (6)
       sticker('balloon-red',        'Balloon (red)',         'hero', 'object',    'float',  '4s',   'pop'),
