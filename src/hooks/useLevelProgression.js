@@ -50,6 +50,11 @@ export function useLevelProgression(gameId, totalLevels) {
       persist(next);
       return next;
     });
+    // Advance to the next level immediately — use the level arg directly
+    // rather than reading from stale progress state
+    if (level < totalLevels) {
+      setCurrentLevel(level + 1);
+    }
   }, [totalLevels, persist]);
 
   const backToLevels = useCallback(() => setCurrentLevel(null), []);

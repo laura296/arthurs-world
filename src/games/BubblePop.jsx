@@ -657,12 +657,12 @@ export default function BubblePop() {
 
   const handleComplete = useCallback((starsEarned) => {
     completeLevel(currentLevel, starsEarned);
-    if (currentLevel < totalLevels) {
-      setLevel(currentLevel + 1);
-    } else {
+    // completeLevel handles advancing to next level internally;
+    // if this was the last level, go back to level select
+    if (currentLevel >= totalLevels) {
       backToLevels();
     }
-  }, [currentLevel, totalLevels, completeLevel, setLevel, backToLevels]);
+  }, [currentLevel, totalLevels, completeLevel, backToLevels]);
 
   if (currentLevel === null) {
     return (

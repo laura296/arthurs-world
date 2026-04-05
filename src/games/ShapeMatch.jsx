@@ -786,12 +786,10 @@ export default function ShapeMatch() {
 
   const handleComplete = useCallback((starsEarned) => {
     completeLevel(currentLevel, starsEarned);
-    if (currentLevel < totalLevels) {
-      setLevel(currentLevel + 1);
-    } else {
+    if (currentLevel >= totalLevels) {
       backToLevels();
     }
-  }, [currentLevel, totalLevels, completeLevel, setLevel, backToLevels]);
+  }, [currentLevel, totalLevels, completeLevel, backToLevels]);
 
   if (currentLevel === null) {
     return (
