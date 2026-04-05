@@ -19,6 +19,14 @@
     </style>
   </head>
   <body class="bg-night">
+    <script>
+      // Force service worker update on load
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.update(); });
+        });
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
