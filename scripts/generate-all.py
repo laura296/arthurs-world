@@ -179,7 +179,7 @@ def generate(key, desc):
         "prompt": prompt,
         "n": 1,
         "size": size,
-        "quality": "medium",
+        "quality": "high",
     })
 
     for attempt in range(3):

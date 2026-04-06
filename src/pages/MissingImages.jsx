@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import games from '../data/games';
 import BackButton from '../components/BackButton';
 import { generateImage, hasApiKey } from '../lib/imageGen';
@@ -296,6 +296,20 @@ export default function MissingImages() {
   const canGenerate = missingCount > 0 && apiReady;
   const missingWithPrompts = allItems.filter(i => statuses[i.src] === 'missing' && hasPrompt(i.src)).length;
 
+  // Stable blob URL map — avoids creating new URLs every render
+  const blobUrls = useMemo(() => {
+    const urls = {};
+    for (const [src, blob] of Object.entries(generatedBlobs)) {
+      urls[src] = URL.createObjectURL(blob);
+    }
+    return urls;
+  }, [generatedBlobs]);
+
+  // Revoke old URLs on change
+  useEffect(() => {
+    return () => { Object.values(blobUrls).forEach(URL.revokeObjectURL); };
+  }, [blobUrls]);
+
   return (
     <div className="relative w-full h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 overflow-y-auto no-scrollbar">
       <BackButton />
@@ -529,7 +543,7 @@ export default function MissingImages() {
                   const isGenerating = status === 'generating';
                   const isError = status === 'error';
                   const blob = generatedBlobs[item.src];
-                  const blobUrl = blob ? URL.createObjectURL(blob) : null;
+                  const blobUrl = blobUrls[item.src] || null;
                   const canGen = isMissing && hasPrompt(item.src) && apiReady;
 
                   return (
