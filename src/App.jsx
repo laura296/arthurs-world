@@ -82,6 +82,8 @@ const ABCAdventure = lazy(() => import('./games/ABCAdventure'));
 const NumberLine = lazy(() => import('./games/NumberLine'));
 const StackBricks = lazy(() => import('./games/StackBricks'));
 const OddOnePicks = lazy(() => import('./games/OddOnePicks'));
+const ColoursLab = lazy(() => import('./games/ColoursLab'));
+const BodyParts = lazy(() => import('./games/BodyParts'));
 const MissingImages = lazy(() => import('./pages/MissingImages'));
 
 // ── Enhanced Loading Screen ──────────────────────────────────────────
@@ -262,6 +264,8 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/number-line" element={<G><NumberLine /></G>} />
         <Route path="/games/:mode/:section/stack-bricks" element={<G><StackBricks /></G>} />
         <Route path="/games/:mode/:section/odd-one-picks" element={<G><OddOnePicks /></G>} />
+        <Route path="/games/:mode/:section/colours-lab" element={<G><ColoursLab /></G>} />
+        <Route path="/games/:mode/:section/body-parts" element={<G><BodyParts /></G>} />
 
         {/* Aesop's Fables — Games */}
         <Route path="/games/:mode/:section/tortoise-hare-race" element={<G><TortoiseHareRace /></G>} />

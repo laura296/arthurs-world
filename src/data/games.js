@@ -111,6 +111,10 @@ const games = [
   { id: 'morning-routine',   emoji: '👕', title: 'Getting Dressed', path: 'morning-routine',   category: 'games', group: '🧸 Self-Care', bg: 'from-amber-300 to-orange-400' },
   { id: 'sparkle-teeth',     emoji: '🪥', title: 'Sparkle Teeth',  path: 'sparkle-teeth',     category: 'games', group: '🧸 Self-Care', bg: 'from-sky-300 to-blue-500' },
   { id: 'arthurs-lunchbox',  emoji: '🥗', title: 'Lunchbox',       path: 'arthurs-lunchbox',  category: 'games', group: '🧸 Self-Care', bg: 'from-green-300 to-emerald-500' },
+
+  // ── Science & Learning ──
+  { id: 'colours-lab',  emoji: '🎨', title: 'Colours Lab',  path: 'colours-lab',  category: 'games', group: '🔬 Science', bg: 'from-amber-300 to-orange-400' },
+  { id: 'body-parts',   emoji: '🧸', title: 'My Body',      path: 'body-parts',   category: 'games', group: '🔬 Science', bg: 'from-sky-300 to-emerald-400' },
 ];
 
 export default games;
