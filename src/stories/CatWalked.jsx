@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: All animals were wild ──
     {
       bg: 'from-slate-500 to-indigo-700',
-      image: '/arthurs-world/images/cat-walked/page-1.png',
+      image: '/arthurs-world/images/cat-walked/page-1.webp',
       text: 'Long long ago, all the animals were WILD. Dog was wild. Horse was wild. Cow was wild. But the wildest of all? The Cat!',
       elements: [
         { id: 'wild-cat', x: 50, y: 35, hotspot: true, w: 140, h: 130, z: 3 },
@@ -55,7 +55,7 @@ const storyData = {
     // ── Page 2: Woman makes a cave home ──
     {
       bg: 'from-amber-700 to-slate-600',
-      image: '/arthurs-world/images/cat-walked/page-2.png',
+      image: '/arthurs-world/images/cat-walked/page-2.webp',
       text: 'A kind Woman made a warm cave. She lit a big fire. Crackle crackle! "Who wants to come in?" she called.',
       elements: [
         { id: 'woman', x: 35, y: 38, hotspot: true, w: 120, h: 120, z: 3 },
@@ -101,7 +101,7 @@ const storyData = {
     // ── Page 3: Dog becomes tame ──
     {
       bg: 'from-amber-600 to-stone-700',
-      image: '/arthurs-world/images/cat-walked/page-3.png',
+      image: '/arthurs-world/images/cat-walked/page-3.webp',
       text: 'Dog ran right in! "Woof woof! I will guard you! I will keep you safe!" Good Dog! Have some dinner!',
       elements: [
         { id: 'happy-dog', x: 45, y: 38, hotspot: true, w: 130, h: 120, z: 3 },
@@ -147,7 +147,7 @@ const storyData = {
     // ── Page 4: Horse becomes tame ──
     {
       bg: 'from-stone-500 to-amber-700',
-      image: '/arthurs-world/images/cat-walked/page-4.png',
+      image: '/arthurs-world/images/cat-walked/page-4.webp',
       text: 'Then Horse clip-clopped in! "Neeeigh! I will carry things for you!" Good Horse! Have some sweet hay!',
       elements: [
         { id: 'tame-horse', x: 50, y: 35, hotspot: true, w: 140, h: 130, z: 3 },
@@ -193,7 +193,7 @@ const storyData = {
     // ── Page 5: Cow becomes tame ──
     {
       bg: 'from-slate-400 to-stone-600',
-      image: '/arthurs-world/images/cat-walked/page-5.png',
+      image: '/arthurs-world/images/cat-walked/page-5.webp',
       text: 'And Cow came too! "Moo moo MOO! I will give you milk every day!" Good Cow! Have a cosy barn!',
       elements: [
         { id: 'tame-cow', x: 48, y: 38, hotspot: true, w: 130, h: 120, z: 3 },
@@ -239,7 +239,7 @@ const storyData = {
     // ── Page 6: Cat refuses ──
     {
       bg: 'from-indigo-600 to-slate-800',
-      image: '/arthurs-world/images/cat-walked/page-6.png',
+      image: '/arthurs-world/images/cat-walked/page-6.webp',
       text: 'But NOT the Cat. Oh no no no! "I am the Cat who walks by himself! All places are the same to me!" And off he went. Swish swish swish went his tail.',
       elements: [
         { id: 'proud-cat', x: 50, y: 32, hotspot: true, w: 150, h: 140, z: 3 },
@@ -292,7 +292,7 @@ const storyData = {
     // ── Page 7: Cat hears baby crying (KEY PAGE) ──
     {
       bg: 'from-indigo-500 to-amber-600',
-      image: '/arthurs-world/images/cat-walked/page-7.png',
+      image: '/arthurs-world/images/cat-walked/page-7.webp',
       text: 'But then... Cat heard a little Baby crying. Waaah waaah! Cat crept in, soft soft soft. And he purred. Purr purr PURRRR! The Baby stopped crying and smiled!',
       elements: [
         { id: 'purring-cat', x: 40, y: 42, hotspot: true, w: 120, h: 110, z: 3 },
@@ -345,7 +345,7 @@ const storyData = {
     // ── Page 8: Woman makes a deal ──
     {
       bg: 'from-amber-500 to-slate-600',
-      image: '/arthurs-world/images/cat-walked/page-8.png',
+      image: '/arthurs-world/images/cat-walked/page-8.webp',
       text: 'The Woman looked at Cat. "All right Cat. You can sit by the fire. You can have warm milk. BUT! You must catch mice. And you must purr for the Baby. Deal?"',
       elements: [
         { id: 'deal-woman', x: 30, y: 38, hotspot: true, w: 110, h: 110, z: 3 },
@@ -391,7 +391,7 @@ const storyData = {
     // ── Page 9: Cat agrees but still walks alone ──
     {
       bg: 'from-slate-400 to-indigo-600',
-      image: '/arthurs-world/images/cat-walked/page-9.png',
+      image: '/arthurs-world/images/cat-walked/page-9.webp',
       text: 'So Cat came inside. He sat by the warm fire. Purr purr purr. He drank warm milk. Lap lap lap. But when the moon came up? Off he went! Out into the night!',
       elements: [
         { id: 'free-cat', x: 22, y: 35, hotspot: true, w: 110, h: 110, z: 3 },
@@ -438,7 +438,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-indigo-400 to-amber-500',
-      image: '/arthurs-world/images/cat-walked/page-10.png',
+      image: '/arthurs-world/images/cat-walked/page-10.webp',
       text: 'And that is why! Dog says "Woof!" by the door. Horse says "Neigh!" in the field. Cow says "Moo!" in the barn. But Cat? Cat sits by the fire and purrs... then walks off by himself! Because he is the Cat who walks by himself. The end!',
       elements: [
         { id: 'fireside-cat', x: 45, y: 40, hotspot: true, w: 130, h: 120, z: 3 },

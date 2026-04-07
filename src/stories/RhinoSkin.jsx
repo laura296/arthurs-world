@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: The Man and His Cake ──
     {
       bg: 'from-sky-300 to-emerald-400',
-      image: '/arthurs-world/images/rhino-skin/page-1.png',
+      image: '/arthurs-world/images/rhino-skin/page-1.webp',
       text: 'Once upon a time, on a sunny sunny island, a man baked a cake. A big, yummy, beautiful cake!',
       elements: [
         { id: 'man', x: 30, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -29,7 +29,7 @@ const storyData = {
     // ── Page 2: The Smooth Rhinoceros ──
     {
       bg: 'from-amber-200 to-sky-400',
-      image: '/arthurs-world/images/rhino-skin/page-2.png',
+      image: '/arthurs-world/images/rhino-skin/page-2.webp',
       text: 'Along came a BIG rhinoceros. His skin was smooth and shiny — like a brand new button!',
       elements: [
         { id: 'rhino', x: 50, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -50,7 +50,7 @@ const storyData = {
     // ── Page 3: Rhinoceros Eats the Cake ──
     {
       bg: 'from-red-300 to-orange-400',
-      image: '/arthurs-world/images/rhino-skin/page-3.png',
+      image: '/arthurs-world/images/rhino-skin/page-3.webp',
       text: 'That naughty rhino ate ALL the cake! Chomp chomp chomp! Every. Last. Crumb!',
       elements: [
         { id: 'eating-rhino', x: 42, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -71,7 +71,7 @@ const storyData = {
     // ── Page 4: The Man is Cross ──
     {
       bg: 'from-red-400 to-rose-600',
-      image: '/arthurs-world/images/rhino-skin/page-4.png',
+      image: '/arthurs-world/images/rhino-skin/page-4.webp',
       text: 'The man was SO cross! "You naughty rhino!" he said. "You ate my cake!"',
       elements: [
         { id: 'angry-man', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -92,7 +92,7 @@ const storyData = {
     // ── Page 5: The Rhino Takes Off His Skin ──
     {
       bg: 'from-cyan-300 to-blue-500',
-      image: '/arthurs-world/images/rhino-skin/page-5.png',
+      image: '/arthurs-world/images/rhino-skin/page-5.webp',
       text: 'One HOT hot day, the rhino took off his skin and left it on the beach. Then he went for a swim! Splish splash!',
       elements: [
         { id: 'rhino-skin', x: 30, y: 55, hotspot: true, w: 120, h: 100, z: 3 },
@@ -113,7 +113,7 @@ const storyData = {
     // ── Page 6: The Sneaky Idea ──
     {
       bg: 'from-violet-300 to-amber-400',
-      image: '/arthurs-world/images/rhino-skin/page-6.png',
+      image: '/arthurs-world/images/rhino-skin/page-6.webp',
       text: 'The man saw the skin on the beach. He had a sneaky, sneaky idea! He did a little smile...',
       elements: [
         { id: 'sneaky-man', x: 35, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -132,7 +132,7 @@ const storyData = {
     // ── Page 7: Filling the Skin with Crumbs ──
     {
       bg: 'from-amber-300 to-yellow-500',
-      image: '/arthurs-world/images/rhino-skin/page-7.png',
+      image: '/arthurs-world/images/rhino-skin/page-7.webp',
       text: 'He put scratchy, itchy cake crumbs ALL inside the rhino skin! Scritch scratch scritch!',
       elements: [
         { id: 'filling-man', x: 25, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -153,7 +153,7 @@ const storyData = {
     // ── Page 8: SO Itchy! ──
     {
       bg: 'from-red-400 to-orange-500',
-      image: '/arthurs-world/images/rhino-skin/page-8.png',
+      image: '/arthurs-world/images/rhino-skin/page-8.webp',
       text: 'The rhino put his skin back on and — OH NO! ITCH ITCH ITCH! Scratchy scratchy EVERYWHERE!',
       elements: [
         { id: 'itchy-rhino', x: 45, y: 38, hotspot: true, w: 120, h: 100, z: 3 },
@@ -174,7 +174,7 @@ const storyData = {
     // ── Page 9: Scratching and Wrinkling ──
     {
       bg: 'from-green-400 to-emerald-600',
-      image: '/arthurs-world/images/rhino-skin/page-9.png',
+      image: '/arthurs-world/images/rhino-skin/page-9.webp',
       text: 'He scratched on rocks! He scratched on trees! Scratch scratch scratch! His skin got all wrinkly and baggy and bumpy!',
       elements: [
         { id: 'scratching-rhino', x: 42, y: 40, hotspot: true, w: 120, h: 100, z: 3 },
@@ -195,7 +195,7 @@ const storyData = {
     // ── Page 10: The End ──
     {
       bg: 'from-green-300 to-sky-400',
-      image: '/arthurs-world/images/rhino-skin/page-10.png',
+      image: '/arthurs-world/images/rhino-skin/page-10.webp',
       text: 'And THAT is why rhinos have wrinkly, bumpy, baggy skin! All because of those scratchy cake crumbs! The end!',
       elements: [
         { id: 'wrinkly-rhino', x: 45, y: 36, hotspot: true, w: 120, h: 100, z: 3 },

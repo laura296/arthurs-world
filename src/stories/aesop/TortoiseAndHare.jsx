@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Introduction ──
     {
       bg: 'from-green-300 to-emerald-500',
-      image: '/arthurs-world/images/tortoise-hare/page-1.png',
+      image: '/arthurs-world/images/tortoise-hare/page-1.webp',
       text: 'Once upon a time, a speedy hare loved to show off how fast he could run!',
       elements: [
         { id: 'hare', x: 65, y: 45, hotspot: true, w: 130, h: 130, z: 2 },
@@ -28,7 +28,7 @@ const storyData = {
     // ── Page 2: The Challenge ──
     {
       bg: 'from-amber-200 to-orange-400',
-      image: '/arthurs-world/images/tortoise-hare/page-2.png',
+      image: '/arthurs-world/images/tortoise-hare/page-2.webp',
       text: 'The little tortoise said, "I bet I can beat you in a race!" The hare laughed and laughed!',
       elements: [
         { id: 'tortoise-brave', x: 40, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -47,7 +47,7 @@ const storyData = {
     // ── Page 3: The Race Begins ──
     {
       bg: 'from-sky-300 to-green-400',
-      image: '/arthurs-world/images/tortoise-hare/page-3.png',
+      image: '/arthurs-world/images/tortoise-hare/page-3.webp',
       text: 'Ready, set, GO! The hare zoomed ahead! The tortoise walked slowly, one step at a time.',
       elements: [
         { id: 'hare-run', x: 75, y: 45, hotspot: true, w: 130, h: 130, z: 2 },
@@ -66,7 +66,7 @@ const storyData = {
     // ── Page 4: The Hare Naps ──
     {
       bg: 'from-green-400 to-teal-500',
-      image: '/arthurs-world/images/tortoise-hare/page-4.png',
+      image: '/arthurs-world/images/tortoise-hare/page-4.webp',
       text: 'The hare was SO far ahead that he lay down under a tree. He fell fast asleep! Zzzzz...',
       elements: [
         { id: 'hare-sleep', x: 55, y: 55, hotspot: true, w: 140, h: 140, z: 2 },
@@ -85,7 +85,7 @@ const storyData = {
     // ── Page 5: Tortoise Keeps Going ──
     {
       bg: 'from-amber-300 to-green-400',
-      image: '/arthurs-world/images/tortoise-hare/page-5.png',
+      image: '/arthurs-world/images/tortoise-hare/page-5.webp',
       text: 'The tortoise kept going — slow and steady, one step at a time. He never stopped!',
       elements: [
         { id: 'tortoise-steady', x: 50, y: 55, hotspot: true, w: 130, h: 130, z: 2 },
@@ -105,7 +105,7 @@ const storyData = {
     // ── Page 6: Tortoise Passes Hare ──
     {
       bg: 'from-orange-300 to-amber-400',
-      image: '/arthurs-world/images/tortoise-hare/page-6.png',
+      image: '/arthurs-world/images/tortoise-hare/page-6.webp',
       text: 'The tortoise tiptoed past the sleeping hare! Shhh! Quiet, quiet!',
       elements: [
         { id: 'tortoise-sneak', x: 60, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -124,7 +124,7 @@ const storyData = {
     // ── Page 7: Hare Wakes Up ──
     {
       bg: 'from-red-300 to-orange-500',
-      image: '/arthurs-world/images/tortoise-hare/page-7.png',
+      image: '/arthurs-world/images/tortoise-hare/page-7.webp',
       text: 'The hare woke up! Oh no! The tortoise was almost at the finish line!',
       elements: [
         { id: 'hare-panic', x: 35, y: 50, hotspot: true, w: 130, h: 130, z: 2 },
@@ -143,7 +143,7 @@ const storyData = {
     // ── Page 8: Tortoise Wins ──
     {
       bg: 'from-yellow-300 to-amber-400',
-      image: '/arthurs-world/images/tortoise-hare/page-8.png',
+      image: '/arthurs-world/images/tortoise-hare/page-8.webp',
       text: 'The tortoise crossed the finish line first! He WON the race! Hooray!',
       elements: [
         { id: 'tortoise-winner', x: 50, y: 45, hotspot: true, w: 140, h: 140, z: 3 },

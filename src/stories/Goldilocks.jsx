@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Walk in the forest ──
     {
       bg: 'from-green-400 to-green-700',
-      image: '/arthurs-world/images/goldilocks/page-1.png',
+      image: '/arthurs-world/images/goldilocks/page-1.webp',
       text: 'Once upon a time, a little girl called Goldilocks went for a walk in the forest.',
       elements: [
         { id: 'girl-1', x: 45, y: 55, hotspot: true, w: 140, h: 140, z: 12 },
@@ -54,7 +54,7 @@ const storyData = {
     // ── Page 2: Finding the cottage ──
     {
       bg: 'from-green-300 to-amber-200',
-      image: '/arthurs-world/images/goldilocks/page-2.png',
+      image: '/arthurs-world/images/goldilocks/page-2.webp',
       text: 'She found a little cottage in the woods. Who lives here?',
       elements: [
         { id: 'cottage-2', x: 50, y: 40, hotspot: true, w: 150, h: 150, z: 10 },
@@ -100,7 +100,7 @@ const storyData = {
     // ── Page 3: Three bowls of porridge ──
     {
       bg: 'from-amber-100 to-amber-300',
-      image: '/arthurs-world/images/goldilocks/page-3.png',
+      image: '/arthurs-world/images/goldilocks/page-3.webp',
       text: 'Inside she found three bowls of porridge. Big, medium and small!',
       elements: [
         { id: 'bowl-big', x: 25, y: 50, hotspot: true, w: 140, h: 140, z: 10 },
@@ -164,7 +164,7 @@ const storyData = {
     // ── Page 4: Eating the porridge ──
     {
       bg: 'from-amber-100 to-amber-300',
-      image: '/arthurs-world/images/goldilocks/page-4.png',
+      image: '/arthurs-world/images/goldilocks/page-4.webp',
       text: 'Goldilocks ate up all the little bowl of porridge. Yum yum!',
       elements: [
         { id: 'girl-4', x: 40, y: 48, hotspot: true, w: 140, h: 140, z: 12 },
@@ -209,7 +209,7 @@ const storyData = {
     // ── Page 5: Three chairs ──
     {
       bg: 'from-amber-100 to-orange-200',
-      image: '/arthurs-world/images/goldilocks/page-5.png',
+      image: '/arthurs-world/images/goldilocks/page-5.webp',
       text: 'Then she found three chairs. Big, medium and small!',
       elements: [
         { id: 'chair-big', x: 22, y: 48, hotspot: true, w: 140, h: 140, z: 10 },
@@ -266,7 +266,7 @@ const storyData = {
     // ── Page 6: Chair breaks ──
     {
       bg: 'from-amber-200 to-orange-300',
-      image: '/arthurs-world/images/goldilocks/page-6.png',
+      image: '/arthurs-world/images/goldilocks/page-6.webp',
       text: 'Oh no! The little chair broke! CRASH!',
       elements: [
         { id: 'broken-6', x: 50, y: 55, hotspot: true, w: 110, h: 110, z: 10 },
@@ -312,7 +312,7 @@ const storyData = {
     // ── Page 7: Three beds ──
     {
       bg: 'from-indigo-200 to-purple-300',
-      image: '/arthurs-world/images/goldilocks/page-7.png',
+      image: '/arthurs-world/images/goldilocks/page-7.webp',
       text: 'Goldilocks felt sleepy. She found three beds upstairs.',
       elements: [
         { id: 'bed-big', x: 20, y: 50, hotspot: true, w: 140, h: 140, z: 10 },
@@ -376,7 +376,7 @@ const storyData = {
     // ── Page 8: Fast asleep ──
     {
       bg: 'from-indigo-300 to-indigo-600',
-      image: '/arthurs-world/images/goldilocks/page-8.png',
+      image: '/arthurs-world/images/goldilocks/page-8.webp',
       text: 'She fell fast asleep in the little bed. Zzzzz...',
       elements: [
         { id: 'sleeping-8', x: 45, y: 52, hotspot: true, w: 140, h: 140, z: 12 },
@@ -422,7 +422,7 @@ const storyData = {
     // ── Page 9: The three bears come home ──
     {
       bg: 'from-amber-200 to-amber-400',
-      image: '/arthurs-world/images/goldilocks/page-9.png',
+      image: '/arthurs-world/images/goldilocks/page-9.webp',
       text: "The three bears came home! Who's been eating my porridge?",
       elements: [
         { id: 'papa-bear', x: 22, y: 45, hotspot: true, w: 160, h: 160, z: 12 },
@@ -486,7 +486,7 @@ const storyData = {
     // ── Page 10: Goldilocks runs home ──
     {
       bg: 'from-green-300 to-green-600',
-      image: '/arthurs-world/images/goldilocks/page-10.png',
+      image: '/arthurs-world/images/goldilocks/page-10.webp',
       text: 'Goldilocks woke up and ran all the way home! The end!',
       elements: [
         { id: 'girl-10', x: 30, y: 50, hotspot: true, w: 130, h: 130, z: 12 },

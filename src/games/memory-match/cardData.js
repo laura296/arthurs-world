@@ -36,7 +36,7 @@ export const THEMES = {
     label: 'Space',
     emoji: '\u{1F680}',
     bg: 'from-indigo-900 to-purple-950',
-    bgImage: '/arthurs-world/images/scenes/space/bg.png',
+    bgImage: '/arthurs-world/images/scenes/space/bg.webp',
     cards: [
       card('rocket',              'Rocket',              'whoosh'),
       card('astronaut',           'Astronaut',           'bleep'),
@@ -74,7 +74,7 @@ export const THEMES = {
     label: 'Sea',
     emoji: '\u{1F30A}',
     bg: 'from-cyan-700 to-blue-950',
-    bgImage: '/arthurs-world/images/scenes/sea/bg.png',
+    bgImage: '/arthurs-world/images/scenes/sea/bg.webp',
     cards: [
       card('clownfish',       'Clownfish',    'splash'),
       card('great-white',     'Shark',        'splash'),
@@ -112,7 +112,7 @@ export const THEMES = {
     label: 'Jungle',
     emoji: '\u{1F33F}',
     bg: 'from-green-800 to-emerald-950',
-    bgImage: '/arthurs-world/images/scenes/jungle/bg.png',
+    bgImage: '/arthurs-world/images/scenes/jungle/bg.webp',
     cards: [
       card('lion',       'Lion',       'roar'),
       card('tiger',      'Tiger',      'roar'),
@@ -150,7 +150,7 @@ export const THEMES = {
     label: 'Farm',
     emoji: '\u{1F33E}',
     bg: 'from-yellow-700 to-amber-900',
-    bgImage: '/arthurs-world/images/scenes/farm/bg.png',
+    bgImage: '/arthurs-world/images/scenes/farm/bg.webp',
     cards: [
       card('cow',         'Cow',        'moo'),
       card('pig',         'Pig',        'oink'),
@@ -188,7 +188,7 @@ export const THEMES = {
     label: 'Dinosaurs',
     emoji: '\u{1F996}',
     bg: 'from-amber-800 to-orange-950',
-    bgImage: '/arthurs-world/images/scenes/dinosaurs/bg.png',
+    bgImage: '/arthurs-world/images/scenes/dinosaurs/bg.webp',
     cards: [
       card('t-rex',              'T-Rex',              'roar'),
       card('triceratops',        'Triceratops',        'roar'),
@@ -226,7 +226,7 @@ export const THEMES = {
     label: 'Theme Park',
     emoji: '\u{1F3A0}',
     bg: 'from-rose-700 to-pink-950',
-    bgImage: '/arthurs-world/images/scenes/theme-park/bg.png',
+    bgImage: '/arthurs-world/images/scenes/theme-park/bg.webp',
     cards: [
       card('balloon-bunch',      'Balloon',        'pop'),
       card('candy-floss',        'Candy Floss',    'crunch'),
@@ -360,5 +360,5 @@ export function buildDeck(themeId, level) {
 
 /** Sticker image path helper */
 export function stickerPath(themeId, stickerId) {
-  return `/arthurs-world/images/scenes/${themeId}/stickers/${stickerId}.png`;
+  return `/arthurs-world/images/scenes/${themeId}/stickers/${stickerId}.webp`;
 }

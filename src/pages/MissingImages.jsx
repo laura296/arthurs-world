@@ -15,11 +15,11 @@ function collectAllImages() {
 
   // Section hero images
   const sectionHeroes = [
-    { id: 'games',  emoji: '🎮', label: 'Games',  src: `${BASE}/images/sections/games.png` },
-    { id: 'art',    emoji: '🎨', label: 'Art',    src: `${BASE}/images/sections/art.png` },
-    { id: 'books',  emoji: '📚', label: 'Books',  src: `${BASE}/images/sections/books.png` },
-    { id: 'music',  emoji: '🎵', label: 'Music',  src: `${BASE}/images/sections/music.png` },
-    { id: 'videos', emoji: '📺', label: 'Videos', src: `${BASE}/images/sections/videos.png` },
+    { id: 'games',  emoji: '🎮', label: 'Games',  src: `${BASE}/images/sections/games.webp` },
+    { id: 'art',    emoji: '🎨', label: 'Art',    src: `${BASE}/images/sections/art.webp` },
+    { id: 'books',  emoji: '📚', label: 'Books',  src: `${BASE}/images/sections/books.webp` },
+    { id: 'music',  emoji: '🎵', label: 'Music',  src: `${BASE}/images/sections/music.webp` },
+    { id: 'videos', emoji: '📺', label: 'Videos', src: `${BASE}/images/sections/videos.webp` },
   ];
   groups.push({ title: 'Section Heroes', emoji: '🏠', items: sectionHeroes });
 
@@ -120,7 +120,7 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-/** Derive a filename from image src, e.g. /images/sections/games.png → sections__games.png */
+/** Derive a filename from image src, e.g. /images/sections/games.webp → sections__games.png */
 function srcToFilename(src) {
   return src
     .replace(/^\/arthurs-world\/images\//, '')

@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Hungry Fox ──
     {
       bg: 'from-green-300 to-emerald-500',
-      image: '/arthurs-world/images/fox-grapes/page-1.png',
+      image: '/arthurs-world/images/fox-grapes/page-1.webp',
       text: 'Once upon a time, a hungry fox was walking through the woods on a sunny day.',
       elements: [
         { id: 'fox', x: 40, y: 55, hotspot: true, w: 130, h: 130, z: 2 },
@@ -27,7 +27,7 @@ const storyData = {
     // ── Page 2: Spots Grapes ──
     {
       bg: 'from-purple-300 to-green-400',
-      image: '/arthurs-world/images/fox-grapes/page-2.png',
+      image: '/arthurs-world/images/fox-grapes/page-2.webp',
       text: 'The fox saw big, juicy purple grapes hanging high up on a vine! Yummy!',
       elements: [
         { id: 'grapes', x: 50, y: 20, hotspot: true, w: 120, h: 120, z: 2 },
@@ -46,7 +46,7 @@ const storyData = {
     // ── Page 3: First Jump ──
     {
       bg: 'from-sky-300 to-green-400',
-      image: '/arthurs-world/images/fox-grapes/page-3.png',
+      image: '/arthurs-world/images/fox-grapes/page-3.webp',
       text: 'The fox jumped up as high as he could! But he could not reach the grapes!',
       elements: [
         { id: 'fox-jump', x: 45, y: 40, hotspot: true, w: 130, h: 130, z: 2 },
@@ -65,7 +65,7 @@ const storyData = {
     // ── Page 4: Second Jump ──
     {
       bg: 'from-amber-300 to-green-400',
-      image: '/arthurs-world/images/fox-grapes/page-4.png',
+      image: '/arthurs-world/images/fox-grapes/page-4.webp',
       text: 'He tried again! He jumped and jumped! But the grapes were just too high up!',
       elements: [
         { id: 'fox-try', x: 45, y: 38, hotspot: true, w: 130, h: 130, z: 2 },
@@ -84,7 +84,7 @@ const storyData = {
     // ── Page 5: Third Jump ──
     {
       bg: 'from-orange-300 to-red-400',
-      image: '/arthurs-world/images/fox-grapes/page-5.png',
+      image: '/arthurs-world/images/fox-grapes/page-5.webp',
       text: 'One more try! The fox jumped with ALL his might! But he still could not reach them!',
       elements: [
         { id: 'fox-big-jump', x: 45, y: 35, hotspot: true, w: 140, h: 140, z: 2 },
@@ -103,7 +103,7 @@ const storyData = {
     // ── Page 6: Fox Gives Up ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/fox-grapes/page-6.png',
+      image: '/arthurs-world/images/fox-grapes/page-6.webp',
       text: 'The fox was tired and cross. "Those grapes are probably sour anyway!" he said.',
       elements: [
         { id: 'fox-grumpy', x: 45, y: 55, hotspot: true, w: 130, h: 130, z: 2 },
@@ -122,7 +122,7 @@ const storyData = {
     // ── Page 7: Fox Walks Away ──
     {
       bg: 'from-green-300 to-teal-400',
-      image: '/arthurs-world/images/fox-grapes/page-7.png',
+      image: '/arthurs-world/images/fox-grapes/page-7.webp',
       text: 'The fox walked away with his nose in the air. But a little bird saw what happened!',
       elements: [
         { id: 'fox-walk', x: 30, y: 55, hotspot: true, w: 120, h: 120, z: 2 },
@@ -141,7 +141,7 @@ const storyData = {
     // ── Page 8: The Lesson ──
     {
       bg: 'from-yellow-300 to-amber-400',
-      image: '/arthurs-world/images/fox-grapes/page-8.png',
+      image: '/arthurs-world/images/fox-grapes/page-8.webp',
       text: 'Sometimes when we cannot get what we want, we pretend we never wanted it! The end!',
       elements: [
         { id: 'fox-think', x: 45, y: 48, hotspot: true, w: 130, h: 130, z: 2 },

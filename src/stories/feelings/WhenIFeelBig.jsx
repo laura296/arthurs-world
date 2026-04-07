@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Little Bear, Big Feelings ──
     {
       bg: 'from-amber-300 to-orange-400',
-      image: '/arthurs-world/images/when-i-feel-big/page-1.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-1.webp',
       text: 'Little Bear sometimes has very BIG feelings inside. They feel too big for such a little bear!',
       elements: [
         { id: 'bear', x: 50, y: 50, hotspot: true, w: 160, h: 160, z: 3 },
@@ -28,7 +28,7 @@ const storyData = {
     // ── Page 2: Excited! ──
     {
       bg: 'from-yellow-300 to-orange-300',
-      image: '/arthurs-world/images/when-i-feel-big/page-2.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-2.webp',
       text: 'Sometimes Little Bear feels EXCITED! His tummy goes fizzy and he wants to bounce and bounce!',
       elements: [
         { id: 'excited-bear', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -50,7 +50,7 @@ const storyData = {
     // ── Page 3: Frustrated ──
     {
       bg: 'from-orange-400 to-red-400',
-      image: '/arthurs-world/images/when-i-feel-big/page-3.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-3.webp',
       text: 'Sometimes Little Bear feels FRUSTRATED. His tower keeps falling down! He wants to stamp his feet!',
       elements: [
         { id: 'frustrated-bear', x: 40, y: 48, hotspot: true, w: 150, h: 150, z: 3 },
@@ -72,7 +72,7 @@ const storyData = {
     // ── Page 4: Worried ──
     {
       bg: 'from-purple-300 to-indigo-400',
-      image: '/arthurs-world/images/when-i-feel-big/page-4.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-4.webp',
       text: 'Sometimes Little Bear feels WORRIED. His tummy feels knotty and his head is full of "what ifs".',
       elements: [
         { id: 'worried-bear', x: 45, y: 50, hotspot: true, w: 150, h: 150, z: 3 },
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 5: Proud ──
     {
       bg: 'from-amber-300 to-yellow-400',
-      image: '/arthurs-world/images/when-i-feel-big/page-5.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-5.webp',
       text: 'Sometimes Little Bear feels PROUD! He did something all by himself! His chest puffs up big!',
       elements: [
         { id: 'proud-bear', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -116,7 +116,7 @@ const storyData = {
     // ── Page 6: Shy ──
     {
       bg: 'from-sky-200 to-blue-300',
-      image: '/arthurs-world/images/when-i-feel-big/page-6.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-6.webp',
       text: 'Sometimes Little Bear feels SHY. He hides behind Mummy and peeks out with one little eye.',
       elements: [
         { id: 'shy-bear', x: 55, y: 55, hotspot: true, w: 120, h: 120, z: 3 },
@@ -138,7 +138,7 @@ const storyData = {
     // ── Page 7: Sleepy ──
     {
       bg: 'from-indigo-300 to-purple-500',
-      image: '/arthurs-world/images/when-i-feel-big/page-7.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-7.webp',
       text: 'Sometimes Little Bear feels SLEEPY. His eyes go droopy and he does big yawns. Time for bed!',
       elements: [
         { id: 'sleepy-bear', x: 45, y: 50, hotspot: true, w: 160, h: 160, z: 3 },
@@ -160,7 +160,7 @@ const storyData = {
     // ── Page 8: All Feelings Are Okay ──
     {
       bg: 'from-amber-200 to-rose-300',
-      image: '/arthurs-world/images/when-i-feel-big/page-8.png',
+      image: '/arthurs-world/images/when-i-feel-big/page-8.webp',
       text: 'ALL of Little Bear\'s feelings are okay. Big or small, happy or sad — every feeling matters. You are wonderful just as you are!',
       elements: [
         { id: 'happy-bear', x: 50, y: 40, hotspot: true, w: 170, h: 170, z: 3 },

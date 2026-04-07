@@ -8,7 +8,7 @@ const storyData = {
     // ── Page 1: Meet the Friends ──
     {
       bg: 'from-sky-200 to-amber-200',
-      image: '/arthurs-world/images/feelings-friends/page-1.png',
+      image: '/arthurs-world/images/feelings-friends/page-1.webp',
       text: 'Did you know? Every feeling has a little animal friend! Let us meet them all!',
       elements: [
         { id: 'bunny', x: 25, y: 50, hotspot: true, w: 100, h: 100, z: 2 },
@@ -31,7 +31,7 @@ const storyData = {
     // ── Page 2: Happy Bunny ──
     {
       bg: 'from-yellow-200 to-amber-300',
-      image: '/arthurs-world/images/feelings-friends/page-2.png',
+      image: '/arthurs-world/images/feelings-friends/page-2.webp',
       text: 'Happy Bunny hops and hops! When YOU feel happy, what makes you want to hop?',
       elements: [
         { id: 'happy-bunny', x: 45, y: 45, hotspot: true, w: 160, h: 160, z: 3 },
@@ -53,7 +53,7 @@ const storyData = {
     // ── Page 3: Sad Kitten ──
     {
       bg: 'from-blue-200 to-slate-300',
-      image: '/arthurs-world/images/feelings-friends/page-3.png',
+      image: '/arthurs-world/images/feelings-friends/page-3.webp',
       text: 'Sad Kitten has lost her toy. When you feel sad, it helps to tell someone. Can you give Kitten a cuddle?',
       elements: [
         { id: 'sad-kitten', x: 45, y: 50, hotspot: true, w: 150, h: 150, z: 3 },
@@ -75,7 +75,7 @@ const storyData = {
     // ── Page 4: Angry Puppy ──
     {
       bg: 'from-red-300 to-orange-400',
-      image: '/arthurs-world/images/feelings-friends/page-4.png',
+      image: '/arthurs-world/images/feelings-friends/page-4.webp',
       text: 'Angry Puppy is growling! Someone took his bone! When you feel angry, try counting to three. One… two… three!',
       elements: [
         { id: 'angry-puppy', x: 45, y: 48, hotspot: true, w: 160, h: 160, z: 3 },
@@ -97,7 +97,7 @@ const storyData = {
     // ── Page 5: Scared Hedgehog ──
     {
       bg: 'from-slate-400 to-indigo-500',
-      image: '/arthurs-world/images/feelings-friends/page-5.png',
+      image: '/arthurs-world/images/feelings-friends/page-5.webp',
       text: 'Scared Hedgehog curls up tight! A loud noise frightened him. It is okay — you can be brave together!',
       elements: [
         { id: 'hedgehog', x: 45, y: 55, hotspot: true, w: 130, h: 130, z: 3 },
@@ -119,7 +119,7 @@ const storyData = {
     // ── Page 6: Silly Duckling ──
     {
       bg: 'from-lime-300 to-cyan-300',
-      image: '/arthurs-world/images/feelings-friends/page-6.png',
+      image: '/arthurs-world/images/feelings-friends/page-6.webp',
       text: 'Silly Duckling is being SO silly! She is walking backwards and quacking upside down! Sometimes being silly feels wonderful!',
       elements: [
         { id: 'silly-duck', x: 45, y: 45, hotspot: true, w: 150, h: 150, z: 3 },
@@ -141,7 +141,7 @@ const storyData = {
     // ── Page 7: Loving Owl ──
     {
       bg: 'from-pink-200 to-rose-300',
-      image: '/arthurs-world/images/feelings-friends/page-7.png',
+      image: '/arthurs-world/images/feelings-friends/page-7.webp',
       text: 'Loving Owl gives the BEST cuddles! Love makes everything warm and cosy. Who do YOU love?',
       elements: [
         { id: 'owl', x: 45, y: 42, hotspot: true, w: 160, h: 160, z: 3 },
@@ -163,7 +163,7 @@ const storyData = {
     // ── Page 8: All Friends Together ──
     {
       bg: 'from-amber-200 to-sky-200',
-      image: '/arthurs-world/images/feelings-friends/page-8.png',
+      image: '/arthurs-world/images/feelings-friends/page-8.webp',
       text: 'All the feelings friends are here together! Every feeling is your friend. You are loved just the way you are!',
       elements: [
         { id: 'bunny-final', x: 18, y: 50, hotspot: true, w: 90, h: 90, z: 2 },
