@@ -24,11 +24,11 @@ const ING_EMOJI = {
 };
 
 const ING_IMG = {
-  shell: `${IMG}/ing-shell.png`, wave: `${IMG}/ing-wave.png`, music: `${IMG}/ing-music.png`,
-  mushroom: `${IMG}/ing-mushroom.png`, squid: `${IMG}/ing-squid.png`, star: `${IMG}/ing-star.png`,
-  bubble: `${IMG}/ing-bubble.png`, seaweed: `${IMG}/ing-seaweed.png`, crystal: `${IMG}/ing-crystal.png`,
-  lightning: `${IMG}/ing-lightning.png`, wind: `${IMG}/ing-wind.png`, moon: `${IMG}/ing-moon.png`,
-  crab: `${IMG}/ing-crab.png`, rose: `${IMG}/ing-rose.png`,
+  shell: `${IMG}/ing-shell.webp`, wave: `${IMG}/ing-wave.webp`, music: `${IMG}/ing-music.webp`,
+  mushroom: `${IMG}/ing-mushroom.webp`, squid: `${IMG}/ing-squid.webp`, star: `${IMG}/ing-star.webp`,
+  bubble: `${IMG}/ing-bubble.webp`, seaweed: `${IMG}/ing-seaweed.webp`, crystal: `${IMG}/ing-crystal.webp`,
+  lightning: `${IMG}/ing-lightning.webp`, wind: `${IMG}/ing-wind.webp`, moon: `${IMG}/ing-moon.webp`,
+  crab: `${IMG}/ing-crab.webp`, rose: `${IMG}/ing-rose.webp`,
 };
 
 const ING_LABELS = {
@@ -332,7 +332,7 @@ export default function UrsulaPotions() {
          onPointerLeave={handlePointerUp}
          style={{ touchAction: 'none' }}>
       {/* Background */}
-      <img src={`${IMG}/bg.png`} alt="" className="absolute inset-0 w-full h-full object-cover z-0"
+      <img src={`${IMG}/bg.webp`} alt="" className="absolute inset-0 w-full h-full object-cover z-0"
            onError={(e) => { e.target.style.display = 'none'; }} />
       <div className="absolute inset-0 z-[-1]"
            style={{ background: 'linear-gradient(to bottom, #1a0533, #2d0a4e, #1e1b4b, #0f172a)' }} />
@@ -387,7 +387,7 @@ export default function UrsulaPotions() {
                  : `drop-shadow(0 0 12px ${cauldronColor}66)`,
              }}>
           {/* Cauldron image */}
-          <FallbackImg src={`${IMG}/cauldron.png`} alt="Cauldron" emoji="🪣"
+          <FallbackImg src={`${IMG}/cauldron.webp`} alt="Cauldron" emoji="🪣"
                className="w-full h-full object-contain relative z-10" />
 
           {/* Liquid glow inside cauldron */}

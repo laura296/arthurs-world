@@ -10,10 +10,10 @@ const SKULL_COLORS = ['#e2e8f0', '#cbd5e1', '#94a3b8', '#d4d4d8'];
 const FLAME_COLORS = ['#60a5fa', '#818cf8', '#3b82f6', '#6366f1'];
 
 const CREATURES = [
-  { type: 'ghost',    img: `${IMG}/ghost.png`,    points: 1, speed: [0.8, 1.6], size: [55, 75], drift: 25, glow: '#a78bfa' },
-  { type: 'skeleton', img: `${IMG}/skeleton.png`, points: 2, speed: [0.6, 1.2], size: [50, 65], drift: 12, glow: '#94a3b8' },
-  { type: 'bat',      img: `${IMG}/bat.png`,      points: 1, speed: [1.2, 2.0], size: [45, 60], drift: 35, glow: '#7c3aed' },
-  { type: 'flame',    img: `${IMG}/flame.png`,     points: 3, speed: [0.5, 1.0], size: [55, 75], drift: 8,  glow: '#60a5fa' },
+  { type: 'ghost',    img: `${IMG}/ghost.webp`,    points: 1, speed: [0.8, 1.6], size: [55, 75], drift: 25, glow: '#a78bfa' },
+  { type: 'skeleton', img: `${IMG}/skeleton.webp`, points: 2, speed: [0.6, 1.2], size: [50, 65], drift: 12, glow: '#94a3b8' },
+  { type: 'bat',      img: `${IMG}/bat.webp`,      points: 1, speed: [1.2, 2.0], size: [45, 60], drift: 35, glow: '#7c3aed' },
+  { type: 'flame',    img: `${IMG}/flame.webp`,     points: 3, speed: [0.5, 1.0], size: [55, 75], drift: 8,  glow: '#60a5fa' },
 ];
 
 let nextId = 0;
@@ -177,7 +177,7 @@ export default function HadesRiverStyx() {
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-hidden touch-none select-none">
       {/* Background — generated image with CSS gradient fallback */}
-      <img src={`${IMG}/bg.png`} alt="" className="absolute inset-0 w-full h-full object-cover z-0"
+      <img src={`${IMG}/bg.webp`} alt="" className="absolute inset-0 w-full h-full object-cover z-0"
            onError={(e) => { e.target.style.display = 'none'; }} />
       <div className="absolute inset-0 z-[-1]"
            style={{ background: 'linear-gradient(to bottom, #1a0533, #2d1b69, #1e1b4b, #0a0a1a)' }} />
@@ -211,7 +211,7 @@ export default function HadesRiverStyx() {
 
       {/* Hades character decoration */}
       <div className="absolute bottom-2 right-2 z-10 w-20 h-20 sm:w-28 sm:h-28 pointer-events-none opacity-60">
-        <img src={`${IMG}/hades-character.png`} alt="" className="w-full h-full object-contain" />
+        <img src={`${IMG}/hades-character.webp`} alt="" className="w-full h-full object-contain" />
       </div>
 
       <BackButton />
@@ -221,7 +221,7 @@ export default function HadesRiverStyx() {
       {/* HUD */}
       <div className="absolute top-4 right-4 z-20 flex gap-2">
         <div className="bg-purple-900/70 backdrop-blur rounded-2xl px-4 py-2 flex items-center gap-2 border border-purple-500/30">
-          <img src={`${IMG}/flame.png`} alt="" className="w-7 h-7 object-contain" />
+          <img src={`${IMG}/flame.webp`} alt="" className="w-7 h-7 object-contain" />
           <span className="text-xl font-heading text-purple-200">{score}</span>
         </div>
         <div className="bg-indigo-900/70 backdrop-blur rounded-2xl px-3 py-2 border border-indigo-500/30">
@@ -273,7 +273,7 @@ export default function HadesRiverStyx() {
       {gameOver && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-gradient-to-b from-purple-900 to-indigo-950 rounded-3xl p-8 text-center shadow-2xl max-w-xs mx-4 animate-spring-in border border-purple-500/30">
-            <img src={`${IMG}/hades-character.png`} alt="" className="w-20 h-20 mx-auto mb-3 object-contain" />
+            <img src={`${IMG}/hades-character.webp`} alt="" className="w-20 h-20 mx-auto mb-3 object-contain" />
             <h2 className="text-2xl font-heading text-purple-200 mb-2" style={{ textShadow: '0 0 15px #a78bfa' }}>
               Great Catching!
             </h2>

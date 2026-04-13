@@ -18,9 +18,9 @@ import { memo, useState, useMemo } from 'react';
 const IMG = '/arthurs-world/images/disney/puppy-wash';
 
 const BREED_IMG = {
-  terrier:   `${IMG}/bean.png`,
-  dalmatian: `${IMG}/patch.png`,
-  golden:    `${IMG}/sunny.png`,
+  terrier:   `${IMG}/bean.webp`,
+  dalmatian: `${IMG}/patch.webp`,
+  golden:    `${IMG}/sunny.webp`,
 };
 
 // Fallback emoji if PNG not loaded yet

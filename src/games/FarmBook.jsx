@@ -17,7 +17,7 @@ const storyData = {
     // ── Page 1: The sun is setting ──
     {
       bg: 'from-orange-300 to-pink-400',
-      image: `${IMG}/page-1.png`,
+      image: `${IMG}/page-1.webp`,
       text: 'The sun is setting on the farm. Farmer Joe yawns — time to put all the animals to bed!',
       elements: [
         { id: 'farmer', x: 50, y: 45, hotspot: true, w: 150, h: 150, z: 2 },
@@ -30,7 +30,7 @@ const storyData = {
     // ── Page 2: ONE rooster ──
     {
       bg: 'from-orange-400 to-amber-600',
-      image: `${IMG}/page-2.png`,
+      image: `${IMG}/page-2.webp`,
       text: 'ONE rooster does one last cock-a-doodle-doo! Tap him to hear!',
       elements: [
         { id: 'rooster', x: 50, y: 40, hotspot: true, w: 180, h: 160, z: 2 },
@@ -43,7 +43,7 @@ const storyData = {
     // ── Page 3: TWO horses ──
     {
       bg: 'from-purple-300 to-indigo-400',
-      image: `${IMG}/page-3.png`,
+      image: `${IMG}/page-3.webp`,
       text: 'TWO horses trot into the cozy stable. Tap each horse — one, two!',
       elements: [
         { id: 'horse1', x: 28, y: 42, hotspot: true, w: 150, h: 140, z: 2 },
@@ -58,7 +58,7 @@ const storyData = {
     // ── Page 4: THREE piglets ──
     {
       bg: 'from-pink-300 to-rose-400',
-      image: `${IMG}/page-4.png`,
+      image: `${IMG}/page-4.webp`,
       text: 'THREE little piglets snuggle in the straw. Tap each one — one, two, three!',
       elements: [
         { id: 'pig1', x: 20, y: 42, hotspot: true, w: 120, h: 120, z: 2 },
@@ -75,7 +75,7 @@ const storyData = {
     // ── Page 5: FOUR cows ──
     {
       bg: 'from-green-300 to-emerald-500',
-      image: `${IMG}/page-5.png`,
+      image: `${IMG}/page-5.webp`,
       text: 'FOUR sleepy cows walk into the big red barn. Tap each cow — one, two, three, four!',
       elements: [
         { id: 'cow1', x: 14, y: 42, hotspot: true, w: 100, h: 120, z: 2 },
@@ -94,7 +94,7 @@ const storyData = {
     // ── Page 6: FIVE sheep ──
     {
       bg: 'from-green-400 to-teal-500',
-      image: `${IMG}/page-6.png`,
+      image: `${IMG}/page-6.webp`,
       text: 'FIVE fluffy sheep lie down on the hill. Tap each sheep — one, two, three, four, five!',
       elements: [
         { id: 'sheep1', x: 10, y: 42, hotspot: true, w: 80, h: 110, z: 2 },
@@ -115,7 +115,7 @@ const storyData = {
     // ── Page 7: Hen and chicks ──
     {
       bg: 'from-amber-300 to-yellow-500',
-      image: `${IMG}/page-7.png`,
+      image: `${IMG}/page-7.webp`,
       text: 'Mama hen tucks her little chicks under her warm wings. Goodnight, chickens!',
       elements: [
         { id: 'hen', x: 50, y: 40, hotspot: true, w: 160, h: 140, z: 2 },
@@ -132,7 +132,7 @@ const storyData = {
     // ── Page 8: Goodnight, Farm! ──
     {
       bg: 'from-indigo-500 to-purple-800',
-      image: `${IMG}/page-8.png`,
+      image: `${IMG}/page-8.webp`,
       text: 'Shhh! The whole farm is fast asleep. Goodnight, farm! Sweet dreams!',
       elements: [
         { id: 'moon', x: 50, y: 15, hotspot: true, w: 90, h: 90, z: 1 },
