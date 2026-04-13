@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="192" height="192" rx="38" fill="url(#bg)"/>
+  <!-- Stars -->
+  <circle cx="30" cy="25" r="2" fill="#facc15" opacity="0.6"/>
+  <circle cx="162" cy="20" r="1.5" fill="#facc15" opacity="0.5"/>
+  <circle cx="155" cy="50" r="1" fill="#facc15" opacity="0.4"/>
+  <circle cx="40" cy="55" r="1.5" fill="#facc15" opacity="0.5"/>
+  <circle cx="25" cy="165" r="1" fill="#facc15" opacity="0.3"/>
+  <circle cx="165" cy="170" r="1.5" fill="#facc15" opacity="0.4"/>
+  <!-- Bear -->
+  <g transform="translate(96, 100) scale(0.85)">
+    <circle cx="-45" cy="-55" r="24" fill="#8B6914"/>
+    <circle cx="-45" cy="-55" r="14" fill="#D4A853"/>
+    <circle cx="45" cy="-55" r="24" fill="#8B6914"/>
+    <circle cx="45" cy="-55" r="14" fill="#D4A853"/>
+    <ellipse cx="0" cy="0" rx="60" ry="56" fill="#C4922A"/>
+    <ellipse cx="0" cy="12" rx="40" ry="36" fill="#D4A853"/>
+    <circle cx="-20" cy="-4" r="7" fill="#5C3D10"/>
+    <circle cx="20" cy="-4" r="7" fill="#5C3D10"/>
+    <circle cx="-17" cy="-7" r="2.5" fill="white"/>
+    <circle cx="23" cy="-7" r="2.5" fill="white"/>
+    <ellipse cx="0" cy="16" rx="10" ry="7" fill="#5C3D10"/>
+    <ellipse cx="-2" cy="14" rx="3" ry="2" fill="#8B6914" opacity="0.5"/>
+    <path d="M-12 28 Q0 40 12 28" stroke="#5C3D10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="-32" cy="24" r="11" fill="#F9A8B8" opacity="0.5"/>
+    <circle cx="32" cy="24" r="11" fill="#F9A8B8" opacity="0.5"/>
+  </g>
+  <text x="96" y="175" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="14" fill="#facc15" opacity="0.8">Arthur's World</text>
+</svg>

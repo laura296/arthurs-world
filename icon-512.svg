@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Stars -->
+  <circle cx="70" cy="60" r="4" fill="#facc15" opacity="0.6"/>
+  <circle cx="440" cy="50" r="3" fill="#facc15" opacity="0.5"/>
+  <circle cx="420" cy="130" r="2.5" fill="#facc15" opacity="0.4"/>
+  <circle cx="90" cy="140" r="3" fill="#facc15" opacity="0.5"/>
+  <circle cx="60" cy="440" r="2.5" fill="#facc15" opacity="0.3"/>
+  <circle cx="450" cy="450" r="3" fill="#facc15" opacity="0.4"/>
+  <circle cx="256" cy="40" r="2" fill="#facc15" opacity="0.3"/>
+  <circle cx="50" cy="260" r="2" fill="#facc15" opacity="0.3"/>
+  <circle cx="462" cy="280" r="2" fill="#facc15" opacity="0.3"/>
+  <!-- Bear -->
+  <g transform="translate(256, 255) scale(2.2)">
+    <circle cx="-45" cy="-55" r="24" fill="#8B6914"/>
+    <circle cx="-45" cy="-55" r="14" fill="#D4A853"/>
+    <circle cx="45" cy="-55" r="24" fill="#8B6914"/>
+    <circle cx="45" cy="-55" r="14" fill="#D4A853"/>
+    <ellipse cx="0" cy="0" rx="60" ry="56" fill="#C4922A"/>
+    <ellipse cx="0" cy="12" rx="40" ry="36" fill="#D4A853"/>
+    <circle cx="-20" cy="-4" r="7" fill="#5C3D10"/>
+    <circle cx="20" cy="-4" r="7" fill="#5C3D10"/>
+    <circle cx="-17" cy="-7" r="2.5" fill="white"/>
+    <circle cx="23" cy="-7" r="2.5" fill="white"/>
+    <ellipse cx="0" cy="16" rx="10" ry="7" fill="#5C3D10"/>
+    <ellipse cx="-2" cy="14" rx="3" ry="2" fill="#8B6914" opacity="0.5"/>
+    <path d="M-12 28 Q0 40 12 28" stroke="#5C3D10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle cx="-32" cy="24" r="11" fill="#F9A8B8" opacity="0.5"/>
+    <circle cx="32" cy="24" r="11" fill="#F9A8B8" opacity="0.5"/>
+  </g>
+  <text x="256" y="470" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="36" fill="#facc15" opacity="0.8">Arthur's World</text>
+</svg>
