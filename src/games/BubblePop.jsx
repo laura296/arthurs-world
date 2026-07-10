@@ -522,14 +522,22 @@ function BubblePopLevel({ level, onComplete, onBack }) {
         playSuccess();
         peek('excited');
       }
-      if (next >= GOAL && s < GOAL) {
-        playSuccess();
-        peek('excited');
-        setTimeout(() => setWon(true), 600);
-      }
       return next;
     });
   }, [GOAL, burst, peek]);
+
+  // Win when the goal is reached by ANY scoring action — bubbles, fish, or
+  // shark. Previously the win check lived only inside popBubble, so filling
+  // the bar via a caught fish (+8) or a bopped shark (+10) left the level
+  // stuck at a full bar that never ended.
+  useEffect(() => {
+    if (score >= GOAL && !won) {
+      playSuccess();
+      peek('excited');
+      const t = setTimeout(() => setWon(true), 600);
+      return () => clearTimeout(t);
+    }
+  }, [score, GOAL, won, peek]);
 
   const handlePlayAgain = useCallback(() => {
     setScore(0);
