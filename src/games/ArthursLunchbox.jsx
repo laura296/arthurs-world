@@ -113,7 +113,7 @@ function IntroOverlay({ onDone }) {
       </div>
       <h2 className="text-3xl font-heading text-white drop-shadow-lg"
           style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.5s both' }}>
-        🥗 Arthur's Lunchbox
+        🥗 Artie's Lunchbox
       </h2>
       <p className="text-lg font-heading text-green-200 mt-2 opacity-80"
          style={{ animation: 'pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.7s both' }}>
@@ -257,7 +257,7 @@ export default function ArthursLunchbox() {
       <div className="relative z-10 flex flex-col items-center justify-between h-full py-16 px-4">
         {/* Title */}
         <h2 className="font-heading text-amber-800/80 text-lg">
-          🥗 Arthur's Lunchbox
+          🥗 Artie's Lunchbox
         </h2>
 
         {/* Arthur + speech */}

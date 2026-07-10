@@ -6,7 +6,7 @@ import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
 
 /**
- * OddOnePicks — "Picks" game for Arthur's World.
+ * OddOnePicks — "Picks" game for Arthoria.
  *
  * Show 4 emoji items in a 2×2 grid. Three belong together, one is the odd one out.
  * Tap the odd item to advance. 10 rounds per session with progressive difficulty,

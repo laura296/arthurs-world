@@ -9,8 +9,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: "Arthur's World",
-        short_name: 'ArthursWorld',
+        name: 'Arthoria',
+        short_name: 'Arthoria',
         description: 'A magical world of games, stories, and music for little ones.',
         theme_color: '#0f172a',
         background_color: '#0f172a',
