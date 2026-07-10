@@ -1,3 +1,0 @@
-import{u as s,y as a,j as t,z as r}from"./index-B_gftWGM.js";function c(){const e=s(),o=a(),i=()=>{if(r(),window.history.length>1)e(-1);else{const n=o.pathname.split("/").filter(Boolean);n.length>1?e("/"+n.slice(0,-1).join("/")):e("/")}};return t.jsx("button",{onClick:i,className:`fixed top-3 left-3 z-50 w-20 h-20 rounded-full bg-white/30 backdrop-blur-sm
-                 border-2 border-white/40 shadow-lg
-                 flex items-center justify-center active:scale-90 transition-transform tap-ripple`,"aria-label":"Go back",children:t.jsx("svg",{viewBox:"0 0 24 24",width:"40",height:"40",fill:"none",stroke:"white",strokeWidth:"3",strokeLinecap:"round",strokeLinejoin:"round",children:t.jsx("polyline",{points:"15 18 9 12 15 6"})})})}export{c as B};
