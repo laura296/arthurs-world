@@ -27,7 +27,6 @@ src/
   contexts/            # SectionContext (provides theme per route)
   hooks/               # useSound, useAmbient, useAnimalSounds, useNarration, useCanvas
   data/                # games.js registry, sectionThemes.js, colouringPages.js, assetManifest.js
-  lib/                 # imageGen.js, imageCache.js
 
 public/
   audio/               # MP3 narration organised by story (10-15 files each)
