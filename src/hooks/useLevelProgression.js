@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 const STORAGE_KEY = 'aw-level-progress';
 
@@ -26,6 +26,12 @@ export function useLevelProgression(gameId, totalLevels) {
   });
   const [currentLevel, setCurrentLevel] = useState(null); // null = level select screen
 
+  // Mirrors progress.highestUnlocked synchronously so setLevel() can be
+  // called in the same tick as completeLevel() (React state updates are
+  // async — reading progress.highestUnlocked there would be stale and
+  // silently block advancing to a freshly-unlocked level).
+  const highestRef = useRef(progress.highestUnlocked);
+
   const persist = useCallback((next) => {
     const all = loadProgress();
     all[gameId] = next;
@@ -33,12 +39,13 @@ export function useLevelProgression(gameId, totalLevels) {
   }, [gameId]);
 
   const setLevel = useCallback((lvl) => {
-    if (lvl <= progress.highestUnlocked) {
+    if (lvl <= highestRef.current) {
       setCurrentLevel(lvl);
     }
-  }, [progress.highestUnlocked]);
+  }, []);
 
   const completeLevel = useCallback((level, starsEarned) => {
+    highestRef.current = Math.max(highestRef.current, Math.min(level + 1, totalLevels));
     setProgress(prev => {
       const next = {
         highestUnlocked: Math.max(prev.highestUnlocked, Math.min(level + 1, totalLevels)),
@@ -56,6 +63,7 @@ export function useLevelProgression(gameId, totalLevels) {
 
   const resetProgress = useCallback(() => {
     const fresh = { highestUnlocked: 1, stars: {} };
+    highestRef.current = 1;
     setProgress(fresh);
     setCurrentLevel(null);
     persist(fresh);

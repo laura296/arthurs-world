@@ -523,6 +523,41 @@ function HareWinsOverlay({ onRetry }) {
   );
 }
 
+function TortoiseWinsOverlay({ onRetry }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center z-[60]"
+      style={{
+        background: 'rgba(0,0,0,0.25)',
+        // Wait for the celebration confetti to finish before offering a replay
+        animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 3.6s both',
+      }}
+      onPointerDown={e => e.stopPropagation()}>
+      <div className="p-8 rounded-3xl text-center" style={{
+        background: `linear-gradient(135deg, ${C.cream}, ${C.kraft})`,
+        boxShadow: `0 8px 32px ${C.earth}40`,
+        border: `3px solid ${C.earth}40`,
+        maxWidth: '380px',
+      }}>
+        <div className="flex items-end justify-center gap-6 mb-4">
+          <TortoiseSprite size={80} />
+          <HareSprite hareState="panic" size={55} />
+        </div>
+        <p className="font-heading text-xl mb-2" style={{ color: C.earth }}>
+          Slow and steady wins! 🏆
+        </p>
+        <button onPointerDown={(e) => { e.stopPropagation(); onRetry(); }}
+          className="w-full py-4 rounded-2xl font-heading text-lg active:scale-95 transition-transform"
+          style={{
+            background: `linear-gradient(135deg, ${C.grass}, ${C.grassDark})`,
+            color: C.cream, boxShadow: `0 4px 12px ${C.grass}60`, border: 'none',
+          }}>
+          Race Again!
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
@@ -923,6 +958,7 @@ export default function TortoiseHareRace() {
       )}
 
       {phase === 'hare-wins' && <HareWinsOverlay onRetry={startRace} />}
+      {phase === 'celebration' && <TortoiseWinsOverlay onRetry={startRace} />}
     </div>
   );
 }

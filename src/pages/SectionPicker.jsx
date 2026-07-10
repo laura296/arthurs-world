@@ -11,7 +11,6 @@ const sections = [
   { id: 'art',     emoji: '🎨', label: 'Art',     hero: '/arthurs-world/images/sections/art.webp',     grad: ['#E88D6D', '#D4623A'] },
   { id: 'books',   emoji: '📚', label: 'Books',   hero: '/arthurs-world/images/sections/books.webp',   grad: ['#D4A853', '#B8862A'] },
   { id: 'music',   emoji: '🎵', label: 'Music',   hero: '/arthurs-world/images/sections/music.webp',   grad: ['#C49265', '#A06840'] },
-  { id: 'videos',  emoji: '📺', label: 'Videos',  hero: '/arthurs-world/images/sections/videos.webp',  grad: ['#E67E22', '#C0592B'] },
 ];
 
 export default function SectionPicker() {
@@ -32,7 +31,7 @@ export default function SectionPicker() {
         </h2>
 
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pb-8">
-          {sections.filter(s => !(mode === 'quiet' && (s.id === 'videos' || s.id === 'music'))).map((s, i) => {
+          {sections.filter(s => !(mode === 'quiet' && s.id === 'music')).map((s, i) => {
             const theme = SECTION_THEMES[s.id];
             const accent = theme?.palette?.primary || '#F5B041';
             return (

@@ -643,11 +643,14 @@ export default function FairyDust() {
     return () => obs.disconnect();
   }, []);
 
+  // Reset the board when the round changes. Phase transitions are owned
+  // elsewhere: the intro effect above dismisses to 'playing', and the
+  // round-end timer advances round + phase together — setting phase here
+  // both clobbered the intro on mount and, because `phase` was stale,
+  // left the game frozen in 'round-end' after the first round.
   useEffect(() => {
     setGarden(Array.from({ length: config.slots }, () => null));
     setSeeds([]);
-    if (phase === 'round-end') return;
-    setPhase('playing');
   }, [round, config.slots]);
 
   useEffect(() => {
@@ -780,7 +783,7 @@ export default function FairyDust() {
               playSuccess();
               peek('excited');
               celebrate({ duration: 3000 });
-              setTimeout(() => setRound(r => r + 1), 3500);
+              setTimeout(() => { setRound(r => r + 1); setPhase('playing'); }, 3500);
             }
           }
           return prev;

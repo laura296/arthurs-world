@@ -17,24 +17,28 @@ A children's iPad PWA for a child aged ~3.5. Arthur is pre-literate — no text-
 src/
   App.jsx              # All routes (54+), lazy-loaded with Suspense
   index.css            # Tailwind layers + all @keyframes
-  pages/               # Hub/navigation (ModePicker, SectionPicker, GameGrid, DisneyHub)
+  pages/               # Hub/navigation (ModePicker, SectionPicker, GameGrid)
   games/               # Interactive games (BubblePop, FeedAnimals, PopCritters, etc.)
-  stories/             # Storybooks (fairy tales, Kipling, Disney, Ellie)
+  stories/             # Storybooks (fairy tales, Kipling/Just So, Aesop, Ellie)
   components/          # Shared UI (ArthurBear, BackButton, PageTransition, etc.)
     animals/           # SVG animal components
     backgrounds/       # Section background components
     scenes/            # Story scene components
   contexts/            # SectionContext (provides theme per route)
   hooks/               # useSound, useAmbient, useAnimalSounds, useNarration, useCanvas
-  data/                # games.js (85+ items), sectionThemes.js, colouringPages.js, videoData.js
-  lib/                 # imageGen.js, imageCache.js
+  data/                # games.js registry, sectionThemes.js, colouringPages.js, assetManifest.js
 
 public/
   audio/               # MP3 narration organised by story (10-15 files each)
   images/              # Generated story/card images
-  videos/              # Video thumbnails (WebP)
   icons/               # PWA icons
 ```
+
+> **Sellability note:** third-party/licensed content has been removed to keep the
+> app shippable — no Disney-derived games (Ursula, Hades, Inside Out), no Videos
+> section (ripped clips), and Winnie the Pooh was replaced by the original
+> *Bramble's Honey Day*. Only public-domain tales (Cinderella, Snow White, Peter
+> Pan, Aesop, Kipling) and original content remain. See `docs/REVIEW-AND-ROADMAP.md`.
 
 ### Target Asset Directory (being built out)
 
@@ -89,7 +93,7 @@ public/assets/
 
 ## Section Theme System
 
-Defined in `src/data/sectionThemes.js`. Seven main sections + Disney sub-sections (12 total themes).
+Defined in `src/data/sectionThemes.js`. Four main sections (Games, Art, Books, Music).
 
 Each theme provides:
 - `palette`: primary, secondary, accent, bg (Tailwind gradient), cardBg
@@ -104,15 +108,10 @@ Access via `useSection()` hook from `SectionContext`.
 
 ```
 / → ModePicker (Quiet / Noisy / All)
-  → /games/:mode → SectionPicker (7 sections)
+  → /games/:mode → SectionPicker (Games / Art / Books / Music)
     → /games/:mode/:section → GameGrid (items for that section)
       → /games/:mode/:section/:gameId → Individual game/story
 ```
-
-Special routes:
-- `/games/:mode/disney` → DisneyHub
-- `/games/:mode/:section/inside-out-hub` → Inside Out sub-hub
-- `/games/:mode/:section/video/:videoId` → VideoPlayer
 
 ## Game Registry
 
@@ -120,7 +119,7 @@ All content lives in `src/data/games.js` — array of objects:
 ```js
 { id, emoji, title, path, category, bg, cover? }
 ```
-Categories: `games`, `puzzles`, `art`, `books`, `music`, `videos`, `disney-*`
+Categories: `games`, `art`, `books`, `music` (with `group` sub-labels in GameGrid)
 
 When adding new content: add an entry to games.js, create the component, add a lazy import + Route in App.jsx.
 

@@ -1,6 +1,6 @@
 /**
  * Game registry — each game's metadata.
- * `category`: 'games' | 'puzzles' | 'art' | 'books' | 'music' | 'videos' (Disney content integrated into these)
+ * `category`: 'games' | 'puzzles' | 'art' | 'books' | 'music'
  * `path`: route segment under /games/:mode/:section/
  * `cover`: optional image path for book cover cards
  * `group`: optional sub-grouping label for visual dividers in GameGrid
@@ -13,21 +13,6 @@ const games = [
   { id: 'build-a-scene', emoji: '🎭', title: 'Build a Scene', path: 'build-a-scene', category: 'games', group: '🎮 Games', bg: 'from-amber-400 to-orange-600',   cover: '/arthurs-world/images/cards/build-a-scene.webp' },
   { id: 'stack-bricks',  emoji: '🧱', title: 'Bricks',        path: 'stack-bricks',  category: 'games', group: '🎮 Games', bg: 'from-orange-400 to-red-500' },
   { id: 'odd-one-picks', emoji: '🔍', title: 'Picks',         path: 'odd-one-picks', category: 'games', group: '🧩 Puzzles', bg: 'from-violet-400 to-fuchsia-500' },
-
-  // ── Videos ──
-  { id: 'baby-shark',        emoji: '🦈', title: 'Baby Shark',         path: 'video/baby-shark',        category: 'videos', bg: 'from-yellow-400 to-orange-500',  cover: '/arthurs-world/videos/baby-shark.webp' },
-  { id: 'wheels-on-bus',     emoji: '🚌', title: 'Wheels on the Bus',  path: 'video/wheels-on-bus',     category: 'videos', bg: 'from-red-400 to-rose-600',       cover: '/arthurs-world/videos/wheels-on-bus.webp' },
-  { id: 'let-it-go',         emoji: '❄️', title: 'Let It Go',          path: 'video/let-it-go',         category: 'videos', bg: 'from-sky-300 to-blue-600',       cover: '/arthurs-world/videos/let-it-go.webp' },
-  { id: 'old-macdonald',     emoji: '🐄', title: 'Old MacDonald',      path: 'video/old-macdonald',     category: 'videos', bg: 'from-green-400 to-emerald-600',  cover: '/arthurs-world/videos/old-macdonald.webp' },
-  { id: 'bath-song',         emoji: '🛁', title: 'Bath Song',          path: 'video/bath-song',         category: 'videos', bg: 'from-cyan-400 to-blue-500',      cover: '/arthurs-world/videos/bath-song.webp' },
-  { id: 'head-shoulders',     emoji: '🙆', title: 'Head Shoulders',     path: 'video/head-shoulders',     category: 'videos', bg: 'from-amber-400 to-yellow-600',   cover: '/arthurs-world/videos/head-shoulders.webp' },
-  { id: 'twinkle-star',       emoji: '⭐', title: 'Twinkle Twinkle',    path: 'video/twinkle-star',       category: 'videos', bg: 'from-indigo-400 to-purple-600',  cover: '/arthurs-world/videos/twinkle-star.webp' },
-  { id: 'itsy-bitsy-spider',  emoji: '🕷️', title: 'Itsy Bitsy Spider',  path: 'video/itsy-bitsy-spider',  category: 'videos', bg: 'from-pink-400 to-rose-600',      cover: '/arthurs-world/videos/itsy-bitsy-spider.webp' },
-  { id: 'if-youre-happy',     emoji: '😊', title: "If You're Happy",    path: 'video/if-youre-happy',     category: 'videos', bg: 'from-fuchsia-400 to-pink-600',   cover: '/arthurs-world/videos/if-youre-happy.webp' },
-  { id: 'five-little-ducks',  emoji: '🦆', title: 'Five Little Ducks',  path: 'video/five-little-ducks',  category: 'videos', bg: 'from-violet-400 to-purple-600',  cover: '/arthurs-world/videos/five-little-ducks.webp' },
-  { id: 'yes-yes-vegetables', emoji: '🥕', title: 'Yes Yes Vegetables', path: 'video/yes-yes-vegetables', category: 'videos', bg: 'from-lime-400 to-green-600',   cover: '/arthurs-world/videos/yes-yes-vegetables.webp' },
-  { id: 'dinosaur-dance',    emoji: '🦕', title: 'Dinosaur Dance',    path: 'video/dinosaur-dance',    category: 'videos', bg: 'from-emerald-400 to-teal-600', cover: '/arthurs-world/videos/dinosaur-dance.webp' },
-  { id: 'youre-welcome',     emoji: '🪝', title: "You're Welcome",   path: 'video/youre-welcome',     category: 'videos', bg: 'from-teal-400 to-cyan-600',    cover: '/arthurs-world/videos/youre-welcome.webp' },
 
   // ── Puzzles & Learning ──
   { id: 'memory-match',    emoji: '🧠', title: 'Memory',        path: 'memory-match',    category: 'games', group: '🧩 Puzzles', bg: 'from-teal-400 to-cyan-600',    cover: '/arthurs-world/images/cards/memory-match.webp' },
@@ -83,28 +68,21 @@ const games = [
   { id: 'fox-grapes',          emoji: '🦊', title: 'Fox & the Grapes',    path: 'fox-grapes',          category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-purple-300 to-green-400' },
   { id: 'town-country-mouse',  emoji: '🐭', title: 'Town & Country Mouse', path: 'town-country-mouse', category: 'books', group: '🦊 Aesop\'s Fables', bg: 'from-green-300 to-blue-400' },
 
-  // ── Books: Disney ──
-  { id: 'cinderella',       emoji: '👠', title: 'Cinderella',        path: 'cinderella',       category: 'books', group: '✨ Disney', bg: 'from-blue-300 to-indigo-400',    cover: '/arthurs-world/images/disney/cinderella/page-1.webp' },
-  { id: 'snow-white',       emoji: '🍎', title: 'Snow White',        path: 'snow-white',       category: 'books', group: '✨ Disney', bg: 'from-yellow-300 to-red-400',     cover: '/arthurs-world/images/disney/snow-white/page-1.webp' },
-  { id: 'winnie-the-pooh',  emoji: '🍯', title: 'Winnie the Pooh',  path: 'winnie-the-pooh',  category: 'books', group: '✨ Disney', bg: 'from-amber-300 to-yellow-500',   cover: '/arthurs-world/images/disney/pooh/page-1.webp' },
-  { id: 'captain-hook',     emoji: '🏴‍☠️', title: 'Captain Hook',     path: 'captain-hook',     category: 'books', group: '✨ Disney', bg: 'from-red-600 to-gray-800',       cover: '/arthurs-world/images/disney/captain-hook/page-1.webp' },
+  // ── Books: Classic Tales (public domain) ──
+  { id: 'cinderella',       emoji: '👠', title: 'Cinderella',        path: 'cinderella',       category: 'books', group: '🏰 Fairy Tales', bg: 'from-blue-300 to-indigo-400',    cover: '/arthurs-world/images/disney/cinderella/page-1.webp' },
+  { id: 'snow-white',       emoji: '🍎', title: 'Snow White',        path: 'snow-white',       category: 'books', group: '🏰 Fairy Tales', bg: 'from-yellow-300 to-red-400',     cover: '/arthurs-world/images/disney/snow-white/page-1.webp' },
+  { id: 'bramble-bear',     emoji: '🍯', title: "Bramble's Honey Day", path: 'bramble-bear',   category: 'books', group: '🏰 Fairy Tales', bg: 'from-amber-300 to-yellow-500' },
+  { id: 'captain-hook',     emoji: '🏴‍☠️', title: 'Peter & the Pirate', path: 'captain-hook',   category: 'books', group: '🏰 Fairy Tales', bg: 'from-red-600 to-gray-800',       cover: '/arthurs-world/images/disney/captain-hook/page-1.webp' },
 
-  // ── Disney games (integrated into main categories) ──
+  // ── Adventures ──
   { id: 'fairy-dust',       emoji: '✨', title: 'Fairy Dust',        path: 'fairy-dust',       category: 'games', group: '✨ Adventures', bg: 'from-pink-300 to-purple-400' },
-  { id: 'hades-river-styx', emoji: '🔥', title: 'River Styx',       path: 'hades-river-styx', category: 'games', group: '✨ Adventures', bg: 'from-purple-800 to-indigo-950',  cover: '/arthurs-world/images/disney/hades/bg.webp' },
-  { id: 'ursula-potions',   emoji: '🧪', title: "Ursula's Potions", path: 'ursula-potions',   category: 'games', group: '✨ Adventures', bg: 'from-purple-700 to-fuchsia-900', cover: '/arthurs-world/images/disney/ursula/bg.webp' },
   { id: 'honey-hunt',       emoji: '🐝', title: 'Honey Hunt',       path: 'honey-hunt',       category: 'games', group: '✨ Adventures', bg: 'from-amber-400 to-orange-500' },
-  { id: 'inside-out-hub',            emoji: '🧠', title: 'Headquarters',    path: 'inside-out-hub',            category: 'games', group: '✨ Adventures', bg: 'from-violet-600 to-indigo-900' },
-  { id: 'control-panel-meltdown',    emoji: '🎛️', title: 'Control Panel',   path: 'control-panel-meltdown',    category: 'games', group: '✨ Adventures', bg: 'from-yellow-400 to-amber-600' },
-  { id: 'anger-cool-down',           emoji: '🔥', title: 'Cool Down!',      path: 'anger-cool-down',           category: 'games', group: '✨ Adventures', bg: 'from-red-500 to-orange-600' },
-  { id: 'alarm-avalanche',           emoji: '🚨', title: 'Alarm Sort',      path: 'alarm-avalanche',           category: 'games', group: '✨ Adventures', bg: 'from-teal-400 to-orange-500' },
-  { id: 'chain-reaction-crisis',     emoji: '⚡', title: 'Chain Reaction',  path: 'chain-reaction-crisis',     category: 'games', group: '✨ Adventures', bg: 'from-red-600 to-purple-800' },
-  { id: 'puppy-wash',        emoji: '🐾', title: 'Puppy',            path: 'puppy-wash',       category: 'games', group: '✨ Adventures', bg: 'from-pink-200 to-amber-100', cover: '/arthurs-world/images/disney/puppy-wash/puppy-happy.webp' },
+  { id: 'puppy-wash',        emoji: '🐾', title: 'Puppy Wash',       path: 'puppy-wash',       category: 'games', group: '✨ Adventures', bg: 'from-pink-200 to-amber-100' },
 
   // ── Aesop's Fables — Games ──
   { id: 'tortoise-hare-race', emoji: '🏁', title: 'Tortoise Race', path: 'tortoise-hare-race', category: 'games', group: '✨ Adventures', bg: 'from-green-300 to-amber-400' },
 
-  // ── Alice in Wonderland games ──
+  // ── Tea Party (pattern game) ──
   { id: 'mad-hatter-tea-party', emoji: '🎩', title: 'Tea Party', path: 'mad-hatter-tea-party', category: 'games', group: '✨ Adventures', bg: 'from-amber-300 to-rose-400' },
 
   // ── Self-Care ──

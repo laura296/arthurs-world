@@ -6,7 +6,8 @@ import {
 } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
-import PuppyImage from './puppy-wash/PuppyImage';
+// Original inline-SVG puppy renderer (no external art)
+import PuppyImage from './puppy-wash/CartoonPuppy';
 
 const HEART_COLORS = ['#f472b6', '#ec4899', '#f9a8d4', '#fda4af', '#fb7185'];
 const BUBBLE_COLORS = ['#bfdbfe', '#93c5fd', '#ddd6fe', '#e9d5ff', '#fbcfe8'];
@@ -27,14 +28,14 @@ const PUPPIES = [
     ],
   },
   {
-    id: 'patch', breed: 'dalmatian', name: 'Patch',
+    id: 'patch', breed: 'dalmatian', name: 'Domino',
     emoji: '🐾', label: 'Needs a bath!',
     activity: 'wash',
     storyPages: [
-      { text: 'One sunny morning, little Patch went out to play...', emoji: '☀️' },
-      { text: 'Splash! Squelch! Patch found the BIGGEST mud puddle!', emoji: '💦' },
-      { text: 'Oh no! Now Patch is covered in mud from nose to tail!', emoji: '🐾' },
-      { text: "Don't worry — YOU can help! Let's give Patch a bath!", emoji: '🛁' },
+      { text: 'One sunny morning, little Domino went out to play...', emoji: '☀️' },
+      { text: 'Splash! Squelch! Domino found the BIGGEST mud puddle!', emoji: '💦' },
+      { text: 'Oh no! Now Domino is covered in mud from nose to tail!', emoji: '🐾' },
+      { text: "Don't worry — YOU can help! Let's give Domino a bath!", emoji: '🛁' },
     ],
   },
   {

@@ -9,8 +9,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: "Arthur's World",
-        short_name: 'ArthursWorld',
+        name: 'Arthoria',
+        short_name: 'Arthoria',
         description: 'A magical world of games, stories, and music for little ones.',
         theme_color: '#0f172a',
         background_color: '#0f172a',
@@ -40,7 +40,9 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'audio',
-              expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              // Must exceed the narration library (250 MP3s and growing) —
+              // a lower cap silently LRU-evicts story narration offline
+              expiration: { maxEntries: 400, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

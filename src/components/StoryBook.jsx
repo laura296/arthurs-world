@@ -7,7 +7,10 @@ import {
 } from '../hooks/useSound';
 import { useCelebration } from './CelebrationOverlay';
 import { useParticleBurst } from './ParticleBurst';
-import { speakText as speakNarration, stopSpeaking } from '../hooks/useNarration';
+import {
+  speakText as speakNarration, stopSpeaking,
+  playNarrationClip, stopNarrationClip,
+} from '../hooks/useNarration';
 import { playAnimalSound } from '../hooks/useAnimalSounds';
 
 /**
@@ -36,27 +39,18 @@ import { playAnimalSound } from '../hooks/useAnimalSounds';
  */
 
 // ─── Audio playback ──────────────────────────────────────────────
-
-let currentAudio = null;
+// Recorded MP3s play through the shared gesture-unlocked element in
+// useNarration (required for iPad Safari); TTS is the fallback.
 
 function stopNarration() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
-  }
+  stopNarrationClip();
   stopSpeaking();
 }
 
 function speak(text, audioSrc) {
   stopNarration();
   if (audioSrc) {
-    const audio = new Audio(audioSrc);
-    currentAudio = audio;
-    audio.play().catch(() => {
-      currentAudio = null;
-      speakNarration(text);
-    });
+    playNarrationClip(audioSrc, text);
   } else {
     speakNarration(text);
   }

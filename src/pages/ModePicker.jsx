@@ -37,7 +37,7 @@ export default function ModePicker() {
         </div>
         <h1 className="text-5xl font-heading text-amber-900 drop-shadow-lg animate-float"
             style={{ textShadow: '0 2px 8px rgba(245, 176, 65, 0.4)' }}>
-          Arthur's World
+          Arthoria
         </h1>
       </div>
 
