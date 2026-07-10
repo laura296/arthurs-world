@@ -71,9 +71,16 @@ they actually played — the silent-start bug above is why they often didn't.
 
 ## Part 2 — The path to a sellable app
 
-### ⚠️ First, the blocker: third-party IP must go
+### ✅ UPDATE: third-party IP has now been removed
 
-This is the most important commercial fact about the current app.
+The IP cleanup below has been **done** (see the "IP removal" section at the end
+of this doc for exactly what changed). The app now contains only original and
+public-domain content. The remaining roadmap items (recorded voices, App Store
+packaging, monetisation) still stand.
+
+### The blocker that was fixed: third-party IP
+
+This was the most important commercial fact about the app.
 **A sellable app cannot contain:**
 
 - **Disney characters and films**: Hades, Ursula, Stitch, Inside Out,
@@ -169,6 +176,49 @@ App Store/Play Store, and iPad is your target device anyway.
 | 3 | Capacitor wrap, parental gate, privacy policy, Kids Category compliance | Submittable |
 | 4 | Art consistency pass, parent corner, CI smoke tests | Sellable & maintainable |
 | 5 | Store listing (screenshots, preview video), soft launch UK, gather reviews | Launched |
+
+---
+
+## Part 3 — IP removal (completed)
+
+To make the app shippable, all third-party/licensed content was removed or
+re-themed to original work:
+
+**Removed entirely (games):**
+- **Ursula's Potions** — Disney's Little Mermaid villain (character renders).
+- **Hades / River Styx** — Disney's Hercules villain (character renders).
+- **Inside Out module** (Headquarters hub + Control Panel, Cool Down!, Alarm
+  Sort, Chain Reaction) — Pixar's *Inside Out* emotions & premise.
+
+**Removed entirely (Videos section):** every clip (Baby Shark, Let It Go,
+You're Welcome, and the nursery-rhyme videos) plus the player, the section,
+the data, and the video files — these were licensed/ripped recordings that
+can't legally ship. The Videos section no longer appears anywhere.
+
+**Re-themed to original:**
+- **Winnie the Pooh → *Bramble's Honey Day*** — a brand-new honey-bear
+  friendship story with original characters (Bramble the bear, Nutmeg the
+  mouse, Clover the rabbit). Illustrated with emoji over warm gradients, so
+  it needs no external art; narration uses the improved TTS. No Pooh, Piglet,
+  Tigger, Hundred Acre Wood, or "oh bother".
+- **Puppy Wash** — switched to the original inline-SVG puppy renderer (no AI
+  art dependency) and renamed the dalmatian from "Patch" to "Domino".
+
+**Kept (public domain), regrouped out of the "Disney" label:**
+- Cinderella, Snow White (Brothers Grimm), Peter Pan / "Peter & the Pirate"
+  (J. M. Barrie), and the Tea Party pattern game (Lewis Carroll's Alice, drawn
+  as original SVG). These are now under the **🏰 Fairy Tales** group.
+- ⚠️ **Residual caveat:** the AI-generated art for Cinderella / Snow White /
+  Peter Pan lives under `public/images/disney/` and *may* visually resemble
+  Disney's specific character designs. The *stories* are public domain, but
+  before store submission, review that art and regenerate anything that looks
+  like a Disney design. The folder name is internal only (not shipped as a
+  label), so it's cosmetic — but the images are the real risk to check.
+
+**Verification:** built clean; a Playwright crawl of all 58 registry routes
+confirmed none blank or crash; the Videos section is gone (4 sections remain);
+Bramble's story renders with no Pooh references; Puppy Wash renders original
+SVG puppies with no broken images.
 
 ---
 

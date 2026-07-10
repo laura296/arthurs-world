@@ -1,0 +1,170 @@
+import React from 'react';
+import StoryBook from '../components/StoryBook';
+
+/**
+ * Bramble's Honey Day — an original honey-bear friendship story.
+ *
+ * Fully original characters and text (no third-party IP). Illustrated
+ * with emoji "content" elements over warm gradients rather than image
+ * renders, so it ships with no external art dependency. Narration falls
+ * back to the improved browser TTS (no recorded audioDir yet).
+ */
+
+const bear = (x, y, extra = {}) => ({ id: extra.id || 'bramble', x, y, content: '🐻', size: 92, z: 2, ...extra });
+
+const storyData = {
+  title: "Bramble's Honey Day",
+  pages: [
+    // ── Page 1: A hungry morning ──
+    {
+      bg: 'from-amber-200 to-green-300',
+      text: 'In a cosy woodland lived a little bear called Bramble. One sunny morning he woke up feeling very, very hungry!',
+      elements: [
+        bear(50, 52),
+        { id: 'sun', x: 82, y: 18, content: '☀️', size: 64, z: 1 },
+        { id: 'tree', x: 20, y: 40, content: '🌳', size: 80, z: 1 },
+        { id: 'flower1', x: 30, y: 78, content: '🌼', size: 48, z: 1 },
+        { id: 'flower2', x: 70, y: 80, content: '🌷', size: 48, z: 1 },
+      ],
+      interactions: [
+        { id: 'bramble-say', type: 'tap-sound', targetId: 'bramble', data: { say: 'Good morning! My tummy is rumbling for honey!' } },
+        { id: 'bramble-wiggle', type: 'tap-wiggle', targetId: 'bramble', data: {} },
+        { id: 'sun-spin', type: 'tap-spin', targetId: 'sun', data: {} },
+        { id: 'tree-sparkle', type: 'tap-sparkle', targetId: 'tree', data: {} },
+        { id: 'flower1-color', type: 'tap-color', targetId: 'flower1', data: { colors: ['#fbbf24', '#f43f5e', '#c084fc', '#60a5fa'] } },
+      ],
+    },
+
+    // ── Page 2: The empty honey pot ──
+    {
+      bg: 'from-amber-300 to-yellow-400',
+      text: 'Bramble peeked inside his honey pot. Oh no — it was empty! Not one sticky drop was left.',
+      elements: [
+        bear(38, 50, { id: 'bramble-sad' }),
+        { id: 'pot', x: 62, y: 62, content: '🍯', size: 84, z: 2 },
+        { id: 'tummy', x: 42, y: 62, content: '💭', size: 56, z: 3 },
+      ],
+      interactions: [
+        { id: 'bramble-sad-say', type: 'tap-sound', targetId: 'bramble-sad', data: { say: 'Empty! I will ask my friends where to find some.' } },
+        { id: 'pot-shake', type: 'tap-shake', targetId: 'pot', data: {} },
+        { id: 'pot-swap', type: 'tap-swap', targetId: 'pot', data: { altContent: '🫙' } },
+        { id: 'tummy-wiggle', type: 'tap-wiggle', targetId: 'tummy', data: {} },
+      ],
+    },
+
+    // ── Page 3: Nutmeg the mouse ──
+    {
+      bg: 'from-green-300 to-lime-300',
+      text: 'First he found Nutmeg the mouse, nibbling seeds by the stream. "Try the tall flowers," she squeaked!',
+      elements: [
+        bear(32, 52, { id: 'bramble-walk' }),
+        { id: 'nutmeg', x: 66, y: 58, content: '🐭', size: 72, z: 2 },
+        { id: 'seeds', x: 74, y: 74, content: '🌰', size: 48, z: 1 },
+        { id: 'stream', x: 50, y: 84, content: '💧', size: 52, z: 1 },
+      ],
+      interactions: [
+        { id: 'bramble-walk-say', type: 'tap-sound', targetId: 'bramble-walk', data: { say: 'Hello Nutmeg! Where can I find sweet honey?' } },
+        { id: 'nutmeg-say', type: 'tap-sound', targetId: 'nutmeg', data: { say: 'Squeak! Follow the busy bees, Bramble!' } },
+        { id: 'nutmeg-dance', type: 'tap-animate', targetId: 'nutmeg', data: { animation: 'animate-dance', duration: 800 } },
+        { id: 'seeds-count', type: 'tap-count', targetId: 'seeds', data: { max: 5 } },
+      ],
+    },
+
+    // ── Page 4: Clover the rabbit ──
+    {
+      bg: 'from-sky-200 to-green-300',
+      text: 'Next he met Clover the rabbit, hopping through the clover patch. "I will help you look!" she smiled.',
+      elements: [
+        bear(35, 54, { id: 'bramble-hop' }),
+        { id: 'clover-r', x: 64, y: 56, content: '🐰', size: 74, z: 2 },
+        { id: 'butterfly', x: 52, y: 24, content: '🦋', size: 56, z: 2 },
+        { id: 'clover-patch', x: 76, y: 78, content: '🍀', size: 50, z: 1 },
+      ],
+      interactions: [
+        { id: 'clover-say', type: 'tap-sound', targetId: 'clover-r', data: { say: 'Hop hop! Let us find honey together!' } },
+        { id: 'clover-jump', type: 'tap-jump', targetId: 'clover-r', data: {} },
+        { id: 'butterfly-fly', type: 'tap-animate', targetId: 'butterfly', data: { animation: 'animate-fly', duration: 1000 } },
+        { id: 'clover-sparkle', type: 'tap-sparkle', targetId: 'clover-patch', data: {} },
+      ],
+    },
+
+    // ── Page 5: The bee tree ──
+    {
+      bg: 'from-green-300 to-emerald-400',
+      text: 'At last they found a tall tree humming with friendly bees. Bees mean honey! Bramble began to climb.',
+      elements: [
+        { id: 'bee-tree', x: 50, y: 34, content: '🌳', size: 110, z: 1 },
+        bear(45, 56, { id: 'bramble-climb' }),
+        { id: 'bee1', x: 62, y: 26, content: '🐝', size: 44, z: 3 },
+        { id: 'bee2', x: 38, y: 30, content: '🐝', size: 40, z: 3 },
+        { id: 'honeycomb', x: 55, y: 40, content: '🍯', size: 52, z: 2 },
+      ],
+      interactions: [
+        { id: 'bramble-climb-say', type: 'tap-sound', targetId: 'bramble-climb', data: { say: 'Up I go, gently gently, so I do not scare the bees.' } },
+        { id: 'bee1-fly', type: 'tap-animate', targetId: 'bee1', data: { animation: 'animate-fly', duration: 800 } },
+        { id: 'bee1-buzz', type: 'tap-sound', targetId: 'bee2', data: { say: 'Buzz buzz! Hello little bear!' } },
+        { id: 'honeycomb-sparkle', type: 'tap-sparkle', targetId: 'honeycomb', data: {} },
+      ],
+    },
+
+    // ── Page 6: A little stuck ──
+    {
+      bg: 'from-amber-300 to-orange-400',
+      text: 'Bramble reached a branch — but his round tummy got wedged in a little gap. "Oh dear," he giggled.',
+      elements: [
+        bear(50, 50, { id: 'bramble-stuck', size: 100 }),
+        { id: 'branch', x: 50, y: 68, content: '🪵', size: 72, z: 1 },
+        { id: 'clover-help', x: 76, y: 55, content: '🐰', size: 60, z: 2 },
+        { id: 'nutmeg-help', x: 24, y: 58, content: '🐭', size: 54, z: 2 },
+      ],
+      interactions: [
+        { id: 'bramble-stuck-wiggle', type: 'tap-wiggle', targetId: 'bramble-stuck', data: {} },
+        { id: 'bramble-stuck-say', type: 'tap-sound', targetId: 'bramble-stuck', data: { say: 'Oh dear, I am a little bit stuck!' } },
+        { id: 'clover-help-say', type: 'tap-sound', targetId: 'clover-help', data: { say: 'Hold on, Bramble — we will help you!' } },
+        { id: 'nutmeg-help-jump', type: 'tap-jump', targetId: 'nutmeg-help', data: {} },
+      ],
+    },
+
+    // ── Page 7: Everyone helps ──
+    {
+      bg: 'from-yellow-300 to-green-400',
+      text: 'Nutmeg pushed and Clover pulled and — pop! — out came Bramble, safe and sound. What good friends!',
+      elements: [
+        bear(52, 44, { id: 'bramble-free' }),
+        { id: 'pop', x: 50, y: 52, content: '✨', size: 70, z: 2 },
+        { id: 'clover-pull', x: 76, y: 58, content: '🐰', size: 60, z: 2 },
+        { id: 'nutmeg-push', x: 26, y: 58, content: '🐭', size: 54, z: 2 },
+      ],
+      interactions: [
+        { id: 'bramble-free-jump', type: 'tap-jump', targetId: 'bramble-free', data: {} },
+        { id: 'bramble-free-say', type: 'tap-sound', targetId: 'bramble-free', data: { say: 'Hooray! Thank you, my kind friends!' } },
+        { id: 'pop-sparkle', type: 'tap-sparkle', targetId: 'pop', data: {} },
+        { id: 'clover-pull-jump', type: 'tap-jump', targetId: 'clover-pull', data: {} },
+      ],
+    },
+
+    // ── Page 8: Sharing time ──
+    {
+      bg: 'from-amber-200 to-pink-300',
+      text: 'The bees kindly shared their honey, and everyone tasted a golden spoonful. Sharing with friends is the sweetest thing of all!',
+      elements: [
+        bear(34, 50, { id: 'bramble-end' }),
+        { id: 'clover-end', x: 56, y: 56, content: '🐰', size: 64, z: 2 },
+        { id: 'nutmeg-end', x: 72, y: 52, content: '🐭', size: 56, z: 2 },
+        { id: 'honey-full', x: 50, y: 74, content: '🍯', size: 64, z: 2 },
+        { id: 'heart', x: 50, y: 26, content: '💛', size: 60, z: 1 },
+      ],
+      interactions: [
+        { id: 'bramble-end-dance', type: 'tap-animate', targetId: 'bramble-end', data: { animation: 'animate-dance', duration: 1500 } },
+        { id: 'bramble-end-say', type: 'tap-sound', targetId: 'bramble-end', data: { say: 'The sweetest honey is the honey we share!' } },
+        { id: 'clover-end-dance', type: 'tap-animate', targetId: 'clover-end', data: { animation: 'animate-dance', duration: 1200 } },
+        { id: 'honey-full-sparkle', type: 'tap-sparkle', targetId: 'honey-full', data: {} },
+        { id: 'heart-say', type: 'tap-sound', targetId: 'heart', data: { say: 'The End! Friends are the best!' } },
+      ],
+    },
+  ],
+};
+
+export default function BrambleBear() {
+  return <StoryBook story={storyData} />;
+}
