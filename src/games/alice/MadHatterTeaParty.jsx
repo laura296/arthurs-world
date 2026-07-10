@@ -321,7 +321,8 @@ const HINT_DELAY_3 = 15000;
 
 export default function MadHatterTeaParty() {
   // ── Session state ──
-  const puzzles = useMemo(() => pickSession(), []);
+  const [sessionKey, setSessionKey] = useState(0);
+  const puzzles = useMemo(() => pickSession(), [sessionKey]);
   const [puzzleIdx, setPuzzleIdx] = useState(0);
   const [gameState, setGameState] = useState(GAME_STATES.INTRO);
 
@@ -487,6 +488,15 @@ export default function MadHatterTeaParty() {
       setGameState(GAME_STATES.PLAYING);
     }
   }, [puzzleIdx, puzzles.length, celebrate]);
+
+  // ── Replay after the finale ──
+  const replayGame = useCallback(() => {
+    setSessionKey(k => k + 1); // fresh set of puzzles
+    setPuzzleIdx(0);
+    setFilledSlots({});
+    setHintLevel(0);
+    setGameState(GAME_STATES.INTRO);
+  }, []);
 
   // ── Touch / mouse drag handlers ──
   const handleDragStart = useCallback((objectId, clientX, clientY) => {
@@ -703,6 +713,25 @@ export default function MadHatterTeaParty() {
             <span className="text-4xl">🎩</span>
             <span className="text-4xl ml-2">☕</span>
           </div>
+        </div>
+      )}
+
+      {/* Replay button — appears once the finale celebration has finished */}
+      {gameState === GAME_STATES.FINALE && (
+        <div
+          className="absolute inset-0 z-30 flex items-center justify-center"
+          style={{ animation: 'pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 4.2s both' }}
+        >
+          <button
+            onPointerDown={replayGame}
+            className="w-24 h-24 rounded-full text-5xl active:scale-90 transition-transform"
+            style={{
+              background: 'rgba(255,248,240,0.95)',
+              boxShadow: '0 4px 20px rgba(120,80,40,0.3)',
+            }}
+          >
+            🔄
+          </button>
         </div>
       )}
 

@@ -40,7 +40,9 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'audio',
-              expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+              // Must exceed the narration library (250 MP3s and growing) —
+              // a lower cap silently LRU-evicts story narration offline
+              expiration: { maxEntries: 400, maxAgeSeconds: 30 * 24 * 60 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

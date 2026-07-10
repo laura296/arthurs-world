@@ -169,12 +169,21 @@ function createAmbient(section) {
       break;
   }
 
-  // Fade in
+  // Fade in — but stay silent in Quiet mode. The continuous drones
+  // (hum/breeze/rain/wind) all route through masterGain, so gating it
+  // here mutes them too, not just the interval accents above.
   masterGain.gain.setValueAtTime(0, ctx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(1, ctx.currentTime + 1);
+  if (!isMuted()) masterGain.gain.linearRampToValueAtTime(1, ctx.currentTime + 1);
+  const muteWatch = setInterval(() => {
+    const target = isMuted() ? 0 : 1;
+    if (Math.abs(masterGain.gain.value - target) > 0.01) {
+      masterGain.gain.setTargetAtTime(target, ctx.currentTime, 0.3);
+    }
+  }, 500);
 
   return {
     stop() {
+      clearInterval(muteWatch);
       masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
       masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
       setTimeout(() => {

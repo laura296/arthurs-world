@@ -3,8 +3,13 @@ import allAssets from '../data/assetManifest';
 
 /**
  * "Download All" button with progress bar.
- * Fetches every image, audio, and video asset so the service worker caches them for offline use.
+ * Fetches image and audio assets so the service worker caches them for
+ * offline use. Videos are excluded: they're ~111MB of the payload and
+ * iPad Safari's Cache Storage quota is small enough that including them
+ * risks evicting story narration (QuotaExceededError territory).
  */
+
+const offlineAssets = allAssets.filter(url => !url.endsWith('.mp4'));
 
 export default function DownloadAll() {
   const [state, setState] = useState('idle'); // idle | downloading | done | error
@@ -22,21 +27,21 @@ export default function DownloadAll() {
 
     setState('downloading');
     setProgress(0);
-    setTotal(allAssets.length);
+    setTotal(offlineAssets.length);
 
     const controller = new AbortController();
     abortRef.current = controller;
 
-    let loaded = 0;
+    let attempted = 0;
     let failed = 0;
 
     // Download in batches of 6 to avoid overwhelming the connection
     const batchSize = 6;
-    for (let i = 0; i < allAssets.length; i += batchSize) {
+    for (let i = 0; i < offlineAssets.length; i += batchSize) {
       if (controller.signal.aborted) break;
 
-      const batch = allAssets.slice(i, i + batchSize);
-      const results = await Promise.allSettled(
+      const batch = offlineAssets.slice(i, i + batchSize);
+      await Promise.allSettled(
         batch.map(url =>
           fetch(url, { signal: controller.signal })
             .then(r => { if (!r.ok) throw new Error(r.status); })
@@ -44,12 +49,13 @@ export default function DownloadAll() {
         )
       );
 
-      loaded += batch.length;
-      setProgress(loaded);
+      attempted += batch.length;
+      setProgress(attempted);
     }
 
     if (!controller.signal.aborted) {
-      setState(failed > allAssets.length / 2 ? 'error' : 'done');
+      // Only claim "ready for offline" when everything actually cached
+      setState(failed > 0 ? 'error' : 'done');
     }
   }, [state]);
 
