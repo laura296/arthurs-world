@@ -17,10 +17,8 @@ export default function LevelSelect({ title, totalLevels, highestUnlocked, stars
   const levels = Array.from({ length: totalLevels }, (_, i) => i + 1);
 
   const handleTap = (lvl) => {
-    if (lvl <= highestUnlocked) {
-      playPop();
-      onSelect(lvl);
-    }
+    playPop();
+    onSelect(lvl);
   };
 
   return (
@@ -40,7 +38,7 @@ export default function LevelSelect({ title, totalLevels, highestUnlocked, stars
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-8">
         <div className="grid grid-cols-4 gap-3 w-full max-w-md">
           {levels.map((lvl, i) => {
-            const unlocked = lvl <= highestUnlocked;
+            const unlocked = true; // sandbox mode — all levels accessible
             const starCount = stars[lvl] || 0;
             const label = levelLabels?.[i] || null;
 

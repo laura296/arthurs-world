@@ -344,3 +344,78 @@
   90% { opacity: 0.15; }
   100% { transform: translateY(-110vh); opacity: 0; }
 }
+
+/* Draw Alive */
+@keyframes drawAliveBubble {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.9; }
+  50% { transform: translate(14px, -55vh); }
+  90% { opacity: 0.7; }
+  100% { transform: translate(-6px, -110vh); opacity: 0; }
+}
+@keyframes drawAliveTwinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes drawAliveMote {
+  0%, 100% { opacity: 0; transform: translate(0, 0); }
+  30% { opacity: 0.85; }
+  50% { transform: translate(24px, -30px); }
+  70% { opacity: 0.6; }
+}
+@keyframes drawAliveBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes drawAliveFlame {
+  from { transform: translateX(-50%) scaleY(0.8) scaleX(1.05); opacity: 0.85; }
+  to { transform: translateX(-50%) scaleY(1.15) scaleX(0.9); opacity: 1; }
+}
+@keyframes drawAliveDrift {
+  from { transform: scale(1.02) translate(0, 0); }
+  to { transform: scale(1.08) translate(-1.5%, -1%); }
+}
+@keyframes drawAliveZzz {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translate(18px, -46px) scale(1.1); opacity: 0; }
+}
+@keyframes drawAliveFishBubble {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) translate(10px, -120px) scale(1); opacity: 0; }
+}
+@keyframes drawAliveShake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 4px); }
+  40% { transform: translate(5px, -4px); }
+  60% { transform: translate(-4px, 3px); }
+  80% { transform: translate(3px, -2px); }
+}
+@keyframes drawAliveConfetti {
+  from { transform: translateY(-5vh) rotate(0deg); }
+  to { transform: translateY(105vh) rotate(720deg); }
+}
+.da-shake { animation: drawAliveShake 0.35s ease-out; }
+.da-fish-bubble {
+  position: absolute;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.1) 60%);
+  pointer-events: none;
+  opacity: 0;
+  animation: drawAliveFishBubble 2.4s ease-out forwards;
+}
+.da-zzz { opacity: 0; transition: opacity 1s; }
+.da-zzz span { animation: drawAliveZzz 2.1s ease-out infinite; text-shadow: 0 2px 6px rgba(49, 28, 99, 0.6); }
+.da-night .da-zzz { opacity: 1; }
+.da-night .da-eye { animation: none !important; transform: scaleY(0.12); transition: transform 0.6s; }
+@keyframes drawAliveRain {
+  from { transform: translate(0, -10vh) rotate(12deg); }
+  to { transform: translate(-12vw, 110vh) rotate(12deg); }
+}
+@keyframes drawAliveSnow {
+  0% { transform: translate(0, -5vh); }
+  50% { transform: translate(var(--sway, 20px), 50vh); }
+  100% { transform: translate(0, 105vh); }
+}

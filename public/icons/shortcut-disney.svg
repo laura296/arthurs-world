@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#93c5fd"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <!-- Castle -->
+  <rect x="72" y="80" width="48" height="48" rx="4" fill="#fff" opacity="0.95"/>
+  <rect x="60" y="96" width="16" height="32" rx="2" fill="#fff" opacity="0.95"/>
+  <rect x="116" y="96" width="16" height="32" rx="2" fill="#fff" opacity="0.95"/>
+  <!-- Towers -->
+  <rect x="64" y="80" width="8" height="20" rx="2" fill="#fff" opacity="0.95"/>
+  <rect x="120" y="80" width="8" height="20" rx="2" fill="#fff" opacity="0.95"/>
+  <rect x="88" y="60" width="16" height="24" rx="2" fill="#fff" opacity="0.95"/>
+  <!-- Tower tops -->
+  <polygon points="68,80 60,72 76,72" fill="#fde68a"/>
+  <polygon points="124,80 116,72 132,72" fill="#fde68a"/>
+  <polygon points="96,60 84,50 108,50" fill="#fde68a"/>
+  <!-- Door -->
+  <path d="M88 128 v-16 a8 8 0 0 1 16 0 v16" fill="#93c5fd"/>
+  <!-- Stars -->
+  <circle cx="56" cy="56" r="3" fill="#fde68a" opacity="0.9"/>
+  <circle cx="140" cy="48" r="4" fill="#fde68a" opacity="0.9"/>
+  <circle cx="96" cy="40" r="3" fill="#fde68a" opacity="0.9"/>
+</svg>

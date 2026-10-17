@@ -8,10 +8,10 @@ import { useArthurPeek } from '../components/ArthurPeek';
 const IMG = '/arthurs-world/images/colouring';
 
 const PAGES = [
-  { id: 'lilo',           name: 'Lilo & Stitch',  emoji: '🌺', src: `${IMG}/lilo.png` },
-  { id: 'mickey-surfing', name: 'Mickey Surfing',  emoji: '🏄', src: `${IMG}/mickey-surfing.png` },
-  { id: 'spongebob',      name: 'SpongeBob',       emoji: '🧽', src: `${IMG}/spongebob.png` },
-  { id: 'woody',          name: 'Woody & Buzz',    emoji: '🤠', src: `${IMG}/woody.png` },
+  { id: 'lilo',           name: 'Lilo & Stitch',  emoji: '🌺', src: `${IMG}/lilo.webp` },
+  { id: 'mickey-surfing', name: 'Mickey Surfing',  emoji: '🏄', src: `${IMG}/mickey-surfing.webp` },
+  { id: 'spongebob',      name: 'SpongeBob',       emoji: '🧽', src: `${IMG}/spongebob.webp` },
+  { id: 'woody',          name: 'Woody & Buzz',    emoji: '🤠', src: `${IMG}/woody.webp` },
 ];
 
 const PALETTE = [

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BackButton from '../components/BackButton';
 import { playSparkle, playSuccess, playPop, playFanfare, playCollectPing, playBoing } from '../hooks/useSound';
 import { useParticleBurst } from '../components/ParticleBurst';
@@ -6,41 +6,94 @@ import { useArthurPeek } from '../components/ArthurPeek';
 import { useCelebration } from '../components/CelebrationOverlay';
 
 /* ══════════════════════════════════════════════
-   SPARKLE TRAIL
+   SPARKLE TRAIL (canvas-based, isolated from React render)
    ══════════════════════════════════════════════ */
 
 const SPARKLE_COLORS = ['#f0abfc', '#fbbf24', '#60a5fa', '#34d399', '#c084fc', '#f472b6'];
+const SPARKLE_SHAPES = ['★', '♥', '◆', '●'];
 
-function makeSparkle(x, y) {
-  return {
-    id: Date.now() + Math.random(),
-    x, y,
-    size: 6 + Math.random() * 14,
-    color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
-    opacity: 1,
-    rotation: Math.random() * 360,
-    shape: ['★', '♥', '◆', '●'][Math.floor(Math.random() * 4)],
-    vx: (Math.random() - 0.5) * 2,
-    vy: -1 - Math.random() * 2,
-    life: 1,
-  };
-}
+const SparkleCanvas = React.memo(React.forwardRef(function SparkleCanvas(_, ref) {
+  const canvasRef = useRef(null);
+  const sparklesRef = useRef([]);
+  const frameRef = useRef(null);
 
-function SparkleParticle({ s }) {
+  React.useImperativeHandle(ref, () => ({
+    addSparkles(x, y, count = 2) {
+      for (let i = 0; i < count; i++) {
+        sparklesRef.current.push({
+          x: x + (Math.random() - 0.5) * 20,
+          y: y + (Math.random() - 0.5) * 20,
+          size: 6 + Math.random() * 14,
+          color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
+          rotation: Math.random() * 360,
+          shape: SPARKLE_SHAPES[Math.floor(Math.random() * 4)],
+          vx: (Math.random() - 0.5) * 2,
+          vy: -1 - Math.random() * 2,
+          life: 1,
+        });
+      }
+      // Cap at 100
+      if (sparklesRef.current.length > 100) {
+        sparklesRef.current = sparklesRef.current.slice(-100);
+      }
+    },
+  }));
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let running = true;
+
+    const tick = () => {
+      if (!running) return;
+      const { width, height } = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      ctx.clearRect(0, 0, width, height);
+
+      const particles = sparklesRef.current;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const s = particles[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        s.life -= 0.02;
+        s.rotation += 3;
+        if (s.life <= 0) { particles.splice(i, 1); continue; }
+
+        ctx.save();
+        ctx.globalAlpha = s.life;
+        ctx.translate(s.x, s.y);
+        ctx.rotate((s.rotation * Math.PI) / 180);
+        ctx.scale(s.life, s.life);
+        ctx.font = `${s.size}px sans-serif`;
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = s.size / 2;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(s.shape, 0, 0);
+        ctx.restore();
+      }
+
+      frameRef.current = requestAnimationFrame(tick);
+    };
+    frameRef.current = requestAnimationFrame(tick);
+    return () => { running = false; cancelAnimationFrame(frameRef.current); };
+  }, []);
+
   return (
-    <div
-      className="absolute pointer-events-none select-none"
-      style={{
-        left: s.x, top: s.y,
-        fontSize: s.size, color: s.color, opacity: s.opacity,
-        transform: `rotate(${s.rotation}deg) scale(${s.life})`,
-        textShadow: `0 0 ${s.size / 2}px ${s.color}`,
-      }}
-    >
-      {s.shape}
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none z-[60]"
+      style={{ width: '100%', height: '100%' }}
+    />
   );
-}
+}));
 
 /* ══════════════════════════════════════════════
    PLANT IMAGE RENDERER
@@ -149,22 +202,25 @@ const PLANTS = [
       <circle cx="30" cy="32" r="4" fill="white" opacity="0.5" />
     </svg>
   )},
-  { name: 'crystal-mushroom', rare: true, color: '#67e8f9', render: () => (
-    <svg viewBox="0 0 60 90" className="w-full h-full">
-      <rect x="22" y="52" width="16" height="33" rx="6" fill="#cffafe" />
-      <ellipse cx="30" cy="52" rx="24" ry="20" fill="#67e8f9" opacity="0.7" />
-      <ellipse cx="30" cy="52" rx="24" ry="20" fill="url(#crystalShine)" />
-      <polygon points="22,38 26,48 18,48" fill="white" opacity="0.4" />
-      <polygon points="34,35 38,46 30,46" fill="white" opacity="0.3" />
-      <polygon points="40,40 43,48 37,48" fill="white" opacity="0.25" />
-      <defs>
-        <radialGradient id="crystalShine" cx="40%" cy="30%">
-          <stop offset="0%" stopColor="white" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-    </svg>
-  )},
+  { name: 'crystal-mushroom', rare: true, color: '#67e8f9', render: () => {
+    const gradId = `crystalShine-${Math.random().toString(36).slice(2, 8)}`;
+    return (
+      <svg viewBox="0 0 60 90" className="w-full h-full">
+        <defs>
+          <radialGradient id={gradId} cx="40%" cy="30%">
+            <stop offset="0%" stopColor="white" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect x="22" y="52" width="16" height="33" rx="6" fill="#cffafe" />
+        <ellipse cx="30" cy="52" rx="24" ry="20" fill="#67e8f9" opacity="0.7" />
+        <ellipse cx="30" cy="52" rx="24" ry="20" fill={`url(#${gradId})`} />
+        <polygon points="22,38 26,48 18,48" fill="white" opacity="0.4" />
+        <polygon points="34,35 38,46 30,46" fill="white" opacity="0.3" />
+        <polygon points="40,40 43,48 37,48" fill="white" opacity="0.25" />
+      </svg>
+    );
+  }},
   { name: 'glow-tree', rare: true, color: '#a78bfa', render: () => (
     <svg viewBox="0 0 60 90" className="w-full h-full">
       <rect x="24" y="55" width="12" height="33" rx="3" fill="#7c3aed" />
@@ -596,6 +652,39 @@ function SoilSlot({ planted, slotX, slotW }) {
 }
 
 /* ══════════════════════════════════════════════
+   FLYING SEED ANIMATION (two-frame mount for real CSS transition)
+   ══════════════════════════════════════════════ */
+
+function FlyingSeedAnim({ fromX, fromY, toX, toY, emoji, rare }) {
+  const [arrived, setArrived] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => setArrived(true));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <div
+      className="absolute pointer-events-none z-30"
+      style={{
+        left: fromX,
+        top: fromY,
+        fontSize: 30,
+        transition: arrived ? 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
+        transform: arrived
+          ? `translate(${toX - fromX}px, ${toY - fromY}px) scale(0.4) rotate(360deg)`
+          : 'scale(1) rotate(0deg)',
+        opacity: arrived ? 0.7 : 1,
+        filter: rare ? 'drop-shadow(0 0 12px #a78bfa)' : 'none',
+      }}
+    >
+      {emoji}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
    ROUND CONFIG
    ══════════════════════════════════════════════ */
 
@@ -611,8 +700,7 @@ const ROUNDS = [
 
 export default function FairyDust() {
   const containerRef = useRef(null);
-  const frameRef = useRef(null);
-  const [sparkles, setSparkles] = useState([]);
+  const sparkleRef = useRef(null);
   const [dims, setDims] = useState({ w: 600, h: 800 });
   const { burst, ParticleLayer } = useParticleBurst();
   const { peek, ArthurPeekLayer } = useArthurPeek();
@@ -624,6 +712,11 @@ export default function FairyDust() {
   const [garden, setGarden] = useState([]);
   const [flyingSeed, setFlyingSeed] = useState(null);
 
+  // Refs for values accessed inside setTimeout chains (avoids stale closures)
+  const roundRef = useRef(round);
+  roundRef.current = round;
+  const configRef = useRef(null);
+
   // Intro auto-dismiss
   useEffect(() => {
     if (phase !== 'intro') return;
@@ -632,6 +725,7 @@ export default function FairyDust() {
   }, [phase]);
 
   const config = ROUNDS[Math.min(round, ROUNDS.length - 1)];
+  configRef.current = config;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -643,10 +737,10 @@ export default function FairyDust() {
     return () => obs.disconnect();
   }, []);
 
+  // Reset garden when round changes (no phase in deps to avoid double-reset)
   useEffect(() => {
     setGarden(Array.from({ length: config.slots }, () => null));
     setSeeds([]);
-    if (phase === 'round-end') return;
     setPhase('playing');
   }, [round, config.slots]);
 
@@ -656,35 +750,18 @@ export default function FairyDust() {
     setSeeds(initial);
     const iv = setInterval(() => {
       setSeeds(prev => {
-        if (prev.filter(s => !s.tapped).length >= 5) return prev;
+        if (prev.length >= 5) return prev;
         return [...prev, makeSeed(dims.w, dims.h)];
       });
     }, 2200);
     return () => clearInterval(iv);
   }, [phase, dims.w, dims.h, round]);
 
-  useEffect(() => {
-    let running = true;
-    const tick = () => {
-      if (!running) return;
-      setSparkles(prev =>
-        prev.map(s => ({ ...s, x: s.x + s.vx, y: s.y + s.vy, life: s.life - 0.02, opacity: s.life, rotation: s.rotation + 3 }))
-            .filter(s => s.life > 0)
-      );
-      frameRef.current = requestAnimationFrame(tick);
-    };
-    frameRef.current = requestAnimationFrame(tick);
-    return () => { running = false; cancelAnimationFrame(frameRef.current); };
-  }, []);
-
   const handlePointerMove = useCallback((e) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = e.clientX - rect.left, y = e.clientY - rect.top;
-    setSparkles(prev => [
-      ...prev.slice(-100),
-      ...Array.from({ length: 2 }, () => makeSparkle(x + (Math.random() - 0.5) * 20, y + (Math.random() - 0.5) * 20)),
-    ]);
+    sparkleRef.current?.addSparkles(x, y, 2);
   }, []);
 
   const choosePlant = useCallback((seed) => {
@@ -701,7 +778,7 @@ export default function FairyDust() {
 
   const handleSeedTap = useCallback((e, seed) => {
     e.stopPropagation();
-    if (phase !== 'playing' || seed.tapped) return;
+    if (phase !== 'playing') return;
 
     const nextEmpty = garden.findIndex(g => g === null);
     if (nextEmpty === -1) return;
@@ -718,7 +795,8 @@ export default function FairyDust() {
     }
 
     playSparkle();
-    setSeeds(prev => prev.map(s => s.id === seed.id ? { ...s, tapped: true } : s));
+    // Remove tapped seed immediately (no lingering tapped entries)
+    setSeeds(prev => prev.filter(s => s.id !== seed.id));
 
     const plantIdx = choosePlant(seed);
     const plant = PLANTS[plantIdx];
@@ -764,13 +842,14 @@ export default function FairyDust() {
         });
       }
 
-      setSeeds(prev => prev.filter(s => s.id !== seed.id));
-
+      // Use refs for round/config to avoid stale closures in nested timeouts
       setTimeout(() => {
         setGarden(prev => {
           const filled = prev.filter(g => g !== null).length;
-          if (filled >= config.slots) {
-            if (round >= ROUNDS.length - 1) {
+          const currentConfig = configRef.current;
+          const currentRound = roundRef.current;
+          if (filled >= currentConfig.slots) {
+            if (currentRound >= ROUNDS.length - 1) {
               setPhase('won');
               playFanfare();
               celebrate({ duration: 5000 });
@@ -787,7 +866,7 @@ export default function FairyDust() {
         });
       }, 250);
     }, 950);
-  }, [phase, garden, config, dims, round, burst, celebrate, peek, choosePlant]);
+  }, [phase, garden, config, dims, burst, celebrate, peek, choosePlant]);
 
   const handlePlantTap = useCallback((slotIdx) => {
     const slot = garden[slotIdx];
@@ -813,6 +892,24 @@ export default function FairyDust() {
 
   const filledCount = garden.filter(g => g !== null).length;
   const slotW = dims.w / config.slots;
+
+  const grassBlades = useMemo(() =>
+    Array.from({ length: 20 }, (_, i) => ({
+      left: i * 5 + Math.random() * 3,
+      height: 10 + Math.random() * 12,
+      opacity: 0.3 + Math.random() * 0.3,
+      rotation: (Math.random() - 0.5) * 20,
+    })).map((g, i) => (
+      <div key={`gb-${i}`} className="absolute pointer-events-none" style={{
+        left: `${g.left}%`, bottom: '20px',
+        width: '2px', height: `${g.height}px`,
+        background: '#4ade80',
+        opacity: g.opacity,
+        transform: `rotate(${g.rotation}deg)`,
+        transformOrigin: 'bottom center',
+      }} />
+    )),
+  []);
 
   return (
     <div
@@ -891,7 +988,7 @@ export default function FairyDust() {
       </div>
 
       {/* floating seeds */}
-      {seeds.filter(s => !s.tapped).map(seed => (
+      {seeds.map(seed => (
         <div
           key={seed.id}
           onPointerDown={(e) => handleSeedTap(e, seed)}
@@ -912,20 +1009,12 @@ export default function FairyDust() {
 
       {/* flying seed */}
       {flyingSeed && (
-        <div
-          className="absolute pointer-events-none z-30"
-          style={{
-            left: flyingSeed.fromX,
-            top: flyingSeed.fromY,
-            fontSize: 30,
-            transition: 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            transform: `translate(${flyingSeed.toX - flyingSeed.fromX}px, ${flyingSeed.toY - flyingSeed.fromY}px) scale(0.4) rotate(360deg)`,
-            opacity: 0.7,
-            filter: flyingSeed.rare ? 'drop-shadow(0 0 12px #a78bfa)' : 'none',
-          }}
-        >
-          {flyingSeed.emoji}
-        </div>
+        <FlyingSeedAnim
+          key={flyingSeed.fromX + flyingSeed.fromY}
+          fromX={flyingSeed.fromX} fromY={flyingSeed.fromY}
+          toX={flyingSeed.toX} toY={flyingSeed.toY}
+          emoji={flyingSeed.emoji} rare={flyingSeed.rare}
+        />
       )}
 
       {/* garden bed — bigger, richer */}
@@ -940,17 +1029,8 @@ export default function FairyDust() {
           background: 'linear-gradient(to top, #152e1a, #1a3518 60%, transparent)',
         }} />
 
-        {/* Grass blades scattered */}
-        {Array.from({ length: 20 }, (_, i) => (
-          <div key={`gb-${i}`} className="absolute pointer-events-none" style={{
-            left: `${i * 5 + Math.random() * 3}%`, bottom: '20px',
-            width: '2px', height: `${10 + Math.random() * 12}px`,
-            background: '#4ade80',
-            opacity: 0.3 + Math.random() * 0.3,
-            transform: `rotate(${(Math.random() - 0.5) * 20}deg)`,
-            transformOrigin: 'bottom center',
-          }} />
-        ))}
+        {/* Grass blades scattered (memoized to avoid per-frame jitter) */}
+        {grassBlades}
 
         {/* soil SVG */}
         <svg
@@ -981,8 +1061,8 @@ export default function FairyDust() {
         })}
       </div>
 
-      {/* sparkle trail */}
-      {sparkles.map(s => <SparkleParticle key={s.id} s={s} />)}
+      {/* sparkle trail (canvas-based, no React re-renders) */}
+      <SparkleCanvas ref={sparkleRef} />
 
       {/* round complete overlay */}
       {phase === 'round-end' && (

@@ -111,7 +111,7 @@ export default function FeedAnimals() {
     if (animal && (phase === 'choosing' || phase === 'intro')) {
       setChoices(getFoodChoices(animal.food, choiceCount));
     }
-  }, [currentIdx, round]);
+  }, [currentIdx, round, animal, choiceCount]);
 
   // check if this is a new woodland animal → show intro
   useEffect(() => {
@@ -123,9 +123,10 @@ export default function FeedAnimals() {
       const cx = window.innerWidth / 2;
       const cy = window.innerHeight / 2 - 50;
       burst(cx, cy, { count: 10, spread: 60, colors: ['#a78bfa', '#facc15', '#38bdf8'], shapes: ['star', 'diamond'] });
-      setTimeout(() => setPhase('choosing'), 1800);
+      const t = setTimeout(() => setPhase('choosing'), 1800);
+      return () => clearTimeout(t);
     }
-  }, [currentIdx, round]);
+  }, [currentIdx, round, animal, burst]);
 
   const tapAnimal = useCallback(() => {
     if (phase === 'intro' || phase === 'round-end') return;

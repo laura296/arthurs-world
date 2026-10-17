@@ -33,10 +33,10 @@ export function useLevelProgression(gameId, totalLevels) {
   }, [gameId]);
 
   const setLevel = useCallback((lvl) => {
-    if (lvl <= progress.highestUnlocked) {
+    if (lvl >= 1 && lvl <= totalLevels) {
       setCurrentLevel(lvl);
     }
-  }, [progress.highestUnlocked]);
+  }, [totalLevels]);
 
   const completeLevel = useCallback((level, starsEarned) => {
     setProgress(prev => {
@@ -50,6 +50,11 @@ export function useLevelProgression(gameId, totalLevels) {
       persist(next);
       return next;
     });
+    // Advance to the next level immediately — use the level arg directly
+    // rather than reading from stale progress state
+    if (level < totalLevels) {
+      setCurrentLevel(level + 1);
+    }
   }, [totalLevels, persist]);
 
   const backToLevels = useCallback(() => setCurrentLevel(null), []);

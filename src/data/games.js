@@ -38,6 +38,7 @@ const games = [
   { id: 'number-line',     emoji: '🔢', title: 'Number Line',   path: 'number-line',     category: 'games', group: '🧩 Puzzles', bg: 'from-blue-300 to-indigo-500' },
 
   // ── Art ──
+  { id: 'draw-alive',     emoji: '✨', title: 'Draw Alive',    path: 'draw-alive',     category: 'art', bg: 'from-sky-400 to-teal-600',          cover: '/arthurs-world/images/cards/draw-alive.webp' },
   { id: 'colouring-book', emoji: '🖍️', title: 'Colour In',     path: 'colouring-book', category: 'art', bg: 'from-amber-300 to-pink-500' },
   { id: 'free-art',       emoji: '🎨', title: 'Free Art',      path: 'free-art',       category: 'art', bg: 'from-candy to-pink-700',           cover: '/arthurs-world/images/cards/colouring.webp' },
   { id: 'dot-art',        emoji: '🔴', title: 'Dot Art',       path: 'dot-art',        category: 'art', bg: 'from-sky-300 to-purple-500' },
