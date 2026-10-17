@@ -8,6 +8,7 @@ import { SCENE_SIZE } from './worlds';
 import { playVoice } from './voice';
 import { playCreatureSound } from './creatureSounds';
 import HintHand from './HintHand';
+import { startAmbience } from './worldAmbience';
 import {
   playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle, playWhoosh,
 } from '../../hooks/useSound';
@@ -514,6 +515,9 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newcomerId]);
+
+  /* Background soundscape: changes with night and rain */
+  useEffect(() => startAmbience(world.id, { night, weather }), [world.id, night, weather]);
 
   /* The animation loop */
   useEffect(() => {
