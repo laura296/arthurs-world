@@ -106,7 +106,7 @@ function chase(st, f, H, box) {
     if (Math.abs(f.x - st.x) > 8) st.dir = f.x > st.x ? 1 : -1;
     st.lane = st.motion === 'walk'
       ? clamp((f.y - box.h * 0.3) / H, st.z0, st.z1)
-      : clamp(f.y / H, 0.3, 0.9);
+      : clamp(f.y / H, Math.max(0.3, st.z0 - 0.04), 0.9);
   }
 }
 
@@ -593,7 +593,8 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
               b.vy = Math.abs(b.vy) > 80 ? -b.vy * 0.6 : 0;
               b.vx *= Math.pow(0.3, dt);
             }
-            if (b.y < r) { b.y = r; b.vy = Math.abs(b.vy) * 0.7; }
+            const ceiling = mode === 'water' ? H * 0.38 : r; // underwater, the ball stays below the surface
+            if (b.y < ceiling) { b.y = ceiling; b.vy = Math.abs(b.vy) * 0.7; }
             if (b.x < r) { b.x = r; b.vx = Math.abs(b.vx) * 0.8; }
             if (b.x > W - r) { b.x = W - r; b.vx = -Math.abs(b.vx) * 0.8; }
             b.spin += (b.vx * dt) / r;
