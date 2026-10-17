@@ -60,6 +60,8 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const canvasRef = useRef(null);
   const drawing = useRef(null);
   const pendingFill = useRef(null);
+  const mounted = useRef(true);
+  useEffect(() => () => { mounted.current = false; }, []);
   const sendRef = useRef(null);
   const paperRef = useRef(null);
   const [activity, setActivity] = useState(0);
@@ -196,7 +198,8 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
       }
     }
     const ctx = c.getContext('2d', { willReadFrequently: true });
-    const region = floodRegion(ctx.getImageData(0, 0, W, H).data, wallMap, W, H, sx, sy);
+    // On a template the lines decide the areas, so re-colouring stripes or rainbow fills the whole area
+    const region = floodRegion(ctx.getImageData(0, 0, W, H).data, wallMap, W, H, sx, sy, template ? Infinity : 46);
     // On blank paper, only fill shapes Arthur has closed in, not the whole page
     if (!region || (!template && region.touchesEdge)) {
       playTap();
@@ -204,7 +207,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     }
     snapshot();
     const k = patternScale();
-    paintRegion(c, region, (t, r) => paintStyle(t, color, effect, k, r), Math.ceil(W / 220 * 0.45) + 1);
+    paintRegion(c, region, (t, r) => paintStyle(t, color, effect, k, r), Math.ceil(W / 220 * 0.45) + 1, !template);
     if (!hasInk) setHasInk(true);
     playSplash();
     burst?.(e.clientX, e.clientY, {
@@ -220,6 +223,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     setActivity(a => a + 1);
     e.currentTarget.setPointerCapture?.(e.pointerId);
     if (tool === 'fill') {
+      if (pendingFill.current) return; // one finger at a time
       // A tap fills; a drag draws instead, so nothing he tries is wasted
       pendingFill.current = { id: e.pointerId, start: point(e), clientX: e.clientX, clientY: e.clientY };
       return;
@@ -315,7 +319,11 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     const sprite = buildSprite(canvasRef.current, template, '#ffffff', dressing.map(d => ({
       canvas: accessoryCanvas(d.id, 256), x: d.x, y: d.y, size: d.size * SIZES[d.step], place: d.place,
     })));
-    if (!sprite) return;
+    if (!sprite) {
+      setHasInk(false); // everything was rubbed out
+      playTap();
+      return;
+    }
     if (voice) sprite.voice = voice;
     playWhoosh();
     playSparkle();
@@ -333,14 +341,14 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     setRecording(true);
     try {
       const url = await recordVoice();
-      if (url) {
+      if (url && mounted.current) {
         setVoice(url);
         playVoice(url);
       }
     } catch {
-      setMicOk(false); // no microphone, or permission refused
+      if (mounted.current) setMicOk(false); // no microphone, or permission refused
     }
-    setRecording(false);
+    if (mounted.current) setRecording(false);
   };
 
   /* Dress-up: add an accessory, drag it into place, tap it to change size, drag it off to take it away */
@@ -402,7 +410,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
            style={{ filter: 'blur(14px) brightness(0.8) saturate(1.1)' }} />
       <div className="absolute inset-0 bg-gradient-to-b from-amber-900/10 to-purple-950/30" />
 
-      <RoundBack onBack={onBack} />
+      <RoundBack onBack={sending ? () => {} : onBack} />
 
       <div className="absolute inset-0 flex items-stretch gap-3 px-3 py-3">
         {/* ── Left: what to draw + send ── */}

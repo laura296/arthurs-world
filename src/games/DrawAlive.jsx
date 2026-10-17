@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import WorldPicker from './draw-alive/WorldPicker';
 import LiveWorld from './draw-alive/LiveWorld';
@@ -30,13 +30,34 @@ export default function DrawAlive() {
 
   const world = worldId ? getWorld(worldId) : null;
 
+  /* Each meal is remembered: well-fed creatures grow a little.
+     Saved a moment later rather than on every bite, and flushed on leaving. */
+  const fedDirty = useRef(false);
+  const latest = useRef(null);
+  latest.current = { worldId, creatures };
+  const flushFed = useCallback(() => {
+    if (!fedDirty.current) return;
+    fedDirty.current = false;
+    const { worldId: id, creatures: list } = latest.current;
+    if (id) saveCreatures(id, list);
+  }, []);
+  const handleFed = useCallback((id) => {
+    setCreatures(prev => prev.map(c => (c.id === id ? { ...c, fed: (c.fed || 0) + 1 } : c)));
+    if (!fedDirty.current) {
+      fedDirty.current = true;
+      setTimeout(flushFed, 1500);
+    }
+  }, [flushFed]);
+  useEffect(() => flushFed, [flushFed]);
+
   const openWorld = useCallback((id) => {
+    flushFed();
     playTap();
     setWorldId(id);
     setCreatures(loadCreatures(id));
     setNewcomerId(null);
     setScreen('world');
-  }, []);
+  }, [flushFed]);
 
   const arrive = useCallback((sprite) => {
     const born = Date.now();
@@ -52,14 +73,6 @@ export default function DrawAlive() {
     setScreen('world');
   }, [world, creatures]);
 
-  /* Each meal is remembered: well-fed creatures grow a little */
-  const handleFed = useCallback((id) => {
-    setCreatures(prev => {
-      const next = prev.map(c => (c.id === id ? { ...c, fed: (c.fed || 0) + 1 } : c));
-      saveCreatures(world.id, next);
-      return next;
-    });
-  }, [world]);
 
   const handleBorn = useCallback(() => {
     peek('excited');
@@ -96,8 +109,9 @@ export default function DrawAlive() {
           )}
         </motion.div>
       </AnimatePresence>
-      <ParticleLayer />
-      <ArthurPeekLayer />
+      {/* Called as functions so new bursts don't restart the ones already flying */}
+      {ParticleLayer()}
+      {ArthurPeekLayer()}
     </div>
   );
 }

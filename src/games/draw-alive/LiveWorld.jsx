@@ -10,7 +10,7 @@ import { playCreatureSound } from './creatureSounds';
 import HintHand from './HintHand';
 import { startAmbience } from './worldAmbience';
 import {
-  playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle, playWhoosh,
+  playBoing, playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle, playWhoosh,
 } from '../../hooks/useSound';
 
 const SPEED = { swim: 62, float: 28, fly: 125, rocket: 170, hover: 55, flutter: 85, walk: 44 };
@@ -457,6 +457,10 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
   const [birth, setBirth] = useState(null);
   const [night, setNight] = useState(false);
   const [weather, setWeather] = useState('clear');
+  const [ballOn, setBallOn] = useState(false);
+  const ball = useRef(null);
+  const ballEl = useRef(null);
+  const ballGrab = useRef(null);
   const nightRef = useRef(false);
   const grab = useRef(null);
   const [activity, setActivity] = useState(0);
@@ -524,6 +528,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
     let raf;
     let last = performance.now();
     let nextLove = 0;
+    const lastSize = { w: 0, h: 0 };
     const loop = (now) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
@@ -531,6 +536,12 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
       const stage = stageRef.current;
       if (stage) {
         const W = stage.clientWidth, H = stage.clientHeight;
+        if (W !== lastSize.w || H !== lastSize.h) {
+          // Turned the iPad: birds find their perches again
+          lastSize.w = W;
+          lastSize.h = H;
+          for (const st of states.current.values()) { st.perch = null; st.perched = false; }
+        }
 
         // Food falls, sinks or floats
         for (const f of foodState.current.values()) {
@@ -561,6 +572,48 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
             el.style.transform = `translate3d(${f.x}px, ${f.y + bob}px, 0) translate(-50%, -50%) rotate(${Math.sin(t * 2 + f.ph) * 8}deg)`;
           }
         }
+        // The beach ball: bounces on the ground, drifts underwater, floats in space
+        const b = ball.current;
+        let fans = [];
+        if (b) {
+          const r = Math.min(W, H) * 0.06;
+          b.r = r;
+          if (!b.held) {
+            const mode = world.id === 'sea' ? 'water' : world.id === 'space' ? 'space' : 'ground';
+            const floor = (mode === 'ground' ? ((groundZone(world)[0] + groundZone(world)[1]) / 2) * H + r * 0.6 : H * 0.9);
+            if (mode === 'ground') b.vy += 1500 * dt;
+            if (mode === 'water') b.vy += 70 * dt;
+            const drag = Math.pow(mode === 'ground' ? 0.85 : mode === 'water' ? 0.35 : 0.75, dt);
+            b.vx *= drag;
+            b.vy *= mode === 'ground' ? 1 : drag;
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+            if (b.y > floor) {
+              b.y = floor;
+              b.vy = Math.abs(b.vy) > 80 ? -b.vy * 0.6 : 0;
+              b.vx *= Math.pow(0.3, dt);
+            }
+            if (b.y < r) { b.y = r; b.vy = Math.abs(b.vy) * 0.7; }
+            if (b.x < r) { b.x = r; b.vx = Math.abs(b.vx) * 0.8; }
+            if (b.x > W - r) { b.x = W - r; b.vx = -Math.abs(b.vx) * 0.8; }
+            b.spin += (b.vx * dt) / r;
+          }
+          if (ballEl.current) {
+            ballEl.current.style.width = ballEl.current.style.height = `${r * 2}px`;
+            ballEl.current.style.zIndex = Math.round(b.y) + 5;
+            ballEl.current.style.transform = `translate3d(${b.x - r}px, ${b.y - r}px, 0) rotate(${b.spin}rad)`;
+          }
+          // The two nearest creatures come to play
+          if (!nightRef.current) {
+            fans = listRef.current
+              .map(c => ({ id: c.id, st: states.current.get(c.id) }))
+              .filter(({ st }) => st && !st.birth && !st.held && !st.fling)
+              .sort((a, z) => Math.hypot(a.st.x - b.x, a.st.y - b.y) - Math.hypot(z.st.x - b.x, z.st.y - b.y))
+              .slice(0, 2)
+              .map(f => f.id);
+          }
+        }
+
         const sleeping = nightRef.current;
         const menu = sleeping ? [] : [...foodState.current.values()].filter(f => !f.eaten);
 
@@ -587,6 +640,20 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
               if (d < best) { best = d; meal = f; }
             }
             if (meal) chase(st, meal, H, box);
+          }
+
+          // Play with the ball: run after it and kick it
+          if (b && !meal && fans.includes(c.id)) {
+            chase(st, b, H, box);
+            const reach = Math.max(w, h) * 0.45 + b.r;
+            if (!b.held && Math.hypot(b.x - st.x, b.y - st.y) < reach && t > (st.nextKick || 0)) {
+              st.nextKick = t + 0.9;
+              const side = b.x >= st.x ? 1 : -1;
+              b.vx += side * rand(380, 650);
+              b.vy -= world.id === 'sea' || world.id === 'space' ? rand(-250, 350) : rand(500, 800);
+              if (Math.random() < 0.4) st.jump = 0;
+              playBoing();
+            }
           }
 
           // Birds perch now and then, and roost at night
@@ -822,6 +889,61 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
     });
   };
 
+  /* The beach ball: on and off, and Arthur can throw it */
+  const toggleBall = () => {
+    if (ball.current) {
+      ball.current = null;
+      setBallOn(false);
+      playPop();
+      return;
+    }
+    const rect = stageRef.current.getBoundingClientRect();
+    ball.current = { x: rect.width * rand(0.3, 0.7), y: rect.height * 0.15, vx: rand(-200, 200), vy: 0, spin: 0, r: 40 };
+    setBallOn(true);
+    playBoing();
+  };
+
+  const grabBall = (e) => {
+    e.stopPropagation();
+    if (!ball.current || ballGrab.current) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    ball.current.held = true;
+    ballGrab.current = { pointerId: e.pointerId, x0: e.clientX, y0: e.clientY, samples: [[e.clientX, e.clientY, performance.now()]] };
+  };
+
+  const moveBall = (e) => {
+    const g = ballGrab.current;
+    const b = ball.current;
+    if (!g || !b || g.pointerId !== e.pointerId) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    b.x = clamp(e.clientX - rect.left, b.r, rect.width - b.r);
+    b.y = clamp(e.clientY - rect.top, b.r, rect.height - b.r);
+    g.samples.push([e.clientX, e.clientY, performance.now()]);
+    if (g.samples.length > 5) g.samples.shift();
+  };
+
+  const releaseBall = (e) => {
+    const g = ballGrab.current;
+    const b = ball.current;
+    if (!g || g.pointerId !== e.pointerId) return;
+    ballGrab.current = null;
+    if (!b) return;
+    b.held = false;
+    const [x1, y1, t1] = g.samples[0];
+    const [x2, y2, t2] = g.samples[g.samples.length - 1];
+    const moved = Math.hypot(x2 - g.x0, y2 - g.y0) > 10;
+    if (moved) {
+      const secs = Math.max(16, t2 - t1) / 1000;
+      b.vx = clamp((x2 - x1) / secs, -2200, 2200);
+      b.vy = clamp((y2 - y1) / secs, -2200, 2200);
+      playWhoosh();
+    } else {
+      b.vy = -900;
+      b.vx += rand(-200, 200);
+      playBoing();
+    }
+  };
+
   /* Tap the world to drop in some food */
   const tapWorld = (e) => {
     const rect = stageRef.current.getBoundingClientRect();
@@ -857,7 +979,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
       <div ref={stageRef} className={`absolute inset-0 isolate ${night ? 'da-night' : ''}`} onPointerDown={tapWorld}>
         <img src={world.bg} alt="" draggable={false}
              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-             style={{ animation: 'drawAliveDrift 40s ease-in-out infinite alternate' }} />
+             style={{ animation: world.perches ? 'none' : 'drawAliveDrift 40s ease-in-out infinite alternate' }} />
         <Ambient kind={world.ambient} onPop={world.ambient === 'bubbles' ? popBubble : undefined} />
         <Weather kind={weather} />
 
@@ -873,6 +995,19 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
         </div>
 
         {foods.map(f => <Food key={f.id} food={f} register={registerFood} />)}
+        {ballOn && (
+          <div ref={ballEl} className="absolute left-0 top-0 rounded-full will-change-transform"
+               style={{
+                 touchAction: 'none',
+                 background: 'conic-gradient(#ef4444 0 60deg, #ffffff 60deg 120deg, #38bdf8 120deg 180deg, #ffffff 180deg 240deg, #facc15 240deg 300deg, #ffffff 300deg)',
+                 border: `4px solid ${OUTLINE}`,
+                 boxShadow: 'inset -8px -10px 14px rgba(76, 29, 149, 0.25), inset 8px 8px 12px rgba(255,255,255,0.6), 0 8px 12px rgba(76, 29, 149, 0.3)',
+               }}
+               onPointerDown={grabBall} onPointerMove={moveBall} onPointerUp={releaseBall} onPointerCancel={releaseBall}>
+            <div className="absolute left-1/2 top-1/2 w-[22%] h-[22%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+                 style={{ border: `3px solid ${OUTLINE}` }} />
+          </div>
+        )}
         {creatures.map(c => (
           <Creature key={c.id} creature={c} register={register}
                     onGrab={grabCreature} onGrabMove={moveGrab} onGrabEnd={endGrab} />
@@ -885,6 +1020,18 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
       </div>
 
       <RoundBack onBack={onBack} />
+
+      {/* Beach ball */}
+      <motion.button
+        onClick={toggleBall}
+        aria-label="Ball"
+        className={`absolute top-3 right-[12.5rem] z-50 w-20 h-20 rounded-full backdrop-blur-sm border-2 border-white/40
+                    shadow-lg flex items-center justify-center ${ballOn ? 'bg-white/70' : 'bg-white/30'}`}
+        whileTap={{ scale: 0.88 }}
+      >
+        <span className="w-11 h-11 rounded-full"
+              style={{ background: 'conic-gradient(#ef4444 0 60deg, #fff 60deg 120deg, #38bdf8 120deg 180deg, #fff 180deg 240deg, #facc15 240deg 300deg, #fff 300deg)', border: `3px solid ${OUTLINE}` }} />
+      </motion.button>
 
       {/* Weather */}
       <motion.button

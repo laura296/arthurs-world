@@ -86,8 +86,14 @@ export function floodRegion(data, walls, w, h, sx, sy, tolerance = 46) {
   };
 }
 
-/** Paint the area, spreading a few pixels under its lines so no white gaps show. */
-export function paintRegion(canvas, region, makeStyle, spread) {
+let scratch = null;
+
+/**
+ * Paint the area, spreading a few pixels under its lines so no white gaps
+ * show. With `protectInk`, the spread never paints over drawn lines (blank
+ * paper, where the lines are Arthur's own).
+ */
+export function paintRegion(canvas, region, makeStyle, spread, protectInk = false) {
   const W = canvas.width, H = canvas.height;
   const pad = spread + 1;
   const bx = Math.max(0, region.minX - pad), by = Math.max(0, region.minY - pad);
@@ -125,10 +131,11 @@ export function paintRegion(canvas, region, makeStyle, spread) {
     }
   }
 
-  const tmp = document.createElement('canvas');
-  tmp.width = bw;
-  tmp.height = bh;
-  const t = tmp.getContext('2d', { willReadFrequently: true });
+  // One reused scratch canvas: Safari is slow to free canvas memory
+  scratch = scratch || document.createElement('canvas');
+  scratch.width = bw;
+  scratch.height = bh;
+  const t = scratch.getContext('2d', { willReadFrequently: true });
   t.translate(-bx, -by);
   t.fillStyle = makeStyle(t, region);
   t.fillRect(bx, by, bw, bh);
@@ -139,6 +146,7 @@ export function paintRegion(canvas, region, makeStyle, spread) {
   const d = dst.data;
   for (let i = 0; i < grown.length; i++) {
     if (!grown[i]) continue;
+    if (protectInk && d[i * 4 + 3] > 200 && !region.mask[(by + ((i / bw) | 0)) * W + bx + (i % bw)]) continue;
     d[i * 4] = src[i * 4];
     d[i * 4 + 1] = src[i * 4 + 1];
     d[i * 4 + 2] = src[i * 4 + 2];

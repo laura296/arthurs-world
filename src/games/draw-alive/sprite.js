@@ -115,9 +115,8 @@ function stickerBorder(src, radius) {
 }
 
 function toDataUrl(canvas) {
-  // Safari can't encode WebP and silently returns PNG — either is fine.
-  const webp = canvas.toDataURL('image/webp', 0.86);
-  return webp.startsWith('data:image/webp') ? webp : canvas.toDataURL('image/png');
+  // Safari can't encode WebP and quietly returns a PNG instead — either is fine.
+  return canvas.toDataURL('image/webp', 0.86);
 }
 
 /**
@@ -181,7 +180,7 @@ export function buildSprite(strokes, template, baseColor, accessories = []) {
     dressUp();
 
     const box = contentBounds(sheet);
-    const { canvas, offX, offY, scale } = cropTo(sheet, box, 4, 300);
+    const { canvas, offX, offY, scale } = cropTo(sheet, box, 4, 240);
     const eyes = template.eyes.filter(uncovered).map(e => ({
       x: ((toPx(e.x, VIEWBOX.x) - offX) * scale) / canvas.width,
       y: ((toPx(e.y, VIEWBOX.y) - offY) * scale) / canvas.height,
@@ -202,7 +201,7 @@ export function buildSprite(strokes, template, baseColor, accessories = []) {
   dressUp();
   const box = contentBounds(sheet);
   if (!box) return null;
-  const cropped = cropTo(sheet, box, 2, 280).canvas;
+  const cropped = cropTo(sheet, box, 2, 220).canvas;
   const canvas = stickerBorder(cropped, 7);
   const w = canvas.width, h = canvas.height;
   // Googly eyes near the top, towards the front (creatures face right)
@@ -231,18 +230,28 @@ export function loadCreatures(worldId) {
   }
 }
 
-/** Save, dropping the oldest creatures if the list is full or storage is tight. */
+/**
+ * Save a world's creatures. If storage is tight, recorded voices go first,
+ * then the oldest creatures. The newest creature always stays on screen,
+ * even if it can't be remembered.
+ */
 export function saveCreatures(worldId, list) {
   let keep = list.slice(-MAX_PER_WORLD);
-  while (keep.length) {
+  for (;;) {
     try {
       localStorage.setItem(key(worldId), JSON.stringify(keep));
       return keep;
     } catch {
-      keep = keep.slice(1);
+      const i = keep.findIndex(c => c.voice);
+      if (i !== -1) {
+        keep = keep.map((c, j) => (j === i ? { ...c, voice: undefined } : c));
+      } else if (keep.length > 1) {
+        keep = keep.slice(1);
+      } else {
+        return list.slice(-MAX_PER_WORLD);
+      }
     }
   }
-  return keep;
 }
 
 export { MAX_PER_WORLD };
