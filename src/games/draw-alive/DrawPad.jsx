@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import RoundBack from './RoundBack';
 import TemplateArt, { templateMaskUrl } from './TemplateArt';
 import { TEMPLATES } from './worlds';
-import { buildSprite } from './sprite';
+import { buildSprite, grainCanvas } from './sprite';
 import { playTap, playPop, playPoof, playWhoosh, playSparkle } from '../../hooks/useSound';
 
 const PALETTE = [
@@ -21,8 +21,9 @@ const MAX_UNDO = 15;
  *   world   — WORLDS entry the creature will live in
  *   onSend  — (sprite) => void, called once the paper has flown away
  *   onBack  — () => void
+ *   burst   — particle burst from useParticleBurst
  */
-export default function DrawPad({ world, onSend, onBack }) {
+export default function DrawPad({ world, onSend, onBack, burst }) {
   const areaRef = useRef(null);
   const canvasRef = useRef(null);
   const drawing = useRef(null);
@@ -37,6 +38,7 @@ export default function DrawPad({ world, onSend, onBack }) {
   const [canUndo, setCanUndo] = useState(false);
   const [sending, setSending] = useState(null);
   const [paperSize, setPaperSize] = useState(0);
+  const [grainUrl] = useState(() => grainCanvas().toDataURL());
 
   const template = templateId ? TEMPLATES[templateId] : null;
   const ready = !!template || hasInk;
@@ -182,6 +184,12 @@ export default function DrawPad({ world, onSend, onBack }) {
     const sprite = buildSprite(canvasRef.current, template, base);
     if (!sprite) return;
     playWhoosh();
+    playSparkle();
+    const rect = areaRef.current.getBoundingClientRect();
+    burst?.(rect.left + rect.width / 2, rect.top + rect.height / 2, {
+      count: 18, spread: paperSize * 0.45, colors: ['#facc15', '#ffffff', world.tint, '#ec4899'],
+      shapes: ['star', 'diamond', 'circle'], spin: true,
+    });
     setSending(sprite);
   };
 
@@ -287,6 +295,9 @@ export default function DrawPad({ world, onSend, onBack }) {
               onPointerUp={onUp}
               onPointerCancel={onUp}
             />
+            {/* Paper grain over the colouring, for a crayon feel */}
+            <div className="absolute inset-0 pointer-events-none"
+                 style={{ backgroundImage: `url(${grainUrl})`, mixBlendMode: 'multiply', opacity: 0.55 }} />
             {template && (
               <TemplateArt template={template} layer="lines"
                            className="absolute inset-0 w-full h-full pointer-events-none" />

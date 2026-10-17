@@ -7,6 +7,10 @@
  * `eyes` are drawn as live, blinking DOM eyes once the creature is alive.
  *
  * Motions: swim | float | fly | rocket | hover | flutter | walk
+ * Births:  egg | cocoon | bubble | portal | flower | puddle
+ *
+ * Each world's `food` is what a tap drops in: `fall` is how it moves
+ * (drop to the ground, sink through water, or float in place).
  */
 
 const BASE = '/arthurs-world/images/scenes';
@@ -31,6 +35,7 @@ function tentacle(x, top, len) {
 export const TEMPLATES = {
   fish: {
     id: 'fish',
+    birth: 'bubble',
     motion: 'swim',
     parts: [
       E(108, 100, 58, 44),
@@ -46,6 +51,7 @@ export const TEMPLATES = {
   },
   jellyfish: {
     id: 'jellyfish',
+    birth: 'bubble',
     motion: 'float',
     parts: [
       'M 34 104 C 34 52 66 26 100 26 C 134 26 166 52 166 104 C 166 116 34 116 34 104 Z',
@@ -62,6 +68,7 @@ export const TEMPLATES = {
   },
   rocket: {
     id: 'rocket',
+    birth: 'portal',
     motion: 'rocket',
     flame: true,
     parts: [
@@ -79,6 +86,7 @@ export const TEMPLATES = {
   },
   ufo: {
     id: 'ufo',
+    birth: 'portal',
     motion: 'hover',
     parts: [
       E(100, 84, 38, 38),
@@ -94,6 +102,7 @@ export const TEMPLATES = {
   },
   butterfly: {
     id: 'butterfly',
+    birth: 'cocoon',
     motion: 'flutter',
     parts: [
       E(60, 76, 46, 40),
@@ -114,6 +123,7 @@ export const TEMPLATES = {
   },
   parrot: {
     id: 'parrot',
+    birth: 'egg',
     motion: 'fly',
     parts: [
       E(94, 110, 54, 42),
@@ -130,6 +140,7 @@ export const TEMPLATES = {
   },
   pig: {
     id: 'pig',
+    birth: 'puddle',
     motion: 'walk',
     parts: [
       E(92, 114, 62, 44),
@@ -151,6 +162,7 @@ export const TEMPLATES = {
   },
   hen: {
     id: 'hen',
+    birth: 'egg',
     motion: 'walk',
     parts: [
       E(94, 114, 56, 46),
@@ -169,6 +181,7 @@ export const TEMPLATES = {
   },
   dino: {
     id: 'dino',
+    birth: 'egg',
     motion: 'walk',
     parts: [
       E(88, 120, 58, 38),
@@ -188,6 +201,7 @@ export const TEMPLATES = {
   },
   ptero: {
     id: 'ptero',
+    birth: 'egg',
     motion: 'fly',
     parts: [
       E(98, 108, 32, 20),
@@ -213,6 +227,8 @@ export const WORLDS = [
     bg: `${BASE}/sea/bg.webp`,
     templates: ['fish', 'jellyfish'],
     freeMotion: 'swim',
+    freeBirth: 'bubble',
+    food: { items: ['flake'], fall: 'sink', count: 5 },
     ambient: 'bubbles',
     // Zones are fractions of the screen height
     zones: { swim: [0.42, 0.8], float: [0.38, 0.78], walk: [0.84, 0.92] },
@@ -223,6 +239,8 @@ export const WORLDS = [
     bg: `${BASE}/space/bg.webp`,
     templates: ['rocket', 'ufo'],
     freeMotion: 'hover',
+    freeBirth: 'portal',
+    food: { items: ['⭐', '🌟'], fall: 'float', count: 1 },
     ambient: 'twinkles',
     zones: { fly: [0.1, 0.7], rocket: [0.1, 0.72], hover: [0.12, 0.7] },
     tint: '#8b5cf6',
@@ -232,6 +250,8 @@ export const WORLDS = [
     bg: `${BASE}/jungle/bg.webp`,
     templates: ['butterfly', 'parrot'],
     freeMotion: 'walk',
+    freeBirth: 'flower',
+    food: { items: ['🍓', '🍌', '🫐'], fall: 'drop', count: 1 },
     ambient: 'motes',
     zones: { fly: [0.1, 0.5], flutter: [0.18, 0.62], walk: [0.74, 0.9] },
     tint: '#22c55e',
@@ -241,6 +261,8 @@ export const WORLDS = [
     bg: `${BASE}/farm/bg.webp`,
     templates: ['pig', 'hen'],
     freeMotion: 'walk',
+    freeBirth: 'egg',
+    food: { items: ['🌽', '🥕', '🍎'], fall: 'drop', count: 1 },
     ambient: 'motes',
     zones: { fly: [0.08, 0.4], walk: [0.7, 0.9] },
     tint: '#facc15',
@@ -250,6 +272,8 @@ export const WORLDS = [
     bg: `${BASE}/dinosaurs/bg.webp`,
     templates: ['dino', 'ptero'],
     freeMotion: 'walk',
+    freeBirth: 'egg',
+    food: { items: ['🌿', '🍉', '🥬'], fall: 'drop', count: 1 },
     ambient: 'motes',
     zones: { fly: [0.08, 0.42], walk: [0.7, 0.88] },
     tint: '#f97316',

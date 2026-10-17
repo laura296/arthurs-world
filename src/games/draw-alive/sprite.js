@@ -8,6 +8,38 @@ export const OUTLINE = '#4a2c1a';
 const SPRITE_SIZE = 360;
 const MAX_PER_WORLD = 8;
 
+/** Speckled paper grain, made once: used for the waxy crayon look. */
+let grain = null;
+export function grainCanvas() {
+  if (grain) return grain;
+  grain = document.createElement('canvas');
+  grain.width = 160;
+  grain.height = 160;
+  const g = grain.getContext('2d');
+  const img = g.createImageData(160, 160);
+  for (let i = 0; i < img.data.length; i += 4) {
+    img.data[i] = 110;
+    img.data[i + 1] = 70;
+    img.data[i + 2] = 40;
+    img.data[i + 3] = Math.random() < 0.5 ? Math.random() * 90 : 0;
+  }
+  g.putImageData(img, 0, 0);
+  return grain;
+}
+
+/** Crayon strokes let a little paper show through, like wax on paper. */
+function waxy(strokes) {
+  const c = document.createElement('canvas');
+  c.width = strokes.width;
+  c.height = strokes.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(strokes, 0, 0);
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = ctx.createPattern(grainCanvas(), 'repeat');
+  ctx.fillRect(0, 0, c.width, c.height);
+  return c;
+}
+
 /** Outer outline of a union of shapes: fat stroke, then punch the fill out. */
 function drawOutline(ctx, paths, width) {
   const c = document.createElement('canvas');
@@ -93,7 +125,7 @@ function toDataUrl(canvas) {
  * @param {HTMLCanvasElement} strokes  the child's drawing (covers VIEWBOX)
  * @param {object|null} template       TEMPLATES entry, or null for free drawing
  * @param {string} baseColor           bucket fill colour for templates
- * @returns {{ src, aspect, eyes, motion?, flame? } | null}
+ * @returns {{ src, aspect, eyes, motion?, birth?, flame? } | null}
  */
 export function buildSprite(strokes, template, baseColor) {
   const S = SPRITE_SIZE;
@@ -114,7 +146,7 @@ export function buildSprite(strokes, template, baseColor) {
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalCompositeOperation = 'source-atop';
-    ctx.drawImage(strokes, 0, 0, S, S);
+    ctx.drawImage(waxy(strokes), 0, 0, S, S);
     ctx.restore();
 
     ctx.strokeStyle = OUTLINE;
@@ -138,11 +170,12 @@ export function buildSprite(strokes, template, baseColor) {
       aspect: canvas.width / canvas.height,
       eyes,
       motion: template.motion,
+      birth: template.birth,
       flame: !!template.flame,
     };
   }
 
-  ctx.drawImage(strokes, 0, 0, S, S);
+  ctx.drawImage(waxy(strokes), 0, 0, S, S);
   const box = contentBounds(sheet);
   if (!box) return null;
   const cropped = cropTo(sheet, box, 2, 280).canvas;
