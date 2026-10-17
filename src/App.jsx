@@ -42,6 +42,7 @@ const CrabSea = lazy(() => import('./stories/CrabSea'));
 const CatWalked = lazy(() => import('./stories/CatWalked'));
 const ButterflyStamped = lazy(() => import('./stories/ButterflyStamped'));
 const BuildAScene = lazy(() => import('./games/BuildAScene'));
+const DrawAlive = lazy(() => import('./games/DrawAlive'));
 const ShapeMatch = lazy(() => import('./games/ShapeMatch'));
 const EllieStorybook = lazy(() => import('./stories/ellie/EllieStorybook'));
 const VideoPlayer = lazy(() => import('./games/VideoPlayer'));
@@ -198,6 +199,7 @@ function AppRoutes() {
         <Route path="/games/:mode/:section/free-art" element={<G><Colouring /></G>} />
         <Route path="/games/:mode/:section/dot-art" element={<G><DotArt /></G>} />
         <Route path="/games/:mode/:section/stamp-art" element={<G><StampArt /></G>} />
+        <Route path="/games/:mode/:section/draw-alive" element={<G><DrawAlive /></G>} />
         <Route path="/games/:mode/:section/music-pad" element={<G><MusicPad /></G>} />
         <Route path="/games/:mode/:section/xylophone" element={<G><Xylophone /></G>} />
         <Route path="/games/:mode/:section/drum-pad" element={<G><DrumPad /></G>} />
