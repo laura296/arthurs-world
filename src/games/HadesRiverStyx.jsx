@@ -5,8 +5,8 @@ import { useParticleBurst } from '../components/ParticleBurst';
 import { useArthurPeek } from '../components/ArthurPeek';
 
 const IMG = '/arthurs-world/images/disney/hades';
-const GHOST_COLORS = ['#a78bfa', '#818cf8', '#6366f1', '#c084fc'];
-const SKULL_COLORS = ['#e2e8f0', '#cbd5e1', '#94a3b8', '#d4d4d8'];
+const SPARKLE_COLORS = ['#a78bfa', '#818cf8', '#6366f1', '#c084fc'];
+const WISP_COLORS = ['#e2e8f0', '#cbd5e1', '#94a3b8', '#d4d4d8'];
 const FLAME_COLORS = ['#60a5fa', '#818cf8', '#3b82f6', '#6366f1'];
 
 const CREATURES = [
@@ -161,8 +161,8 @@ export default function HadesRiverStyx() {
     setCaught(c => c + 1);
     playPop();
     if (creature.type === 'flame') playSparkle();
-    const colors = creature.type === 'ghost' ? GHOST_COLORS
-      : creature.type === 'flame' ? FLAME_COLORS : SKULL_COLORS;
+    const colors = creature.type === 'ghost' ? SPARKLE_COLORS
+      : creature.type === 'flame' ? FLAME_COLORS : WISP_COLORS;
     if (rect) burst(cx, cy, { colors, count: 10 });
     setCreatures(prev => prev.map(c => c.id === creature.id ? { ...c, caught: true } : c));
   }, [burst]);
@@ -246,14 +246,14 @@ export default function HadesRiverStyx() {
                }} />
         </div>
         <div className="text-center mt-1">
-          <span className="text-xs font-heading text-purple-400/60">{missed}/{MAX_MISSED} floated away</span>
+          <span className="text-xs font-heading text-purple-400/60">{missed}/{MAX_MISSED} got away</span>
         </div>
       </div>
 
       {score === 0 && !gameOver && (
         <div className="absolute bottom-24 left-0 right-0 z-20 text-center animate-pulse">
           <span className="text-purple-300/60 text-sm font-heading">
-            Catch the glowing spirits! ✨
+            Catch the glowing sparkles! ✨
           </span>
         </div>
       )}

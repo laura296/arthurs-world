@@ -48,7 +48,7 @@ export default function TitleScreen({ onStart }) {
                    animate-bounce"
         style={{ animationDelay: '0.6s' }}
       >
-        Play
+        ▶️ Play
       </button>
     </div>
   );

@@ -28,13 +28,19 @@ export default function LoadingScreen({ onComplete }) {
     running.current = true;
 
     let loaded = 0;
+    let done = false;
+    const finish = () => { if (!done) { done = true; onComplete(); } };
+
     allSrcs.forEach(src => {
       preloadImage(src).then(() => {
         loaded++;
         setProgress(loaded);
-        if (loaded >= total) onComplete();
+        if (loaded >= total) finish();
       });
     });
+
+    // Don't block forever — proceed after 8s even if some images are still loading
+    setTimeout(finish, 8000);
   }, []);
 
   return (

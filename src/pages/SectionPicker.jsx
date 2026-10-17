@@ -32,7 +32,7 @@ export default function SectionPicker() {
         </h2>
 
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto pb-8">
-          {sections.map((s, i) => {
+          {sections.filter(s => !(mode === 'quiet' && (s.id === 'videos' || s.id === 'music'))).map((s, i) => {
             const theme = SECTION_THEMES[s.id];
             const accent = theme?.palette?.primary || '#F5B041';
             return (
