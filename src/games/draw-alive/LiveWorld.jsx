@@ -502,6 +502,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           }
 
           const r = step(st, t, dt, W, H, w * 0.4);
+          if (st.motion === 'walk') st.y = Math.min(st.y, H - h * 0.62); // keep tall walkers' feet on screen
           const el = parts.box;
           if (r.hidden) {
             el.style.opacity = '0';

@@ -325,7 +325,7 @@ export const WORLDS = [
     freeBirth: 'present',
     food: { items: ['🍭', '🧁', '🍦', '🍪'], fall: 'drop', count: 1 },
     ambient: 'motes',
-    zones: { hover: [0.12, 0.5], fly: [0.1, 0.45], walk: [0.8, 0.92] },
+    zones: { hover: [0.12, 0.5], fly: [0.1, 0.45], walk: [0.76, 0.88] },
     tint: '#ec4899',
   },
 ];
