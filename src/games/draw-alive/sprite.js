@@ -149,13 +149,24 @@ export function buildSprite(strokes, template, baseColor) {
     ctx.drawImage(waxy(strokes), 0, 0, S, S);
     ctx.restore();
 
-    ctx.strokeStyle = OUTLINE;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 3.5;
+    // Interior lines, kept inside the body
+    const lines = document.createElement('canvas');
+    lines.width = S;
+    lines.height = S;
+    const lc = lines.getContext('2d');
+    lc.setTransform(ctx.getTransform());
+    lc.strokeStyle = OUTLINE;
+    lc.lineCap = 'round';
+    lc.lineJoin = 'round';
+    lc.lineWidth = 3.5;
+    template.details.forEach(d => lc.stroke(new Path2D(d)));
+    lc.globalCompositeOperation = 'destination-in';
+    parts.forEach(p => lc.fill(p));
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 0.85;
-    template.details.forEach(d => ctx.stroke(new Path2D(d)));
-    ctx.globalAlpha = 1;
+    ctx.drawImage(lines, 0, 0);
+    ctx.restore();
     drawOutline(ctx, parts, 5);
 
     const box = contentBounds(sheet);

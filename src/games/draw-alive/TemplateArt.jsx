@@ -12,7 +12,9 @@ import { OUTLINE } from './sprite';
  *   className
  */
 export default function TemplateArt({ template, layer = 'all', fill = '#ffffff', className = '' }) {
-  const maskId = `da-mask-${useId().replace(/:/g, '')}`;
+  const uid = useId().replace(/:/g, '');
+  const maskId = `da-mask-${uid}`;
+  const clipId = `da-clip-${uid}`;
   const { x, y, size } = VIEWBOX;
   const parts = template.parts.map((d, i) => <path key={i} d={d} />);
   const showFill = layer !== 'lines';
@@ -26,6 +28,7 @@ export default function TemplateArt({ template, layer = 'all', fill = '#ffffff',
             <rect x={x} y={y} width={size} height={size} fill="white" />
             <g fill="black">{parts}</g>
           </mask>
+          <clipPath id={clipId}>{parts}</clipPath>
         </defs>
       )}
       {showFill && <g fill={fill}>{parts}</g>}
@@ -34,7 +37,8 @@ export default function TemplateArt({ template, layer = 'all', fill = '#ffffff',
           <g fill="none" stroke={OUTLINE} strokeWidth="10" strokeLinejoin="round" mask={`url(#${maskId})`}>
             {parts}
           </g>
-          <g fill="none" stroke={OUTLINE} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.85">
+          <g fill="none" stroke={OUTLINE} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.85"
+             clipPath={`url(#${clipId})`}>
             {template.details.map((d, i) => <path key={i} d={d} />)}
           </g>
           {template.eyes.map((e, i) => (

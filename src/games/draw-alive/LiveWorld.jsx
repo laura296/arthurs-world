@@ -496,7 +496,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           }
 
           // Dinosaurs stomp every so often
-          if (c.kind === 'dino' && !sleeping && !st.birth && !st.chasing && st.stomp < 0 && t > st.nextStomp) {
+          if ((c.kind === 'dino' || c.kind === 'stego') && !sleeping && !st.birth && !st.chasing && st.stomp < 0 && t > st.nextStomp) {
             st.stomp = 0;
             st.nextStomp = t + rand(7, 13);
           }

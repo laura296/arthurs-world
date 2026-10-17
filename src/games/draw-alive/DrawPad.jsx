@@ -5,14 +5,26 @@ import TemplateArt, { templateMaskUrl } from './TemplateArt';
 import { TEMPLATES } from './worlds';
 import { buildSprite, grainCanvas, OUTLINE } from './sprite';
 import { canRecord, recordVoice, playVoice, VOICE_MS } from './voice';
-import { playTap, playPop, playPoof, playWhoosh, playSparkle } from '../../hooks/useSound';
+import { buildWalls, floodRegion, paintRegion, paintStyle } from './fill';
+import { playTap, playPop, playPoof, playWhoosh, playSparkle, playSplash } from '../../hooks/useSound';
 
 const PALETTE = [
   '#ef4444', '#f97316', '#facc15', '#22c55e', '#14b8a6', '#38bdf8',
-  '#6366f1', '#a855f7', '#ec4899', '#92400e', '#1e293b',
+  '#6366f1', '#a855f7', '#ec4899', '#92400e', '#1e293b', '#ffffff',
 ];
 const RAINBOW = 'conic-gradient(#ef4444,#f97316,#facc15,#22c55e,#38bdf8,#8b5cf6,#ec4899,#ef4444)';
-const MAX_UNDO = 15;
+const MAX_UNDO = 8;
+const MAX_PX = 1280; // canvas resolution cap, keeps undo memory small on iPad
+
+/** Swatch preview for each special paint, in the current colour. */
+const EFFECTS = [
+  { id: 'rainbow', look: () => ({ background: RAINBOW }) },
+  { id: 'dots', look: c => ({ backgroundColor: c, backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.95) 22%, transparent 26%)', backgroundSize: '14px 14px' }) },
+  { id: 'stripes', look: c => ({ backgroundColor: c, backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.65) 0 5px, transparent 5px 11px)' }) },
+  { id: 'glitter', look: c => ({ backgroundColor: c, backgroundImage: 'radial-gradient(circle at 30% 35%, #fff 0 2px, transparent 3px), radial-gradient(circle at 70% 60%, #fef08a 0 2px, transparent 3px), radial-gradient(circle at 45% 75%, #fff 0 1.5px, transparent 2.5px), radial-gradient(circle at 65% 25%, #fbcfe8 0 1.5px, transparent 2.5px)' }) },
+];
+
+const btn = 'w-12 h-12 rounded-2xl shadow-md flex items-center justify-center active:scale-90 transition-transform';
 
 /**
  * Drawing paper for Draw Alive. Colour in a creature (or draw your own),
@@ -28,13 +40,16 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const areaRef = useRef(null);
   const canvasRef = useRef(null);
   const drawing = useRef(null);
+  const pendingFill = useRef(null);
   const hue = useRef(0);
   const history = useRef([]);
 
   const [templateId, setTemplateId] = useState(world.templates[0]);
   const [color, setColor] = useState(PALETTE[0]);
-  const [rainbow, setRainbow] = useState(false);
-  const [base, setBase] = useState('#ffffff');
+  const [effect, setEffect] = useState('plain');
+  const [tool, setTool] = useState('fill');
+  const [thick, setThick] = useState(true);
+  const walls = useRef({ key: null, map: null });
   const [hasInk, setHasInk] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [sending, setSending] = useState(null);
@@ -62,7 +77,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   useEffect(() => {
     const c = canvasRef.current;
     if (!c || !paperSize) return;
-    const px = Math.round(paperSize * (window.devicePixelRatio || 1));
+    const px = Math.round(Math.min(MAX_PX, paperSize * (window.devicePixelRatio || 1)));
     if (c.width === px) return;
     const keep = document.createElement('canvas');
     keep.width = c.width || 1;
@@ -78,13 +93,12 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const snapshot = useCallback(() => {
     const c = canvasRef.current;
     history.current.push({
-      image: c.getContext('2d').getImageData(0, 0, c.width, c.height),
-      base,
+      image: c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, c.width, c.height),
       hasInk,
     });
     if (history.current.length > MAX_UNDO) history.current.shift();
     setCanUndo(true);
-  }, [base, hasInk]);
+  }, [hasInk]);
 
   const wipe = useCallback(() => {
     const c = canvasRef.current;
@@ -92,7 +106,6 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     history.current = [];
     setCanUndo(false);
     setHasInk(false);
-    setBase('#ffffff');
   }, []);
 
   /* ── Drawing ── */
@@ -103,28 +116,74 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     return { x: (e.clientX - rect.left) * k, y: (e.clientY - rect.top) * k };
   };
 
+  const patternScale = () => canvasRef.current.width / 640;
+
   const strokeTo = (from, to) => {
     const c = canvasRef.current;
-    const ctx = c.getContext('2d');
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = c.width * 0.045;
-    if (rainbow) {
-      hue.current = (hue.current + 4) % 360;
-      ctx.strokeStyle = `hsl(${hue.current}, 90%, 55%)`;
+    if (tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = c.width * 0.06;
+      ctx.strokeStyle = '#000';
     } else {
-      ctx.strokeStyle = color;
+      ctx.lineWidth = c.width * (thick ? 0.045 : 0.016);
+      if (effect === 'rainbow') {
+        hue.current = (hue.current + 4) % 360;
+        ctx.strokeStyle = `hsl(${hue.current}, 90%, 55%)`;
+      } else {
+        ctx.strokeStyle = paintStyle(ctx, color, effect, patternScale());
+      }
     }
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
     ctx.lineTo(to.x + 0.01, to.y);
     ctx.stroke();
+    ctx.restore();
+  };
+
+  /* Magic bucket: fill just the area that was tapped */
+  const fillAt = (p, e) => {
+    const c = canvasRef.current;
+    const W = c.width, H = c.height;
+    const x = Math.max(0, Math.min(W - 1, Math.floor(p.x)));
+    const y = Math.max(0, Math.min(H - 1, Math.floor(p.y)));
+    let wallMap = null;
+    if (template) {
+      const key = `${template.id}|${W}`;
+      if (walls.current.key !== key) walls.current = { key, map: buildWalls(template, W) };
+      wallMap = walls.current.map;
+    }
+    const ctx = c.getContext('2d', { willReadFrequently: true });
+    const region = floodRegion(ctx.getImageData(0, 0, W, H).data, wallMap, W, H, x, y);
+    // On blank paper, only fill shapes Arthur has closed in, not the whole page
+    if (!region || (!template && region.touchesEdge)) {
+      playTap();
+      return;
+    }
+    snapshot();
+    const k = patternScale();
+    paintRegion(c, region, (t, r) => paintStyle(t, color, effect, k, r), Math.ceil(W / 220 * 0.45) + 1);
+    if (!hasInk) setHasInk(true);
+    playSplash();
+    burst?.(e.clientX, e.clientY, {
+      count: 8, spread: 45,
+      colors: effect === 'rainbow' ? ['#ef4444', '#facc15', '#22c55e', '#38bdf8'] : [color, '#ffffff', '#fde047'],
+      shapes: effect === 'glitter' ? ['star', 'diamond'] : ['circle', 'star'],
+    });
   };
 
   const onDown = (e) => {
     if (drawing.current || sending) return;
     e.preventDefault();
     e.currentTarget.setPointerCapture?.(e.pointerId);
+    if (tool === 'fill') {
+      // A tap fills; a drag draws instead, so nothing he tries is wasted
+      pendingFill.current = { id: e.pointerId, start: point(e), clientX: e.clientX, clientY: e.clientY };
+      return;
+    }
     snapshot();
     const p = point(e);
     drawing.current = { id: e.pointerId, last: p };
@@ -133,6 +192,20 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   };
 
   const onMove = (e) => {
+    const pend = pendingFill.current;
+    if (pend && pend.id === e.pointerId) {
+      const p = point(e);
+      const c = canvasRef.current;
+      if (Math.hypot(p.x - pend.start.x, p.y - pend.start.y) > c.width * 0.02) {
+        pendingFill.current = null;
+        snapshot();
+        drawing.current = { id: e.pointerId, last: pend.start };
+        strokeTo(pend.start, p);
+        drawing.current.last = p;
+        if (!hasInk) setHasInk(true);
+      }
+      return;
+    }
     const d = drawing.current;
     if (!d || d.id !== e.pointerId) return;
     e.preventDefault();
@@ -145,27 +218,38 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   };
 
   const onUp = (e) => {
+    const pend = pendingFill.current;
+    if (pend && pend.id === e.pointerId) {
+      pendingFill.current = null;
+      if (e.type === 'pointerup') fillAt(pend.start, pend);
+    }
     if (drawing.current?.id === e.pointerId) drawing.current = null;
   };
 
   /* ── Tools ── */
   const pickColour = (c) => {
     setColor(c);
-    setRainbow(false);
+    if (effect === 'rainbow') setEffect('plain');
+    if (tool === 'eraser') setTool('brush');
     playTap();
   };
 
-  const bucket = () => {
-    snapshot();
-    setBase(rainbow ? `hsl(${Math.floor(Math.random() * 360)}, 85%, 70%)` : color);
+  const pickEffect = (id) => {
+    setEffect(effect === id ? 'plain' : id);
+    if (tool === 'eraser') setTool('brush');
     playSparkle();
+  };
+
+  const pickTool = (next, isThick) => {
+    setTool(next);
+    if (isThick !== undefined) setThick(isThick);
+    playTap();
   };
 
   const undo = () => {
     const prev = history.current.pop();
     if (!prev) return;
     canvasRef.current.getContext('2d').putImageData(prev.image, 0, 0);
-    setBase(prev.base);
     setHasInk(prev.hasInk);
     setCanUndo(history.current.length > 0);
     playPoof();
@@ -180,12 +264,13 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     if (id === templateId) return;
     wipe();
     setTemplateId(id);
+    setTool(id ? 'fill' : 'brush');
     playPop();
   };
 
   const send = () => {
     if (!ready || sending) return;
-    const sprite = buildSprite(canvasRef.current, template, base);
+    const sprite = buildSprite(canvasRef.current, template, '#ffffff');
     if (!sprite) return;
     if (voice) sprite.voice = voice;
     playWhoosh();
@@ -296,7 +381,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
             onAnimationComplete={() => { if (sending) onSend(sending); }}
           >
             {template && (
-              <TemplateArt template={template} layer="fill" fill={base}
+              <TemplateArt template={template} layer="fill" fill="#ffffff"
                            className="absolute inset-0 w-full h-full pointer-events-none" />
             )}
             <canvas
@@ -329,9 +414,10 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
         {/* ── Right: colours and tools ── */}
         <div className="self-center flex flex-col items-center justify-center gap-3 flex-shrink-0 py-3 px-2 rounded-3xl
                         bg-white/25 backdrop-blur-md border-2 border-white/40">
-          <div className="grid grid-cols-2 gap-2">
+          {/* Colours */}
+          <div className="grid grid-cols-4 gap-2">
             {PALETTE.map(c => {
-              const active = !rainbow && color === c;
+              const active = color === c && effect !== 'rainbow' && tool !== 'eraser';
               return (
                 <button key={c} onClick={() => pickColour(c)} aria-label="colour"
                   className={`w-12 h-12 rounded-full shadow-md transition-transform active:scale-90
@@ -339,28 +425,50 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
                   style={{ backgroundColor: c }} />
               );
             })}
-            <button onClick={() => { setRainbow(true); playSparkle(); }} aria-label="rainbow"
-              className={`w-12 h-12 rounded-full shadow-md transition-transform active:scale-90
-                ${rainbow ? 'scale-110 ring-4 ring-white' : 'border-2 border-white/70'}`}
-              style={{ background: RAINBOW }} />
           </div>
 
-          <div className="w-16 h-px bg-white/50" />
+          {/* Special paints in the current colour */}
+          <div className="grid grid-cols-4 gap-2">
+            {EFFECTS.map(fx => (
+              <button key={fx.id} onClick={() => pickEffect(fx.id)} aria-label={fx.id}
+                className={`w-12 h-12 rounded-full shadow-md transition-transform active:scale-90
+                  ${effect === fx.id ? 'scale-110 ring-4 ring-white' : 'border-2 border-white/70'}`}
+                style={fx.look(color)} />
+            ))}
+          </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {template && (
-              <button onClick={bucket} aria-label="fill"
-                className="w-12 h-12 rounded-2xl bg-white/90 shadow-md flex items-center justify-center text-2xl active:scale-90">
-                🪣
+          <div className="w-full h-px bg-white/50" />
+
+          {/* Crayon (thin, thick), magic bucket, eraser */}
+          <div className="grid grid-cols-4 gap-2">
+            {[true, false].map(isThick => (
+              <button key={isThick ? 'thick' : 'thin'} onClick={() => pickTool('brush', isThick)}
+                aria-label={isThick ? 'thick crayon' : 'thin crayon'}
+                className={`${btn} ${tool === 'brush' && thick === isThick ? 'bg-amber-100 ring-4 ring-white' : 'bg-white/90'}`}>
+                <span className="rounded-full" style={{ width: isThick ? 26 : 10, height: isThick ? 26 : 10, background: effect === 'rainbow' ? RAINBOW : color, border: `2px solid ${OUTLINE}` }} />
               </button>
-            )}
+            ))}
+            <button onClick={() => pickTool('fill')} aria-label="fill"
+              className={`${btn} text-2xl ${tool === 'fill' ? 'bg-amber-100 ring-4 ring-white' : 'bg-white/90'}`}>
+              🪣
+            </button>
+            <button onClick={() => pickTool('eraser')} aria-label="eraser"
+              className={`${btn} ${tool === 'eraser' ? 'bg-pink-100 ring-4 ring-white' : 'bg-white/90'}`}>
+              <svg viewBox="0 0 24 24" className="w-8 h-8" aria-hidden="true">
+                <g transform="rotate(-35 12 12)">
+                  <rect x="4" y="7" width="16" height="10" rx="2.5" fill="#f9a8d4" stroke={OUTLINE} strokeWidth="1.5" />
+                  <rect x="4" y="7" width="6" height="10" rx="2" fill="#93c5fd" stroke={OUTLINE} strokeWidth="1.5" />
+                </g>
+              </svg>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
             <button onClick={undo} disabled={!canUndo} aria-label="undo"
-              className={`w-12 h-12 rounded-2xl bg-white/90 shadow-md flex items-center justify-center text-2xl
-                ${canUndo ? 'active:scale-90' : 'opacity-40'}`}>
+              className={`${btn} bg-white/90 text-2xl ${canUndo ? '' : 'opacity-40'}`}>
               ↩️
             </button>
-            <button onClick={clear} aria-label="clear"
-              className="w-12 h-12 rounded-2xl bg-white/90 shadow-md flex items-center justify-center text-2xl active:scale-90">
+            <button onClick={clear} aria-label="clear" className={`${btn} bg-white/90 text-2xl`}>
               🧽
             </button>
           </div>
