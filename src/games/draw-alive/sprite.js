@@ -125,9 +125,10 @@ function toDataUrl(canvas) {
  * @param {HTMLCanvasElement} strokes  the child's drawing (covers VIEWBOX)
  * @param {object|null} template       TEMPLATES entry, or null for free drawing
  * @param {string} baseColor           bucket fill colour for templates
+ * @param {Array}  accessories         [{ canvas, x, y, size, place }] in paper units, stuck on top
  * @returns {{ src, aspect, eyes, kind?, motion?, birth?, flame? } | null}
  */
-export function buildSprite(strokes, template, baseColor) {
+export function buildSprite(strokes, template, baseColor, accessories = []) {
   const S = SPRITE_SIZE;
   const unit = S / VIEWBOX.size;
   const sheet = document.createElement('canvas');
@@ -135,6 +136,15 @@ export function buildSprite(strokes, template, baseColor) {
   sheet.height = S;
   const ctx = sheet.getContext('2d');
   const toPx = (u, o) => (u - o) * unit;
+  const dressUp = () => {
+    ctx.save();
+    ctx.setTransform(unit, 0, 0, unit, -VIEWBOX.x * unit, -VIEWBOX.y * unit);
+    accessories.forEach(a => ctx.drawImage(a.canvas, a.x - a.size / 2, a.y - a.size / 2, a.size, a.size));
+    ctx.restore();
+  };
+  const glasses = accessories.filter(a => a.place === 'eyes');
+  // Sunglasses cover the eyes, so those eyes don't blink on top of them
+  const uncovered = e => !glasses.some(a => Math.abs(e.x - a.x) < a.size * 0.45 && Math.abs(e.y - a.y) < a.size * 0.3);
 
   if (template) {
     const parts = template.parts.map(d => new Path2D(d));
@@ -168,10 +178,11 @@ export function buildSprite(strokes, template, baseColor) {
     ctx.drawImage(lines, 0, 0);
     ctx.restore();
     drawOutline(ctx, parts, 5);
+    dressUp();
 
     const box = contentBounds(sheet);
     const { canvas, offX, offY, scale } = cropTo(sheet, box, 4, 300);
-    const eyes = template.eyes.map(e => ({
+    const eyes = template.eyes.filter(uncovered).map(e => ({
       x: ((toPx(e.x, VIEWBOX.x) - offX) * scale) / canvas.width,
       y: ((toPx(e.y, VIEWBOX.y) - offY) * scale) / canvas.height,
       r: (e.r * unit * scale) / canvas.width,
@@ -188,6 +199,7 @@ export function buildSprite(strokes, template, baseColor) {
   }
 
   ctx.drawImage(waxy(strokes), 0, 0, S, S);
+  dressUp();
   const box = contentBounds(sheet);
   if (!box) return null;
   const cropped = cropTo(sheet, box, 2, 280).canvas;
@@ -199,7 +211,7 @@ export function buildSprite(strokes, template, baseColor) {
   return {
     src: toDataUrl(canvas),
     aspect: w / h,
-    eyes: [
+    eyes: glasses.length ? [] : [
       { x: 0.62, y: ey, r },
       { x: 0.62 + r * 2.3, y: ey, r },
     ],

@@ -6,8 +6,10 @@ import CreatureArt from './CreatureArt';
 import { OUTLINE } from './sprite';
 import { SCENE_SIZE } from './worlds';
 import { playVoice } from './voice';
+import { playCreatureSound } from './creatureSounds';
+import HintHand from './HintHand';
 import {
-  playBoing, playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle,
+  playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle, playWhoosh,
 } from '../../hooks/useSound';
 
 const SPEED = { swim: 62, float: 28, fly: 125, rocket: 170, hover: 55, flutter: 85, walk: 44 };
@@ -35,7 +37,8 @@ function groundZone(world) {
 
 /** Display box for a creature on a stage of this size. */
 function boxFor(c, W, H) {
-  const base = Math.min(W, H) * 0.23;
+  const grow = 1 + Math.min(c.fed || 0, 10) * 0.04; // well-fed creatures grow a little
+  const base = Math.min(W, H) * 0.23 * grow;
   const w = c.aspect >= 1 ? base * 1.15 : base * 1.15 * c.aspect;
   return { w, h: w / c.aspect };
 }
@@ -120,6 +123,31 @@ function step(st, t, dt, W, H, margin) {
     yOff = -Math.sin(p * Math.PI) * 40;
     if (p >= 1) st.birth = null;
     return { yOff, angle, scale, inner, glow: true };
+  }
+
+  // Picked up: wriggle and giggle under the finger
+  if (st.held) {
+    const w = Math.sin(t * 30);
+    return { yOff: 0, angle: Math.sin(t * 22) * 9, scale: 1.12, inner: `scale(${1 + w * 0.04}, ${1 - w * 0.04})`, held: true };
+  }
+
+  // Thrown: fly across the world, bounce off the edges, slow down
+  if (st.fling) {
+    const f = st.fling;
+    st.x += f.vx * dt;
+    st.y += f.vy * dt;
+    const decay = Math.pow(0.15, dt);
+    f.vx *= decay;
+    f.vy *= decay;
+    f.spin += f.vx * dt * 0.6;
+    if (st.x < margin || st.x > W - margin) { f.vx *= -0.7; st.x = clamp(st.x, margin, W - margin); }
+    if (st.y < H * 0.06 || st.y > H * 0.94) { f.vy *= -0.7; st.y = clamp(st.y, H * 0.06, H * 0.94); }
+    if (Math.hypot(f.vx, f.vy) < 40) {
+      st.fling = null;
+      st.lane = clamp(st.y / H, st.z0, st.z1);
+      newTarget(st, W, H);
+    }
+    return { yOff: 0, angle: f.spin, scale: 1, inner: '' };
   }
 
   const m = st.motion;
@@ -257,11 +285,11 @@ function step(st, t, dt, W, H, margin) {
 }
 
 /* ── Ambient life on top of the painting ── */
-function Ambient({ kind }) {
+function Ambient({ kind, onPop }) {
   const bits = useMemo(() => Array.from({ length: kind === 'twinkles' ? 26 : 16 }, () => ({
     left: rand(2, 98),
     top: rand(4, 92),
-    size: kind === 'bubbles' ? rand(8, 22) : kind === 'twinkles' ? rand(3, 7) : rand(4, 9),
+    size: kind === 'bubbles' ? rand(14, 34) : kind === 'twinkles' ? rand(3, 7) : rand(4, 9),
     delay: -rand(0, 12),
     duration: kind === 'bubbles' ? rand(7, 13) : rand(3, 8),
   })), [kind]);
@@ -271,12 +299,26 @@ function Ambient({ kind }) {
       {bits.map((b, i) => {
         if (kind === 'bubbles') {
           return (
-            <div key={i} className="absolute rounded-full border-2 border-white/60"
+            <div key={i} className="absolute p-3 -m-3"
               style={{
-                left: `${b.left}%`, bottom: -30, width: b.size, height: b.size,
-                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.08) 60%)',
+                left: `${b.left}%`, bottom: -40,
                 animation: `drawAliveBubble ${b.duration}s linear ${b.delay}s infinite`,
-              }} />
+                pointerEvents: onPop ? 'auto' : 'none',
+              }}
+              onPointerDown={onPop && ((e) => {
+                // Pop! It comes back on its next trip up
+                e.stopPropagation();
+                const el = e.currentTarget;
+                el.style.visibility = 'hidden';
+                setTimeout(() => { el.style.visibility = ''; }, b.duration * 1000);
+                onPop(e.clientX, e.clientY);
+              })}>
+              <div className="rounded-full border-2 border-white/60"
+                style={{
+                  width: b.size, height: b.size,
+                  background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.08) 60%)',
+                }} />
+            </div>
           );
         }
         const glow = kind === 'twinkles' ? '#fff7d6' : '#ffe9a8';
@@ -295,8 +337,55 @@ function Ambient({ kind }) {
   );
 }
 
+/* ── Rain, snow or a rainbow over the world ── */
+function Weather({ kind }) {
+  const bits = useMemo(() => Array.from({ length: kind === 'rain' ? 80 : 60 }, () => ({
+    left: rand(-5, 105),
+    delay: -rand(0, 10),
+    duration: kind === 'rain' ? rand(0.55, 0.95) : rand(6, 12),
+    size: rand(4, 11),
+    sway: rand(-40, 40),
+  })), [kind]);
+
+  if (kind === 'clear') return null;
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
+      {kind === 'rain' && (
+        <>
+          <div className="absolute inset-0" style={{ background: 'rgba(30, 41, 89, 0.18)' }} />
+          {bits.map((b, i) => (
+            <div key={i} className="absolute top-0 rounded-full"
+                 style={{
+                   left: `${b.left}%`, width: 2.5, height: 22, background: 'linear-gradient(transparent, rgba(255,255,255,0.85))',
+                   animation: `drawAliveRain ${b.duration}s linear ${b.delay}s infinite`,
+                 }} />
+          ))}
+        </>
+      )}
+      {kind === 'snow' && bits.map((b, i) => (
+        <div key={i} className="absolute top-0 rounded-full bg-white"
+             style={{
+               left: `${b.left}%`, width: b.size, height: b.size, opacity: 0.9,
+               boxShadow: '0 0 6px rgba(255,255,255,0.8)',
+               '--sway': `${b.sway}px`,
+               animation: `drawAliveSnow ${b.duration}s linear ${b.delay}s infinite`,
+             }} />
+      ))}
+      {kind === 'rainbow' && (
+        <motion.svg viewBox="0 0 200 100" className="absolute left-[8%] w-[84%] top-[4%]"
+                    initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 0.8, scale: 1 }} transition={{ duration: 1.4 }}>
+          {['#ef4444', '#f97316', '#facc15', '#22c55e', '#38bdf8', '#6366f1', '#a855f7'].map((c, i) => (
+            <path key={c} d={`M ${10 + i * 4} 100 A ${90 - i * 4} ${90 - i * 4} 0 0 1 ${190 - i * 4} 100`}
+                  fill="none" stroke={c} strokeWidth="4.2" strokeLinecap="round" />
+          ))}
+        </motion.svg>
+      )}
+    </div>
+  );
+}
+
 /* ── One creature: a ground shadow, an outer box moved by the engine, an inner box that wiggles ── */
-function Creature({ creature, register, onTap }) {
+function Creature({ creature, register, onGrab, onGrabMove, onGrabEnd }) {
   return (
     <>
       <div ref={el => register(creature.id, 'shadow', el)}
@@ -306,7 +395,10 @@ function Creature({ creature, register, onTap }) {
         ref={el => register(creature.id, 'box', el)}
         className="absolute left-0 top-0 will-change-transform"
         style={{ touchAction: 'none', opacity: 0 }}
-        onPointerDown={(e) => { e.stopPropagation(); onTap(creature.id, e); }}
+        onPointerDown={(e) => { e.stopPropagation(); onGrab(creature.id, e); }}
+        onPointerMove={onGrabMove}
+        onPointerUp={onGrabEnd}
+        onPointerCancel={onGrabEnd}
       >
         <div className="relative w-full h-full will-change-transform"
              style={{ filter: 'drop-shadow(0 10px 10px rgba(76, 29, 149, 0.3))' }}>
@@ -346,11 +438,12 @@ function Food({ food, register }) {
  *   creatures  — saved creatures for this world
  *   newcomerId — id of the creature that has just been drawn (plays its birth)
  *   onBorn     — called when the newcomer appears
+ *   onFed      — (id) => void, a creature ate something (it grows a little)
  *   onDraw     — open the drawing paper
  *   onBack     — back to the world picker
  *   burst      — particle burst from useParticleBurst
  */
-export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw, onBack, burst }) {
+export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed, onDraw, onBack, burst }) {
   const stageRef = useRef(null);
   const els = useRef(new Map());
   const states = useRef(new Map());
@@ -362,7 +455,14 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
   const [foods, setFoods] = useState([]);
   const [birth, setBirth] = useState(null);
   const [night, setNight] = useState(false);
+  const [weather, setWeather] = useState('clear');
   const nightRef = useRef(false);
+  const grab = useRef(null);
+  const [activity, setActivity] = useState(0);
+  const [hasFed, setHasFed] = useState(false);
+  const drawBtnRef = useRef(null);
+  const onFedRef = useRef(onFed);
+  onFedRef.current = onFed;
   listRef.current = creatures;
   nightRef.current = night;
 
@@ -404,7 +504,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
     const timer = setTimeout(() => {
       const [cx, cy] = toClient(spot.x, spot.y);
       playCelebrate();
-      if (c.voice) setTimeout(() => playVoice(c.voice), 450);
+      setTimeout(() => (c.voice ? playVoice(c.voice) : playCreatureSound(c.kind, c.motion)), 450);
       burst(cx, cy, {
         count: 22, spread: 160, colors: ['#facc15', '#ffffff', world.tint, '#ec4899', '#38bdf8'],
         shapes: ['star', 'heart', 'circle', 'diamond'], spin: true,
@@ -476,7 +576,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           // Hungry? Head for the nearest food
           let meal = null;
           st.chasing = false;
-          if (!st.birth && st.jump < 0 && menu.length) {
+          if (!st.birth && st.jump < 0 && !st.held && !st.fling && menu.length) {
             let best = Infinity;
             for (const f of menu) {
               const d = Math.hypot(f.x - st.x, f.y - st.y);
@@ -502,7 +602,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           }
 
           const r = step(st, t, dt, W, H, w * 0.4);
-          if (st.motion === 'walk') st.y = Math.min(st.y, H - h * 0.62); // keep tall walkers' feet on screen
+          if (st.motion === 'walk' && !st.held) st.y = Math.min(st.y, H - h * 0.62); // keep tall walkers' feet on screen
           const el = parts.box;
           if (r.hidden) {
             el.style.opacity = '0';
@@ -525,6 +625,16 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
               playChomp();
               const [cx, cy] = toClient(meal.x, meal.y);
               burst(cx, cy, { count: 6, spread: 50, colors: ['#ec4899', '#f472b6', '#fde047'], shapes: ['heart'] });
+              const fed = (c.fed || 0) + 1;
+              onFedRef.current?.(c.id);
+              if (fed % 3 === 0 && fed <= 10) {
+                // Growing up!
+                setTimeout(() => {
+                  playSparkle();
+                  const [gx, gy] = toClient(st.x, st.y);
+                  burst(gx, gy, { count: 16, spread: 110, colors: ['#facc15', '#ffffff', world.tint], shapes: ['star', 'diamond'], spin: true });
+                }, 350);
+              }
             }
           }
 
@@ -532,7 +642,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           el.style.opacity = '1';
           el.style.width = `${w}px`;
           el.style.height = `${h}px`;
-          el.style.zIndex = r.glow ? 950 : Math.round(st.y);
+          el.style.zIndex = r.glow || r.held ? 950 : Math.round(st.y);
           el.style.transform =
             `translate3d(${st.x - w / 2}px, ${st.y - h / 2 + r.yOff}px, 0) rotate(${r.angle}deg) scale(${r.scale * flip}, ${r.scale})`;
           el.style.filter = r.glow ? 'drop-shadow(0 0 24px rgba(253, 224, 71, 0.9))' : '';
@@ -623,12 +733,86 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
     if (!toNight) setTimeout(playSparkle, 700);
   };
 
+  /* Pick a creature up: a tap makes it jump, a drag carries it, a flick throws it */
+  const grabCreature = (id, e) => {
+    const st = states.current.get(id);
+    if (!st || st.birth || grab.current) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    setActivity(a => a + 1);
+    grab.current = { id, pointerId: e.pointerId, x0: e.clientX, y0: e.clientY, moved: false, samples: [[e.clientX, e.clientY, performance.now()]] };
+  };
+
+  const moveGrab = (e) => {
+    const g = grab.current;
+    if (!g || g.pointerId !== e.pointerId) return;
+    const st = states.current.get(g.id);
+    if (!st) return;
+    if (!g.moved && Math.hypot(e.clientX - g.x0, e.clientY - g.y0) > 12) {
+      g.moved = true;
+      st.held = true;
+      st.fling = null;
+      st.perch = null;
+      st.perched = false;
+      st.jump = -1;
+      const c = listRef.current.find(cr => cr.id === g.id);
+      playCreatureSound(c?.kind, c?.motion);
+    }
+    if (!g.moved) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    st.x = clamp(e.clientX - rect.left, 0, rect.width);
+    st.y = clamp(e.clientY - rect.top, 0, rect.height);
+    g.samples.push([e.clientX, e.clientY, performance.now()]);
+    if (g.samples.length > 5) g.samples.shift();
+  };
+
+  const endGrab = (e) => {
+    const g = grab.current;
+    if (!g || g.pointerId !== e.pointerId) return;
+    grab.current = null;
+    const st = states.current.get(g.id);
+    if (!st) return;
+    if (!g.moved) {
+      if (e.type === 'pointerup') tapCreature(g.id, e);
+      return;
+    }
+    st.held = false;
+    const [x1, y1, t1] = g.samples[0];
+    const [x2, y2, t2] = g.samples[g.samples.length - 1];
+    const secs = Math.max(16, t2 - t1) / 1000;
+    const vx = (x2 - x1) / secs, vy = (y2 - y1) / secs;
+    if (Math.hypot(vx, vy) > 300) {
+      st.fling = { vx: clamp(vx, -2600, 2600), vy: clamp(vy, -2600, 2600), spin: 0 };
+      playWhoosh();
+    } else {
+      const H = stageRef.current.clientHeight;
+      st.lane = clamp(st.y / H, st.z0, st.z1);
+      newTarget(st, stageRef.current.clientWidth, H);
+    }
+  };
+
+  /* Weather: clear → rain → snow → rainbow → clear */
+  const WEATHER_NEXT = { clear: 'rain', rain: 'snow', snow: 'rainbow', rainbow: 'clear' };
+  const WEATHER_ICON = { clear: '🌧️', rain: '❄️', snow: '🌈', rainbow: '🌤️' };
+  const changeWeather = () => {
+    const next = WEATHER_NEXT[weather];
+    setWeather(next);
+    if (next === 'rain') playSplash();
+    else if (next === 'snow') playSparkle();
+    else if (next === 'rainbow') playCelebrate();
+    else playPop();
+  };
+
+  const popBubble = useCallback((x, y) => {
+    playPop();
+    burst(x, y, { count: 6, spread: 30, colors: ['#ffffff', '#e0f2fe'], shapes: ['circle'] });
+  }, [burst]);
+
   const tapCreature = (id, e) => {
     const st = states.current.get(id);
     if (!st || st.birth) return;
     st.jump = 0;
     const c = listRef.current.find(cr => cr.id === id);
-    if (c?.voice) playVoice(c.voice); else playBoing();
+    if (c?.voice) playVoice(c.voice); else playCreatureSound(c?.kind, c?.motion);
     burst(e.clientX, e.clientY, {
       count: 10, spread: 70, colors: ['#facc15', '#fff', world.tint, '#ec4899'], shapes: ['star', 'heart', 'circle'],
     });
@@ -655,6 +839,8 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
       added.push({ id, item, color: pick(FLAKES) });
     }
     if (!added.length) return;
+    setHasFed(true);
+    setActivity(a => a + 1);
     setFoods(prev => [...prev, ...added]);
     if (fall === 'sink') playSplash(); else playPop();
   };
@@ -668,7 +854,8 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
         <img src={world.bg} alt="" draggable={false}
              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
              style={{ animation: 'drawAliveDrift 40s ease-in-out infinite alternate' }} />
-        <Ambient kind={world.ambient} />
+        <Ambient kind={world.ambient} onPop={world.ambient === 'bubbles' ? popBubble : undefined} />
+        <Weather kind={weather} />
 
         {/* Night falls: the sky darkens, the moon and stars come out */}
         <div className="absolute inset-0 pointer-events-none transition-opacity duration-[1500ms]"
@@ -683,7 +870,8 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
 
         {foods.map(f => <Food key={f.id} food={f} register={registerFood} />)}
         {creatures.map(c => (
-          <Creature key={c.id} creature={c} register={register} onTap={tapCreature} />
+          <Creature key={c.id} creature={c} register={register}
+                    onGrab={grabCreature} onGrabMove={moveGrab} onGrabEnd={endGrab} />
         ))}
         <div ref={fxRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 960 }} />
         {birth && (
@@ -693,6 +881,19 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
       </div>
 
       <RoundBack onBack={onBack} />
+
+      {/* Weather */}
+      <motion.button
+        onClick={changeWeather}
+        aria-label="Weather"
+        className="absolute top-3 right-[6.5rem] z-50 w-20 h-20 rounded-full bg-white/30 backdrop-blur-sm border-2 border-white/40
+                   shadow-lg flex items-center justify-center text-4xl"
+        whileTap={{ scale: 0.88 }}
+      >
+        <motion.span key={weather} initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
+          {WEATHER_ICON[weather]}
+        </motion.span>
+      </motion.button>
 
       {/* Day and night */}
       <motion.button
@@ -708,7 +909,23 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
       </motion.button>
 
       {/* Draw something new */}
+      {/* Hints: draw your first creature; then try feeding them */}
+      <HintHand
+        activity={activity}
+        down={empty}
+        idleMs={empty ? 2500 : 9000}
+        at={empty || !hasFed ? () => {
+          if (empty) {
+            const r = drawBtnRef.current?.getBoundingClientRect();
+            return r ? { x: r.left + r.width / 2, y: r.top - 8 } : null;
+          }
+          const r = stageRef.current?.getBoundingClientRect();
+          return r ? { x: r.left + r.width * 0.45, y: r.top + r.height * 0.62 } : null;
+        } : null}
+      />
+
       <motion.button
+        ref={drawBtnRef}
         onClick={onDraw}
         aria-label="Draw"
         className="absolute bottom-5 right-5 z-50 w-32 h-32 rounded-full bg-[#FFFDF7] border-[6px] border-white

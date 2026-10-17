@@ -4,7 +4,8 @@ import CreatureArt from './CreatureArt';
 import { WORLDS } from './worlds';
 import { loadCreatures } from './sprite';
 import { playVoice } from './voice';
-import { playBoing, playXylophone } from '../../hooks/useSound';
+import { playCreatureSound } from './creatureSounds';
+import { playXylophone } from '../../hooks/useSound';
 
 const BG = '/arthurs-world/images/scenes/theme-park/bg.webp';
 const CONFETTI = ['#f472b6', '#facc15', '#38bdf8', '#a78bfa', '#4ade80', '#fb923c'];
@@ -84,7 +85,7 @@ export default function Parade({ onBack }) {
 
   const tap = (c) => {
     jumps.current.set(c.id, performance.now() / 1000);
-    if (c.voice) playVoice(c.voice); else playBoing();
+    if (c.voice) playVoice(c.voice); else playCreatureSound(c.kind, c.motion);
   };
 
   return (

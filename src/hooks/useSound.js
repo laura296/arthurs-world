@@ -14,6 +14,7 @@ function getCtx() {
   if (ctx.state === 'suspended') ctx.resume();
   return ctx;
 }
+export function getAudioContext() { return getCtx(); }
 
 /** Play a quick synthesised tone */
 export function playTone(freq = 440, duration = 0.15, type = 'sine') {

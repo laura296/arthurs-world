@@ -2,10 +2,12 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import RoundBack from './RoundBack';
 import TemplateArt, { templateMaskUrl } from './TemplateArt';
-import { TEMPLATES } from './worlds';
 import { buildSprite, grainCanvas, OUTLINE } from './sprite';
 import { canRecord, recordVoice, playVoice, VOICE_MS } from './voice';
 import { buildWalls, floodRegion, paintRegion, paintStyle } from './fill';
+import HintHand from './HintHand';
+import { ACCESSORIES, accessoryCanvas, accessoryUrl } from './accessories';
+import { TEMPLATES, VIEWBOX } from './worlds';
 import { playTap, playPop, playPoof, playWhoosh, playSparkle, playSplash } from '../../hooks/useSound';
 
 const PALETTE = [
@@ -24,6 +26,23 @@ const EFFECTS = [
   { id: 'glitter', look: c => ({ backgroundColor: c, backgroundImage: 'radial-gradient(circle at 30% 35%, #fff 0 2px, transparent 3px), radial-gradient(circle at 70% 60%, #fef08a 0 2px, transparent 3px), radial-gradient(circle at 45% 75%, #fff 0 1.5px, transparent 2.5px), radial-gradient(circle at 65% 25%, #fbcfe8 0 1.5px, transparent 2.5px)' }) },
 ];
 
+const SIZES = [1, 1.3, 0.75];
+
+/** Where an accessory sits by default, worked out from the creature's eyes (paper units). */
+function defaultSpot(acc, template) {
+  const eyes = template?.eyes || [{ x: 100, y: 70, r: 10 }];
+  const ex = eyes.reduce((s, e) => s + e.x, 0) / eyes.length;
+  const ey = eyes.reduce((s, e) => s + e.y, 0) / eyes.length;
+  const span = Math.max(...eyes.map(e => e.x + e.r)) - Math.min(...eyes.map(e => e.x - e.r));
+  switch (acc.place) {
+    case 'top': return { x: ex, y: ey - 34, size: 64 };
+    case 'eyes': return { x: ex, y: ey, size: Math.max(44, span * 2.2) };
+    case 'face': return { x: ex, y: ey + 22, size: 46 };
+    case 'neck': return { x: ex, y: ey + 46, size: 44 };
+    default: return { x: ex + 24, y: ey - 22, size: 40 };
+  }
+}
+
 const btn = 'w-12 h-12 rounded-2xl shadow-md flex items-center justify-center active:scale-90 transition-transform';
 
 /**
@@ -41,6 +60,12 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const canvasRef = useRef(null);
   const drawing = useRef(null);
   const pendingFill = useRef(null);
+  const sendRef = useRef(null);
+  const paperRef = useRef(null);
+  const [activity, setActivity] = useState(0);
+  const [panel, setPanel] = useState('paint');
+  const [dressing, setDressing] = useState([]);
+  const dragAcc = useRef(null);
   const hue = useRef(0);
   const history = useRef([]);
 
@@ -60,7 +85,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const [grainUrl] = useState(() => grainCanvas().toDataURL());
 
   const template = templateId ? TEMPLATES[templateId] : null;
-  const ready = !!template || hasInk;
+  const ready = !!template || hasInk || dressing.length > 0;
 
   /* Paper is the largest square that fits the middle column */
   useEffect(() => {
@@ -156,8 +181,22 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
       if (walls.current.key !== key) walls.current = { key, map: buildWalls(template, W) };
       wallMap = walls.current.map;
     }
+    // A tap right on a line still counts: use the nearest spot beside it
+    let sx = x, sy = y;
+    if (wallMap && wallMap[y * W + x]) {
+      const reach = Math.ceil(W / 220 * 5);
+      let best = Infinity;
+      for (let dy = -reach; dy <= reach; dy += 2) {
+        for (let dx = -reach; dx <= reach; dx += 2) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= W || ny >= H || wallMap[ny * W + nx]) continue;
+          const d = dx * dx + dy * dy;
+          if (d < best) { best = d; sx = nx; sy = ny; }
+        }
+      }
+    }
     const ctx = c.getContext('2d', { willReadFrequently: true });
-    const region = floodRegion(ctx.getImageData(0, 0, W, H).data, wallMap, W, H, x, y);
+    const region = floodRegion(ctx.getImageData(0, 0, W, H).data, wallMap, W, H, sx, sy);
     // On blank paper, only fill shapes Arthur has closed in, not the whole page
     if (!region || (!template && region.touchesEdge)) {
       playTap();
@@ -178,6 +217,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const onDown = (e) => {
     if (drawing.current || sending) return;
     e.preventDefault();
+    setActivity(a => a + 1);
     e.currentTarget.setPointerCapture?.(e.pointerId);
     if (tool === 'fill') {
       // A tap fills; a drag draws instead, so nothing he tries is wasted
@@ -257,12 +297,14 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
 
   const clear = () => {
     wipe();
+    setDressing([]);
     playWhoosh();
   };
 
   const chooseTemplate = (id) => {
     if (id === templateId) return;
     wipe();
+    setDressing([]);
     setTemplateId(id);
     setTool(id ? 'fill' : 'brush');
     playPop();
@@ -270,7 +312,9 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
 
   const send = () => {
     if (!ready || sending) return;
-    const sprite = buildSprite(canvasRef.current, template, '#ffffff');
+    const sprite = buildSprite(canvasRef.current, template, '#ffffff', dressing.map(d => ({
+      canvas: accessoryCanvas(d.id, 256), x: d.x, y: d.y, size: d.size * SIZES[d.step], place: d.place,
+    })));
     if (!sprite) return;
     if (voice) sprite.voice = voice;
     playWhoosh();
@@ -297,6 +341,55 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
       setMicOk(false); // no microphone, or permission refused
     }
     setRecording(false);
+  };
+
+  /* Dress-up: add an accessory, drag it into place, tap it to change size, drag it off to take it away */
+  const addAccessory = (acc) => {
+    const spot = defaultSpot(acc, template);
+    setDressing(prev => [...prev, { key: `${acc.id}-${Date.now()}`, id: acc.id, place: acc.place, step: 0, ...spot }]);
+    setActivity(a => a + 1);
+    playSparkle();
+  };
+
+  const toUnits = (e) => {
+    const r = paperRef.current.getBoundingClientRect();
+    return {
+      x: VIEWBOX.x + ((e.clientX - r.left) / r.width) * VIEWBOX.size,
+      y: VIEWBOX.y + ((e.clientY - r.top) / r.height) * VIEWBOX.size,
+      inside: e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom,
+    };
+  };
+
+  const grabAccessory = (key, e) => {
+    if (dragAcc.current) return;
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    const item = dressing.find(d => d.key === key);
+    const p = toUnits(e);
+    dragAcc.current = { key, pointerId: e.pointerId, dx: item.x - p.x, dy: item.y - p.y, x0: e.clientX, y0: e.clientY, moved: false };
+  };
+
+  const moveAccessory = (e) => {
+    const g = dragAcc.current;
+    if (!g || g.pointerId !== e.pointerId) return;
+    if (!g.moved && Math.hypot(e.clientX - g.x0, e.clientY - g.y0) > 8) g.moved = true;
+    if (!g.moved) return;
+    const p = toUnits(e);
+    setDressing(prev => prev.map(d => (d.key === g.key ? { ...d, x: p.x + g.dx, y: p.y + g.dy } : d)));
+  };
+
+  const dropAccessory = (e) => {
+    const g = dragAcc.current;
+    if (!g || g.pointerId !== e.pointerId) return;
+    dragAcc.current = null;
+    if (!g.moved) {
+      setDressing(prev => prev.map(d => (d.key === g.key ? { ...d, step: (d.step + 1) % SIZES.length } : d)));
+      playPop();
+    } else if (!toUnits(e).inside) {
+      setDressing(prev => prev.filter(d => d.key !== g.key));
+      playPoof();
+    }
+    setActivity(a => a + 1);
   };
 
   const choices = [...world.templates, null];
@@ -345,6 +438,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
 
           {/* Send into the world */}
           <motion.button
+            ref={sendRef}
             onClick={send}
             aria-label="Send into the world"
             animate={ready ? { scale: [1, 1.08, 1] } : { scale: 1 }}
@@ -364,6 +458,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
         {/* ── Centre: the paper ── */}
         <div ref={areaRef} className="flex-1 min-w-0 flex items-center justify-center">
           <motion.div
+            ref={paperRef}
             className="relative flex-shrink-0 rounded-[2rem] overflow-hidden"
             style={{
               width: paperSize,
@@ -408,12 +503,50 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
               <TemplateArt template={template} layer="lines"
                            className="absolute inset-0 w-full h-full pointer-events-none" />
             )}
+            {dressing.map(d => {
+              const size = d.size * SIZES[d.step];
+              return (
+                <motion.img key={d.key} src={accessoryUrl(d.id)} alt="" draggable={false}
+                  className="absolute cursor-grab"
+                  style={{
+                    left: `${((d.x - size / 2 - VIEWBOX.x) / VIEWBOX.size) * 100}%`,
+                    top: `${((d.y - size / 2 - VIEWBOX.y) / VIEWBOX.size) * 100}%`,
+                    width: `${(size / VIEWBOX.size) * 100}%`,
+                    touchAction: 'none',
+                    filter: 'drop-shadow(0 4px 6px rgba(76, 29, 149, 0.3))',
+                  }}
+                  initial={{ scale: 0, rotate: -20 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                  onPointerDown={e => grabAccessory(d.key, e)}
+                  onPointerMove={moveAccessory}
+                  onPointerUp={dropAccessory}
+                  onPointerCancel={dropAccessory} />
+              );
+            })}
           </motion.div>
         </div>
 
         {/* ── Right: colours and tools ── */}
         <div className="self-center flex flex-col items-center justify-center gap-3 flex-shrink-0 py-3 px-2 rounded-3xl
                         bg-white/25 backdrop-blur-md border-2 border-white/40">
+          {panel === 'dress' ? (
+            <>
+              {/* Dress-up: tap one to put it on */}
+              <div className="grid grid-cols-3 gap-2">
+                {ACCESSORIES.map(acc => (
+                  <button key={acc.id} onClick={() => addAccessory(acc)} aria-label={acc.id}
+                    className="w-16 h-16 rounded-2xl bg-white/90 shadow-md flex items-center justify-center active:scale-90 transition-transform">
+                    <img src={accessoryUrl(acc.id)} alt="" draggable={false} className="w-12 h-12 pointer-events-none" />
+                  </button>
+                ))}
+              </div>
+              <button onClick={() => { setPanel('paint'); playTap(); }} aria-label="colours"
+                className="w-16 h-16 rounded-full shadow-md flex items-center justify-center active:scale-90"
+                style={{ background: RAINBOW, border: '4px solid white' }} />
+            </>
+          ) : (
+          <>
           {/* Colours */}
           <div className="grid grid-cols-4 gap-2">
             {PALETTE.map(c => {
@@ -471,7 +604,14 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
             <button onClick={clear} aria-label="clear" className={`${btn} bg-white/90 text-2xl`}>
               🧽
             </button>
+            <button onClick={() => { setPanel('dress'); playSparkle(); }} aria-label="dress up"
+              className={`${btn} bg-white/90 col-span-2 w-auto`}>
+              <img src={accessoryUrl('crown')} alt="" draggable={false} className="w-10 h-10 pointer-events-none" />
+              <img src={accessoryUrl('sunglasses')} alt="" draggable={false} className="w-9 h-9 -ml-1 pointer-events-none" />
+            </button>
           </div>
+          </>
+          )}
 
           {micOk && (
             <>
@@ -508,6 +648,22 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
           )}
         </div>
       </div>
+
+      {/* Hints: tap the picture to colour it; then send it into the world */}
+      {!sending && (
+        <HintHand
+          activity={`${activity}-${templateId}-${hasInk}`}
+          down={hasInk}
+          idleMs={hasInk ? 8000 : 2500}
+          at={hasInk ? () => {
+            const r = sendRef.current?.getBoundingClientRect();
+            return r ? { x: r.left + r.width / 2, y: r.top - 6 } : null;
+          } : template ? () => {
+            const r = paperRef.current?.getBoundingClientRect();
+            return r ? { x: r.left + r.width * 0.5, y: r.top + r.height * 0.52 } : null;
+          } : null}
+        />
+      )}
     </div>
   );
 }

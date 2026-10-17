@@ -410,3 +410,12 @@
 .da-zzz span { animation: drawAliveZzz 2.1s ease-out infinite; text-shadow: 0 2px 6px rgba(49, 28, 99, 0.6); }
 .da-night .da-zzz { opacity: 1; }
 .da-night .da-eye { animation: none !important; transform: scaleY(0.12); transition: transform 0.6s; }
+@keyframes drawAliveRain {
+  from { transform: translate(0, -10vh) rotate(12deg); }
+  to { transform: translate(-12vw, 110vh) rotate(12deg); }
+}
+@keyframes drawAliveSnow {
+  0% { transform: translate(0, -5vh); }
+  50% { transform: translate(var(--sway, 20px), 50vh); }
+  100% { transform: translate(0, 105vh); }
+}

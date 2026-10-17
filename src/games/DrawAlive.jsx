@@ -52,6 +52,15 @@ export default function DrawAlive() {
     setScreen('world');
   }, [world, creatures]);
 
+  /* Each meal is remembered: well-fed creatures grow a little */
+  const handleFed = useCallback((id) => {
+    setCreatures(prev => {
+      const next = prev.map(c => (c.id === id ? { ...c, fed: (c.fed || 0) + 1 } : c));
+      saveCreatures(world.id, next);
+      return next;
+    });
+  }, [world]);
+
   const handleBorn = useCallback(() => {
     peek('excited');
     setNewcomerId(null);
@@ -76,6 +85,7 @@ export default function DrawAlive() {
               creatures={creatures}
               newcomerId={newcomerId}
               onBorn={handleBorn}
+              onFed={handleFed}
               burst={burst}
               onDraw={() => { playPop(); setScreen('draw'); }}
               onBack={() => setScreen('pick')}
