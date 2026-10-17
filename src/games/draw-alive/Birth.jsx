@@ -6,7 +6,7 @@ import {
 } from '../../hooks/useSound';
 
 /** Seconds until the creature appears, per birth type. */
-export const REVEAL = { egg: 1.75, cocoon: 1.65, bubble: 1.5, portal: 1.25, flower: 1.45, puddle: 1.35 };
+export const REVEAL = { egg: 1.75, cocoon: 1.65, bubble: 1.5, portal: 1.25, flower: 1.45, puddle: 1.35, present: 1.5 };
 const LINGER = 0.9;
 
 /** Sounds along each birth's timeline: [seconds, sound]. */
@@ -17,6 +17,7 @@ const CUES = {
   portal: [[0.05, playSparkle], [0.6, playSparkle], [1.15, playWhoosh]],
   flower: [[0.1, playSparkle], [1.0, playPop]],
   puddle: [[0.05, playSplash], [0.6, playPop], [0.95, playPop], [1.25, playSplash]],
+  present: [[0.4, playThud], [0.8, playTap], [1.05, playTap], [1.45, playPop]],
 };
 
 /* ── Egg and cocoon: a shell that cracks along a zigzag and splits ── */
@@ -244,11 +245,50 @@ function Puddle({ size }) {
   );
 }
 
+/* ── Theme park: a present drops in, jiggles, and the lid pops off ── */
+function Present({ size, tint }) {
+  const reveal = REVEAL.present;
+  const total = reveal + LINGER;
+  const r = reveal / total;
+  const w = size * 0.62;
+  const lidH = w * 0.26;
+  const ribbon = { background: '#fde047', borderLeft: `3px solid ${OUTLINE}`, borderRight: `3px solid ${OUTLINE}` };
+  return (
+    <motion.div className="absolute"
+      style={{ left: -w / 2, top: -w * 0.4, width: w, height: w * 0.9, transformOrigin: '50% 100%' }}
+      initial={{ y: -size * 3 }}
+      animate={{ y: 0, rotate: [0, 0, -8, 8, 0, -10, 10, 0], scaleY: [1, 1, 0.92, 1.05, 1, 0.9, 1.08, 1], opacity: [1, 1, 1, 0] }}
+      transition={{
+        y: { type: 'spring', stiffness: 260, damping: 14 },
+        rotate: { duration: reveal, times: [0, 0.4, 0.5, 0.6, 0.66, 0.76, 0.88, 1] },
+        scaleY: { duration: reveal, times: [0, 0.4, 0.5, 0.6, 0.66, 0.76, 0.88, 1] },
+        opacity: { duration: total, times: [0, r, r + 0.25, 1] },
+      }}>
+      {/* Box */}
+      <div className="absolute left-[4%] right-[4%] bottom-0 rounded-lg overflow-hidden"
+           style={{ top: lidH * 0.8, background: tint, border: `4px solid ${OUTLINE}`,
+                    backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.55) 18%, transparent 20%)', backgroundSize: '22px 22px' }}>
+        <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[18%]" style={ribbon} />
+      </div>
+      {/* Lid flies off */}
+      <motion.div className="absolute left-0 right-0 top-0 rounded-md"
+        style={{ height: lidH, background: tint, border: `4px solid ${OUTLINE}`, filter: 'brightness(1.1)' }}
+        animate={{ y: [0, 0, -size * 1.1], x: [0, 0, size * 0.35], rotate: [0, 0, 160], opacity: [1, 1, 0] }}
+        transition={{ duration: total, times: [0, r, 1], ease: 'easeOut' }}>
+        <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[18%]" style={ribbon} />
+        <div className="absolute left-1/2 -translate-x-1/2 rounded-full"
+             style={{ bottom: '85%', width: w * 0.42, height: w * 0.2, background: '#fde047', border: `3px solid ${OUTLINE}`,
+                      borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%' }} />
+      </motion.div>
+    </motion.div>
+  );
+}
+
 /**
  * The moment a new creature arrives in its world.
  *
  * Props:
- *   type     — egg | cocoon | bubble | portal | flower | puddle
+ *   type     — egg | cocoon | bubble | portal | flower | puddle | present
  *   x, y     — where the creature will appear (stage pixels)
  *   size     — the creature's longest side in pixels
  *   src      — creature image (shown inside the bubble)
@@ -278,6 +318,7 @@ export default function Birth({ type, x, y, size, src, tint, rise = 0, onDone })
       {type === 'portal' && <Portal size={size} />}
       {type === 'flower' && <Flower size={size} tint={tint} />}
       {type === 'puddle' && <Puddle size={size} />}
+      {type === 'present' && <Present size={size} tint={tint} />}
     </div>
   );
 }

@@ -2,14 +2,20 @@ import { useRef, useEffect, useMemo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import RoundBack from './RoundBack';
 import Birth, { REVEAL } from './Birth';
+import CreatureArt from './CreatureArt';
 import { OUTLINE } from './sprite';
-import { playBoing, playSplash, playPop, playChomp, playCelebrate } from '../../hooks/useSound';
+import { SCENE_SIZE } from './worlds';
+import { playVoice } from './voice';
+import {
+  playBoing, playSplash, playPop, playChomp, playCelebrate, playThud, playNote, playSparkle,
+} from '../../hooks/useSound';
 
 const SPEED = { swim: 62, float: 28, fly: 125, rocket: 170, hover: 55, flutter: 85, walk: 44 };
 const SEEKERS = new Set(['float', 'fly', 'rocket', 'hover', 'flutter']);
 const POP_TIME = 0.45;
 const JUMP_TIME = 0.75;
 const CHOMP_TIME = 0.6;
+const STOMP_TIME = 0.9;
 const MAX_FOOD = 14;
 const FOOD_LIFE = 30;
 const FLAKES = ['#f59e0b', '#ef4444', '#fde047', '#fb923c'];
@@ -44,6 +50,12 @@ function birthSpot(type, world, W, H, box) {
   return { x, y: ((g0 + g1) / 2) * H - box.h * 0.2 };
 }
 
+/** Map a point on the painted background to the stage (the image is object-cover). */
+function sceneToStage(px, py, W, H) {
+  const k = Math.max(W / SCENE_SIZE.w, H / SCENE_SIZE.h);
+  return [(W - SCENE_SIZE.w * k) / 2 + px * k, (H - SCENE_SIZE.h * k) / 2 + py * k];
+}
+
 function newTarget(st, W, H) {
   st.tx = rand(0.1, 0.9) * W;
   st.ty = rand(st.z0, st.z1) * H;
@@ -67,6 +79,13 @@ function spawn(creature, world, W, H, at) {
     chomp: -1,
     chasing: false,
     loveUntil: 0,
+    stomp: -1,
+    perch: null,
+    perched: false,
+    sleeping: false,
+    nextPerch: performance.now() / 1000 + rand(4, 9),
+    nextBubble: performance.now() / 1000 + rand(1, 4),
+    nextStomp: performance.now() / 1000 + rand(4, 9),
   };
   newTarget(st, W, H);
   return st;
@@ -104,11 +123,11 @@ function step(st, t, dt, W, H, margin) {
   }
 
   const m = st.motion;
-  const boost = st.chasing ? 1.35 : 1;
+  const boost = st.chasing ? 1.35 : st.sleeping && !st.perch ? 0.15 : 1;
 
   if (m === 'swim' || m === 'walk') {
     const walking = m === 'walk';
-    const paused = t < st.pauseUntil;
+    const paused = t < st.pauseUntil || (walking && (st.sleeping || st.stomp >= 0));
     if (!paused) st.x += st.dir * st.speed * boost * dt;
     if ((st.x < margin && st.dir < 0) || (st.x > W - margin && st.dir > 0)) {
       st.dir *= -1;
@@ -125,20 +144,43 @@ function step(st, t, dt, W, H, margin) {
       const squash = paused ? 0 : Math.max(0, 1 - hop * 4);
       yOff = -hop * 10;
       scale = 0.78 + 0.34 * clamp((st.y / H - st.z0) / Math.max(0.01, st.z1 - st.z0), 0, 1);
-      inner = `rotate(${paused ? 0 : Math.sin(t * 6 + ph) * 5}deg) scale(${1 + squash * 0.07}, ${1 - squash * 0.07})`;
+      inner = st.sleeping
+        ? `scale(1, ${1 + Math.sin(t * 1.6 + ph) * 0.03})`
+        : `rotate(${paused ? 0 : Math.sin(t * 6 + ph) * 5}deg) scale(${1 + squash * 0.07}, ${1 - squash * 0.07})`;
     } else {
       inner = `rotate(${Math.sin(t * 2.4 + ph) * 5}deg) skewY(${Math.sin(t * 7 + ph) * 3}deg)`;
     }
   } else {
+    // Birds settle on a perch for a while
+    if (st.perch) {
+      st.tx = st.perch.x;
+      st.ty = st.perch.y;
+      if (!st.perched && Math.hypot(st.tx - st.x, st.ty - st.y) < 20) st.perched = true;
+      if (st.perched) {
+        if (t > st.perch.until) {
+          st.perch = null;
+          st.perched = false;
+          st.nextPerch = t + rand(8, 14);
+          newTarget(st, W, H);
+        } else {
+          st.x = st.tx;
+          st.y = st.ty;
+          st.vx = st.vy = 0;
+          return { yOff: 0, angle: 0, scale: 1, inner: `scaleY(${1 + Math.sin(t * 2 + ph) * 0.025})` };
+        }
+      }
+    }
+
     // Seekers wander between random targets
     const dx = st.tx - st.x, dy = st.ty - st.y;
     const d = Math.hypot(dx, dy) || 1;
     const paused = t < st.pauseUntil;
-    if (d < 30 && !paused && !st.chasing) {
+    if (d < 30 && !paused && !st.chasing && !st.perch) {
       if (m === 'hover' || m === 'float') st.pauseUntil = t + rand(0.6, 2);
       newTarget(st, W, H);
     }
-    const sp = paused ? 0 : st.speed * boost;
+    // Ease in when landing on a perch, so birds settle instead of circling
+    const sp = (paused ? 0 : st.speed * boost) * (st.perch ? Math.min(1, 0.25 + d / 90) : 1);
     const k = Math.min(1, dt * (m === 'flutter' ? 3 : m === 'rocket' ? 1.4 : 2));
     st.vx += ((dx / d) * sp - st.vx) * k;
     st.vy += ((dy / d) * sp - st.vy) * k;
@@ -157,7 +199,9 @@ function step(st, t, dt, W, H, margin) {
       inner = `rotate(${Math.sin(t * 2 + ph) * 7}deg)`;
     } else if (m === 'flutter') {
       yOff = Math.sin(t * 3 + ph) * 14;
-      inner = `scaleX(${0.3 + 0.7 * Math.abs(Math.cos(t * 13 + ph))})`;
+      inner = st.sleeping
+        ? `scaleX(${0.85 + 0.15 * Math.abs(Math.cos(t * 1.5 + ph))})`
+        : `scaleX(${0.3 + 0.7 * Math.abs(Math.cos(t * 13 + ph))})`;
     } else if (m === 'float') {
       const pulse = Math.sin(t * 2.6 + ph);
       yOff = pulse * 6;
@@ -178,6 +222,26 @@ function step(st, t, dt, W, H, margin) {
     if (p >= 1) st.jump = -1;
   }
 
+  // Dinosaur stomp: rear up, then slam down
+  let stomped = false;
+  if (st.stomp >= 0) {
+    st.stomp += dt;
+    const p = Math.min(1, st.stomp / STOMP_TIME);
+    if (p < 0.45) {
+      const q = p / 0.45;
+      yOff -= Math.sin(q * Math.PI / 2) * 34;
+      angle -= q * 12 * st.dir;
+    } else if (p < 0.55) {
+      const q = (p - 0.45) / 0.1;
+      yOff -= (1 - q) * 34;
+      angle -= (1 - q) * 12 * st.dir;
+      if (q >= 0.6 && !st.stompLanded) { st.stompLanded = true; stomped = true; }
+    } else {
+      inner += ` scale(${1 + (1 - p) * 0.15}, ${1 - (1 - p) * 0.15})`;
+    }
+    if (p >= 1) { st.stomp = -1; st.stompLanded = false; }
+  }
+
   // Munching
   if (st.chomp >= 0) {
     st.chomp += dt;
@@ -189,7 +253,7 @@ function step(st, t, dt, W, H, margin) {
 
   st.x = clamp(st.x, 0, W);
   st.y = clamp(st.y, 0, H);
-  return { yOff, angle, scale, inner, walking: m === 'walk' };
+  return { yOff, angle, scale, inner, walking: m === 'walk', stomped };
 }
 
 /* ── Ambient life on top of the painting ── */
@@ -246,30 +310,14 @@ function Creature({ creature, register, onTap }) {
       >
         <div className="relative w-full h-full will-change-transform"
              style={{ filter: 'drop-shadow(0 10px 10px rgba(76, 29, 149, 0.3))' }}>
-          {creature.flame && (
-            <div className="absolute left-1/2 top-[88%] w-[26%] h-[34%] -translate-x-1/2 origin-top"
-                 style={{
-                   borderRadius: '50% 50% 50% 50% / 30% 30% 70% 70%',
-                   background: 'radial-gradient(ellipse at 50% 20%, #fffbe6 0%, #fde047 35%, #f97316 70%, rgba(239,68,68,0) 100%)',
-                   animation: 'drawAliveFlame 0.18s ease-in-out infinite alternate',
-                 }} />
-          )}
-          <img src={creature.src} alt="" draggable={false} className="relative w-full h-full pointer-events-none" />
-          {creature.eyes.map((e, i) => (
-            <div key={i} className="absolute -translate-x-1/2 -translate-y-1/2"
-                 style={{ left: `${e.x * 100}%`, top: `${e.y * 100}%`, width: `${e.r * 200}%`, aspectRatio: '1' }}>
-              <div className="absolute inset-0 rounded-full bg-white overflow-hidden"
-                   style={{
-                     border: `2px solid ${OUTLINE}`,
-                     animation: `drawAliveBlink 5s ease-in-out ${-((creature.born || 0) % 5000) / 1000 - i * 0.05}s infinite`,
-                   }}>
-                <div className="absolute rounded-full"
-                     style={{ width: '56%', height: '56%', left: '30%', top: '28%', background: '#1e1b2e' }} />
-                <div className="absolute rounded-full bg-white" style={{ width: '20%', height: '20%', left: '38%', top: '30%' }} />
-              </div>
-            </div>
-          ))}
+          <CreatureArt creature={creature} />
         </div>
+      </div>
+      <div ref={el => register(creature.id, 'zzz', el)} className="da-zzz absolute left-0 top-0 pointer-events-none">
+        {[0, 1, 2].map(i => (
+          <span key={i} className="absolute font-heading text-white"
+                style={{ fontSize: 22 + i * 8, left: i * 16, animationDelay: `${i * 0.7}s` }}>z</span>
+        ))}
       </div>
     </>
   );
@@ -310,14 +358,18 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
   const foodState = useRef(new Map());
   const listRef = useRef(creatures);
   const newcomerRef = useRef(newcomerId);
+  const fxRef = useRef(null);
   const [foods, setFoods] = useState([]);
   const [birth, setBirth] = useState(null);
+  const [night, setNight] = useState(false);
+  const nightRef = useRef(false);
   listRef.current = creatures;
+  nightRef.current = night;
 
   const register = useCallback((id, part, el) => {
     const entry = els.current.get(id) || {};
     entry[part] = el;
-    if (entry.box || entry.shadow) els.current.set(id, entry);
+    if (entry.box || entry.shadow || entry.zzz) els.current.set(id, entry);
     else els.current.delete(id);
   }, []);
 
@@ -352,6 +404,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
     const timer = setTimeout(() => {
       const [cx, cy] = toClient(spot.x, spot.y);
       playCelebrate();
+      if (c.voice) setTimeout(() => playVoice(c.voice), 450);
       burst(cx, cy, {
         count: 22, spread: 160, colors: ['#facc15', '#ffffff', world.tint, '#ec4899', '#38bdf8'],
         shapes: ['star', 'heart', 'circle', 'diamond'], spin: true,
@@ -404,7 +457,8 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
             el.style.transform = `translate3d(${f.x}px, ${f.y + bob}px, 0) translate(-50%, -50%) rotate(${Math.sin(t * 2 + f.ph) * 8}deg)`;
           }
         }
-        const menu = [...foodState.current.values()].filter(f => !f.eaten);
+        const sleeping = nightRef.current;
+        const menu = sleeping ? [] : [...foodState.current.values()].filter(f => !f.eaten);
 
         for (const c of listRef.current) {
           const parts = els.current.get(c.id);
@@ -417,6 +471,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
           }
           const box = boxFor(c, W, H);
           const { w, h } = box;
+          st.sleeping = sleeping;
 
           // Hungry? Head for the nearest food
           let meal = null;
@@ -428,6 +483,22 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
               if (d < best) { best = d; meal = f; }
             }
             if (meal) chase(st, meal, H, box);
+          }
+
+          // Birds perch now and then, and roost at night
+          if (st.motion === 'fly' && world.perches && !st.birth) {
+            if (st.chasing && st.perch) { st.perch = null; st.perched = false; }
+            if (!st.perch && !st.chasing && (sleeping || t > st.nextPerch)) {
+              const [px, py] = sceneToStage(...pick(world.perches), W, H);
+              st.perch = { x: px, y: py - h * 0.38, until: sleeping ? Infinity : t + rand(3, 6) };
+            }
+            if (st.perch && !sleeping && st.perch.until === Infinity) st.perch.until = t;
+          }
+
+          // Dinosaurs stomp every so often
+          if (c.kind === 'dino' && !sleeping && !st.birth && !st.chasing && st.stomp < 0 && t > st.nextStomp) {
+            st.stomp = 0;
+            st.nextStomp = t + rand(7, 13);
           }
 
           const r = step(st, t, dt, W, H, w * 0.4);
@@ -480,12 +551,34 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
               sh.style.opacity = '0';
             }
           }
+
+          if (parts.zzz) {
+            parts.zzz.style.zIndex = Math.round(st.y) + 1;
+            parts.zzz.style.transform = `translate3d(${st.x + w * 0.2}px, ${st.y - h * 0.75}px, 0)`;
+          }
+
+          // Fish blow bubbles
+          if (st.motion === 'swim' && t > st.nextBubble) {
+            st.nextBubble = t + rand(3, 7);
+            blowBubbles(st.x + st.dir * w * 0.48, st.y - h * 0.08);
+          }
+
+          // Stomp lands: the ground shakes
+          if (r.stomped) {
+            playThud();
+            const stageEl = stageRef.current;
+            stageEl.classList.remove('da-shake');
+            void stageEl.offsetWidth;
+            stageEl.classList.add('da-shake');
+            const [cx, cy] = toClient(st.x, st.y + h * 0.45);
+            burst(cx, cy, { count: 8, spread: 70, colors: ['#a16207', '#d6a76c', '#fde68a'], shapes: ['circle'] });
+          }
         }
 
         // Friends say hello when they meet
         if (t > nextLove) {
           nextLove = t + 0.6;
-          const live = listRef.current
+          const live = (sleeping ? [] : listRef.current)
             .map(c => ({ c, st: states.current.get(c.id) }))
             .filter(({ st }) => st && !st.birth);
           for (let i = 0; i < live.length; i++) {
@@ -508,11 +601,33 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
     return () => cancelAnimationFrame(raf);
   }, [world, burst, removeFood]);
 
+  const blowBubbles = (x, y) => {
+    const layer = fxRef.current;
+    if (!layer) return;
+    for (let i = 0; i < 3; i++) {
+      const b = document.createElement('div');
+      const d = 12 + i * 6;
+      b.className = 'da-fish-bubble';
+      Object.assign(b.style, { left: `${x}px`, top: `${y}px`, width: `${d}px`, height: `${d}px`, animationDelay: `${i * 0.2}s` });
+      b.addEventListener('animationend', () => b.remove());
+      layer.appendChild(b);
+    }
+  };
+
+  const toggleNight = () => {
+    const toNight = !night;
+    setNight(toNight);
+    const notes = toNight ? [523, 440, 349] : [349, 440, 523];
+    notes.forEach((f, i) => setTimeout(() => playNote(f, 0.5), i * 220));
+    if (!toNight) setTimeout(playSparkle, 700);
+  };
+
   const tapCreature = (id, e) => {
     const st = states.current.get(id);
     if (!st || st.birth) return;
     st.jump = 0;
-    playBoing();
+    const c = listRef.current.find(cr => cr.id === id);
+    if (c?.voice) playVoice(c.voice); else playBoing();
     burst(e.clientX, e.clientY, {
       count: 10, spread: 70, colors: ['#facc15', '#fff', world.tint, '#ec4899'], shapes: ['star', 'heart', 'circle'],
     });
@@ -548,15 +663,28 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
 
   return (
     <div className="absolute inset-0 overflow-hidden select-none">
-      <div ref={stageRef} className="absolute inset-0 isolate" onPointerDown={tapWorld}>
+      <div ref={stageRef} className={`absolute inset-0 isolate ${night ? 'da-night' : ''}`} onPointerDown={tapWorld}>
         <img src={world.bg} alt="" draggable={false}
              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
              style={{ animation: 'drawAliveDrift 40s ease-in-out infinite alternate' }} />
         <Ambient kind={world.ambient} />
+
+        {/* Night falls: the sky darkens, the moon and stars come out */}
+        <div className="absolute inset-0 pointer-events-none transition-opacity duration-[1500ms]"
+             style={{ opacity: night ? 1 : 0, zIndex: 1 }}>
+          <div className="absolute inset-0"
+               style={{ background: 'linear-gradient(180deg, rgba(23, 20, 74, 0.78) 0%, rgba(49, 28, 99, 0.62) 60%, rgba(30, 27, 75, 0.7) 100%)', mixBlendMode: 'multiply' }} />
+          <div className="absolute rounded-full"
+               style={{ left: '12%', top: '8%', width: 90, height: 90, background: '#fef9c3',
+                        boxShadow: '0 0 60px 24px rgba(254, 249, 195, 0.45)' }} />
+          {night && <Ambient kind="twinkles" />}
+        </div>
+
         {foods.map(f => <Food key={f.id} food={f} register={registerFood} />)}
         {creatures.map(c => (
           <Creature key={c.id} creature={c} register={register} onTap={tapCreature} />
         ))}
+        <div ref={fxRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 960 }} />
         {birth && (
           <Birth key={birth.id} type={birth.type} x={birth.x} y={birth.y} size={birth.size}
                  src={birth.src} rise={birth.rise} tint={world.tint} onDone={clearBirth} />
@@ -564,6 +692,19 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onDraw
       </div>
 
       <RoundBack onBack={onBack} />
+
+      {/* Day and night */}
+      <motion.button
+        onClick={toggleNight}
+        aria-label={night ? 'Morning' : 'Bedtime'}
+        className="absolute top-3 right-3 z-50 w-20 h-20 rounded-full bg-white/30 backdrop-blur-sm border-2 border-white/40
+                   shadow-lg flex items-center justify-center text-4xl"
+        whileTap={{ scale: 0.88 }}
+      >
+        <motion.span key={night ? 'sun' : 'moon'} initial={{ rotate: -90, scale: 0 }} animate={{ rotate: 0, scale: 1 }}>
+          {night ? '☀️' : '🌙'}
+        </motion.span>
+      </motion.button>
 
       {/* Draw something new */}
       <motion.button

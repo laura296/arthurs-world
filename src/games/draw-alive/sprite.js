@@ -125,7 +125,7 @@ function toDataUrl(canvas) {
  * @param {HTMLCanvasElement} strokes  the child's drawing (covers VIEWBOX)
  * @param {object|null} template       TEMPLATES entry, or null for free drawing
  * @param {string} baseColor           bucket fill colour for templates
- * @returns {{ src, aspect, eyes, motion?, birth?, flame? } | null}
+ * @returns {{ src, aspect, eyes, kind?, motion?, birth?, flame? } | null}
  */
 export function buildSprite(strokes, template, baseColor) {
   const S = SPRITE_SIZE;
@@ -169,6 +169,7 @@ export function buildSprite(strokes, template, baseColor) {
       src: toDataUrl(canvas),
       aspect: canvas.width / canvas.height,
       eyes,
+      kind: template.id,
       motion: template.motion,
       birth: template.birth,
       flame: !!template.flame,

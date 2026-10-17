@@ -7,13 +7,16 @@
  * `eyes` are drawn as live, blinking DOM eyes once the creature is alive.
  *
  * Motions: swim | float | fly | rocket | hover | flutter | walk
- * Births:  egg | cocoon | bubble | portal | flower | puddle
+ * Births:  egg | cocoon | bubble | portal | flower | puddle | present
  *
  * Each world's `food` is what a tap drops in: `fall` is how it moves
  * (drop to the ground, sink through water, or float in place).
  */
 
 const BASE = '/arthurs-world/images/scenes';
+
+/** Every world background is painted at this size; perches use its pixels. */
+export const SCENE_SIZE = { w: 1792, h: 1024 };
 
 /** Ellipse as an SVG path (consistent winding so parts union cleanly). */
 function E(cx, cy, rx, ry = rx) {
@@ -216,6 +219,40 @@ export const TEMPLATES = {
     ],
     eyes: [{ x: 148, y: 92, r: 6 }],
   },
+  balloon: {
+    id: 'balloon',
+    birth: 'present',
+    motion: 'hover',
+    parts: [
+      E(100, 82, 58, 68),
+      'M 90 148 L 110 148 L 100 162 Z',
+    ],
+    details: [
+      'M 100 162 C 90 174 110 184 100 198',
+      'M 66 52 Q 74 34 92 30',
+      'M 112 112 Q 100 120 88 112',
+    ],
+    eyes: [{ x: 82, y: 82, r: 10 }, { x: 118, y: 82, r: 10 }],
+  },
+  teddy: {
+    id: 'teddy',
+    birth: 'present',
+    motion: 'walk',
+    parts: [
+      E(66, 30, 15), E(134, 30, 15),
+      E(100, 62, 38),
+      E(100, 132, 42, 44),
+      E(58, 118, 15, 24), E(142, 118, 15, 24),
+      E(76, 172, 20, 17), E(124, 172, 20, 17),
+    ],
+    details: [
+      E(66, 30, 7), E(134, 30, 7),
+      E(100, 76, 16, 12),
+      E(100, 136, 22, 24),
+      'M 94 82 Q 100 88 106 82',
+    ],
+    eyes: [{ x: 86, y: 56, r: 7.5 }, { x: 114, y: 56, r: 7.5 }],
+  },
 };
 
 /** Viewbox the drawing paper shows around the 200-unit template box. */
@@ -252,6 +289,7 @@ export const WORLDS = [
     freeMotion: 'walk',
     freeBirth: 'flower',
     food: { items: ['🍓', '🍌', '🫐'], fall: 'drop', count: 1 },
+    perches: [[1290, 795], [700, 885], [330, 765]],
     ambient: 'motes',
     zones: { fly: [0.1, 0.5], flutter: [0.18, 0.62], walk: [0.74, 0.9] },
     tint: '#22c55e',
@@ -274,9 +312,21 @@ export const WORLDS = [
     freeMotion: 'walk',
     freeBirth: 'egg',
     food: { items: ['🌿', '🍉', '🥬'], fall: 'drop', count: 1 },
+    perches: [[235, 672], [455, 830], [1250, 880]],
     ambient: 'motes',
     zones: { fly: [0.08, 0.42], walk: [0.7, 0.88] },
     tint: '#f97316',
+  },
+  {
+    id: 'fair',
+    bg: `${BASE}/theme-park/bg.webp`,
+    templates: ['balloon', 'teddy'],
+    freeMotion: 'walk',
+    freeBirth: 'present',
+    food: { items: ['🍭', '🧁', '🍦', '🍪'], fall: 'drop', count: 1 },
+    ambient: 'motes',
+    zones: { hover: [0.12, 0.5], fly: [0.1, 0.45], walk: [0.8, 0.92] },
+    tint: '#ec4899',
   },
 ];
 

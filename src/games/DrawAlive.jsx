@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import WorldPicker from './draw-alive/WorldPicker';
 import LiveWorld from './draw-alive/LiveWorld';
 import DrawPad from './draw-alive/DrawPad';
+import Parade from './draw-alive/Parade';
 import { getWorld } from './draw-alive/worlds';
 import { loadCreatures, saveCreatures } from './draw-alive/sprite';
 import { playTap, playPop } from '../hooks/useSound';
@@ -17,6 +18,7 @@ import { useArthurPeek } from '../components/ArthurPeek';
  * Creatures are remembered per world, so the worlds fill up over time.
  *
  * Screens: pick a world → the live world → the drawing paper → back to the world.
+ * The picker also opens a parade of every creature from every world.
  */
 export default function DrawAlive() {
   const [screen, setScreen] = useState('pick');
@@ -66,7 +68,8 @@ export default function DrawAlive() {
           exit={{ opacity: 0 }}
           transition={{ duration: screen === 'world' ? 0.35 : 0.25 }}
         >
-          {screen === 'pick' && <WorldPicker onPick={openWorld} />}
+          {screen === 'pick' && <WorldPicker onPick={openWorld} onParade={() => { playPop(); setScreen('parade'); }} />}
+          {screen === 'parade' && <Parade onBack={() => setScreen('pick')} />}
           {screen === 'world' && world && (
             <LiveWorld
               world={world}

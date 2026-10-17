@@ -5,16 +5,18 @@ import TemplateArt from './TemplateArt';
 import { WORLDS, TEMPLATES } from './worlds';
 import { loadCreatures } from './sprite';
 
-const SAMPLE_FILL = { sea: '#fdba74', space: '#fde68a', jungle: '#f9a8d4', farm: '#fbcfe8', dinosaurs: '#86efac' };
+const SAMPLE_FILL = { sea: '#fdba74', space: '#fde68a', jungle: '#f9a8d4', farm: '#fbcfe8', dinosaurs: '#86efac', fair: '#93c5fd' };
 
 /**
  * Pick which world to draw for. Each card shows the painted world, a
  * sample creature, and peeks of the creatures already living there.
  *
  * Props:
- *   onPick — (worldId) => void
+ *   onPick   — (worldId) => void
+ *   onParade — open the parade of every creature
  */
-export default function WorldPicker({ onPick }) {
+export default function WorldPicker({ onPick, onParade }) {
+  const hasCreatures = WORLDS.some(w => loadCreatures(w.id).length > 0);
   return (
     <div className="absolute inset-0 overflow-hidden">
       <GoldenHourScene />
@@ -52,6 +54,21 @@ export default function WorldPicker({ onPick }) {
           );
         })}
       </div>
+
+      {/* Parade of everything Arthur has made */}
+      {hasCreatures && (
+        <motion.button
+          onClick={onParade}
+          aria-label="Parade"
+          className="absolute top-3 right-3 z-50 w-24 h-24 rounded-full bg-aw-gold border-[6px] border-white shadow-aw-lg
+                     flex items-center justify-center text-5xl"
+          animate={{ rotate: [0, -8, 8, -4, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, repeatDelay: 1.4 }}
+          whileTap={{ scale: 0.88 }}
+        >
+          🎉
+        </motion.button>
+      )}
     </div>
   );
 }

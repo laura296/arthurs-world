@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import RoundBack from './RoundBack';
 import TemplateArt, { templateMaskUrl } from './TemplateArt';
 import { TEMPLATES } from './worlds';
-import { buildSprite, grainCanvas } from './sprite';
+import { buildSprite, grainCanvas, OUTLINE } from './sprite';
+import { canRecord, recordVoice, playVoice, VOICE_MS } from './voice';
 import { playTap, playPop, playPoof, playWhoosh, playSparkle } from '../../hooks/useSound';
 
 const PALETTE = [
@@ -38,6 +39,9 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const [canUndo, setCanUndo] = useState(false);
   const [sending, setSending] = useState(null);
   const [paperSize, setPaperSize] = useState(0);
+  const [voice, setVoice] = useState(null);
+  const [recording, setRecording] = useState(false);
+  const [micOk, setMicOk] = useState(canRecord);
   const [grainUrl] = useState(() => grainCanvas().toDataURL());
 
   const template = templateId ? TEMPLATES[templateId] : null;
@@ -183,6 +187,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     if (!ready || sending) return;
     const sprite = buildSprite(canvasRef.current, template, base);
     if (!sprite) return;
+    if (voice) sprite.voice = voice;
     playWhoosh();
     playSparkle();
     const rect = areaRef.current.getBoundingClientRect();
@@ -191,6 +196,22 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
       shapes: ['star', 'diamond', 'circle'], spin: true,
     });
     setSending(sprite);
+  };
+
+  /* Arthur records a sound for his creature: tap, speak for 3 seconds */
+  const record = async () => {
+    if (recording) return;
+    setRecording(true);
+    try {
+      const url = await recordVoice();
+      if (url) {
+        setVoice(url);
+        playVoice(url);
+      }
+    } catch {
+      setMicOk(false); // no microphone, or permission refused
+    }
+    setRecording(false);
   };
 
   const choices = [...world.templates, null];
@@ -343,6 +364,40 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
               🧽
             </button>
           </div>
+
+          {micOk && (
+            <>
+              <div className="w-16 h-px bg-white/50" />
+              <div className="flex items-center gap-2">
+                <button onClick={record} aria-label="record a sound"
+                  className={`relative w-16 h-16 rounded-full shadow-md flex items-center justify-center active:scale-90
+                    ${recording ? 'bg-red-500' : 'bg-white/90'}`}>
+                  {recording && (
+                    <>
+                      <span className="absolute inset-0 rounded-full border-4 border-red-400"
+                            style={{ animation: 'radiateRing 1s ease-out infinite' }} />
+                      <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full -rotate-90" aria-hidden="true">
+                        <motion.circle cx="32" cy="32" r="29" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round"
+                          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                          transition={{ duration: VOICE_MS / 1000, ease: 'linear' }} />
+                      </svg>
+                    </>
+                  )}
+                  <svg viewBox="0 0 24 24" className="w-8 h-8" aria-hidden="true">
+                    <rect x="8.5" y="3" width="7" height="12" rx="3.5" fill={recording ? '#fff' : '#ef4444'} stroke={OUTLINE} strokeWidth="1.2" />
+                    <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none"
+                          stroke={recording ? '#fff' : OUTLINE} strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+                {voice && !recording && (
+                  <button onClick={() => playVoice(voice)} aria-label="play the sound"
+                    className="w-12 h-12 rounded-full bg-white/90 shadow-md flex items-center justify-center text-2xl active:scale-90">
+                    🔊
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
