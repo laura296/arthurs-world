@@ -30,6 +30,13 @@ const SIZES = [1, 1.3, 0.75];
 
 /** Where an accessory sits by default, worked out from the creature's eyes (paper units). */
 function defaultSpot(acc, template) {
+  const spot = rawSpot(acc, template);
+  // Keep it fully on the paper
+  const lo = VIEWBOX.x + spot.size / 2, hi = VIEWBOX.x + VIEWBOX.size - spot.size / 2;
+  return { ...spot, x: Math.min(hi, Math.max(lo, spot.x)), y: Math.min(hi, Math.max(lo, spot.y)) };
+}
+
+function rawSpot(acc, template) {
   const eyes = template?.eyes || [{ x: 100, y: 70, r: 10 }];
   const ex = eyes.reduce((s, e) => s + e.x, 0) / eyes.length;
   const ey = eyes.reduce((s, e) => s + e.y, 0) / eyes.length;
@@ -302,6 +309,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   const clear = () => {
     wipe();
     setDressing([]);
+    dragAcc.current = null;
     playWhoosh();
   };
 
@@ -309,6 +317,7 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
     if (id === templateId) return;
     wipe();
     setDressing([]);
+    dragAcc.current = null;
     setTemplateId(id);
     setTool(id ? 'fill' : 'brush');
     playPop();
@@ -369,7 +378,8 @@ export default function DrawPad({ world, onSend, onBack, burst }) {
   };
 
   const grabAccessory = (key, e) => {
-    if (dragAcc.current) return;
+    // Ignore a second finger, unless the first one's accessory has gone
+    if (dragAcc.current && dressing.some(d => d.key === dragAcc.current.key)) return;
     e.stopPropagation();
     e.currentTarget.setPointerCapture?.(e.pointerId);
     const item = dressing.find(d => d.key === key);

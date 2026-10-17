@@ -198,21 +198,25 @@ export function buildSprite(strokes, template, baseColor, accessories = []) {
   }
 
   ctx.drawImage(waxy(strokes), 0, 0, S, S);
+  const body = contentBounds(sheet); // the drawing alone, before any hat goes on
+  if (!body) return null;
   dressUp();
-  const box = contentBounds(sheet);
-  if (!box) return null;
-  const cropped = cropTo(sheet, box, 2, 220).canvas;
-  const canvas = stickerBorder(cropped, 7);
+  const crop = cropTo(sheet, contentBounds(sheet), 2, 220);
+  const BORDER = 7;
+  const pad = Math.ceil(BORDER) + 2; // stickerBorder's padding
+  const canvas = stickerBorder(crop.canvas, BORDER);
   const w = canvas.width, h = canvas.height;
-  // Googly eyes near the top, towards the front (creatures face right)
-  const r = Math.min(0.11, (0.09 * Math.min(w, h)) / w);
-  const ey = Math.min(0.32, 0.18 + 0.1 * (w / h));
+  // Googly eyes near the top of the drawing, towards the front (creatures face right)
+  const bw = body.w * crop.scale, bh = body.h * crop.scale;
+  const rPx = Math.min(0.11 * bw, 0.09 * Math.min(bw, bh));
+  const exPx = (body.x - crop.offX) * crop.scale + pad + bw * 0.62;
+  const eyPx = (body.y - crop.offY) * crop.scale + pad + bh * Math.min(0.32, 0.18 + 0.1 * (bw / bh));
   return {
     src: toDataUrl(canvas),
     aspect: w / h,
     eyes: glasses.length ? [] : [
-      { x: 0.62, y: ey, r },
-      { x: 0.62 + r * 2.3, y: ey, r },
+      { x: exPx / w, y: eyPx / h, r: rPx / w },
+      { x: (exPx + rPx * 2.3) / w, y: eyPx / h, r: rPx / w },
     ],
   };
 }

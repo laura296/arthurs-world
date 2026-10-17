@@ -894,6 +894,7 @@ export default function LiveWorld({ world, creatures, newcomerId, onBorn, onFed,
   const toggleBall = () => {
     if (ball.current) {
       ball.current = null;
+      ballGrab.current = null; // a finger may still be holding it
       setBallOn(false);
       playPop();
       return;
